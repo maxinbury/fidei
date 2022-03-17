@@ -1,24 +1,27 @@
 const express = require ('express')
 const router = express.Router()
 const pool = require('../database')
+const {isLoggedIn} = require('../lib/auth') //proteger profile
 
-router.get('/add', (req, res) => {
+
+router.get('/add',isLoggedIn, (req, res) => {
     res.render('links/add')
 
 } )
 
-router.get("/", async (req,res)=> {
-    const links = await pool.query('SELECT * FROM clientes')
+router.get("/",isLoggedIn,  async (req,res)=> {
+    const links = await pool.query('SELECT * FROM clientes') //[req.user.id]
     console.log(links)
     res.render('links/list', {links})
 })
 
-router.post('/add', async (req, res)=>{
+router.post('/add', isLoggedIn, async (req, res)=>{
     const {Nombre, Apellido, Direccion} = req.body;
     const newLink = {
         Nombre,
         Apellido,
         Direccion
+        //user_id: req.user.id
     };
     console.log(newLink);
     await pool.query('INSERT INTO clientes set ?', [newLink]);
@@ -29,14 +32,14 @@ router.post('/add', async (req, res)=>{
 
 })
 //borrar de lista
-router.get('/delete/:id', async (req, res)=>{
+router.get('/delete/:id', isLoggedIn, async (req, res)=>{
     const { id } =req.params
     await pool.query('DELETE FROM clientes WHERE ID = ?', [id])
     req.flash('success', 'Cliente eliminado')
     res.redirect('/links')
 })
 //editar
-router.get('/edit/:id', async (req, res) =>{
+router.get('/edit/:id', isLoggedIn, async (req, res) =>{
     const { id } = req.params
     const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
    
