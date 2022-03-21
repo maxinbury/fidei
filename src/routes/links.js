@@ -9,11 +9,27 @@ router.get('/add',isLoggedIn, (req, res) => {
 
 } )
 
-router.get("/",isLoggedIn,  async (req,res)=> {
-    const links = await pool.query('SELECT * FROM clientes') //[req.user.id]
-    console.log(links)
+router.get('/clientes',isLoggedIn, (req, res) => {
+    res.render('links/clientes')
+
+} )
+//editar
+
+router.get('/edit/:id', isLoggedIn, async (req, res) =>{
+    const { id } = req.params
+    const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+   
+    res.render('links/edit',{link: links[0]})
+})
+
+
+
+router.get("/:id",isLoggedIn,  async (req,res)=> {
+    const id =  req.params.id // requiere el parametro id 
+    const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id]) //[req.user.id]
     res.render('links/list', {links})
 })
+
 
 router.post('/add', isLoggedIn, async (req, res)=>{
     const {Nombre, Apellido, Direccion} = req.body;
@@ -23,7 +39,7 @@ router.post('/add', isLoggedIn, async (req, res)=>{
         Direccion
         //user_id: req.user.id
     };
-    console.log(newLink);
+  
     await pool.query('INSERT INTO clientes set ?', [newLink]);
   // await pool.query('INSERT INTO clientes set Nombre="nombre", Apellido = "apellido", Direccion="dir"')
     req.flash('success','Guardado correctamente')
@@ -33,19 +49,13 @@ router.post('/add', isLoggedIn, async (req, res)=>{
 })
 //borrar de lista
 router.get('/delete/:id', isLoggedIn, async (req, res)=>{
-    const { id } =req.params
+    const { id } =req.params.id
     await pool.query('DELETE FROM clientes WHERE ID = ?', [id])
     req.flash('success', 'Cliente eliminado')
     res.redirect('/links')
 })
-//editar
-router.get('/edit/:id', isLoggedIn, async (req, res) =>{
-    const { id } = req.params
-    const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
-   
-    res.render('links/edit',{link: links[0]})
 
-})
+
 router.post('/edit/:id', async(req,res)=>{
     const { id } = req.params
     const {Nombre, Apellido, Direccion } = req.body
@@ -60,4 +70,23 @@ router.post('/edit/:id', async(req,res)=>{
 })
 
 
+
+// buscar cliente por apellido no esta conectado
+router.post('/listapp',isLoggedIn, async(req, res, next) =>{
+    const { id } = req.body
+    const rows = await pool.query ('SELECT * FROM users WHERE id = ?',[id])
+       console.log(id)
+        if (rows.length > 0){
+            res.redirect(`/links/${id}`)
+           // res.render('links/list', {rows})
+           //
+           //const { id } = req.params
+           //const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+
+    }else {res.redirect('clientes')}
+})
+
 module.exports= router
+
+
+

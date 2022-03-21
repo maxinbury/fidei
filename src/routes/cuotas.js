@@ -3,8 +3,9 @@ const router = express.Router()
 const pool = require('../database')
 
 
-router.get("/", async (req,res)=> {
-    const cuotas = await pool.query('SELECT * FROM cuotas')
+router.get("/:id", async (req,res)=> {
+    const id =  req.params.id //
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_cliente = ?', [id])
     console.log(cuotas)
     res.render('cuotas/lista', {cuotas})
 })
@@ -38,7 +39,22 @@ router.get('/delete/:id', async (req, res)=>{
     res.redirect('/cuotas')
 })
 
+//-----
 
+router.post('/cuotas', async(req, res, next) =>{
+    const { id } = req.body
+    const rows = await pool.query ('SELECT * FROM cuotas WHERE id_cliente = ?',[id])
+       console.log(id)
+        if (rows.length > 0){
+            res.redirect(`../cuotas/${id}`)
+           // res.render('links/list', {rows})
+           //
+           //const { id } = req.params
+           //const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+
+    }else {res.redirect('clientes')}
+    
+})
 module.exports= router 
 
 

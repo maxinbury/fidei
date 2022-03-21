@@ -39,6 +39,8 @@ passport.use('local.signup', new LocalStrategy({
     const newUser = {
         password,
         usuario,
+        nombrecompleto,
+        nivel
         
     }
     newUser.password = await helpers.encryptPassword(password)

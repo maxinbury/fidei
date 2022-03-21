@@ -1,0 +1,30 @@
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card rext-center">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3> Buscar por Dni  </h3>
+                    </div>
+                    <div class="card-body">
+                        <img src="img/logo.png" alt="" class =" card-img top mx-auto m-2  w-50">
+
+                        <form action="/links/listapp" method="POST" name="id" >
+                            <div class="form-group">
+                                <input type="text" name="id" placeholder="Ej:34800558"  class="form-control" placeholder="Nombre de usuario">
+                            </div>
+                                <button class="btn btn-success btn-block">Buscar</button>
+                            </div>
+
+
+                     
+                        <td><a href="/links/edit/{{id}}" class=" btn btn-secondary"  placeholder="Ej:34800558" > Buscar </a></td>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
