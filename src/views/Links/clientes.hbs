@@ -1,3 +1,5 @@
+<div>
+
 <div class="container p-4">
     <div class="row">
         <div class="col-md-4 mx-auto">
@@ -9,7 +11,7 @@
                     <div class="card-body">
                         <img src="img/logo.png" alt="" class =" card-img top mx-auto m-2  w-50">
 
-                        <form action="/links/listapp" method="POST" name="id" >
+                        <form action="/links/listadni" method="POST" name="id" >
                             <div class="form-group">
                                 <input type="text" name="id" placeholder="Ej:34800558"  class="form-control" placeholder="Nombre de usuario">
                             </div>
@@ -17,14 +19,46 @@
                             </div>
 
 
-                     
-                        <td><a href="/links/edit/{{id}}" class=" btn btn-secondary"  placeholder="Ej:34800558" > Buscar </a></td>
-
+                        </form>
 
                     </div>
 
+                    
                 </div>
             </div>
         </div>
     </div>
+</div>
+<td></td>
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card rext-center">
+                <div class="card-body">
+                    <div class="card-header">
+                        <h3> Buscar por Apellido  </h3>
+                    </div>
+                    <div class="card-body">
+                        <img src="img/logo.png" alt="" class =" card-img top mx-auto m-2  w-50">
+
+                        <form action="/links/listapp" method="POST" name="app" >
+                            <div class="form-group">
+                                <input type="text" name="app" placeholder="Ej:Gomez"  class="form-control" placeholder="Nombre de usuario">
+                            </div>
+                                <button class="btn btn-success btn-block">Buscar</button>
+                            </div>
+
+
+                        </form>
+                        
+
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </div>

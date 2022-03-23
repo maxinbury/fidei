@@ -5,12 +5,13 @@ const helpers = require('../lib/helpers')
 
 
 passport.use('local.signin', new LocalStrategy({
-    usernameField: 'usuario',
+    usernameField: 'usuario', // usuario es el nombre que recibe del hbs
     passwordField: 'password',
-    passReqToCallback: 'true'
+    passReqToCallback: 'true' // para recibir mas datos 
 
-}, async (req, usuario, password, done)=>{
+}, async (req, usuario, password, done)=>{  // que es lo que va a hacer 
         console.log(req.body)
+        console.log(usuario)
         const rows = await pool.query('SELECT * FROM users WHERE usuario = ?',[usuario])
        
         if (rows.length > 0){
@@ -45,8 +46,8 @@ passport.use('local.signup', new LocalStrategy({
     }
     newUser.password = await helpers.encryptPassword(password)
     const result = await pool.query('INSERT INTO users  set ?', [newUser])
-    newUser.id = result.insertId//
-    return done(null, newUser)//
+    newUser.id = result.insertId// porque newuser no tiene el id
+    return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 }
 ))
 

@@ -30,6 +30,12 @@ router.get("/:id",isLoggedIn,  async (req,res)=> {
     res.render('links/list', {links})
 })
 
+router.get("/app/:app",isLoggedIn,  async (req,res)=> {
+    const app =  req.params.app // requiere el parametro id 
+    const links = await pool.query('SELECT * FROM clientes WHERE Apellido = ?', [app]) //[req.user.id]
+    res.render('links/list', {links})
+})
+
 
 router.post('/add', isLoggedIn, async (req, res)=>{
     const {Nombre, Apellido, Direccion} = req.body;
@@ -72,7 +78,7 @@ router.post('/edit/:id', async(req,res)=>{
 
 
 // buscar cliente por apellido no esta conectado
-router.post('/listapp',isLoggedIn, async(req, res, next) =>{
+router.post('/listadni',isLoggedIn, async(req, res, next) =>{
     const { id } = req.body
     const rows = await pool.query ('SELECT * FROM users WHERE id = ?',[id])
        console.log(id)
@@ -86,7 +92,22 @@ router.post('/listapp',isLoggedIn, async(req, res, next) =>{
     }else {res.redirect('clientes')}
 })
 
+router.post('/listapp',isLoggedIn, async(req, res, next) =>{
+    const { app } = req.body
+    console.log(app)
+    const rows = await pool.query ('SELECT * FROM clientes WHERE Apellido = ?',[app])
+    const {id} = rows[0] 
+       console.log(id)
+        if (rows.length > 0){
+            res.redirect(`/links/app/${app}`)
+   
+
+    }else {res.redirect('clientes')}
+})
+
 module.exports= router
+
+
 
 
 

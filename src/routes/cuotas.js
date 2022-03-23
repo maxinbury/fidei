@@ -47,10 +47,7 @@ router.post('/cuotas', async(req, res, next) =>{
        console.log(id)
         if (rows.length > 0){
             res.redirect(`../cuotas/${id}`)
-           // res.render('links/list', {rows})
-           //
-           //const { id } = req.params
-           //const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+      
 
     }else {res.redirect('clientes')}
     
