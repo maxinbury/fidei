@@ -3,7 +3,7 @@ const res = require('express/lib/response')
 const router = express.Router()
 const passport= require('passport')
 const {isLoggedIn, isNotLoggedIn} = require('../lib/auth') //proteger profile
-const isClient = require('../lib/authusuario')
+//const isClient = require('../lib/authusuario') ----->>>>  Para Rol 
 const pool = require('../database')
 
 

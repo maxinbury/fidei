@@ -57,7 +57,8 @@ app.use(require('./routes/index'))
 app.use(require('./routes/authentication'))
 app.use(`/links`, require('./routes/links'))
 app.use(`/cuotas`, require('./routes/cuotas'))
-//app.use(`/usuario1`, require('./routes/usuario1'))
+app.use('/usuario1', require('./routes/usuario1'))
+//app.use('/usuario1', require('./routes/usuario1'))
 
 
 

@@ -1,0 +1,52 @@
+<form class="container p-0 needs-validation" novalidate>
+  <div class="form-group">
+    <label for="exampleFormControlFile1">Subir comprobante</label>
+    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+  </div>
+  
+
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      <label for="validationTooltip01">Nombre</label>
+      <input type="text" class="form-control" id="validationTooltip01" value="Roberto" required>
+      <div class="valid-tooltip">
+        Looks good!
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="validationTooltip02">Apellido</label>
+      <input type="text" class="form-control" id="validationTooltip02" value="Otto" required>
+      <div class="valid-tooltip">
+        Looks good!
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      <label for="validationTooltip03">Mail</label>
+      <input type="text" class="form-control" id="validationTooltip03" required>
+      <div class="invalid-tooltip">
+        Please provide a valid city.
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="validationTooltip04">CBU de pago </label>
+      <select class="custom-select" id="validationTooltip04" required>
+        <option selected disabled value="">Seleccionar</option>
+        <option>CBU personal</option>
+      </select>
+      <div class="invalid-tooltip">
+        Please select a valid state.
+      </div>
+    </div>
+    {{!-- <div class="col-md-3 mb-3">
+      <label for="validationTooltip05">Zip</label>
+      <input type="text" class="form-control" id="validationTooltip05" required>
+      <div class="invalid-tooltip">
+        Please provide a valid zip.
+      </div>
+    </div> --}}
+
+  </div>
+  <button class="btn btn-primary" type="submit">Confirmar</button>
+</form>
