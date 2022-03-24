@@ -38,11 +38,6 @@ router.post('/signin', (req, res, next) =>{
 
 
 
-/*
-router.get('/profile', isLoggedIn, isClient, (req, res)=> {
-    res.send(console.log('cliente'))
-}) 
-*/
 
 //sORIGINAL
 router.get('/profile', isLoggedIn, (req, res)=>{

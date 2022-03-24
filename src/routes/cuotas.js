@@ -1,6 +1,7 @@
 const express = require ('express')
 const router = express.Router()
 const pool = require('../database')
+const {isLevel2} = require('../lib/authnivel2')
 
 
 router.get("/cuotas/:id", async (req,res)=> {
@@ -11,8 +12,8 @@ router.get("/cuotas/:id", async (req,res)=> {
 })
 
 
-
-router.get("/", async (req,res)=> {
+//probando rol
+router.get("/",isLevel2, async (req,res)=> {
     const cuotas = await pool.query('SELECT * FROM cuotas ')
     res.render('cuotas/lista', {cuotas})
 })
