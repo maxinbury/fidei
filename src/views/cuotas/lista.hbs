@@ -4,8 +4,8 @@
       <th scope="col">#</th>
       <th scope="col">Saldo Inicial</th>
       <th scope="col">Saldo cierre</th>
-      <th scope="col">Direccion</th>
-      <th scope="col">Monto</th>
+      <th scope="col">Dni Cliente</th>
+      
     </tr>
   </thead>
   <tbody>
@@ -16,8 +16,7 @@
       <th scope="row">{{id}}</th>
       <td> {{saldo_inicial}}</td>
       <td>{{saldo_cierre}}</td>
-      <td>{{id_cliente}}</td>
-      <td>{{monto}}</td>
+      <td>{{dni}}</td>
       
       <td><a href="/cuotas/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
       <td><a href="/cuotas/{{id}}" class=" btn btn-primary"> Cuotas</a></td>
@@ -26,7 +25,7 @@
     {{else}}
         <div class="col-md-4 mx-auto">
             <div class="card card-body text-center">
-                <p> No hay clientes</p>
+                <p> No hay cuotas</p>
                 <a href="/cuotas/add"> Añadir</a>
             </div>
         </div>

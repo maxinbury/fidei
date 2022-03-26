@@ -31,22 +31,24 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: 'true'
 }, async (req, usuario, password, done) =>{
-    const { nombrecompleto, nivel } = req.body
+    const { nombrecompleto,dni,nivel } = req.body
     const newUser = {
         password,
         usuario,
         nombrecompleto,
+        dni,
         nivel
         
     }
-    const rows = await pool.query('SELECT * FROM users WHERE usuario = ?',[usuario]) // falta restringir si un usuario se puede registrar sin ser cliente
-    if (rows.length == 0){
-        
+    var rows = await pool.query('SELECT * FROM users WHERE usuario = ?',[usuario]) // falta restringir si un usuario se puede registrar sin ser cliente
+    if (rows.length == 0 ){
+        rows = await pool.query('SELECT * FROM users WHERE dni = ?',[dni])
+        if (rows.length == 0 ){
          newUser.password = await helpers.encryptPassword(password)   
          const result = await pool.query('INSERT INTO users  set ?', [newUser])
          newUser.id = result.insertId// porque newuser no tiene el id
           return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
-        
+        }else {done(null, false, req.flash('message','error, documento ya existente ' ))}
         } else {
             done(null, false, req.flash('message','error, usuario ya existente ')) // false para no avanzar
         }       

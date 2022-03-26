@@ -5,6 +5,7 @@ const passport= require('passport')
 const {isLoggedIn, isNotLoggedIn} = require('../lib/auth') //proteger profile
 //const isClient = require('../lib/authusuario') ----->>>>  Para Rol 
 const pool = require('../database')
+const {isLevel2} = require('../lib/authnivel2') 
 
 
 router.get('/signup', isNotLoggedIn,(req,res)=>{
@@ -21,8 +22,8 @@ router.post('/signup', isNotLoggedIn,passport.authenticate('local.signup', {
 
 //router.post('/signup', passport.authenticate('localsignup',))
 router.get('/signin',isNotLoggedIn,(req,res) => {
-
     res.render('auth/signin')
+
 }) 
 
 
@@ -40,7 +41,7 @@ router.post('/signin', (req, res, next) =>{
 
 
 //sORIGINAL
-router.get('/profile', isLoggedIn, (req, res)=>{
+router.get('/profile', isLoggedIn,isLevel2, (req, res)=>{
 
     res.render('profile')}) 
 

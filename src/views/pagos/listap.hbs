@@ -1,0 +1,34 @@
+<a href="/pagos/realizar" class=" btn btn-primary"> Añadir</a></td>
+<table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">id_cuota</th>
+      <th scope="col">Monto</th>
+      <th scope="col">Dni Cliente</th>
+      <th scope="col">Monto</th>
+    </tr>
+  </thead>
+  <tbody>
+       
+    <tr>
+        {{#each pagos}}
+      <th scope="row">{{id}}</th>
+      <td> {{id_cuota}}</td>
+      <td>{{Monto}}</td>
+      <td>{{dni}}</td>
+      <td>{{monto}}</td>
+      
+  
+    </tr>   
+    {{else}}
+        <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+                <p> No hay cuotas</p>
+            </div>
+        </div>
+   
+
+        {{/each }}
+  </tbody>
+</table>

@@ -6,7 +6,7 @@
                 <div class="card-body">
                     <form action="/cuotas/add" method="POST">
                        <div class="form-group">
-                             <input type="monto" name="id_cliente" class="form-control" placeholder="Id cliente">  
+                             <input type="int" name="dni" class="form-control" placeholder="DNI Cliente">  
                         </div>
                          <div class="form-group"> 
                             <input type="text" class="form-control" name="saldo_inicial"  placeholder="Saldo_inicial" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
@@ -34,7 +34,7 @@
                 <div class="card-body">
                     <form action="/cuotas/addaut" method="POST">
                         <div class="form-group">
-                             <input type="integer" name="id_cliente" class="form-control" placeholder="Id cliente">  
+                             <input type="integer" name="dni" class="form-control" placeholder="DNI cliente">  
                         </div>
                          <div class="form-group"> 
                             <input type="integer" class="form-control" name="monto_total"  placeholder="monto_total" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
