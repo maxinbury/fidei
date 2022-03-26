@@ -80,7 +80,6 @@ passport.use('local.signup', new LocalStrategy({
 ))
 */
 
-
 passport.serializeUser((user, done)=> {
     done(null, user.id)
  })
