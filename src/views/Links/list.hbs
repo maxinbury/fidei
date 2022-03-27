@@ -5,7 +5,7 @@
       <th scope="col">N° Cuota</th>
       <th scope="col">Nombre</th>
       <th scope="col">Apellido</th>
-      <th scope="col">Direccion</th>
+      <th scope="col">Dni</th>
     </tr>
   </thead>
   <tbody>
@@ -16,10 +16,10 @@
       <th scope="row">{{id}}</th>
       <td> {{Nombre}}</td>
       <td>{{Apellido}}</td>
-      <td>{{Direccion}}</td>
+      <td>{{dni}}</td>
       
       <td><a href="/links/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
-      <td><a href="/cuotas/cuotas/{{id}}" class=" btn btn-primary"> Cuotas</a></td>
+      <td><a href="/cuotas/cuotas/{{dni}}" class=" btn btn-primary"> Cuotas</a></td>
       <td><a href="/links/delete/{{id}}" class=" btn btn-danger"> Borrar</a></td>
     </tr>   
     {{else}}

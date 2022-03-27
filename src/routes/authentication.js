@@ -41,11 +41,11 @@ router.post('/signin', (req, res, next) =>{
 
 
 //sORIGINAL
-router.get('/profile', isLoggedIn,isLevel2, (req, res)=>{
-
-    res.render('profile')}) 
-
-
+router.get('/profile', isLoggedIn,isLevel2, async (req, res)=>{
+    const pendiente = await pool.query(" Select * from pagos where estado = 'P' ")
+   
+    
+    res.render('profile',{pendiente})}) 
 
 
 /*

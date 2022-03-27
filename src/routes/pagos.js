@@ -9,18 +9,26 @@ router.get("/",isLevel2, async (req,res)=> {
     res.render('pagos/listap', {pagos})
 })
 
-router.get('/realizar',isLoggedIn,isLevel2, (req, res) => {
-    res.render('pagos/realizar')
+router.get('/realizar/:id',isLoggedIn,isLevel2, async (req, res) => {
+    const id =  req.params.id // requiere el parametro id 
+    const cliente = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+    console.log(cliente)
+    res.render('pagos/realizar', {cliente})
 
 } )
 
 
 
+
 router.post('/realizar', async (req, res)=>{
-    const {monto,dni, } = req.body;
+    const {monto,dni,comprobante} = req.body;
+    const estado = 'A'
     const newLink = {
         monto,
-        dni
+        dni,
+        estado,
+        comprobante
+
     };
     console.log(newLink);
     const cliente =  await pool.query('SELECT * FROM clientes where dni = ?', [req.body.dni]);
@@ -28,13 +36,15 @@ router.post('/realizar', async (req, res)=>{
     
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
         req.flash('success','Guardado correctamente')
-        res.redirect('/pagos');
+        res.redirect(`../links/clientes`);
 
     }else{req.flash('message','Error, cliente no existe')
-    res.redirect('/pagos') }
+    res.redirect(`../links/clientes`) }
 
 
 })
+
+
 
 
 

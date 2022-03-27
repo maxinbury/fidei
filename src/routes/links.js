@@ -28,7 +28,7 @@ router.get('/edit/:id', isLoggedIn, async (req, res) =>{
 router.get("/:dni",isLoggedIn, isLevel2, async (req,res)=> {
     const dni =  req.params.dni // requiere el parametro id 
     const links = await pool.query('SELECT * FROM clientes WHERE dni= ?', [dni]) //[req.user.id]
-    console.log(links)
+
     res.render('links/list', {links})
 })
 

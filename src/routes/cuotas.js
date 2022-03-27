@@ -4,9 +4,9 @@ const pool = require('../database')
 const {isLevel2} = require('../lib/authnivel2')
 const {isLoggedIn} = require('../lib/auth') //proteger profile
 
-router.get("/cuotas/:id",isLoggedIn, async (req,res)=> {
-    const id =  req.params.id //
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_cliente = ?', [id])
+router.get("/cuotas/:dni",isLoggedIn, async (req,res)=> {
+    const dni =  req.params.dni //
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE dni = ?', [dni])
     res.render('cuotas/lista', {cuotas})
 })
 

@@ -16,10 +16,38 @@ router.get("/cuotas", async (req,res)=> {
 
 })
 
+router.get("/edit", (req,res)=>{
+    res.render('usuario1/edit')
+
+})
+
+router.get("/subir", (req,res)=>{
+    res.render('usuario1/subir')
+
+})
+
+router.post('/realizar', async (req, res)=>{
+    const {monto,comprobante} = req.body;
+    const dni = req.user.dni
+    const estado = 'P'
+    const newLink = {
+        monto,
+        dni,
+        estado,
+        comprobante
+
+    };
+    
+    console.log(newLink);
+   
+    
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        req.flash('success','Guardado correctamente')
+        res.redirect(`/usuario1`);
 
 
 
-
+})
 
 module.exports= router
 
