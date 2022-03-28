@@ -9,22 +9,42 @@ router.get("/",isLevel2, async (req,res)=> {
     res.render('pagos/listap', {pagos})
 })
 
-router.get('/realizar/:id',isLoggedIn,isLevel2, async (req, res) => {
-    const id =  req.params.id // requiere el parametro id 
-    const cliente = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+router.get('/aprobar/:id', isLoggedIn, async (req, res) =>{
+    const { id } = req.params
+    await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A",id])
+        req.flash('success','Guardado correctamente')
+   
+    res.render('pagos/pendientes')
+})
+
+router.get('/realizara/:dni',isLoggedIn,isLevel2, async (req, res) => {
+    const dni =  req.params.dni // requiere el parametro id  c 
+    const cliente = await pool.query('SELECT * FROM clientes WHERE dni= ?', [dni])
     console.log(cliente)
-    res.render('pagos/realizar', {cliente})
+    res.render('pagos/realizara', {cliente})
+
+} )
+router.get('/realizar',isLoggedIn,isLevel2, async (req, res) => {
+ 
+    res.render('pagos/realizar')
 
 } )
 
+router.get('/pendientes', isLoggedIn, isLevel2, async(req, res) => {
+    const pendientes = await pool.query ("Select * from pagos where estado = 'P'")
+    console.log(pendientes)
+    res.render('pagos/pendientes', {pendientes})
+
+})
 
 
 
 router.post('/realizar', async (req, res)=>{
-    const {monto,dni,comprobante} = req.body;
+    const {monto,dni,comprobante, medio} = req.body;
     const estado = 'A'
     const newLink = {
         monto,
+        medio,
         dni,
         estado,
         comprobante

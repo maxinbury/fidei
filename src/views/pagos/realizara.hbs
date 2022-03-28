@@ -1,33 +1,32 @@
- 
 <div class="container p-4">
     <div class="row">
         <div class = "col-md-4 ">
             <div class="card mx-4 x-auto ">
-             
-                <h4> Realizar pago  </h4>
+                {{#each cliente}}
+                <h4> Realizar pago a {{Apellido}} {{ Nombre}} </h4>
                 <h4>  </h4>
                
                 <div class="card-body">
                     <form action="/pagos/realizar" method="POST">
                         <div class="form-group">
 
-                                 <input type="text"name="dni" class="form-control" placeholder="dni">
+                                 <input type="text"name="dni" class="form-control" placeholder="{{dni}}">
            {{!--      <input type="text" class="form-control" name="dni"  placeholder="{{dni}}" autofocus>  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
                             
                         </div>
                         <div class="form-group">
                             <input type="text" name="monto" class="form-control" placeholder="Monto"autofocus>   
                         </div>  
-                            <label for="validationTooltip04">Medio de pago </label>
-                         <select class="custom-select " name="medio">
+                         <label for="validationTooltip04">Medio de pago </label>
+                         <select class="custom-select " id="medio">
                            <option  value="Transferencia">Transferencia </option> 
                            <option  value="Deposito"> Deposito</option> 
                            <option  value="cheque">cheque </option> 
                            <option  value="otro">otro </option> 
                           </select>
-                        
                         <div class="form-group">
                             <label for="exampleFormControlFile1">Subir comprobante</label>
+
                              <input type="file" class="form-control-file" name="comprobante" id="comprobante">
                          </div>
                         <div class="form-group">
@@ -36,7 +35,7 @@
                         </div>
                     </form>
                 </card-body>
-          
+                {{/each }}
             </div>
             
         </div>

@@ -5,11 +5,10 @@ const {isLevel2} = require('../lib/authnivel2')
 const {isLoggedIn} = require('../lib/auth') //proteger profile
 
 router.get("/cuotas/:dni",isLoggedIn, async (req,res)=> {
-    const dni =  req.params.dni //
+    const dni =  req.params.dni 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE dni = ?', [dni])
     res.render('cuotas/lista', {cuotas})
 })
-
 
 router.get("/",isLevel2,isLoggedIn, async (req,res)=> {
     const cuotas = await pool.query('SELECT * FROM cuotas ')

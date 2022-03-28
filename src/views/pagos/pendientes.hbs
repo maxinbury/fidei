@@ -1,34 +1,29 @@
-<a href="/pagos/realizar" class=" btn btn-primary"> Añadir</a></td>
-<a href="/pagos/pendientes" class=" btn btn-primary"> aprobaciones</a></td>
-
+<a href="/pagos/realizar" class=" btn btn-primary"> Nuevo Pago</a></td>
 <table class="table table-striped table-dark">
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Monto</th>
       <th scope="col">Dni Cliente</th>
-       <th scope="col">Medio</th>
+      <th scope="col">comprobante</th>
        <th scope="col">Estado</th>
-     
     </tr>
   </thead>
   <tbody>
        
     <tr>
-        {{#each pagos}}
+        {{#each pendientes}}
       <th scope="row">{{id}}</th>
       <td>{{monto}}</td>
       <td>{{dni}}</td>
-      <td>{{medio}}</td>
+      <td>{{comprobante}}</td> 
       <td> <div class="badge badge-primary text-wrap" >{{estado}}</div></td>
- 
-      
-  
+      <td><a href="/pagos/aprobar/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
     </tr>   
     {{else}}
         <div class="col-md-4 mx-auto">
             <div class="card card-body text-center">
-                <p> No hay pagos actualmente </p>
+                <p> No hay aprobaciones pendientes </p>
             </div>
         </div>
    

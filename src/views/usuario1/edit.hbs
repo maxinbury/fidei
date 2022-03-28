@@ -1,51 +1,36 @@
 <div class="container p-4">
     <div class="row">
         <div class = "col-md-4 ">
-            <div class="card mx-4 x-auto ">
-                <div class="card-body">
-                    <form action="/links/editcbu/" method="POST">
+           <h3>Asociar CBU</h3>
+                    <form action="/usuario1/add" method="POST">
                         <div class="form-group">
-                            <input type="text" value="{{{link.Nombre}}}" class="form-control" name="Nombre"  placeholder="Nombre" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
+                            <input type="text"  class="form-control" name="dni"  placeholder="Nombre" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
                         </div>
                         <div class="form-group">
-                            <input type="text" value="{{{link.Apellido}}}" name="Apellido" class="form-control" placeholder="Apellido">   
+                            <input type="text"  name="cbu" class="form-control" placeholder="Apellido">   
                         </div>                 
                         <div class="form-group">
                             <textarea name "Direccion" rows = "2" class="form-control" placeholder="Direccion"{{link.Direccion}} => </textarea>
                         </div>
-                        <div class="form-group">
-                            <button class="tbn btn-primary btn-block"> Guardar</button>
-                           
-                        </div>
-                    </form>
-                </card-body>
-            </div>
-        </div>
-    </div>
-</div>
+                        <div class=" form-group col-md-6 mb-3">
+                           <label for="validationTooltip04">CBU de pago </label>
+                              <select class="custom-select" id="validationTooltip04"  name = "lazo" required>
+                                   <option>CBU personal</option>
+                                   <option>CBU familiar</option>
+                                 </select>
+                          <div class="invalid-tooltip">
+                         Seleccionar CBU
+                            </div>
+                          </div>
+                          <div class="form-group">
+                                <label for="exampleFormControlFile1">Subir Declaración jurada</label>
+                                <input type="file" class="form-control-file" id="exampleFormControlFile1 " name ="dc">
+                            </div>
 
-<div class="container p-4">
-    <div class="row">
-        <div class = "col-md-4 ">
-            <div class="card mx-4 x-auto ">
-                <div class="card-body">
-                    <form action="/links/editpass/" method="POST">
-                        <div class="form-group">
-                            <input type="text" value="{{{link.Nombre}}}" class="form-control" name="Nombre"  placeholder="Nombre" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
-                        </div>
-                        <div class="form-group">
-                            <input type="text" value="{{{link.Apellido}}}" name="Apellido" class="form-control" placeholder="Apellido">   
-                        </div>                 
-                        <div class="form-group">
-                            <textarea name "Direccion" rows = "2" class="form-control" placeholder="Direccion"{{link.Direccion}} => </textarea>
-                        </div>
                         <div class="form-group">
                             <button class="tbn btn-primary btn-block"> Guardar</button>
-                           
                         </div>
                     </form>
-                </card-body>
-            </div>
         </div>
     </div>
 </div>

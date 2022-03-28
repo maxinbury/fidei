@@ -37,17 +37,29 @@ router.post('/realizar', async (req, res)=>{
         comprobante
 
     };
-    
-    console.log(newLink);
-   
-    
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        req.flash('success','Guardado correctamente')
+        req.flash('success','Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
         res.redirect(`/usuario1`);
 
-
-
 })
+
+router.post('/addcbu', async(req, res) => {
+
+    const {cbu, lazo,} = req.body;
+    const dni = req.user.dni
+    const estado ="P"
+    const newcbu = {
+        dni,
+        lazo,
+        cbu
+    }
+
+        await pool.query('INSERT INTO cbu SET ?', [newcbu])
+        req.flash('success','Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1`);
+    })
+
+
 
 module.exports= router
 

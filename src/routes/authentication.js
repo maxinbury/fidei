@@ -27,6 +27,8 @@ router.get('/signin',isNotLoggedIn,(req,res) => {
 }) 
 
 
+
+
 router.post('/signin', (req, res, next) =>{
     passport.authenticate('local.signin',{
         successRedirect: '/profile',
@@ -47,7 +49,6 @@ router.get('/profile', isLoggedIn,isLevel2, async (req, res)=>{
     
     res.render('profile',{pendiente})}) 
 
-
 /*
 router.get('/profile', isLoggedIn, async (req, res)=>{
         const nivel = await pool.query('SELECT nivel FROM users WHERE nivel = ? '[req.user.nivel]) //[req.user.id]
@@ -59,7 +60,6 @@ router.get('/profile', isLoggedIn, async (req, res)=>{
 
 
     }
-
 }) */
 
 /* router.get("/",isLoggedIn,  async (req,res)=> {
