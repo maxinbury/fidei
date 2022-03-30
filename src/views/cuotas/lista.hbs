@@ -5,13 +5,10 @@
       <th scope="col">Saldo Inicial</th>
       <th scope="col">Saldo cierre</th>
       <th scope="col">Dni Cliente</th>
-    
-      
     </tr>
   </thead>
   <tbody>
       <a href="/cuotas/add" class=" btn btn-primary"> Añadir</a></td>
-       
     <tr>
         {{#each cuotas}}
       <th scope="row">{{id}}</th>
@@ -19,7 +16,6 @@
       <td>{{saldo_cierre}}</td>
       <td>{{dni}}</td>
    
-      
       <td><a href="/cuotas/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
       <td><a href="/pagos/realizara/{{dni}}" class=" btn btn-primary"> pagar</a></td>
       <td><a href="/cuotas/delete/{{id}}" class=" btn btn-danger"> Borrar</a></td>
@@ -34,4 +30,3 @@
         {{/each }}
   </tbody>
 </table>
-

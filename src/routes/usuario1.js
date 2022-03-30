@@ -2,6 +2,7 @@ const express = require ('express')
 const router = express.Router()
 const pool = require('../database')
 const {isLoggedIn} = require('../lib/auth') //proteger profile
+const XLSX = require('xlsx')
 
 router.get('/',isLoggedIn, (req, res) => {
     res.render('usuario1/menu')
@@ -29,13 +30,30 @@ router.get("/subir", (req,res)=>{
 router.post('/realizar', async (req, res)=>{
     const {monto,comprobante} = req.body;
     const dni = req.user.dni
-    const estado = 'P'
+    var estado = 'P'
+   
+    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets [sheet])
+    //console.log(dataExcel)
+
+    const palabra = 'LEY'
+    console.log(palabra.includes('LEY'))
+  
+    for (const property in dataExcel) {
+        if ((dataExcel[property]['Descripción']).includes(dni)){
+            estado = 'A'
+        }
+      
+    }
+
     const newLink = {
         monto,
         dni,
         estado,
         comprobante
-
     };
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
         req.flash('success','Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
@@ -45,21 +63,20 @@ router.post('/realizar', async (req, res)=>{
 
 router.post('/addcbu', async(req, res) => {
 
-    const {cbu, lazo,} = req.body;
+    const {lazo,dc, numero} = req.body;
     const dni = req.user.dni
     const estado ="P"
     const newcbu = {
         dni,
         lazo,
-        cbu
+        numero,
+        dc,
+        estado
     }
-
         await pool.query('INSERT INTO cbu SET ?', [newcbu])
         req.flash('success','Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
         res.redirect(`/usuario1`);
     })
-
-
 
 module.exports= router
 

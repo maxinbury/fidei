@@ -2,17 +2,14 @@
     <div class="row">
         <div class = "col-md-4 ">
            <h3>Asociar CBU</h3>
-                    <form action="/usuario1/add" method="POST">
+                    <form action="/usuario1/addcbu" method="POST">
                         <div class="form-group">
-                            <input type="text"  class="form-control" name="dni"  placeholder="Nombre" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
+                            <input type="text"  class="form-control" name="dni"  placeholder="Dni" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
                         </div>
                         <div class="form-group">
-                            <input type="text"  name="cbu" class="form-control" placeholder="Apellido">   
+                            <input type="text"  name="numero" class="form-control" placeholder="cbu">   
                         </div>                 
                         <div class="form-group">
-                            <textarea name "Direccion" rows = "2" class="form-control" placeholder="Direccion"{{link.Direccion}} => </textarea>
-                        </div>
-                        <div class=" form-group col-md-6 mb-3">
                            <label for="validationTooltip04">CBU de pago </label>
                               <select class="custom-select" id="validationTooltip04"  name = "lazo" required>
                                    <option>CBU personal</option>

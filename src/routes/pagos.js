@@ -40,23 +40,30 @@ router.get('/pendientes', isLoggedIn, isLevel2, async(req, res) => {
 
 
 router.post('/realizar', async (req, res)=>{
-    const {monto,dni,comprobante, medio} = req.body;
+    const {monto,dni,comprobante, medio, lote} = req.body;
     const estado = 'A'
     const newLink = {
         monto,
         medio,
         dni,
         estado,
-        comprobante
+        comprobante,
+        lote
 
     };
     console.log(newLink);
     const cliente =  await pool.query('SELECT * FROM clientes where dni = ?', [req.body.dni]);
     if (cliente.length > 0){
-    
+        const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (dni = 34825125 and lote = 1) ',[dni, lote])
+        const nro_cuota = cantidad[0]['count(*)'] + 1
+
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
         req.flash('success','Guardado correctamente')
         res.redirect(`../links/clientes`);
+
+       
+        
+
 
     }else{req.flash('message','Error, cliente no existe')
     res.redirect(`../links/clientes`) }
