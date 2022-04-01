@@ -14,10 +14,10 @@
       <th scope="row">{{id}}</th>
       <td> {{saldo_inicial}}</td>
       <td>{{saldo_cierre}}</td>
-      <td>{{dni}}</td>
+      <td>{{cuil_cuit}}</td>
    
       <td><a href="/cuotas/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
-      <td><a href="/pagos/realizara/{{dni}}" class=" btn btn-primary"> pagar</a></td>
+      <td><a href="/pagos/realizara/{{cuil_cuit}}" class=" btn btn-primary"> pagar</a></td>
       <td><a href="/cuotas/delete/{{id}}" class=" btn btn-danger"> Borrar</a></td>
     </tr>   
     {{else}}

@@ -5,12 +5,12 @@ const helpers = require('../lib/helpers')
 
 
 passport.use('local.signin', new LocalStrategy({
-    usernameField: 'usuario', // usuario es el nombre que recibe del hbs
+    usernameField: 'cuil_cuit', // usuario es el nombre que recibe del hbs
     passwordField: 'password',
     passReqToCallback: 'true' // para recibir mas datos 
 
-}, async (req, usuario, password, done) => {  // que es lo que va a hacer 
-    const rows = await pool.query('SELECT * FROM users WHERE usuario = ?', [usuario])
+}, async (req, cuil_cuit, password, done) => {  // que es lo que va a hacer 
+    const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
 
     if (rows.length > 0) {
         const user = rows[0]
@@ -21,28 +21,28 @@ passport.use('local.signin', new LocalStrategy({
             done(null, false, req.flash('message', 'Pass incorrecta')) // false para no avanzar
         }
     } else {
-        return done(null, false, req.flash('message', 'EL nombre de usuario no existe'))
+        return done(null, false, req.flash('message', 'EL nombre de cuil/cuit no existe'))
     }
 
 }))
 
 
 passport.use('local.signup', new LocalStrategy({
-    usernameField: 'usuario',
+    usernameField: 'cuil_cuit',
     passwordField: 'password',
     passReqToCallback: 'true'
-}, async (req, usuario, password, done) => {
+}, async (req, cuil_cuit, password, done) => {
     const { nombre, apellido, dni, nivel } = req.body
     const newUser = {
         password,
-        usuario,
+        cuil_cuit,
         nombre,
         apellido,
         dni,
         nivel
 
     }
-    var rows = await pool.query('SELECT * FROM users WHERE usuario = ?', [usuario]) // falta restringir si un usuario se puede registrar sin ser cliente
+    var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
     if (rows.length == 0) {
         rows = await pool.query('SELECT * FROM users WHERE dni = ?', [dni])
         if (rows.length == 0) {
@@ -58,7 +58,7 @@ passport.use('local.signup', new LocalStrategy({
             }
         } else { done(null, false, req.flash('message', 'error, documento ya existente ')) }
     } else {
-        done(null, false, req.flash('message', 'error, usuario ya existente ')) // false para no avanzar
+        done(null, false, req.flash('message', 'error, cuil/cuit ya existente ')) // false para no avanzar
     }
 
 

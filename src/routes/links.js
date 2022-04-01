@@ -25,9 +25,9 @@ router.get('/edit/:id', isLoggedIn, async (req, res) => {
 
 
 
-router.get("/:dni", isLoggedIn, isLevel2, async (req, res) => {
-    const dni = req.params.dni // requiere el parametro id 
-    const links = await pool.query('SELECT * FROM clientes WHERE dni= ?', [dni]) //[req.user.id]
+router.get("/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit // requiere el parametro id 
+    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit]) //[req.user.id]
 
     res.render('links/list', { links })
 })
@@ -49,10 +49,10 @@ router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
         //user_id: req.user.id
     };
 
-    const row = await pool.query('Select * from clientes where dni = ?', [req.body.dni]);
+    const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.dni]);
 
     if (row.length > 0) {
-        req.flash('message', 'Error dni ya existe')
+        req.flash('message', 'Error cuil_cuit ya existe')
         res.redirect('/links/clientes')
     }
     else {
@@ -88,17 +88,17 @@ router.post('/edit/:id', isLevel2, async (req, res) => {
 
 
 // buscar cliente por apellido no esta conectado
-router.post('/listadni', isLoggedIn, isLevel2, async (req, res, next) => {
-    const { dni } = req.body
+router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
+    const { cuil_cuit } = req.body
 
-    const rows = await pool.query('SELECT * FROM clientes WHERE dni = ?', [dni])
+    const rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit])
 
     if (rows.length > 0) {
-        res.redirect(`/links/${dni}`)
+        res.redirect(`/links/${cuil_cuit}`)
 
 
     } else {
-        req.flash('message', 'Error, Dni no encontrado ')
+        req.flash('message', 'Error, cuil/cuit no encontrado ')
         res.redirect('clientes')
     }
 })

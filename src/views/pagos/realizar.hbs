@@ -9,10 +9,10 @@
                
                 <div class="card-body">
                     <form action="/pagos/realizar" method="POST">
-                    <label for="exampleFormControlFile1">Dni</label>
+                    <label for="exampleFormControlFile1">cuil_cuit</label>
                         <div class="form-group">
 
-                                 <input type="text"name="dni" class="form-control" placeholder="dni">
+                                 <input type="text"name="cuil_cuit" class="form-control" placeholder="cuil_cuit">
            {{!--      <input type="text" class="form-control" name="dni"  placeholder="{{dni}}" autofocus>  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
                             
                         </div>
@@ -20,9 +20,9 @@
                         <div class="form-group">
                             <input type="text" name="monto" class="form-control" placeholder="Monto"autofocus>   
                         </div>  
-                        <label for="exampleFormControlFile1">Lote</label>
+                        
                         <div class="form-group">
-                            <input type="text" name="id_lote" class="form-control" placeholder="Lote">   
+                            <input type="text" name="lote" class="form-control" placeholder="Lote">   
                         </div>  
                             <label for="validationTooltip04">Medio de pago </label>
                          <select class="custom-select " name="medio">

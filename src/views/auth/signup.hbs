@@ -1,56 +1,151 @@
 <div class="container p-4">
-    <div class="row">
-        <div class="col-md-4 mx-auto">
-            <div class="card rext-center">
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3> Registro</h3>
-                    </div>
-                    <div class="card-body">
-                        <form action="/signup" method="POST">
-                            <div class="form-group">
-                                <input type="text" name="nombre" placeholder="Nombre" class="form-control" autofocus>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="apellido" placeholder="Nombre" class="form-control" autofocus>
-                            </div>
-                             <div class="form-group">
-                                <input type="text" name="dni" placeholder="Dni"  class="form-control" placeholder="Nombre de usuario"> 
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="usuario" placeholder="Nombre de uuario"  class="form-control" placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <input type="password" name="password"  class="form-control" placeholder="Contraseña">
-                            </div>
-                            <h6>Nivel de usuario</h6>
-                             <div id="Nivel" class="form-group" name="nivel" >
-                                 <select id="nivel" name="nivel">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                     <option value="3">3</option>
-                                    </select>
-                              
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-success btn-block">Crear</button>
-                            </div>
+	<div class="row">
+		<div class="col-md-4 mx-auto">
+			<div class="card rext-center">
+				<div class="card-body">
+					<div class="card-header">
+						<h3> Registro</h3>
+					</div>
+					<div class="card-body">
+						<form action="/signup" method="POST" id="formulario">
+							<div class="form-group">
+								<input type="text" name="nombre" placeholder="Nombre" class="form-control" autofocus>
+							</div>
+							<div class="form-group">
+								<input type="text" name="apellido" placeholder="Apellido" class="form-control">
+							</div>
+							<div class="form-group">
+								<input type="text" name="razon" placeholder="Razon social" class="form-control"	>
+							</div>
+							<div class="form-group">
+								<input type="text" name="dni" placeholder="Dni" class="form-control"
+									placeholder="Nombre de usuario">
+							</div>
+							<div class="form-group">
+								<input type="text" name="cuil_cuit" placeholder="cuil-cuit" class="form-control"
+									placeholder="Nombre de usuario">
+							</div>
+							<div class="form-group">
+								<input type="password" name="password" class="form-control" placeholder="Contraseña">
+							</div>
+							<h6>Nivel de usuario</h6>
+							<div id="Nivel" class="form-group" name="nivel">
+								<select id="nivel" name="nivel">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+								</select>
+
+							</div>
+							<div class="form-group">
+								<button class="btn btn-success btn-block">Crear</button>
+							</div>
 
 
-                        </form>
+						</form>
 
 
-                    </div>
+					</div>
 
 
-                </div>
+				</div>
 
-            </div>
+			</div>
 
-        </div>
+		</div>
 
-    </div>
-
+	</div>
 
 
 </div>
+
+{{!-- <div class="container p-4"></div>
+
+
+<form action="" class="formulario" id="formulario">
+	<!-- Grupo: Usuario -->
+	<div class="formulario__grupo" id="grupo__usuario">
+		<label for="usuario" class="formulario__label">Cuil/cuit</label>
+		<div class="formulario__grupo-input">
+			<input type="text" class="formulario__input" name="usuario" id="cuil_cuit" placeholder="john123">
+			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+		</div>
+		<p class="formulario__input-error">El usuario tiene que ser de 4 a 16 dígitos y solo puede contener numeros,
+			letras y guion bajo.</p>
+	</div>
+
+	<!-- Grupo: Nombre -->
+	<div class="formulario__grupo" id="grupo__nombre">
+		<label for="nombre" class="formulario__label">Nombre</label>
+		<div class="formulario__grupo-input">
+			<input type="text" class="formulario__input" name="nombre" id="nombre" placeholder="John Doe">
+			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+		</div>
+		<p class="formulario__input-error">El usuario tiene que ser de 4 a 16 dígitos y solo puede contener numeros,
+			letras y guion bajo.</p>
+	</div>
+
+	<!-- Grupo: Contraseña -->
+	<div class="formulario__grupo" id="grupo__password">
+		<label for="password" class="formulario__label">Contraseña</label>
+		<div class="formulario__grupo-input">
+			<input type="password" class="formulario__input" name="password" id="password">
+			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+		</div>
+		<p class="formulario__input-error">La contraseña tiene que ser de 4 a 12 dígitos.</p>
+	</div>
+
+	<!-- Grupo: Contraseña 2 -->
+	<div class="formulario__grupo" id="grupo__password2">
+		<label for="password2" class="formulario__label">Repetir Contraseña</label>
+		<div class="formulario__grupo-input">
+			<input type="password" class="formulario__input" name="password2" id="password2">
+			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+		</div>
+		<p class="formulario__input-error">Ambas contraseñas deben ser iguales.</p>
+	</div>
+
+	<!-- Grupo: Correo Electronico -->
+	<div class="formulario__grupo" id="grupo__correo">
+		<label for="correo" class="formulario__label">Correo Electrónico</label>
+		<div class="formulario__grupo-input">
+			<input type="email" class="formulario__input" name="correo" id="correo" placeholder="correo@correo.com">
+			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+		</div>
+		<p class="formulario__input-error">El correo solo puede contener letras, numeros, puntos, guiones y guion bajo.
+		</p>
+	</div>
+
+	<!-- Grupo: Teléfono -->
+	<div class="formulario__grupo" id="grupo__telefono">
+		<label for="telefono" class="formulario__label">Teléfono</label>
+		<div class="formulario__grupo-input">
+			<input type="text" class="formulario__input" name="telefono" id="telefono" placeholder="4491234567">
+			<i class="formulario__validacion-estado fas fa-times-circle"></i>
+		</div>
+		<p class="formulario__input-error">El telefono solo puede contener numeros y el maximo son 14 dígitos.</p>
+	</div>
+
+	<!-- Grupo: Terminos y Condiciones -->
+	<div class="formulario__grupo" id="grupo__terminos">
+		<label class="formulario__label">
+			<input class="formulario__checkbox" type="checkbox" name="terminos" id="terminos">
+			Acepto los Terminos y Condiciones
+		</label>
+	</div>
+
+	<div class="formulario__mensaje" id="formulario__mensaje">
+		<p><i class="fas fa-exclamation-triangle"></i> <b>Error:</b> Por favor rellena el formulario correctamente. </p>
+	</div>
+
+	<div class="formulario__grupo formulario__grupo-btn-enviar">
+		<button type="submit" class="formulario__btn">Enviar</button>
+		<p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+	</div>
+</form>
+
+
+
+<script src="./formulario.js"></script>
+
+</div> --}}

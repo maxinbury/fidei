@@ -17,9 +17,9 @@ router.get('/aprobar/:id', isLoggedIn, async (req, res) =>{
     res.render('pagos/pendientes')
 })
 
-router.get('/realizara/:dni',isLoggedIn,isLevel2, async (req, res) => {
-    const dni =  req.params.dni // requiere el parametro id  c 
-    const cliente = await pool.query('SELECT * FROM clientes WHERE dni= ?', [dni])
+router.get('/realizara/:cuil_cuit',isLoggedIn,isLevel2, async (req, res) => {
+    const cuil_cuit =  req.params.cuil_cuit // requiere el parametro id  c 
+    const cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
     console.log(cliente)
     res.render('pagos/realizara', {cliente})
 
@@ -40,22 +40,31 @@ router.get('/pendientes', isLoggedIn, isLevel2, async(req, res) => {
 
 
 router.post('/realizar', async (req, res)=>{
-    const {monto,dni,comprobante, medio, lote} = req.body;
+    const {monto,cuil_cuit,comprobante, medio, lote} = req.body;
     const estado = 'A'
-    const newLink = {
-        monto,
-        medio,
-        dni,
-        estado,
-        comprobante,
-        lote
-
-    };
-    console.log(newLink);
-    const cliente =  await pool.query('SELECT * FROM clientes where dni = ?', [req.body.dni]);
+ 
+    const cliente =  await pool.query('SELECT * FROM clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
+    console.log(cuil_cuit)
+    console.log(lote)
     if (cliente.length > 0){
-        const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (dni = 34825125 and lote = 1) ',[dni, lote])
-        const nro_cuota = cantidad[0]['count(*)'] + 1
+        const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (cuil_cuit = ? and lote = ?) ',[cuil_cuit, lote])
+        const nro_cuota = (cantidad[0]['count(*)'] + 1)
+        const id_cuota = (await pool.query ('SELECT id from cuotas where (nro_cuota = ? and lote = ? and cuil_cuit = ?)', [cantidad[0]['count(*)'] ,lote,cuil_cuit]))[0]['id']
+        console.log(id_cuota)
+        
+
+        const newLink = {
+            monto,
+            medio,
+            cuil_cuit,
+            estado,
+            comprobante,
+            lote, 
+            nro_cuota,
+            id_cuota
+    
+        };
+
 
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
         req.flash('success','Guardado correctamente')

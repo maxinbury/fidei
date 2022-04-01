@@ -5,7 +5,7 @@
       <th scope="col">N° Cuota</th>
       <th scope="col">Nombre</th>
       <th scope="col">Apellido</th>
-      <th scope="col">Dni</th>
+      <th scope="col">cuil_cuit</th>
     </tr>
   </thead>
   <tbody>
@@ -16,10 +16,10 @@
       <th scope="row">{{id}}</th>
       <td> {{Nombre}}</td>
       <td>{{Apellido}}</td>
-      <td>{{dni}}</td>
+      <td>{{cuil_cuit}}</td>
       
       <td><a href="/links/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
-      <td><a href="/cuotas/cuotas/{{dni}}" class=" btn btn-primary"> Cuotas</a></td>
+      <td><a href="/cuotas/cuotas/{{cuil_cuit}}" class=" btn btn-primary"> Cuotas</a></td>
       <td><a href="/links/delete/{{id}}" class=" btn btn-danger"> Borrar</a></td>
     </tr>   
     {{else}}
@@ -39,30 +39,3 @@
 
 
 
-
-{{!-- <div class="container p-4">
-    <div class="row">
-
-        {{#each links}}
-            <div class=""col-md3>
-                <div class="card.text.center">
-                    <div class="card-body">
-                        <a href="{{Apellido}}">
-                            <h4 class=" card-tittle text-uppercase">
-                                {{Nombre}}
-                            </h4>
-
-                        </a>
-                        <p class="m-2"> {{Direccion}}</p>
-                        <a href="" class=" btn btn-danger"> Borrar</a>
-                        <a href="" class=" btn btn-secondary"> Editar </a>
-                        <p>{{timeago timestamp}}</p>
-                    </div>
-
-                </div>
-            </div>
-        {{/each }}
-
-    </div>
-
-</div> --}}
