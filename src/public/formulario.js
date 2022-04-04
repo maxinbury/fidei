@@ -6,7 +6,8 @@ const expresiones = {
 	nombre: /^[a-zA-ZÀ-ÿ\s]{1,40}$/, // Letras y espacios, pueden llevar acentos.
 	password: /^.{4,12}$/, // 4 a 12 digitos.
 	correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-	telefono: /^\d{7,14}$/ // 7 a 14 numeros.
+	telefono: /^\d{7,14}$/, // 7 a 14 numeros.,
+	cuil_cuit:/^\d{8,11}$/ // 7 a 14 numeros.,
 }
 
 const campos = {
@@ -14,7 +15,8 @@ const campos = {
 	nombre: false,
 	password: false,
 	correo: false,
-	telefono: false
+	telefono: false,
+	cuil_cuit: false
 }
 
 const validarFormulario = (e) => {
@@ -37,6 +39,9 @@ const validarFormulario = (e) => {
 		break;
 		case "telefono":
 			validarCampo(expresiones.telefono, e.target, 'telefono');
+		break;
+		case "cuil_cuit":
+			validarCampo(expresiones.cuil_cuit, e.target, 'cuil_cuit');
 		break;
 	}
 }
@@ -89,7 +94,7 @@ formulario.addEventListener('submit', (e) => {
 	e.preventDefault();
 
 	const terminos = document.getElementById('terminos');
-	if(campos.usuario && campos.nombre && campos.password && campos.correo && campos.telefono && terminos.checked ){
+	if(campos.apellido && campos.nombre && campos.password && campos.correo && campos.telefono && terminos.checked && campos.cuil_cuit){
 		formulario.reset();
 
 		document.getElementById('formulario__mensaje-exito').classList.add('formulario__mensaje-exito-activo');

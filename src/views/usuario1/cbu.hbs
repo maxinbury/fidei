@@ -1,0 +1,33 @@
+<div class="container p-4">
+    <div class="row">
+        <div class = "col-md-4 ">
+           <h3>Asociar CBU</h3>
+                    <form action="/usuario1/addcbu" method="POST">
+                        <div class="form-group">
+                            <input type="text"  class="form-control" name="dni"  placeholder="Dni" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
+                        </div>
+                        <div class="form-group">
+                            <input type="text"  name="numero" class="form-control" placeholder="cbu">   
+                        </div>                 
+                        <div class="form-group">
+                           <label for="validationTooltip04">CBU de pago </label>
+                              <select class="custom-select" id="validationTooltip04"  name = "lazo" required>
+                                   <option>CBU personal</option>
+                                   <option>CBU familiar</option>
+                                 </select>
+                          <div class="invalid-tooltip">
+                         Seleccionar CBU
+                            </div>
+                          </div>
+                          <div class="form-group">
+                                <label for="exampleFormControlFile1">Subir Declaración jurada</label>
+                                <input type="file" class="form-control-file" id="exampleFormControlFile1 " name ="dc">
+                            </div>
+
+                        <div class="form-group">
+                            <button class="tbn btn-primary btn-block"> Guardar</button>
+                        </div>
+                    </form>
+        </div>
+    </div>
+</div>

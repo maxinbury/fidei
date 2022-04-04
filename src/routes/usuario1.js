@@ -22,6 +22,11 @@ router.get("/edit", (req,res)=>{
 
 })
 
+router.get("/cbu", (req,res)=>{
+    res.render('usuario1/cbu')
+
+})
+
 router.get("/subir", (req,res)=>{
     res.render('usuario1/subir')
 

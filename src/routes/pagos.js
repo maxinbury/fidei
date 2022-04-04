@@ -48,10 +48,16 @@ router.post('/realizar', async (req, res)=>{
     console.log(lote)
     if (cliente.length > 0){
         const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (cuil_cuit = ? and lote = ?) ',[cuil_cuit, lote])
-        const nro_cuota = (cantidad[0]['count(*)'] + 1)
-        const id_cuota = (await pool.query ('SELECT id from cuotas where (nro_cuota = ? and lote = ? and cuil_cuit = ?)', [cantidad[0]['count(*)'] ,lote,cuil_cuit]))[0]['id']
+        const nro_cuota = (cantidad[0]['count(*)'] + 1) /////  ver si no tiene cuotas pendientes
+        const validar_cuotas = await pool.query('SELECT count(*) FROM cuotas WHERE lote = ? and cuil_cuit = ? ', [lote,cuil_cuit])
+        console.log(validar_cuotas)
+        console.log(validar_cuotas[0]['count(*)'])
+        if (validar_cuotas[0]['count(*)'] > 0){
+        var id_cuota = (await pool.query ('SELECT id from cuotas where (nro_cuota = ? and lote = ? and cuil_cuit = ?)', [cantidad[0]['count(*)'] ,lote,cuil_cuit]))[0]['id']
         console.log(id_cuota)
         
+        }else { 
+            var id_cuota = 0 }
 
         const newLink = {
             monto,

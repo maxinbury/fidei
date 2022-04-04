@@ -3,6 +3,13 @@
 
 	
 }
+
+
+.tabla__registro {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+}
 /* 
 main {
 	max-width: 800px;
