@@ -1,35 +1,44 @@
-<table class="table table-striped table-dark">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-         <th scope="col">Cuota</th>
-      <th scope="col">Saldo Inicial</th>
-      <th scope="col">Saldo cierre</th>
-      <th scope="col">Dni Cliente</th>
+<div class="container " style="margin: 10px  align="right" ">
+  <label>Buscar por cuil/cuit</label>
+<form action="/links/listacuil_cuit" method="POST" name="cuil_cuit">
+  <div class="form-group">
+    <input type="text" name="cuil_cuit" placeholder="Ej:34800558" class="form-control" placeholder="Nombre de usuario">
+  </div>
+  <button class="btn btn-primary btn-block">Buscar</button>
+  </div>
+  </div>
+  <table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Cuota</th>
+        <th scope="col">Saldo Inicial</th>
+        <th scope="col">Saldo cierre</th>
+        <th scope="col">Dni Cliente</th>
 
-    </tr>
-  </thead>
-  <tbody>
+      </tr>
+    </thead>
+    <tbody>
       <a href="/cuotas/add" class=" btn btn-primary"> Añadir</a></td>
-    <tr>
+      <tr>
         {{#each cuotas}}
-      <th scope="row">{{id}}</th>
-      <td> {{nro_cuota}}</td>
-      <td> {{saldo_inicial}}</td>
-      <td>{{saldo_cierre}}</td>
-      <td>{{cuil_cuit}}</td>
-   
-      <td><a href="/cuotas/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
-      <td><a href="/pagos/realizara/{{cuil_cuit}}" class=" btn btn-primary"> pagar</a></td>
-      <td><a href="/cuotas/delete/{{id}}" class=" btn btn-danger"> Borrar</a></td>
-    </tr>   
-    {{else}}
-        <div class="col-md-4 mx-auto">
-            <div class="card card-body text-center">
-                <p> No hay cuotas</p>
-                <a href="/cuotas/add"> Añadir</a>
-            </div>
+        <th scope="row">{{id}}</th>
+        <td> {{nro_cuota}}</td>
+        <td> {{saldo_inicial}}</td>
+        <td>{{saldo_cierre}}</td>
+        <td>{{cuil_cuit}}</td>
+
+        <td><a href="/cuotas/edit/{{id}}" class=" btn btn-secondary"> Editar </a></td>
+        <td><a href="/pagos/realizara/{{cuil_cuit}}" class=" btn btn-primary"> pagar</a></td>
+        <td><a href="/cuotas/delete/{{id}}" class=" btn btn-danger"> Borrar</a></td>
+      </tr>
+      {{else}}
+      <div class="col-md-4 mx-auto">
+        <div class="card card-body text-center">
+          <p> No hay cuotas</p>
+          <a href="/cuotas/add"> Añadir</a>
         </div>
-        {{/each }}
-  </tbody>
-</table>
+      </div>
+      {{/each }}
+    </tbody>
+  </table>

@@ -14,7 +14,7 @@ router.get('/aprobar/:id', isLoggedIn, async (req, res) =>{
     await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A",id])
         req.flash('success','Guardado correctamente')
    
-    res.render('pagos/pendientes')
+    res.redirect('/profile')
 })
 
 router.get('/realizara/:cuil_cuit',isLoggedIn,isLevel2, async (req, res) => {

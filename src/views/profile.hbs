@@ -1,8 +1,16 @@
- {{#if pendiente }}
+ {{#if pagos_p }}
 <div class="alert alert-primary" role="alert">
- Tienes  aprobaciones pendientes <a href="/pagos/pendientes" class="alert-link">ir a Aprobaciones</a>
+ Existen nuevas aprobaciones de pagos <a href="/pagos/pendientes" class="alert-link">ir a Aprobaciones</a>
 </div>
-{{/if  }}
+{{/if}}
+
+{{#if constancias_p }}
+<div class="alert alert-primary" role="alert">
+ Existen nuevas aprobaciones de comprobantes pendientes  <a href="/aprobaciones" class="alert-link">ir a Aprobaciones</a>
+</div>
+{{/if}}
+
+
 <div class="container p-4">
     <div class="row">   
         <div class="col-md-4 mk-auto">

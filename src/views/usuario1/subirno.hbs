@@ -1,0 +1,56 @@
+<form class="container p-0 needs-validation" novalidate action="">
+  <div class="form-group">
+
+    <label for="exampleFormControlFile1">Subir comprobante</label>
+    <fieldset disabled>
+    <input type="file" class="form-control-file" id="exampleFormControlFile1 " name ="comprobante">
+    </fieldset>
+  </div>
+  
+
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      <label for="validationTooltip01">Nombre</label>
+       <fieldset disabled>
+      <input type="text" class="form-control" id="validationTooltip01" value="{{user.nombre}}" required>
+      </fieldset>
+      <div class="valid-tooltip">
+        Looks good!
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="validationTooltip02">Apellido</label>
+      <fieldset disabled>
+      <input type="text" class="form-control" id="validationTooltip02" value="{{user.apellido}}" required>
+      </fieldset>
+      <div class="valid-tooltip">
+        Looks good!
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-md-6 mb-3">
+      
+      <label for="validationTooltip03">Monto</label>
+    <fieldset disabled>
+      <input type="integer" name ="monto" class="form-control" id="validationTooltip03" required>
+     </fieldset>
+    </div>
+    <div class="col-md-3 mb-3">
+      
+      <label for="validationTooltip04">CBU de pago </label>
+      <select class="custom-select" id="validationTooltip04" required>
+        <option selected disabled value="">Seleccionar</option>
+        <option>CBU personal</option>
+      </select>
+      <div class="invalid-tooltip">
+        Seleccionar CBU
+      </div>
+
+  </div>
+   <div class="col-md-7 mb-3">
+  <fieldset disabled>
+  <button class="btn btn-primary" type="submit">Confirmar</button>
+  </fieldset>
+  </div>
+</form>

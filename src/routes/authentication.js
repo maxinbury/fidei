@@ -46,10 +46,11 @@ router.post('/signin', (req, res, next) =>{
 
 //sORIGINAL
 router.get('/profile', isLoggedIn,isLevel2, async (req, res)=>{
-    const pendiente = await pool.query(" Select * from pagos where estado = 'P' ")
+    const pagos_p = await pool.query(" Select * from pagos where estado = 'P' ")
+    const constancias_p = await pool.query(" Select * from constancias where estado = 'P' ")
    
     
-    res.render('profile',{pendiente})}) 
+    res.render('profile',{pagos_p, constancias_p})}) 
 
 /*
 router.get('/profile', isLoggedIn, async (req, res)=>{

@@ -61,8 +61,8 @@ router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
         res.redirect('/links/clientes')
     }
 
-
 })
+
 //borrar de lista
 router.get('/delete/:id', isLoggedIn, isLevel2, async (req, res) => {
     const { id } = req.params.id
