@@ -1,10 +1,48 @@
 * {
-	box-sizing: border-box;
-
-	
+	box-sizing: border-box;	
 }
 
+a,
+a:hover
+a:focus{
+	color: inherit;
+	text-decoration: none;
+}
 
+#menuizquierda{
+	width:200px;
+	background: rgb(85, 85, 154);
+	color: white;
+}
+#menuizquierda .encabezado{
+	padding: 20px;
+	background: cornflowerblue;
+}
+#menuizquierda ul li a{
+	padding: 10px;
+	font-size: 20px;
+	display:block;
+}
+#menuizquierda ul li a:hover{
+	background: white;
+	color:#0075FF;
+}
+ul ul a{
+	font-size: 10px !important;
+	padding-left: 30px !important;
+	background: #9dc1eb;
+}
+
+#menuizquierda ul p{
+	padding: 10px;
+	font-size: 10px;
+	display:block;
+}
+
+.alinear {
+	display:flex;
+	width: 100%;
+}
 
 .edit_usuario {
 	display: grid;
@@ -29,10 +67,10 @@ main {
 
 body {
     background-color: #787c78 ;
-   /* background: url('../img/marcas.png.png');
+   /* background: url('../img/fondo.jpg');*/
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: auto 75%;*/
+    background-size: auto 400%;
     font-family: 'Oswald', sans-serif;
     overflow: auto
 }

@@ -29,12 +29,14 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: 'true'
 }, async (req, cuil_cuit, password, done) => {
-    const { nombre, apellido, nivel, razon, mail, telefono,nro_cliente } = req.body
+    const { nombre, mail, telefono,nro_cliente } = req.body
+    const razon = pool.query('Select razon from clientes where cuil_cuit = ?', [cuil_cuit])
+    console.log(razon)
+    const nivel = 1
     const newUser = {
         password,
         cuil_cuit,
         nombre,
-        apellido,
         nivel,
         razon,
         telefono,
@@ -44,9 +46,7 @@ passport.use('local.signup', new LocalStrategy({
 
     var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
     if (rows.length == 0) {
-        rows = await pool.query('SELECT * FROM users WHERE dni = ?', [dni])
-        if (rows.length == 0) {
-            rows = await pool.query('SELECT * FROM clientes WHERE dni = ?', [usuario])
+            rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit])
             if (rows.length == 0) {
                 { done(null, false, req.flash('message', 'error, no hay ningun cliente con ese documento  ')) }
             } else {
@@ -55,7 +55,6 @@ passport.use('local.signup', new LocalStrategy({
                 newUser.id = result.insertId// porque newuser no tiene el id
                 return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
             }
-        } else { done(null, false, req.flash('message', 'error, documento ya existente ')) }
     } else {
         done(null, false, req.flash('message', 'error, cuil/cuit ya existente ')) // false para no avanzar
     }

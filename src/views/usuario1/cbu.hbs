@@ -3,12 +3,19 @@
         <div class = "col-md-4 ">
            <h3>Asociar CBU</h3>
                     <form action="/usuario1/addcbu" method="POST">
+                    <label for="correo" class="formulario__label">Cuil/Cuit</label>
                         <div class="form-group">
                             <input type="text"  class="form-control" name="dni"  placeholder="Dni" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
                         </div>
+                        <label for="correo" class="formulario__label">CBU</label>
                         <div class="form-group">
                             <input type="text"  name="numero" class="form-control" placeholder="cbu">   
-                        </div>                 
+                        </div>   
+                        <label for="correo" class="formulario__label">Descripcion</label>
+                        <div class="form-group">
+                            <input type="text"  class="form-control" name="descripcion"  placeholder="Descripcion" > {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
+                        </div>    
+                        <label for="correo" class="formulario__label">Tipo</label>          
                         <div class="form-group">
                            <label for="validationTooltip04">CBU de pago </label>
                               <select class="custom-select" id="validationTooltip04"  name = "lazo" required>

@@ -39,17 +39,18 @@ router.get("/app/:app", isLoggedIn, isLevel2, async (req, res) => {
 })
 
 
+
 router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
-    const { Nombre, Apellido, Direccion, dni } = req.body;
+    const { Nombre, Apellido, Direccion, cuil_cuit } = req.body;
     const newLink = {
         Nombre,
         Apellido,
         Direccion,
-        dni
+        cuil_cuit
         //user_id: req.user.id
     };
 
-    const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.dni]);
+    const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
 
     if (row.length > 0) {
         req.flash('message', 'Error cuil_cuit ya existe')
