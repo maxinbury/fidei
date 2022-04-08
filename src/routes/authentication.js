@@ -48,9 +48,10 @@ router.post('/signin', (req, res, next) =>{
 router.get('/profile', isLoggedIn,isLevel2, async (req, res)=>{
     const pagos_p = await pool.query(" Select * from pagos where estado = 'P' ")
     const constancias_p = await pool.query(" Select * from constancias where estado = 'P' ")
+    const cbus = await pool.query(" Select * from cbus where estado = 'P' ")
    
     
-    res.render('profile',{pagos_p, constancias_p})}) 
+    res.render('profile',{pagos_p, constancias_p, cbus})}) 
 
 /*
 router.get('/profile', isLoggedIn, async (req, res)=>{

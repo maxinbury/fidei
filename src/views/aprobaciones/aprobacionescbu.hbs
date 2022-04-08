@@ -1,0 +1,33 @@
+
+<table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Cuil_cuit</th>
+      <th scope="col">comprobante</th>
+       <th scope="col">Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+       
+    <tr>
+        {{#each pendientes}}
+      <th scope="row">{{id}}</th>
+      <td>{{tipo}}</td>
+      <td>{{cuil_cuit}}</td>
+      <td>{{comprobante}}</td> 
+      <td> <div class="badge badge-primary text-wrap" >{{estado}}</div></td>
+      <td><a href="/aprobaciones/aprobarcbu/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
+    </tr>   
+    {{else}}
+        <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+                <p> No hay aprobaciones de cbus pendientes </p>
+            </div>
+        </div>
+   
+
+        {{/each }}
+  </tbody>
+</table>

@@ -9,48 +9,50 @@ router.get('/', isLoggedIn, (req, res) => {
 
 })
 
+
 router.get("/cuotas", async (req, res) => {
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [req.user.cuil_cuit])
- 
+
     res.render('usuario1/listac', { cuotas })
 
 })
 
 
 router.get("/legajo", async (req, res) => {
-        const razon = await pool.query('Select razon from users where cuil_cuit = ?',[req.user.cuil_cuit])
-        if (razon[0]['razon'] == 'Empresa'){
-            res.render('usuario1/datossociedad')  
-        }else { res.render('')}
+    const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
+    if (razon[0]['razon'] == 'Empresa') {
+        res.render('usuario1/datossociedad')
+    } else { res.render('') }
 })
 
 router.get("/ingresos", async (req, res) => {
-    const razon = await pool.query('Select razon from users where cuil_cuit = ?',[req.user.cuil_cuit])
-    if (razon[0]['razon'] == 'Empresa'){
-        res.render('usuario1/ingresose')  
-    }else { res.render('')}
+    const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
+    if (razon[0]['razon'] == 'Empresa') {
+        res.render('usuario1/ingresose')
+    } else { res.render('') }
 })
 
 router.get("/infocbu", async (req, res) => {
-    const razon = await pool.query('Select razon from users where cuil_cuit = ?',[req.user.cuil_cuit])
-    if (razon[0]['razon'] == 'Empresa'){
-        res.render('usuario1/infocbu')  
-    }else { res.render('')}
+    const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
+    const cbu = await pool.query('select * from cbus where cuil_cuit=?', [req.user.cuil_cuit])
+    if (razon[0]['razon'] == 'Empresa') {
+        res.render('usuario1/infocbu', { cbu })
+    } else { res.render('') }
 })
 
 
 router.get("/djs", async (req, res) => {
-    const razon = await pool.query('Select razon from users where cuil_cuit = ?',[req.user.cuil_cuit])
-    if (razon[0]['razon'] == 'Empresa'){
-        res.render('usuario1/djse')  
-    }else { res.render('')}
+    const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
+    if (razon[0]['razon'] == 'Empresa') {
+        res.render('usuario1/djse')
+    } else { res.render('') }
 })
 router.get("/contacto", async (req, res) => {
-    const razon = await pool.query('Select razon from users where cuil_cuit = ?',[req.user.cuil_cuit])
-    if (razon[0]['razon'] == 'Empresa'){
-        res.render('usuario1/contacto')  
-    }else { res.render('')}
+    const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
+    if (razon[0]['razon'] == 'Empresa') {
+        res.render('usuario1/contacto')
+    } else { res.render('') }
 })
 
 
@@ -60,9 +62,9 @@ router.get("/cbu", (req, res) => {
 })
 
 router.get("/subir", (req, res) => {
-    if (req.user.habilitado == 'SI'){
+    if (req.user.habilitado == 'SI') {
         res.render('usuario1/subir')
-    }else {res.render('usuario1/subirno')}
+    } else { res.render('usuario1/subirno') }
 
 })
 
@@ -108,18 +110,19 @@ router.post('/realizar', async (req, res) => {
 
 router.post('/addcbu', async (req, res) => {
 
-    const { lazo, dc, numero } = req.body;
+    const { lazo, dc, numero, descripcion } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const newcbu = {
         cuil_cuit,
         lazo,
         numero,
+        descripcion,
         dc,
         estado
     }
-    await pool.query('INSERT INTO cbu SET ?', [newcbu])
-    
+    await pool.query('INSERT INTO cbus SET ?', [newcbu])
+
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
 })
@@ -151,7 +154,7 @@ router.post('/edit_correo', async (req, res) => {
 
 
 router.post('/edit_comp_recibo', async (req, res) => {
-    const {  comprobante } = req.body;
+    const { comprobante } = req.body;
     console.log(comprobante)
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
@@ -173,7 +176,7 @@ router.post('/edit_comp_recibo', async (req, res) => {
 
 
 router.post('/edit_comp_dni', async (req, res) => {
-    const {  comprobante } = req.body;
+    const { comprobante } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Dni"
@@ -191,7 +194,7 @@ router.post('/edit_comp_dni', async (req, res) => {
 })
 
 router.post('/edit_comp_afip', async (req, res) => {
-    const {  comprobante } = req.body;
+    const { comprobante } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "ConstAFIP"
@@ -210,7 +213,7 @@ router.post('/edit_comp_afip', async (req, res) => {
 
 
 router.post('/edit_comp_domicilio', async (req, res) => {
-    const {  comprobante, descripcion} = req.body;
+    const { comprobante, descripcion } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Domicilio"
@@ -229,7 +232,7 @@ router.post('/edit_comp_domicilio', async (req, res) => {
 })
 
 router.post('/edit_comp_estatuto', async (req, res) => {
-    const {  comprobante  } = req.body;
+    const { comprobante } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Estatuto"
@@ -248,7 +251,7 @@ router.post('/edit_comp_estatuto', async (req, res) => {
 
 
 router.post('/edit_comp_acta', async (req, res) => {
-    const {  comprobante } = req.body;
+    const { comprobante } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Actaorgano"
@@ -267,12 +270,94 @@ router.post('/edit_comp_acta', async (req, res) => {
 
 
 router.post('/edit_comp_balance', async (req, res) => {
-    const {  comprobante, comprobante2 } = req.body;
-    console.log(comprobante2)
-    if (comprobante2.length === 0 ) {
+    const { comprobante, comprobante2 } = req.body;
+    console.log(comprobante)
+
+    if ((comprobante.length == 0) || (comprobante2.length == 0)) {
+        req.flash('message', 'Error, se deben subir 2 ')
+        res.redirect(`/usuario1/ingresos`)
+    } else {
+
+        const cuil_cuit = req.user.cuil_cuit
+        const estado = "P"
+        const tipo = "Balance"
+        const id_cliente = req.user.id
+        const newr = {
+            id_cliente,
+            cuil_cuit,
+            comprobante,
+            comprobante2,
+            estado,
+            tipo
+        }
+
+        await pool.query('INSERT INTO constancias SET ?', [newr])
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1`);
+    }
+})
+
+router.post('/edit_comp_djiva', async (req, res) => {
+    const { comprobante, comprobante2, comprobante3 } = req.body;
+    console.log(comprobante)
+
+    if ((comprobante.length == 0) || (comprobante2.length == 0) || (comprobante3.length == 0))  {
+        req.flash('message', 'Error, se deben subir 3 ')
+        res.redirect(`/usuario1/ingresos`)
+    } else {
+       
+        const cuil_cuit = req.user.cuil_cuit
+        const estado = "P"
+        const tipo = "DjIVA"
+        const id_cliente = req.user.id
+        const newr = {
+            id_cliente,
+            cuil_cuit,
+            comprobante,
+            comprobante2,
+            comprobante3,
+            estado,
+            tipo,
+        }
+        await pool.query('INSERT INTO constancias SET ?', [newr])
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1/`);
+    }
+})
+
+
+router.post('/edit_comp_djpagosprov', async (req, res) => {
+    const { comprobante, comprobante2, comprobante3 } = req.body;
+
+    if ((comprobante.length == 0) || (comprobante2.length == 0) || (comprobante3.length == 0)) {
+        req.flash('message', 'Error, se deben subir 3 ')
+        res.redirect(`/usuario1`)
+    }else {
+        const cuil_cuit = req.user.cuil_cuit
+        const estado = "P"
+        const tipo = "Djprovision"
+        const id_cliente = req.user.id
+        const newr = {
+            id_cliente,
+            cuil_cuit,
+            comprobante,
+            comprobante2,
+            comprobante3,
+            estado,
+            tipo,
+        }
+        await pool.query('INSERT INTO constancias SET ?', [newr])
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1`);
+    } 
+})
+
+
+router.post('/edit_comp_djdatospers', async (req, res) => {
+    const { comprobante } = req.body;
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
-    const tipo = "Balance"
+    const tipo = "djdatospers"
     const id_cliente = req.user.id
     const newr = {
         id_cliente,
@@ -283,8 +368,46 @@ router.post('/edit_comp_balance', async (req, res) => {
     }
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-    res.redirect(`/usuario1`);} else {req.flash('message', 'Error, se deben subir 2 ')
-    res.redirect(`/usuario1`)   }
+    res.redirect(`/usuario1`);
 })
+
+
+router.post('/edit_comp_djcalidadpers', async (req, res) => {
+    const { comprobante } = req.body;
+    const cuil_cuit = req.user.cuil_cuit
+    const estado = "P"
+    const tipo = "djcalidadpers"
+    const id_cliente = req.user.id
+    const newr = {
+        id_cliente,
+        cuil_cuit,
+        comprobante,
+        estado,
+        tipo
+    }
+    await pool.query('INSERT INTO constancias SET ?', [newr])
+    req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+    res.redirect(`/usuario1`);
+})
+
+
+router.post('/edit_comp_jdorigen', async (req, res) => {
+    const { comprobante } = req.body;
+    const cuil_cuit = req.user.cuil_cuit
+    const estado = "P"
+    const tipo = "djorigen"
+    const id_cliente = req.user.id
+    const newr = {
+        id_cliente,
+        cuil_cuit,
+        comprobante,
+        estado,
+        tipo
+    }
+    await pool.query('INSERT INTO constancias SET ?', [newr])
+    req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+    res.redirect(`/usuario1`);
+})
+
 module.exports = router
 

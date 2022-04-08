@@ -13,6 +13,18 @@ router.get('/', isLoggedIn, isLevel2, async (req, res) => {
     res.render('aprobaciones/aprobaciones', { pendientes })
 
 })
+router.get('/cbu', isLoggedIn, isLevel2, async (req, res) => {
+    const pendientes = await pool.query("Select * from cbus where estado = 'P'")
+    console.log(pendientes)
+    res.render('aprobaciones/aprobacionescbu', { pendientes })
+
+})
+router.get('/aprobarcbu/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params
+        
+    await pool.query('UPDATE cbus set estado = ? WHERE id = ?', ["A", id])
+    req.flash('success', 'Aprobado')
+})
 
 
 router.get('/aprobar/:id', isLoggedIn, async (req, res) => {
