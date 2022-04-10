@@ -1,65 +1,92 @@
+{{!-- {{#if habil }}
+<div class="alert alert-primary" role="alert">
+  Aun te quedan confirmar los siguientes comprobantes:
+  {{Recibo_sueldo}},{{Dni}},{{ConstAFIP}},{{Domicilio}},{{Estatuto}},{{Actaorgano}},{{Balance}},
+  {{DjIVA}},{{Djprovision}},{{djdatospers}},{{djcalidadpers}},{{djorigen}} <a href="/pagos/pendientes"
+    class="alert-link">ir a Aprobaciones</a>
+</div>
+{{/if}} --}}
 
-<div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-    <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-    <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>First slide label</h5>
-        <p>Some representative placeholder content for the first slide.</p>
+
+<div>
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+
+      <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+
+    </ol>
+ 
+    <div class="carousel-inner">
+
+      <div class="carousel-item active">
+        <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
+        <div class="carousel-caption d-none d-md-block">
+       {{!--    {{#each faltantes  }} --}}
+      
+          <h5>Atencion!</h5>
+          <p>Aun te quedan confirmar los siguientes comprobantes: </p>
+          <h6>{{faltantes.Recibo_sueldo}},{{faltantes.Dni}},{{faltantes.ConstAFIP}},{{faltantes.Domicilio}},{{faltantes.Estatuto}},{{faltantes.Actaorgano}},{{faltantes.Balance}},
+  {{faltantes.DjIVA}},{{faltantes.Djprovision}},{{faltantes.djdatospers}},{{faltantes.djcalidadpers}},{{faltantes.djorigen}}</h6>
+       
+        </div>
+
+      </div>
+     
+
+   
+       
+      <div class="carousel-item">
+        <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Second slide label</h5>
+          <p>Some representative placeholder content for the second slide.</p>
+          
+        </div>
+      </div>
+       
+
+      <div class="carousel-item">
+        <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Third slide label</h5>
+          <p>Some representative placeholder content for the third slide.</p>
+        </div>
       </div>
     </div>
-    <div class="carousel-item">
-      <img src="../img/marcas.png.png" style="width: 25%"class="d-block w-25" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Second slide label</h5>
-        <p>Some representative placeholder content for the second slide.</p>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
-      <div class="carousel-caption d-none d-md-block">
-        <h5>Third slide label</h5>
-        <p>Some representative placeholder content for the third slide.</p>
+    <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </button>
+  </div>
+</div>
+
+
+
+  <div class="menu_usuario1" >
+    <div class="row">
+      <div class="col-md-30 mk-auto">
+        <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
+          <div class="card-body">
+            <h3>Bienvenido {{ user.nombre }}</h3>
+            <h4>{{ user.apellido }}</h4>
+            <a href="/usuario1/cuotas/" class="btn btn-primary m-4">Consulta de cuotas</a>
+            </a>
+            <a href="/usuario1/subir" class="btn btn-primary m-4">Informe de transferencias</a>
+
+            <a href="/usuario1/legajo" class="btn btn-primary m-4">Legajo</a>
+
+            <a href="/usuario1/cbu" class="btn btn-primary m-4"> Asociar CBU</a>
+
+
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="sr-only">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="sr-only">Next</span>
-  </button>
-
-
-
-<div class="container p-4 " >
-    <div class="row">   
-        <div class="col-md-10 mk-auto">
-            <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
-                <div class="card-body">
-                    <h3>Bienvenido {{ user.nombrecompleto }}</h3>
-                    <h4>{{ user.usuario }}</h4>
-                    <a href= "/usuario1/cuotas/" class="btn btn-primary m-4">Consulta de cuotas</a>
-                       
-                    </a>
-                    
-                    <a href="/usuario1/subir" class="btn btn-primary m-4">Informe de transferencias</a>
-
-                    <a href="/usuario1/legajo" class="btn btn-primary m-4">Legajo</a>
-
-                    <a href="/usuario1/cbu" class="btn btn-primary m-4"> Asociar CBU</a>
-                         
-
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>

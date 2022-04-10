@@ -4,8 +4,85 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 
-router.get('/', isLoggedIn, (req, res) => {
-    res.render('usuario1/menu')
+router.get('/', isLoggedIn, async (req, res) => {
+
+
+    const habilitado = await pool.query('select habilitado from users where cuil_cuit=? ', [req.user.cuil_cuit])
+    const habil = pool.query('Select * from users where cuil_cuit= ? and habilitado ="SI"',[req.user.cuil_cuit])
+
+    if (habilitado[0]['habilitado'] = 'NO') {
+        var Recibo_sueldo = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Recibo_sueldo" and estado="A" ', [req.user.cuil_cuit])
+    
+        var Dni = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Dni" and estado="A" ', [req.user.cuil_cuit])
+        var ConstAFIP = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "ConstAFIP" and estado="A" ', [req.user.cuil_cuit])
+        var Domicilio = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Domicilio" and estado="A" ', [req.user.cuil_cuit])
+        var Estatuto = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Estatuto" and estado="A" ', [req.user.cuil_cuit])
+        var Actaorgano = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Actaorgano" and estado="A" ', [req.user.cuil_cuit])
+        var Balance = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Balance" and estado="A" ', [req.user.cuil_cuit])
+        var DjIVA = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "DjIVA" and estado="A" ', [req.user.cuil_cuit])
+        var Djprovision = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Djprovision" and estado="A" ', [req.user.cuil_cuit])
+        var djdatospers = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "djdatospers" and estado="A" ', [req.user.cuil_cuit])
+        var djcalidadpers = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "djcalidadpers" and estado="A" ', [req.user.cuil_cuit])
+        var djorigen = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "djorigen" and estado="A" ', [req.user.cuil_cuit])
+        
+        var habilitar = true
+        if (Recibo_sueldo.length == 0 ) {
+            Recibo_sueldo = 'Recibo de sueldoo'
+            habilitar = false} else {Recibo_sueldo = ''}
+        if (Dni.length == 0) {
+            Dni = 'Foto de DNI'
+            habilitar = false}{Recibo_sueldo = ''}
+        if (ConstAFIP.length == 0) {
+            ConstAFIP = 'Constancia de la Afip'
+            habilitar = false}{Recibo_sueldo = ''}
+        if (Domicilio.length == 0) {
+            Domicilio = 'Certificado de domicilio'
+            habilitar = false}{Recibo_sueldo = ''}
+        if (Estatuto.length == 0) {
+            Estatuto = 'Estatuto'
+            habilitar = false}{Recibo_sueldo = ''}
+        if (Actaorgano.length == 0) {
+            Actaorgano = 'Acta de organo'
+            habilitar = false}{Recibo_sueldo = ''}
+        if (Balance.length == 0) {
+            Balance = 'Balance'
+            habilitar = false }{Recibo_sueldo = ''}
+        if (DjIVA.length == 0) {
+            DjIVA = 'Dj IVA'
+            habilitar = false}{Recibo_sueldo = ''}
+        if (Djprovision.length == 0) {
+            Djprovision = 'Djprovision'
+            habilitar = false }
+        if (djdatospers.length == 0) {
+            djdatospers = 'DJ datos personales'
+            habilitar = false}
+        if (djcalidadpers.length == 0) {
+            djcalidadpers = 'DJ Calidad persona'
+            habilitar = false}
+        if (djorigen.length == 0) {
+            djorigen = 'DJ Origen de fondos '
+            habilitar = false}
+        if (habilitar){
+            await pool.query('UPDATE `fideicomiso`.`users` SET `habilitado` = "SI" WHERE (`id` = ?)',[req.user.cuil_cuit])
+        }
+        const faltantes = { Dni, ConstAFIP, Domicilio, Estatuto, Actaorgano, Balance, DjIVA ,Djprovision,djdatospers, djorigen }
+        console.log(faltantes)
+        res.render('usuario1/menu',{faltantes})
+      /* res.render('usuario1/menu', ({Recibo_sueldo},{Dni},{ConstAFIP},{Domicilio},{Estatuto},{Actaorgano},{Balance},
+       {DjIVA},{Djprovision},{djdatospers},{djcalidadpers},{djorigen},{habilitar}) )*/
+    
+    }else { const algo ='algoo'
+ 
+    res.render('usuario1/menu',{algo})}
+
+
+   /* res.render('usuario1/listac', { cuotas })
+   No se por que puse esto 
+    if (djorigen.length != 0) {
+        await pool.query('UPDATE users set " WHERE id = ?', [newLink, id])
+    }
+ */
+
 
 })
 
@@ -152,7 +229,7 @@ router.post('/edit_correo', async (req, res) => {
     res.redirect(`/usuario1`);
 })
 
-
+//VER
 router.post('/edit_comp_recibo', async (req, res) => {
     const { comprobante } = req.body;
     console.log(comprobante)
@@ -301,11 +378,11 @@ router.post('/edit_comp_djiva', async (req, res) => {
     const { comprobante, comprobante2, comprobante3 } = req.body;
     console.log(comprobante)
 
-    if ((comprobante.length == 0) || (comprobante2.length == 0) || (comprobante3.length == 0))  {
+    if ((comprobante.length == 0) || (comprobante2.length == 0) || (comprobante3.length == 0)) {
         req.flash('message', 'Error, se deben subir 3 ')
         res.redirect(`/usuario1/ingresos`)
     } else {
-       
+
         const cuil_cuit = req.user.cuil_cuit
         const estado = "P"
         const tipo = "DjIVA"
@@ -332,7 +409,7 @@ router.post('/edit_comp_djpagosprov', async (req, res) => {
     if ((comprobante.length == 0) || (comprobante2.length == 0) || (comprobante3.length == 0)) {
         req.flash('message', 'Error, se deben subir 3 ')
         res.redirect(`/usuario1`)
-    }else {
+    } else {
         const cuil_cuit = req.user.cuil_cuit
         const estado = "P"
         const tipo = "Djprovision"
@@ -349,7 +426,7 @@ router.post('/edit_comp_djpagosprov', async (req, res) => {
         await pool.query('INSERT INTO constancias SET ?', [newr])
         req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
         res.redirect(`/usuario1`);
-    } 
+    }
 })
 
 
