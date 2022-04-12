@@ -31,60 +31,66 @@ router.get('/', isLoggedIn, async (req, res) => {
             habilitar = false} else {Recibo_sueldo = ''}
         if (Dni.length == 0) {
             Dni = 'Foto de DNI'
-            habilitar = false}{Recibo_sueldo = ''}
+            habilitar = false}else{Dni = ''}
         if (ConstAFIP.length == 0) {
             ConstAFIP = 'Constancia de la Afip'
-            habilitar = false}{Recibo_sueldo = ''}
+            habilitar = false}else{ConstAFIP = ''}
         if (Domicilio.length == 0) {
             Domicilio = 'Certificado de domicilio'
-            habilitar = false}{Recibo_sueldo = ''}
+            habilitar = false}else{Domicilio = ''}
         if (Estatuto.length == 0) {
             Estatuto = 'Estatuto'
-            habilitar = false}{Recibo_sueldo = ''}
+            habilitar = false}else{Estatuto = ''}
         if (Actaorgano.length == 0) {
             Actaorgano = 'Acta de organo'
-            habilitar = false}{Recibo_sueldo = ''}
+            habilitar = false}else{Actaorgano = ''}
         if (Balance.length == 0) {
             Balance = 'Balance'
-            habilitar = false }{Recibo_sueldo = ''}
+            habilitar = false }else{Balance = ''}
         if (DjIVA.length == 0) {
             DjIVA = 'Dj IVA'
-            habilitar = false}{Recibo_sueldo = ''}
+            habilitar = false}else{DjIVA = ''}
         if (Djprovision.length == 0) {
             Djprovision = 'Djprovision'
-            habilitar = false }
+            habilitar = false }else{Djprovision = ''}
         if (djdatospers.length == 0) {
             djdatospers = 'DJ datos personales'
-            habilitar = false}
+            habilitar = false}else{djdatospers = ''}
         if (djcalidadpers.length == 0) {
             djcalidadpers = 'DJ Calidad persona'
-            habilitar = false}
+            habilitar = false}else{djcalidadpers = ''}
         if (djorigen.length == 0) {
             djorigen = 'DJ Origen de fondos '
-            habilitar = false}
+            habilitar = false}else{djorigen = ''}
         if (habilitar){
             await pool.query('UPDATE `fideicomiso`.`users` SET `habilitado` = "SI" WHERE (`id` = ?)',[req.user.cuil_cuit])
         }
-        const faltantes = { Dni, ConstAFIP, Domicilio, Estatuto, Actaorgano, Balance, DjIVA ,Djprovision,djdatospers, djorigen }
-        console.log(faltantes)
+        const faltantes = { habil, Dni, ConstAFIP, Domicilio, Estatuto, Actaorgano, Balance, DjIVA ,Djprovision,djdatospers, djorigen }
+      
         res.render('usuario1/menu',{faltantes})
-      /* res.render('usuario1/menu', ({Recibo_sueldo},{Dni},{ConstAFIP},{Domicilio},{Estatuto},{Actaorgano},{Balance},
-       {DjIVA},{Djprovision},{djdatospers},{djcalidadpers},{djorigen},{habilitar}) )*/
+      
     
     }else { const algo ='algoo'
  
     res.render('usuario1/menu',{algo})}
 
 
-   /* res.render('usuario1/listac', { cuotas })
-   No se por que puse esto 
-    if (djorigen.length != 0) {
-        await pool.query('UPDATE users set " WHERE id = ?', [newLink, id])
-    }
- */
-
-
 })
+
+
+
+router.get('/leer/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params
+    const leida = "Si"
+    const leidaa = {leida}
+    const noti = await pool.query('SELECT * FROM notificaciones where id = ?',[id])
+    console.log(leidaa)
+
+    await pool.query('UPDATE notificaciones SET ?  where id = 2',[leidaa])
+     
+    res.render('usuario1/leer',{noti})
+})
+
 
 
 router.get("/cuotas", async (req, res) => {
@@ -95,19 +101,26 @@ router.get("/cuotas", async (req, res) => {
 
 })
 
+router.get("/notificaciones", async (req, res) => {
+
+    const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE cuil_cuit = ?', [req.user.cuil_cuit])
+    console.log(notificaciones)
+    res.render('usuario1/notificaciones',{notificaciones})
+
+})
 
 router.get("/legajo", async (req, res) => {
     const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
     if (razon[0]['razon'] == 'Empresa') {
         res.render('usuario1/datossociedad')
-    } else { res.render('') }
+    } else { res.render('usuario1/datospers') }
 })
 
 router.get("/ingresos", async (req, res) => {
     const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
     if (razon[0]['razon'] == 'Empresa') {
         res.render('usuario1/ingresose')
-    } else { res.render('') }
+    } else { res.render('usuario1/ingresosp') }
 })
 
 router.get("/infocbu", async (req, res) => {
@@ -115,7 +128,7 @@ router.get("/infocbu", async (req, res) => {
     const cbu = await pool.query('select * from cbus where cuil_cuit=?', [req.user.cuil_cuit])
     if (razon[0]['razon'] == 'Empresa') {
         res.render('usuario1/infocbu', { cbu })
-    } else { res.render('') }
+    } else { res.render('usuario1/infocbup') }
 })
 
 
@@ -123,13 +136,14 @@ router.get("/djs", async (req, res) => {
     const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
     if (razon[0]['razon'] == 'Empresa') {
         res.render('usuario1/djse')
-    } else { res.render('') }
+    } else { res.render('usuario1/djsp') }
 })
+
 router.get("/contacto", async (req, res) => {
     const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
     if (razon[0]['razon'] == 'Empresa') {
         res.render('usuario1/contacto')
-    } else { res.render('') }
+    } else { res.render('usuario1/contactop') }
 })
 
 
@@ -485,6 +499,35 @@ router.post('/edit_comp_jdorigen', async (req, res) => {
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
 })
+
+
+
+
+router.post('/edit_const_cuil', async (req, res) => {
+    const { comprobante } = req.body;
+    const cuil_cuit = req.user.cuil_cuit
+    const estado = "P"
+    const tipo = "const_cuil"
+    const id_cliente = req.user.id
+    const newr = {
+        id_cliente,
+        cuil_cuit,
+        comprobante,
+        estado,
+        tipo
+    }
+    await pool.query('INSERT INTO constancias SET ?', [newr])
+    req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+    res.redirect(`/usuario1`);
+})
+
+
+
+
+
+
+
+
 
 module.exports = router
 

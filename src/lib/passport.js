@@ -30,9 +30,10 @@ passport.use('local.signup', new LocalStrategy({
     passReqToCallback: 'true'
 }, async (req, cuil_cuit, password, done) => {
     const { nombre, mail, telefono,nro_cliente } = req.body
-    const razon = pool.query('Select razon from clientes where cuil_cuit = ?', [cuil_cuit])
+    const razon = await pool.query('Select razon from clientes where cuil_cuit = ?', [cuil_cuit])
     console.log(razon)
     const nivel = 1
+    const habilitado ='NO'
     const newUser = {
         password,
         cuil_cuit,
@@ -41,6 +42,7 @@ passport.use('local.signup', new LocalStrategy({
         razon,
         telefono,
         mail,
+        habilitado,
         nro_cliente
     }
 
@@ -59,6 +61,7 @@ passport.use('local.signup', new LocalStrategy({
         done(null, false, req.flash('message', 'error, cuil/cuit ya existente ')) // false para no avanzar
     }
 }
+
 
 ))
 passport.serializeUser((user, done) => {

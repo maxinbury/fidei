@@ -1,0 +1,69 @@
+<div class="alinear">
+  <nav id="menuizquierda">
+    <div class="encabezado">
+     
+    </div>
+
+    <ul class="list-unstyled">
+      <li><a href="/usuario1/legajo">Datos de la Persona/a></li>
+      <li><a href="/usuario1/ingresos">Ingresos declarados</a></li>
+      <li><a href="/usuario1/infocbu">CBUS declarados</a></li>
+      <li><a href="/usuario1/djs">Declaraciones Juradas</a></li>
+      <li><a href="/usuario1/contacto">Contacto</a></li>
+      <li><a href="/usuario1/">Datos adicionales</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h2>Ingresos declarados</h2>
+    <h6>Estado P= Pendiente</h6>
+    <h6>Estado A= Aprobado</h6>
+
+     {{#each cbu}}
+<div class="container m-4">
+    <div class="row">   
+        <div class="col-md-4 mk-auto">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3> {{ descripcion }}</h3>
+                    <h5>CBU Numero:{{ numero }}</h5>
+                    <h5>Estado:  {{ estado }}</h5>
+
+                    <a href="/links/clientes" class="btn btn-primary m-4">
+                         Eliminar
+                    </a>
+                    <a href="/usuario1/cbu" class="btn btn-primary m-4">
+                        Asociar
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ {{else}}
+ <div class="container m-4">
+    <div class="row">   
+        <div class="col-md-4 mk-auto">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h3>No hay CBUS Asociados</h3>
+                 
+                    <a href="/usuario1/cbu" class="btn btn-primary m-4">
+                        Asociar nuevo CBU
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ {{/each }}
+
+
+
+
+
+</div>
+
+
+</nav>

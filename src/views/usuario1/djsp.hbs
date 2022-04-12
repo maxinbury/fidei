@@ -1,0 +1,92 @@
+<div class="alinear">
+  <nav id="menuizquierda">
+    <div class="encabezado">
+ 
+    </div>
+
+    <ul class="list-unstyled">
+      <li><a href="/usuario1/legajo">Datos de la Persona</a></li>
+      <li><a href="/usuario1/ingresos">Ingresos declarados</a></li>
+      <li><a href="/usuario1/infocbu">CBUS declarados</a></li>
+      <li><a href="/usuario1/djs">Declaraciones Juradas</a></li>
+      <li><a href="/usuario1/contacto">Contacto</a></li>
+      <li><a href="/usuario1/">Datos adicionales</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h2>Declaraciones juradas</h2>
+
+    <form action="/usuario1/edit_comp_djdatospers" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Declaracion jurada datos personales</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+
+  <form action="/usuario1/edit_comp_djcalidadpers" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Declaracion jurada Calidad de persona</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+    <form action="/usuario1/edit_comp_jdorigen" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Declaracion jurada origen </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+
+
+
+
+</div>
+
+
+</nav>

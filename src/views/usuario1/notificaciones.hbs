@@ -1,0 +1,30 @@
+<table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Descripcion</th>
+        <th scope="col">Leida</th>
+
+      </tr>
+    </thead>
+    <tbody>
+     
+      <tr>
+        {{#each notificaciones}}
+        <th scope="row">{{id}}</th>
+        <td> {{descripcion}}</td>
+        <td> {{leida}}</td>
+
+        <td><a href="/usuario1/leer/{{id}}" class=" btn btn-secondary"> Ver </a></td>
+
+      </tr>
+      {{else}}
+      <div class="col-md-4 mx-auto">
+        <div class="card card-body text-center">
+          <p> No hay notificaciones </p>
+          <a href="/cuotas/add"> Añadir</a>
+        </div>
+      </div>
+      {{/each }}
+    </tbody>
+  </table>

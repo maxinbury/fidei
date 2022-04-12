@@ -61,7 +61,7 @@ router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
         req.flash('success', 'Guardado correctamente')
         res.redirect('/links/clientes')
     }
-
+    
 })
 
 //borrar de lista
