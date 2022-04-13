@@ -1,155 +1,277 @@
-{{#if faltantes.habil }}
-<div class="alert alert-primary" role="alert">
-  <i class="fa-solid fa-circle-info"></i> Aun te quedan confirmar los siguientes comprobantes:
-  {{faltantes.Recibo_sueldo}} {{faltantes.Dni}} {{faltantes.ConstAFIP}} {{faltantes.Domicilio}} {{faltantes.Estatuto}}
-  {{faltantes.Actaorgano}} {{faltantes.Balance}}
-  {{faltantes.DjIVA}} {{faltantes.Djprovision}} {{faltantes.djdatospers}} {{faltantes.djcalidadpers}}
-  {{faltantes.djorigen}} <a href="/usuario1/legajo" class="alert-link">ir a Legajos</a>
-</div>
-{{/if}}
+<body background="../img/marcas.png.png">
 
-
-<div>
-  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-      <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-      <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-
-      <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-
-    </ol>
-
-    <div class="carousel-inner">
-
-      <div class="carousel-item active">
-        <div class="titulocarrusel">
-          <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
-          <div class="carousel-caption d-none d-md-block">
-            {{!-- {{#each faltantes }} --}}
-
-            <h5>Atencion!</h5>
-            <p>Aun te quedan confirmar los siguientes comprobantes: </p>
-            <h6>{{faltantes.Recibo_sueldo}} {{faltantes.Dni}} {{faltantes.ConstAFIP}} {{faltantes.djorigen}} </h6>
-            <h6>{{faltantes.Domicilio}} {{faltantes.Estatuto}} {{faltantes.Actaorgano}} {{faltantes.djcalidadpers}}</h6>
-            <h6> {{faltantes.Balance}} {{faltantes.DjIVA}} {{faltantes.Djprovision}} {{faltantes.djdatospers}}</h6>
-
-
-          </div>
-        </div>
-
-      </div>
-
-
-
-      <div class="carousel-item">
-        <div class="titulocarrusel">
-          <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Asocia un CBU</h5>
-            <p>Recuerda que solo se permiten CBUs de familiares</p>
-            <a href="/usuario1/cbu" class="alert-link">ir a CBUS</a>
-
-          </div>
-        </div>
-      </div>
-
-
-      <div class="carousel-item">
-        <div class="titulocarrusel">
-          <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Informa unanueva transferencia! </h5>
-            <a href="/usuario1/subir" class="alert-link " style="font-weight: bold color:blue">ir a informar
-              transferencias</a>
-              <br>
-              <br>
-          </div>
-        </div>
-      </div>
-    </div>
-    <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </button>
+  {{#if faltantes.habil }}
+  <div class="alert alert-primary" role="alert">
+    <i class="fa-solid fa-circle-info"></i> Aun te quedan confirmar los siguientes comprobantes:
+    {{faltantes.Recibo_sueldo}} {{faltantes.Dni}} {{faltantes.ConstAFIP}} {{faltantes.Domicilio}} {{faltantes.Estatuto}}
+    {{faltantes.Actaorgano}} {{faltantes.Balance}}
+    {{faltantes.DjIVA}} {{faltantes.Djprovision}} {{faltantes.djdatospers}} {{faltantes.djcalidadpers}}
+    {{faltantes.djorigen}} <a href="/usuario1/legajo" class="alert-link">ir a Legajos</a>
   </div>
-</div>
+  {{/if}}
 
 
+  <div>
+    <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+        <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
 
-<div class="menu_usuario1">
-  <div class="row">
-    <div class="col-md-30 mk-auto">
-      <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
-         <a href="/usuario1/notificaciones/" class="btn btn-success m-4">Notificaciones <i class="fa-regular fa-envelope"></i></a>
-          </a>
-        <div class="card-body">
-          <h3>Bienvenido {{ user.nombre }}</h3>
-          <h4>{{ user.apellido }}</h4>
-          <a href="/usuario1/cuotas/" class="btn btn-primary m-4">Consulta de cuotas <i class="fa-solid fa-circle-info"></i></a>
-          </a>
-          <a href="/usuario1/subir" class="btn btn-primary m-4">Informe de transferencias <i class="fa-solid fa-money-bill-transfer"></i></a>
+        <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
 
-          <a href="/usuario1/legajo" class="btn btn-primary m-4">Legajo <i class="fa-solid fa-address-card"></i></a>
+      </ol>
 
-          <a href="/usuario1/cbu" class="btn btn-primary m-4"> Asociar CBU <i class="fa-solid fa-building-columns"></i></a>
-          
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+          <div class="titulocarrusel">
+            <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              {{!-- {{#each faltantes }} --}}
+
+              <h5>Atencion!</h5>
+              <p>Aun te quedan confirmar los siguientes comprobantes: </p>
+              <h6>{{faltantes.Recibo_sueldo}} {{faltantes.Dni}} {{faltantes.ConstAFIP}} {{faltantes.djorigen}} </h6>
+              <h6>{{faltantes.Domicilio}} {{faltantes.Estatuto}} {{faltantes.Actaorgano}} {{faltantes.djcalidadpers}}
+              </h6>
+              <h6> {{faltantes.Balance}} {{faltantes.DjIVA}} {{faltantes.Djprovision}} {{faltantes.djdatospers}}</h6>
 
 
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    
-<footer class="w-100 py-4 flex-shrink-0">
-        <div class="container py-4">
-            <div class="row gy-4 gx-5">
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="h1 text-white">Datos confidenciales</h5>
-                    <p class="small text-muted">Todos los datos son privados y declaraciones identificadas</p>
-                    <p class="small text-muted mb-0">&copy; Copyrights. All rights reserved. <a class="text-primary"
-                            href="#">fideicomisosc.com</a></p>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <h5 class="text-white mb-3">Accesos </h5>
-                    <ul class="list-unstyled text-muted">
-                        <li><a href="/usuario1/legajo">Legajo</a></li>
-                        <li><a href="/usuario1/cbu">Asociar CBU</a></li>
-                        <li><a href="#">Get started</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <h5 class="text-white mb-3">Quick links</h5>
-                    <ul class="list-unstyled text-muted">
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Get started</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white mb-3">Consultas personalizadas</h5>
-                    <p class="small text-muted">Evianos tu consulta </p>
-                    <form action="#">
-                        <div class="input-group mb-3">
-                            <input class="form-control" type="text" placeholder="Enviar Sugerencia"
-                                aria-label="Recipient's username" aria-describedby="button-addon2">
-                            <button class="btn btn-primary" id="button-addon2" type="button"><i
-                                    class="fas fa-paper-plane"></i></button>
-                        </div>
-                    </form>
-                </div>
             </div>
+          </div>
+
         </div>
-    </footer>
+
+
+
+        <div class="carousel-item">
+          <div class="titulocarrusel">
+            <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Asocia un CBU</h5>
+              <p>Recuerda que solo se permiten CBUs de familiares</p>
+              <a href="/usuario1/cbu" class="alert-link">ir a CBUS</a>
+
+            </div>
+          </div>
+        </div>
+
+
+        <div class="carousel-item">
+          <div class="titulocarrusel">
+            <img src="../img/marcas.png.png" style="width: 25%" class="d-block w-25" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Informa unanueva transferencia! </h5>
+              <a href="/usuario1/subir" class="alert-link " style="font-weight: bold color:blue">ir a informar
+                transferencias</a>
+              <br>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </button>
+    </div>
+  </div>
+
+  <a href="/usuario1/notificaciones/" class="btn btn-success m-4">Notificaciones <i
+      class="fa-regular fa-envelope"></i></a>
+
+
+  <div class="menu_usuario1">
+
+
+    <div class="subusuario1">
+      <div class="row">
+        <div class="col-md-30 mk-auto">
+          <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
+
+            </a>
+            <div class="card-body">
+              <h3>Consulta tus cuotas</h3>
+              <p>Ingresa para ver detalles de las cuotas </p>
+              <br>
+              <a href="/usuario1/cuotas/" class="btn btn-primary m-4">Consulta de cuotas <i
+                  class="fa-solid fa-circle-info"></i></a>
+              </a>
+              <br>
+
+
+
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="subusuario1">
+      <div class="row">
+        <div class="col-md-30 mk-auto">
+          <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
+
+
+            <div class="card-body">
+              <h3>Ir a Transferencias</h3>
+              <p>Notifica tus pagos y envía el comprobante</p>
+              <br>
+
+              <a href="/usuario1/subir" class="btn btn-primary m-4">Informe de transferencias <i
+                  class="fa-solid fa-money-bill-transfer"></i></a>
+
+
+
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="subusuario1">
+      <div class="row">
+        <div class="col-md-30 mk-auto">
+          <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
+
+            </a>
+            <div class="card-body">
+              <h3>Completa tu Legajo</h3>
+              <p>Completa el legajo para habilitar los pagos</p>
+              <br>
+
+              <a href="/usuario1/legajo" class="btn btn-primary m-4">Legajo <i class="fa-solid fa-address-card"></i></a>
+
+
+
+
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="subusuario1">
+      <div class="row">
+        <div class="col-md-30 mk-auto">
+          <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
+
+            </a>
+            <div class="card-body">
+              <h3>Asocia un CBU</h3>
+              <p>Recuerda que los CBUS de pagos deben estar declarados</p>
+
+
+
+              <a href="/usuario1/cbu" class="btn btn-primary m-4"> Asociar CBU <i
+                  class="fa-solid fa-building-columns"></i></a>
+
+
+
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+
+
+
+
+
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  {{!-- original
+  <div class="menu_usuario1">
+    <div class="row">
+      <div class="col-md-30 mk-auto">
+        <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
+          <a href="/usuario1/notificaciones/" class="btn btn-success m-4">Notificaciones <i
+              class="fa-regular fa-envelope"></i></a>
+          </a>
+          <div class="card-body">
+            <h3>Bienvenido {{ user.nombre }}</h3>
+            <h4>{{ user.apellido }}</h4>
+            <a href="/usuario1/cuotas/" class="btn btn-primary m-4">Consulta de cuotas <i
+                class="fa-solid fa-circle-info"></i></a>
+            </a>
+            <a href="/usuario1/subir" class="btn btn-primary m-4">Informe de transferencias <i
+                class="fa-solid fa-money-bill-transfer"></i></a>
+
+            <a href="/usuario1/legajo" class="btn btn-primary m-4">Legajo <i class="fa-solid fa-address-card"></i></a>
+
+            <a href="/usuario1/cbu" class="btn btn-primary m-4"> Asociar CBU <i
+                class="fa-solid fa-building-columns"></i></a>
+
+
+
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> --}}
+
+
+  <footer class="w-100 py-4 flex-shrink-0">
+    <div class="container py-4">
+      <div class="row gy-4 gx-5">
+        <div class="col-lg-4 col-md-6">
+          <h5 class="h1 text-white">Datos confidenciales</h5>
+          <p class="small text-muted">Todos los datos son privados y declaraciones identificadas</p>
+          <p class="small text-muted mb-0">&copy; Copyrights. All rights reserved. <a class="text-primary"
+              href="#">fideicomisosc.com</a></p>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <h5 class="text-white mb-3">Accesos </h5>
+          <ul class="list-unstyled text-muted">
+            <li><a href="/usuario1/legajo">Legajo</a></li>
+            <li><a href="/usuario1/cbu">Asociar CBU</a></li>
+            <li><a href="#">Get started</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <h5 class="text-white mb-3">No sabes como pagar?</h5>
+          <ul class="list-unstyled text-muted">
+            <li><a href="#">Ir a preguntas frecuentes</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <h5 class="text-white mb-3">Consultas personalizadas</h5>
+          <p class="small text-muted">Evianos tu consulta </p>
+          <form action="#">
+            <div class="input-group mb-3">
+              <input class="form-control" type="text" placeholder="Enviar Sugerencia" aria-label="Recipient's username"
+                aria-describedby="button-addon2">
+              <button class="btn btn-primary" id="button-addon2" type="button"><i
+                  class="fas fa-paper-plane"></i></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>

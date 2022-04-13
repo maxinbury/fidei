@@ -29,6 +29,7 @@ passport.use('local.signup', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: 'true'
 }, async (req, cuil_cuit, password, done) => {
+    console.log("Hola")
     const { nombre, mail, telefono,nro_cliente } = req.body
     const razon = await pool.query('Select razon from clientes where cuil_cuit = ?', [cuil_cuit])
     console.log(razon)

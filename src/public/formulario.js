@@ -7,7 +7,7 @@ const expresiones = {
 	password: /^.{4,12}$/, // 4 a 12 digitos.
 	correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
 	telefono: /^\d{7,14}$/, // 7 a 14 numeros.,
-	cuil_cuit:/^\d{8,11}$/,
+	cuil_cuit:/^\d{11,11}$/,
 	//cuil_cuit: /^([0-9]{11}|[0-9]{2}-[0-9]{8}-[0-9]{1})$/g // 7 a 14 numeros.,
 }
 
@@ -108,13 +108,15 @@ const validarPassword2 = () => {
 	}
 }
 
-inputs.forEach((input) => {
-	input.addEventListener('keyup', validarFormulario);
+inputs.forEach((input) => {  // para que al sacar click se verifique
+	input.addEventListener('keyup', validarFormulario); 
 	input.addEventListener('blur', validarFormulario);
 });
 
 formulario.addEventListener('submit', (e) => {
-	e.preventDefault();
+	e.preventDefault(); //PARA QUENO ENVIE 
+
+
 
 	const terminos = document.getElementById('terminos');
 	if (campos.nombre && campos.password && campos.correo && campos.telefono && terminos.checked) {
@@ -131,4 +133,15 @@ formulario.addEventListener('submit', (e) => {
 	} else {
 		document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
 	}
+
+
+
+
+
+
+
+
+
+
+
 });

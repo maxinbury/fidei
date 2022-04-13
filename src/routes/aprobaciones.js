@@ -9,7 +9,7 @@ const { isLevel2 } = require('../lib/authnivel2')
 
 router.get('/', isLoggedIn, isLevel2, async (req, res) => {
     const pendientes = await pool.query("Select * from constancias where estado = 'P'")
-    console.log(pendientes)
+   
     res.render('aprobaciones/aprobaciones', { pendientes })
 
 })
