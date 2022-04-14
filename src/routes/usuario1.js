@@ -81,12 +81,19 @@ router.get('/', isLoggedIn, async (req, res) => {
 
 router.get('/leer/:id', isLoggedIn, async (req, res) => {
     const { id } = req.params
-    const leida = "Si"
-    const leidaa = {leida}
-    const noti = await pool.query('SELECT * FROM notificaciones where id = ?',[id])
-    console.log(leidaa)
 
-    await pool.query('UPDATE notificaciones SET ?  where id = 2',[leidaa])
+  
+    const noti = await pool.query('SELECT * FROM notificaciones where id = ?',[id])
+   
+
+    console.log(noti[0]['leida'])
+ 
+    console.log(noti[0])
+
+    if (noti[0] !="Si"){
+    await pool.query('UPDATE notificaciones SET leida="Si"  where id = ?',[id])
+
+    }
      
     res.render('usuario1/leer',{noti})
 })
@@ -104,7 +111,7 @@ router.get("/cuotas", async (req, res) => {
 router.get("/notificaciones", async (req, res) => {
 
     const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE cuil_cuit = ?', [req.user.cuil_cuit])
-    console.log(notificaciones)
+  
     res.render('usuario1/notificaciones',{notificaciones})
 
 })

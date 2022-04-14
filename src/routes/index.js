@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 
 
+
+
 /// borrar despues
 const XLSX = require('xlsx')
 const pool = require('../database')
@@ -31,6 +33,13 @@ router.get('/', async (req, res) => {
   }
   */
 
+  const  a = 1
+  const b = 0
+  console.log(a/b)
+
+
+
 })
+
 
 module.exports = router

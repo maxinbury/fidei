@@ -82,6 +82,7 @@ router.post('/edit/:id', isLevel2, async (req, res) => {
         Direccion
     }
     await pool.query('UPDATE clientes set ? WHERE id = ?', [newLink, id])
+    
     req.flash('success', 'Cliente modificado correctamente')
     res.redirect('/links')
 })

@@ -41,20 +41,13 @@
       <td>{{tipo}}</td>
       <td>{{cuil_cuit}}</td>
       <td>{{comprobante}}</td> 
-      <script>
-        
-            let file = {{comprobante}} //data[0].IMAGEN;
-            res.setHeader("Content-Length", file.length);
-            res.setHeader("Content-Type", "image/jpeg; charset=UTF-8");
-            res.write(file, "binary");
-            res.end();
-            console.log("hola")
-      
-        
-      </script>
+ 
+
       <td> <div class="badge badge-primary text-wrap" >{{estado}}</div></td>
-      <td><a href="/aprobaciones/aprobar/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
+      <td><a href="/aprobaciones/aprobarcomp/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
+      <td><a href="/aprobaciones/rechazarcomp/{{id}}" class=" btn btn-danger"> Rechazar</a></td>
     </tr>   
+    
     {{else}}
         <div class="col-md-4 mx-auto">
             <div class="card card-body text-center">

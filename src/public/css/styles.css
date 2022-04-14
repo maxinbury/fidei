@@ -72,28 +72,35 @@ main {
 body {
     background-color: #a0a7a0 ;
    /*  background: url('../img/fondos-maniobra-circulantis.jpg');
-    background-position: center center;
+    background-position: center center;*/
     background-repeat: no-repeat;
-    background-size: auto 90%; */
+    background-size: auto 90%; 
     font-family: 'Oswald', sans-serif;
     overflow: auto
 }
+
 .index {
-    width: 100vw;
-    height: 100vh;
+	background: url('/img/fondo.jpg');
+    width: 100%;
+    height: 100%;
+	
 }
+
+
 .masthead {
     color: white;
     min-height: 30rem;
     width: 100%;
     height: 100%;
     padding-top: 8rem;
-    background: url('/img/fondo.jpg');
+   /* background: url('/img/fondo.jpg');*/
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
 
 }
+
+/* background: url('/img/fondo.jpg');*/
 .masthead h1 {
     font-size: 4rem;
     margin:0;
@@ -129,6 +136,12 @@ body {
 	padding-right:1rem
 
 }
+.doscolumnas{
+	display: grid;
+	grid-template-columns: 1fr 1fr
+}
+
+
 
 .menu_usuario1{
 	display:grid;
