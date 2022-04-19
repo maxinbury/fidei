@@ -41,14 +41,16 @@ router.get("/app/:app", isLoggedIn, isLevel2, async (req, res) => {
 
 
 router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
-    const { Nombre, Apellido, Direccion, cuil_cuit } = req.body;
+    const { Nombre, Apellido, Direccion, cuil_cuit, razon } = req.body;
     const newLink = {
         Nombre,
         Apellido,
+        razon,
         Direccion,
         cuil_cuit
         //user_id: req.user.id
     };
+
 
     const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
 

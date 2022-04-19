@@ -14,9 +14,15 @@
       <tr>
         <th scope="col">#</th>
         <th scope="col">Cuota</th>
-        <th scope="col">Saldo Inicial</th>
+        
+
+        <th scope="col">Saldo cierre</th>      
+        <th scope="col" style="color: darkorange;">Amortizacion</th>
+        <th scope="col" style="color: darkorange;">Base de calculo</th>
+        <th scope="col" style="color: darkorange;">ICC</th>
+        <th scope="col" style="color: darkorange;">Ajuste ICC</th>
+        <th scope="col" style="color: darkorange;">Cuota con Ajuste</th>
         <th scope="col">Saldo cierre</th>
-        <th scope="col">Dni Cliente</th>
     
 
 
@@ -24,13 +30,20 @@
     </thead>
     <tbody>
       <a href="/cuotas/add" class=" btn btn-primary"> Añadir</a></td>
-       <a href="/cuotas/ampliar" class=" btn btn-primary"> Ampliar</a></td>
+       <a href="/cuotas/" class=" btn btn-primary"> Reducir</a></td>
       <tr>
         {{#each cuotas}}
         <th scope="row">{{id}}</th>
         <td> {{nro_cuota}}</td>
         <td> {{saldo_inicial}}</td>
+        <td> {{Amortizacion}}</td>
+        <td> {{Base_calculo}}</td>
+        <td> {{ICC}}</td>
+        <td> {{Ajuste_ICC}}</td>
+        <td>{{cuota_con_ajuste}}</td>
         <td>{{saldo_cierre}}</td>
+
+        
         <td>{{cuil_cuit}}</td>
 
 

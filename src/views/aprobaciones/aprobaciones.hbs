@@ -40,8 +40,16 @@
       <th scope="row">{{id}}</th>
       <td>{{tipo}}</td>
       <td>{{cuil_cuit}}</td>
-      <td>{{comprobante}}</td> 
- 
+      <td>
+          <a href="{{comprobante}}">algoool </a> 
+      <a href="a1">algo </a>
+      <script>
+          const a1 =document.getElementById("a1")
+            const bloob1 = new Blob(["asd","as"],{type:"text/plain"} )
+            a1.href =  URL.createObjectURL(blob1)
+      </script>
+
+ </td> 
 
       <td> <div class="badge badge-primary text-wrap" >{{estado}}</div></td>
       <td><a href="/aprobaciones/aprobarcomp/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
@@ -59,3 +67,4 @@
         {{/each }}
   </tbody>
 </table>
+

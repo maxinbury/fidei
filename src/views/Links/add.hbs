@@ -1,31 +1,40 @@
 <div class="container p-4">
     <div class="row">
-        <div class = "col-md-4 ">
+        <div class="col-md-4 ">
             <div class="card mx-4 x-auto ">
                 <div class="card-body">
                     <form action="/links/add" method="POST">
-                    <label for="nombre" class="formulario__label">Nombre</label>
+                        <label for="nombre" class="formulario__label">Nombre</label>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="Nombre"  placeholder="Nombre" autofocus> {{!--  autofocus: aparece ya seleccionado el cursor para ingresar form group para separar     --}}                            
+                            <input type="text" class="form-control" name="Nombre" placeholder="Nombre" autofocus> {{!--
+                            autofocus: aparece ya seleccionado el cursor para ingresar form group para separar --}}
                         </div>
                         <label for="nombre" class="formulario__label">Apellido</label>
                         <div class="form-group">
-                            <input type="text" name="Apellido" class="form-control" placeholder="Apellido">   
-                        </div>    
-                        <label for="nombre" class="formulario__label">Cuil/Cuit</label>             
+                            <input type="text" name="Apellido" class="form-control" placeholder="Apellido">
+                        </div>
+                        <label for="nombre" class="formulario__label">Cuil/Cuit</label>
                         <div class="form-group">
-                            <input type="text" name="cuil_cuit" class="form-control" placeholder="cuil_cuit">  
+                            <input type="text" name="cuil_cuit" class="form-control" placeholder="cuil_cuit">
+                        </div>
+                        <label for="correo" class="formulario__label">Razon</label>
+                        <div class="form-group">
+                            <label for="validationTooltip04">Razon </label>
+                            <select class="custom-select" id="validationTooltip04" name="razon" required>
+                                <option>Empresa</option>
+                                <option>Persona</option>
+                            </select>
                         </div>
                         <label for="nombre" class="formulario__label">Direccion </label>
                         <div class="form-group">
-                            <input type="text" name="Direccion" class="form-control" placeholder="Direccion">   
-                        </div> 
+                            <input type="text" name="Direccion" class="form-control" placeholder="Direccion">
+                        </div>
                         <div class="form-group">
-                            <button class="tbn btn-primary btn-block"> Guardar</button>         
+                            <button class="tbn btn-primary btn-block"> Guardar</button>
                         </div>
                     </form>
-                </card-body>
+                    </card-body>
+                </div>
             </div>
         </div>
     </div>
-</div>

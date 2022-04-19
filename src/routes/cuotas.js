@@ -15,6 +15,11 @@ router.get("/", isLevel2, isLoggedIn, async (req, res) => {
     res.render('cuotas/lista', { cuotas })
 })
 
+router.get("/ampliar", isLevel2, isLoggedIn, async (req, res) => {
+    const cuotas = await pool.query('SELECT * FROM cuotas ')
+    res.render('cuotas/listaamp', { cuotas })
+})
+
 router.get('/add', isLoggedIn, (req, res) => {
     res.render('cuotas/add')
 
@@ -27,7 +32,7 @@ router.post('/add', async (req, res) => {
         saldo_cierre,
         cuil_cuit
     };
-    console.log(newLink);
+
     await pool.query('INSERT INTO cuotas SET ?', [newLink]);
 
     req.flash('success', 'Guardado correctamente')
@@ -70,6 +75,34 @@ router.post('/addaut', async (req, res) => {
         req.flash('message', 'Error cliente no existe')
         res.redirect('/cuotas/add')
     }
+})
+
+
+router.get("/edit/:id", isLoggedIn, async (req, res) => {
+    const id = req.params.id
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
+    res.render('cuotas/edit', { cuotas })
+})
+
+
+
+router.post('/editar', async (req, res, next) => {
+    const { saldo_inicial, Amortizacion, Base_calculo, ICC, Ajuste_ICC ,cuota_con_ajuste , saldo_cierre, id } = req.body;
+        console.log(Amortizacion)
+        console.log(ICC)
+    const cuota = {
+        saldo_inicial,
+        Amortizacion,
+        Base_calculo,
+        ICC,
+        Ajuste_ICC,
+        cuota_con_ajuste,
+        saldo_cierre
+    }
+
+    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
+    req.flash('success', 'Guardado correctamente')
+    res.redirect(`/cuotas`);
 })
 
 

@@ -85,6 +85,34 @@ router.post("/rechazo", isLoggedIn, async (req, res) => {
     res.redirect('/aprobaciones/')
 
 })
+
+
+router.get('/rechazarcbu/:id', isLoggedIn, async (req, res) => {
+    const { id } = req.params
+
+    const pendiente = await pool.query("Select * from cbus where id=?",[id])
+
+    
+    res.render('aprobaciones/rechazarcbu', {pendiente})
+ 
+})
+
+router.post("/rechazocbu", isLoggedIn, async (req, res) => {
+    const { id, asunto, cuil_cuit, descripcion, nombre  } = req.body;
+    console.log(id)
+    
+    await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["R", id])
+   
+   leida = "No"
+    const noti ={ cuil_cuit,
+        descripcion,
+        asunto,
+       leida}
+       await pool.query('INSERT INTO notificaciones set ?',[noti]) 
+
+    res.redirect('/aprobaciones/')
+
+})
    /*
     const idaux = await pool.query('SELECT id_cliente FROM constancias WHERE id = ?',[id])
         console.log(idaux[0]['id_cliente'])

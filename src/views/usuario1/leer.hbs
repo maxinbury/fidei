@@ -1,20 +1,22 @@
 
-<div class="menu_usuario1">
+<div class="container">
   <div class="row">
     <div class="col-md-30 mk-auto">
       <div class="card text-center " style=" background-color: rgb(248, 245, 252)">
          <a href="/usuario1/notificaciones/" class="btn btn-success m-4">Notificaciones <i class="fa-regular fa-envelope"></i></a>
           </a>
-
+          {{#each noti}}
           <div class="card-body">
-          <h3>{{noti.descripcion}}</h3>
-          <h4>{{ user.apellido }}</h4>
+          <h3>{{asunto }}</h3>
+          <h4>{{ descripcion}}</h4>
 
-
+          {{/each}}
           </a>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+ <a href="/usuario1/notificaciones/" class="btn btn-success m-4">ATRAS <i class="fa-regular fa-envelope"></i></a>
 

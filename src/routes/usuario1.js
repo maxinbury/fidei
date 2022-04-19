@@ -86,9 +86,8 @@ router.get('/leer/:id', isLoggedIn, async (req, res) => {
     const noti = await pool.query('SELECT * FROM notificaciones where id = ?',[id])
    
 
-    console.log(noti[0]['leida'])
- 
-    console.log(noti[0])
+
+    
 
     if (noti[0] !="Si"){
     await pool.query('UPDATE notificaciones SET leida="Si"  where id = ?',[id])
@@ -240,6 +239,10 @@ router.post('/edit_tel', async (req, res) => {
 
 router.post('/edit_correo', async (req, res) => {
     const { correo } = req.body;
+
+    
+  if (comprobante.length > 0) {
+
     const newLink = {
         correo
     }
@@ -248,12 +251,23 @@ router.post('/edit_correo', async (req, res) => {
     await pool.query('UPDATE users set ? WHERE id = ?', [newLink, id])
     req.flash('success', 'Guardado correctamente')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que ingresar un mail ')
+       res.redirect('/usuario1/legajo')}
+
+
+  
 })
 
 //VER
 router.post('/edit_comp_recibo', async (req, res) => {
     const { comprobante } = req.body;
     console.log(comprobante)
+    
+  if (comprobante.length > 0) {
+
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Recibo_sueldo"
@@ -268,6 +282,13 @@ router.post('/edit_comp_recibo', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+  
 })
 
 
@@ -275,43 +296,65 @@ router.post('/edit_comp_recibo', async (req, res) => {
 
 router.post('/edit_comp_dni', async (req, res) => {
     const { comprobante } = req.body;
-    const cuil_cuit = req.user.cuil_cuit
-    const estado = "P"
-    const tipo = "Dni"
-    const id_cliente = req.user.id
-    const newr = {
-        id_cliente,
-        cuil_cuit,
-        comprobante,
-        estado,
-        tipo
+    if (comprobante.length > 0) {
+        const cuil_cuit = req.user.cuil_cuit
+        const estado = "P"
+        const tipo = "Dni"
+        const id_cliente = req.user.id
+        const newr = {
+            id_cliente,
+            cuil_cuit,
+            comprobante,
+            estado,
+            tipo
+        }
+        await pool.query('INSERT INTO constancias SET ?', [newr])
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1/legajo`);
+       
+
+
+    } else {
+        req.flash('message', 'Error, Tienes que subir un comprobante ')
+        res.redirect('/usuario1/legajo')
     }
-    await pool.query('INSERT INTO constancias SET ?', [newr])
-    req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-    res.redirect(`/usuario1`);
+
+
+
+  
 })
 
 router.post('/edit_comp_afip', async (req, res) => {
     const { comprobante } = req.body;
-    const cuil_cuit = req.user.cuil_cuit
-    const estado = "P"
-    const tipo = "ConstAFIP"
-    const id_cliente = req.user.id
-    const newr = {
-        id_cliente,
-        cuil_cuit,
-        comprobante,
-        estado,
-        tipo
-    }
-    await pool.query('INSERT INTO constancias SET ?', [newr])
-    req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-    res.redirect(`/usuario1`);
+
+    if (comprobante.length > 0) {
+        const cuil_cuit = req.user.cuil_cuit
+        const estado = "P"
+        const tipo = "ConstAFIP"
+        const id_cliente = req.user.id
+        const newr = {
+            id_cliente,
+            cuil_cuit,
+            comprobante,
+            estado,
+            tipo
+        }
+        await pool.query('INSERT INTO constancias SET ?', [newr])
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1`);
+
+    } else {
+           req.flash('message', 'Error, Tienes que subir un comprobante ')
+           res.redirect('/usuario1/legajo')}
+
+   
 })
 
 
 router.post('/edit_comp_domicilio', async (req, res) => {
     const { comprobante, descripcion } = req.body;
+    
+  if (comprobante.length > 0 ||descripcion.length > 0 ) {
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Domicilio"
@@ -327,10 +370,20 @@ router.post('/edit_comp_domicilio', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+
+
 })
 
 router.post('/edit_comp_estatuto', async (req, res) => {
     const { comprobante } = req.body;
+    
+  if (comprobante.length > 0) {
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Estatuto"
@@ -345,11 +398,20 @@ router.post('/edit_comp_estatuto', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+   
 })
 
 
 router.post('/edit_comp_acta', async (req, res) => {
     const { comprobante } = req.body;
+    
+    
+  if (comprobante.length > 0) {
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "Actaorgano"
@@ -364,6 +426,14 @@ router.post('/edit_comp_acta', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+
+    
 })
 
 
@@ -453,6 +523,8 @@ router.post('/edit_comp_djpagosprov', async (req, res) => {
 
 router.post('/edit_comp_djdatospers', async (req, res) => {
     const { comprobante } = req.body;
+    
+  if (comprobante.length > 0) {
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "djdatospers"
@@ -467,11 +539,23 @@ router.post('/edit_comp_djdatospers', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+    
 })
 
 
 router.post('/edit_comp_djcalidadpers', async (req, res) => {
     const { comprobante } = req.body;
+
+    
+  if (comprobante.length > 0) {
+
+      
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "djcalidadpers"
@@ -486,11 +570,23 @@ router.post('/edit_comp_djcalidadpers', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+
+
 })
 
 
 router.post('/edit_comp_jdorigen', async (req, res) => {
     const { comprobante } = req.body;
+
+    
+  if (comprobante.length > 0) {
+
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "djorigen"
@@ -505,6 +601,13 @@ router.post('/edit_comp_jdorigen', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+    
 })
 
 
@@ -512,6 +615,10 @@ router.post('/edit_comp_jdorigen', async (req, res) => {
 
 router.post('/edit_const_cuil', async (req, res) => {
     const { comprobante } = req.body;
+
+    
+  if (comprobante.length > 0) {
+
     const cuil_cuit = req.user.cuil_cuit
     const estado = "P"
     const tipo = "const_cuil"
@@ -526,6 +633,14 @@ router.post('/edit_const_cuil', async (req, res) => {
     await pool.query('INSERT INTO constancias SET ?', [newr])
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     res.redirect(`/usuario1`);
+
+
+} else {
+       req.flash('message', 'Error, Tienes que subir un comprobante ')
+       res.redirect('/usuario1/legajo')}
+
+
+    
 })
 
 

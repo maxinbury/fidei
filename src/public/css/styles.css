@@ -78,6 +78,12 @@ body {
     font-family: 'Oswald', sans-serif;
     overflow: auto
 }
+.bodymenu{
+	background: url('../img/fondomenu.jpeg');
+	display: grid;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
 
 .index {
 	background: url('/img/fondo.jpg');
@@ -141,7 +147,10 @@ body {
 	grid-template-columns: 1fr 1fr
 }
 
-
+.editcuota{
+	display:grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 
+}
 
 .menu_usuario1{
 	display:grid;
@@ -346,6 +355,9 @@ a {
 	background: #e8ebee;
   }
   
+
+ 
+
   footer {
 	background: #212529;
   }
