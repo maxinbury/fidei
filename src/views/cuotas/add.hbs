@@ -50,15 +50,24 @@
                     <div class="card-body">
                         <form action="/cuotas/addaut" method="POST">
                             <div class="form-group">
+                                <label for="exampleFormControlFile1">Cuil_cuit</label>
                                 <input type="integer" name="cuil_cuit" class="form-control"
                                     placeholder="cuil_cuit cliente">
                             </div>
                             <div class="form-group">
+                                <label for="exampleFormControlFile1">fecha</label>
+                                <input type="integer" class="form-control" name="mes" placeholder="Mes"
+                                    > 
+                                     <input type="integer" class="form-control" name="anio" placeholder="Año"
+                                    >
+                            </div>
+                             <div class="form-group">
+                                 <label for="exampleFormControlFile1">Monto Total</label>
                                 <input type="integer" class="form-control" name="monto_total" placeholder="monto_total"
-                                    autofocus> {{!-- autofocus: aparece ya seleccionado el
-                                cursor para ingresar form group para separar --}}
+                                    > 
                             </div>
                             <div class="form-group">
+                                 <label for="exampleFormControlFile1">Cantidad Cuotas</label>
                                 <input type="integer" name="cantidad_cuotas" class="form-control"
                                     placeholder="cantidad_cuotas">
                             </div>

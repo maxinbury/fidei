@@ -173,7 +173,7 @@ router.get("/subir", (req, res) => {
 */
 router.post('/realizar', async (req, res) => {
     const { monto, comprobante } = req.body;
-    const dni = req.user.dni
+    const cuil_cuit = req.user.dni
     var estado = 'P'
 
     const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
@@ -187,7 +187,7 @@ router.post('/realizar', async (req, res) => {
     console.log(palabra.includes('LEY'))
 
     for (const property in dataExcel) {
-        if ((dataExcel[property]['Descripción']).includes(dni)) {
+        if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
             estado = 'A'
         }
 
@@ -195,7 +195,7 @@ router.post('/realizar', async (req, res) => {
 
     const newLink = {
         monto,
-        dni,
+        cuil_cuit,
         estado,
         comprobante
     };

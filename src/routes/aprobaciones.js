@@ -71,12 +71,13 @@ router.get('/rechazarcomp/:id', isLoggedIn, async (req, res) => {
 
 router.post("/rechazo", isLoggedIn, async (req, res) => {
     const { id, asunto, cuil_cuit, descripcion, nombre  } = req.body;
-    console.log(id)
+    console.log(asunto)
     
     await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["R", id])
    
    leida = "No"
-    const noti ={ cuil_cuit,
+    const noti ={ 
+        cuil_cuit,
         descripcion,
         asunto,
        leida}

@@ -19,106 +19,105 @@
                 <th scope="row">{{id}}</th>
                 <td> {{nro_cuota}}</td>
                 <td> {{saldo_inicial}}</td>
-                <td> {{Amortizacion}}</td>
-                <td> {{Base_calculo}}</td>
-                <td> {{ICC}}</td>
-                <td> {{Ajuste_ICC}}</td>
-                <td>{{cuota_con_ajuste}}</td>
+                <td> <input type="text" name="id" value="{{Amortizacion}}" class="form-control"> </td>
+                <td> <input type="text" name="Base_calculo" value="{{Base_calculo}}" class="form-control"> </td>
+                <td> <input type="text" name="ICC" value="{{ICC}}" class="form-control"></td>
+                <td> <input type="Ajuste_ICC" name="id" value="{{Ajuste_ICC}}" class="form-control"></td>
+                <td><input type="cuota_con_ajuste" name="id" value="{{cuota_con_ajuste}}" class="form-control"></td>
                 <td>{{saldo_cierre}}</td>
+                <button class="tbn btn-primary btn-block"> Guardar</button>
+            </form>
 
 
 
 
-
-
-                {{/each}}
-
+            {{/each}}
+        </tr>
 
     </tbody>
 
 
 </table>
 <td></td>
+
 {{#each cuotas}}
-<div>
-    <div class="row">
-        <div class="">
-            <div class="card text-center">
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3> Modificar cuota </h3>
-                    </div>
-                    <div class="editcuota">
 
-                        <form action="/cuotas/editar" method="POST" >
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">id</label>
-                                <input type="text" name="id" value="{{id}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">N°Cuota </label>
-                                <input type="text" name="nro_cuota" value=" {{nro_cuota}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">SaldoI</label>
-                                <input type="text" name="saldo_inicial" value="{{saldo_inicial}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">Amortizacion</label>
-                                <input type="text" name="Amortizacion" value="{{Amortizacion}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">BaseCalculo</label>
-                                <input type="text" name="Base_calculo" value="{{Base_calculo}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">ICC</label>
-                                <input type="text" name="ICC" value="{{ICC}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">AjusteICC</label>
-                                <input type="text" name="Ajuste_ICC" value="{{Ajuste_ICC}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">CuotaCAjuste</label>
-                                <input type="text" name="cuota_con_ajuste" value="{{cuota_con_ajuste}} " class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
-                            <div class="form-group">
-                                <label for="correo" class="formulario__label">SaldoCierre</label>
-                                <input type="text" name="saldo_cierre" value="{{saldo_cierre}}" class="form-control"
-                                    placeholder="Nombre de usuario">
-                            </div>
+<div class="row">
+    <div class="">
+        <div class="card text-center">
+            <div class="card-body">
+                <div class="card-header">
+                    <h3> Modificar cuota </h3>
+                </div>
+                <div class="editcuota">
 
-                          <div class="form-group">
+                    <form action="cuotas/editar" method="POST">
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">id</label>
+                            <input type="text" name="id" value="{{id}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">N°Cuota </label>
+                            <input type="text" name="nro_cuota" value=" {{nro_cuota}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">SaldoI</label>
+                            <input type="text" name="saldo_inicial" value="{{saldo_inicial}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">Amortizacion</label>
+                            <input type="text" name="Amortizacion" value="{{Amortizacion}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">BaseCalculo</label>
+                            <input type="text" name="Base_calculo" value="{{Base_calculo}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">ICC</label>
+                            <input type="text" name="ICC" value="{{ICC}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">AjusteICC</label>
+                            <input type="text" name="Ajuste_ICC" value="{{Ajuste_ICC}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">CuotaCAjuste</label>
+                            <input type="text" name="cuota_con_ajuste" value="{{cuota_con_ajuste}} "
+                                class="form-control" placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                            <label for="correo" class="formulario__label">SaldoCierre</label>
+                            <input type="text" name="saldo_cierre" value="{{saldo_cierre}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+
+                        <div class="form-group">
                             <button class="tbn btn-primary btn-block"> Guardar</button>
                         </div>
 
-                        </form>
-
-                    </div>
+                    </form>
 
                 </div>
-
-
-
-
 
             </div>
 
 
+
+
+
         </div>
+
+
     </div>
 </div>
-</div>
-</div>
 
-</div> {{/each}}
-<a class="btn btn-primary" href="javascript:history.back()">Atras</a>
+{{/each}}
+
+

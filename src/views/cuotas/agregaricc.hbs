@@ -1,0 +1,75 @@
+<table class="table table-striped table-dark">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Cuota</th>
+            <th scope="col">Saldo Inicial </th>
+            <th scope="col" style="color: darkorange;">Amortizacion</th>
+            <th scope="col" style="color: darkorange;">Base de calculo</th>
+            <th scope="col" style="color: darkorange;">ICC</th>
+            <th scope="col" style="color: darkorange;">Ajuste ICC</th>
+            <th scope="col" style="color: darkorange;">Cuota con Ajuste</th>
+            <th scope="col">Saldo Cierre</th>
+    </thead>
+    <tbody>
+
+        <tr>
+            {{#each cuotas}}
+            
+                <th scope="row">{{id}}</th>
+                <td> {{nro_cuota}}</td>
+                <td> {{saldo_inicial}}</td>
+                <td> {{Amortizacion}}</td>
+                <td> {{Base_calculo}}</td>
+                <td> {{ICC}} </td>
+                <td> {{Ajuste_ICC}}</td>
+                <td>{{cuota_con_ajuste}}</td>
+                <td>{{saldo_cierre}}</td>
+
+
+
+
+
+
+
+
+
+    </tbody>
+
+
+</table>
+</div>
+
+<div class="container">
+    <form action="/cuotas/agregaricc" method="post">
+        <div class="form-group">
+            <label for="correo" class="formulario__label">ID</label>
+            <input type="text" name="id" value="{{id}}" class="form-control" placeholder="Nombre de usuario">
+        </div>
+         <div class="form-group">
+            <label for="correo" class="formulario__label">ID</label>
+            <input type="text" name="Amortizacion" value="{{Amortizacion}}" class="form-control" >
+        </div>
+        <div class="form-group">
+            <label for="correo" class="formulario__label">ID</label>
+            <input type="text" name="cuil_cuit" value="{{cuil_cuit}}" class="form-control" >
+        </div>
+        <div class="form-group">
+            <label for="correo" class="formulario__label">Numero de Cuota</label>
+            <input type="text" name="nro_cuota" value="{{nro_cuota}}" class="form-control" >
+        </div>
+        <div class="form-group">
+            <label for="correo" class="formulario__label">ICC</label>
+            <input type="text" name="ICC" value="{{ICC}}" class="form-control" placeholder="Nombre de usuario">
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary "> Guardar</button>
+        </div>
+
+    </form>
+</div>
+
+
+
+{{/each}}
