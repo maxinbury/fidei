@@ -1,0 +1,45 @@
+ <table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Mes</th>
+        <th scope="col">Cuota</th>
+        <th scope="col">Monto</th>
+    
+
+      </tr>
+    </thead>
+    <tbody>
+   
+       <a href="/usuario1/cuotasamp" class=" btn btn-primary"> Ampliar</a></td>
+      <tr>
+        {{#each cuotas}}
+        <th scope="row">{{id}}</th>
+         <td> {{Mes}} / {{anio}}</td>
+        <td> {{nro_cuota}}</td>
+        <td> {{cuota_con_ajuste}}</td>
+    
+     
+
+
+
+
+
+
+
+      </tr>
+
+       
+      {{else}}
+      <div class="col-md-4 mx-auto">
+        <div class="card card-body text-center">
+          <p> No hay cuotas</p>
+          <a href="/cuotas/add"> Añadir</a>
+        </div>
+      </div>
+ 
+    </tbody>
+  </table>
+{{/each }}
+  <label for="validationTooltip04">CBU de pago </label> 
+

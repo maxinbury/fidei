@@ -103,7 +103,14 @@ router.get("/cuotas", async (req, res) => {
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [req.user.cuil_cuit])
 
-    res.render('usuario1/listac', { cuotas })
+    res.render('usuario1/listacuotas', { cuotas })
+
+})
+router.get("/cuotasamp", async (req, res) => {
+
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [req.user.cuil_cuit])
+
+    res.render('usuario1/listacuotasamp', { cuotas })
 
 })
 
@@ -158,12 +165,13 @@ router.get("/cbu", (req, res) => {
 
 })
 
-router.get("/subir", (req, res) => {
+router.get("/subir",isLoggedIn, (req, res) => {
     if (req.user.habilitado == 'SI') {
         res.render('usuario1/subir')
     } else { res.render('usuario1/subirno') }
 
 })
+
 
 /* ORIGINAL
 router.get("/subir", (req, res) => {
@@ -171,12 +179,12 @@ router.get("/subir", (req, res) => {
 
 })
 */
-router.post('/realizar', async (req, res) => {
-    const { monto, comprobante } = req.body;
-    const cuil_cuit = req.user.dni
-    var estado = 'P'
 
-    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
+router.post('/realizar', async (req, res) => {
+    const { monto, comprobante, mes, anio } = req.body;
+    const cuil_cuit = req.user.cuil_cuit
+    var estado = 'P'
+   /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
@@ -190,18 +198,30 @@ router.post('/realizar', async (req, res) => {
         if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
             estado = 'A'
         }
-
     }
+ */
 
-    const newLink = {
+ const existe = await pool.query('Select * from cuotas where cuil_cuit=? and mes = ? and anio =?  and parcialidad = "Final"',[cuil_cuit, mes, anio])
+
+if (existe.length >0){  
+    
+    const id_cuota = existe[0]["id"]
+const newLink = {
+        id_cuota,
         monto,
         cuil_cuit,
         estado,
-        comprobante
+        comprobante,
+        mes,
+        anio
     };
     await pool.query('INSERT INTO pagos SET ?', [newLink]);
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-    res.redirect(`/usuario1`);
+    res.redirect(`/usuario1`);}  else { 
+    req.flash('message', 'Error la cuota no existe')
+    res.redirect(`/usuario1/subir`)
+
+    }
 
 })
 

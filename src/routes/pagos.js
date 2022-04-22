@@ -4,18 +4,63 @@ const pool = require('../database')
 const {isLevel2} = require('../lib/authnivel2')
 const {isLoggedIn} = require('../lib/auth') //proteger profile
 
+
 router.get("/",isLevel2, async (req,res)=> {
     const pagos = await pool.query('SELECT * FROM pagos ')
     res.render('pagos/listap', {pagos})
 })
 
-router.get('/aprobar/:id', isLoggedIn, async (req, res) =>{
+router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot es el objeto pago
     const { id } = req.params
-    await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A",id])
-        req.flash('success','Guardado correctamente')
+  
+    var pagot = await pool.query('select * from pagos where id = ?',[id])
+    
    
+    const cuota = await pool.query('select * from cuotas where id = ?',pagot[0]["id_cuota"]) //objeto cuota
+  
+    
+  
+    if (cuota[0]["nro_cuota"] === 1){
+        var saldo_realc = cuota[0]["cuota_con_ajuste"]
+    }else {
+        const cuotaant= await pool.query("Select * from cuotas where cuil_cuit=? and nro_cuota= ?",[cuota[0]["cuil_cuit"],(cuota[0]["nro_cuota"])-1])
+        var saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["cuota_con_ajuste"]
+
+    }
+
+    pago = cuota[0]["pago"] + pagot[0]["monto"]
+   
+   console.log(saldo_realc)
+    Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
+  
+    console.log(Saldo_real)
+    const update= {
+        Saldo_real,
+        pago,
+
+    }
+
+
+    await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update ,cuota[0]["id"]])
+
+        
+    
+    
+    
+    
+    await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A",id])
+    req.flash('success','Guardado correctamente')
+   
+
+
     res.redirect('/profile')
 })
+
+
+
+
+
+
 
 router.get('/realizara/:cuil_cuit',isLoggedIn,isLevel2, async (req, res) => {
     const cuil_cuit =  req.params.cuil_cuit // requiere el parametro id  c 

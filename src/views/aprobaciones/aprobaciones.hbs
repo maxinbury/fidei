@@ -1,20 +1,20 @@
 <div class="submenu">
-    <div >   
+    <div>
         <div class=>
             <div class="card text-center">
                 <div>
-                   
+
 
                     <div>
-                    <a href="/links/clientes" class="btn btn-primary m-4">
-                        Ve a clientes
-                    </a>
-                    <a href="/cuotas" class="btn btn-primary m-4">
-                        Ve a cuotas
-                    </a>
-                    <a href="/pagos" class="btn btn-success m-4">
-                        pagos 
-                    </a>
+                        <a href="/links/clientes" class="btn btn-primary m-4">
+                            Ve a clientes
+                        </a>
+                        <a href="/cuotas" class="btn btn-primary m-4">
+                            Ve a cuotas
+                        </a>
+                        <a href="/pagos" class="btn btn-success m-4">
+                            pagos
+                        </a>
                     </div>
 
                 </div>
@@ -24,47 +24,54 @@
 </div><br>
 <h3 class="titulo">Aprobaciones</h3>
 <table class="table table-striped table-dark">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Tipo</th>
-      <th scope="col">Cuil_cuit</th>
-      <th scope="col">comprobante</th>
-       <th scope="col">Estado</th>
-    </tr>
-  </thead>
-  <tbody>
-       
-    <tr>
-        {{#each pendientes}}
-      <th scope="row">{{id}}</th>
-      <td>{{tipo}}</td>
-      <td>{{cuil_cuit}}</td>
-      <td>
-          <a href="{{comprobante}}">algoool </a> 
-      <a href="a1">algo </a>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Cuil_cuit</th>
+            <th scope="col">comprobante</th>
+            <th scope="col">Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            {{#each pendientes}}
+            <th scope="row">{{id}}</th>
+            <td>{{tipo}}</td>
+            <td>{{cuil_cuit}}</td>
+            <td>{{!-- {{comprobante}} --}}
+                <a id="a1">algo </a>
       <script>
+          const pendientes = await pool.query("Select * from constancias where estado = 'P'")
+          let vSQL = pendientes[0]["comprobante"]
+
           const a1 =document.getElementById("a1")
-            const bloob1 = new Blob(["asd","as"],{type:"text/plain"} )
+            const blob1 = new Blob(["asd","as"],{type:"text/plain"} )
             a1.href =  URL.createObjectURL(blob1)
+
+
       </script>
 
- </td> 
+            </td>
 
-      <td> <div class="badge badge-primary text-wrap" >{{estado}}</div></td>
-      <td><a href="/aprobaciones/aprobarcomp/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
-      <td><a href="/aprobaciones/rechazarcomp/{{id}}" class=" btn btn-danger"> Rechazar</a></td>
-    </tr>   
-    
-    {{else}}
+            <td>
+                <div class="badge badge-primary text-wrap">{{estado}}</div>
+            </td>
+            <td><a href="/aprobaciones/aprobarcomp/{{id}}" class=" btn btn-primary"> Aprobar</a></td>
+            <td><a href="/aprobaciones/rechazarcomp/{{id}}" class=" btn btn-danger"> Rechazar</a></td>
+        </tr>
+
+        {{else}}
         <div class="col-md-4 mx-auto">
             <div class="card card-body text-center">
                 <p> No hay aprobaciones pendientes </p>
             </div>
         </div>
-   
 
-        {{/each }}
-  </tbody>
-</table>
+ {{/each }}
+        
 
+<div id="getImagenDeMarca">
+
+</div>

@@ -1,0 +1,51 @@
+<table class="table table-striped table-dark">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">N°Cuota</th>
+        
+
+             
+       
+        <th scope="col" style="color: darkorange;">Base de calculo</th>
+        <th scope="col" style="color: darkorange;">ICC</th>
+        <th scope="col" style="color: darkorange;">Ajuste ICC</th>
+       <th scope="col">Cuota</th>     
+     
+    
+
+
+      </tr>
+    </thead>
+    <tbody>
+   
+       <a href="/usuario1/cuotas" class=" btn btn-primary"> Reducir</a></td>
+      <tr>
+        {{#each cuotas}}
+        <th scope="row">{{id}}</th>
+        <td> {{nro_cuota}}</td>
+        <td> {{Base_calculo}}</td>
+        <td> {{ICC}}</td>
+        <td> {{Ajuste_ICC}}</td>
+        <td>{{cuota_con_ajuste}}</td>
+ 
+
+ 
+ 
+
+
+
+
+
+
+      </tr>
+      {{else}}
+      <div class="col-md-4 mx-auto">
+        <div class="card card-body text-center">
+          <p> No hay cuotas</p>
+          <a href="/cuotas/add"> Añadir</a>
+        </div>
+      </div>
+      {{/each }}
+    </tbody>
+  </table>

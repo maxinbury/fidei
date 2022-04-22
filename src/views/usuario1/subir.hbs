@@ -19,9 +19,7 @@
   </div>
   <div class="form-row">
     <div class="col-md-6 mb-3">
-       <fieldset disabled></fieldset>
       <label for="validationTooltip03">Monto</label>
-
       <input type="integer" name ="monto" class="form-control" id="validationTooltip03" required>
     
     </div>
@@ -30,6 +28,18 @@
       <select class="custom-select" id="validationTooltip04" required>
         <option selected disabled value="">Seleccionar</option>
         <option>CBU personal</option>
+      </select>
+      <div class="invalid-tooltip">
+        Seleccionar CBU
+      </div>
+    </div>
+
+      </div>
+    <div class="col-md-3 mb-3">
+      <label for="validationTooltip04">Lote </label>
+      <select class="custom-select" id="validationTooltip04" required>
+        <option selected disabled value="">Seleccionar</option>
+        <option>Lote 1</option>
       </select>
       <div class="invalid-tooltip">
         Seleccionar CBU
@@ -44,5 +54,13 @@
     </div> --}}
 
   </div>
+  <div class="form-row">
+    <label for="validationTooltip03">Fecha</label>
+     <input type="integer" name ="mes" class="form-control" id="validationTooltip03" placeholder="Mes" style="width : 150px; heigth : 10px" >
+     <input type="integer" name ="anio" class="form-control" id="validationTooltip03" placeholder="Año"style="width : 150px; heigth : 10px">
+
+  </div>
+
+
   <button class="btn btn-primary" type="submit">Confirmar</button>
 </form>

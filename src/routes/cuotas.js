@@ -11,7 +11,7 @@ router.get("/cuotas/:cuil_cuit", isLoggedIn, async (req, res) => {
 })
 
 router.get("/", isLevel2, isLoggedIn, async (req, res) => {
-    const cuotas = await pool.query('SELECT * FROM cuotas ')
+    const cuotas = await pool.query('SELECT * FROM  cuotas ')
     res.render('cuotas/lista', { cuotas })
 })
 
@@ -67,13 +67,15 @@ router.post('/addaut', async (req, res) => {
                 lote
         
             };
-            mes+=1
+            mes++
+           
             if (mes>12){
-                anio+=1
+              
+                anio++
                 mes-=12
             }
 
-            await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+         await pool.query('INSERT INTO cuotas SET ?', [newLink]);
 
             saldo_inicial -= Amortizacion
             saldo_cierre = saldo_inicial - Amortizacion
@@ -111,33 +113,53 @@ router.get("/agregar_icc/:id", isLoggedIn, async (req, res) => {
 
 router.post('/agregaricc', async (req, res, ) => {
     const { id,  ICC, nro_cuota,cuil_cuit, Amortizacion} = req.body;
-   console.log(nro_cuota)
+  const cuotaa = await pool.query("select * from cuotas where id = ? ", [id])
+  console.log(cuotaa)
+   const parcialidad = "Final"
     if (nro_cuota == 1){
+        saldo_inicial = cuotaa[0]["saldo_inicial"]
         const Ajuste_ICC =  0
         const Base_calculo = Amortizacion
         const cuota_con_ajuste = Amortizacion
+        const Saldo_real = saldo_inicial
+
         
         var cuota = {
             ICC,
             Ajuste_ICC,
             Base_calculo,
-            cuota_con_ajuste
+            cuota_con_ajuste,
+            Saldo_real,
+            parcialidad
         }
     }else {
-        const cuota_con_ajuste_anteriorr = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?',[nro_cuota-1,cuil_cuit])
-        console.log(cuota_con_ajuste_anteriorr)
+        const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?',[nro_cuota-1,cuil_cuit])
+       
+        var  Saldo_real_anterior =  anterior[0]["Saldo_real"]
         
-        const cuota_con_ajuste_anterior = cuota_con_ajuste_anteriorr[0]["cuota_con_ajuste"]
-        console.log(cuota_con_ajuste_anterior)
+        const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
+       
         const Base_calculo = cuota_con_ajuste_anterior
         const Ajuste_ICC =  cuota_con_ajuste_anterior*ICC
        
         const cuota_con_ajuste = cuota_con_ajuste_anterior+Ajuste_ICC
+
+
+        Saldo_real_anterior+=Ajuste_ICC
+
+
+        const Saldo_real = Saldo_real_anterior 
+
+
+
         var cuota = {
             ICC,
             Ajuste_ICC,
             Base_calculo,
-            cuota_con_ajuste
+            cuota_con_ajuste,
+            Saldo_real,
+            parcialidad
+            
         }
        
     }

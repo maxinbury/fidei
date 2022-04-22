@@ -7,12 +7,37 @@ const { isLevel2 } = require('../lib/authnivel2')
 
 
 
-router.get('/', isLoggedIn, isLevel2, async (req, res) => {
-    const pendientes = await pool.query("Select * from constancias where estado = 'P'")
-   
-    res.render('aprobaciones/aprobaciones', { pendientes })
 
+
+
+//isLoggedIn, isLevel2,
+router.get('/', async (req, res) => {
+    const pendientes = await pool.query("Select * from constancias where estado = 'P'")
+  /*  const getImagenDeMarca = async(titulo, req, res) => {
+        
+        let vSQL = pendientes[0]["comprobante"]
+        console.log(vSQL)
+        console.log(res)
+    
+        if (vSQL.length == 0) {
+            let mensaje = "No existe imagen de marca para el titulo " + titulo;
+            throw new Error(mensaje);
+        } else {
+           
+            res.setHeader("Content-Length", vSQL.length);
+            res.setHeader("Content-Type", "image/jpeg; charset=UTF-8");
+            res.write(vSQL, "binary");
+            res.end();
+        }
+    };*/
+    
+    
+    res.render('aprobaciones/aprobaciones', { pendientes })
+   
 })
+
+
+
 router.get('/cbu', isLoggedIn, isLevel2, async (req, res) => {
     const pendientes = await pool.query("Select * from cbus where estado = 'P'")
     res.render('aprobaciones/aprobacionescbu', { pendientes })

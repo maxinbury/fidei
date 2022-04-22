@@ -33,9 +33,6 @@ router.get('/', async (req, res) => {
   }
   */
 
-  const  a = 1
-  const b = 0
-  console.log(a/b)
 
 
 
