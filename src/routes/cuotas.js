@@ -47,10 +47,13 @@ router.post('/addaut', async (req, res) => {
   
     var nro_cuota = 1
     var saldo_inicial = monto_total
+    console.log(cuil_cuit)
     const row = await pool.query('SELECT * from clientes where cuil_cuit = ?', [req.body.cuil_cuit])
     if (row.length > 0) {
         var saldo_cierre = saldo_inicial - Amortizacion
+        const Saldo_real = saldo_inicial
         const id_cliente = row[0].id
+
 
         for (var i = 1; i <= cantidad_cuotas; i++) {
             nro_cuota = i
@@ -64,7 +67,8 @@ router.post('/addaut', async (req, res) => {
                 saldo_cierre,
                 cuil_cuit,
                 id_cliente,
-                lote
+                lote,
+                Saldo_real
         
             };
             mes++
@@ -104,6 +108,9 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
     res.render('cuotas/edit', { cuotas })
 })
 
+
+
+
 router.get("/agregar_icc/:id", isLoggedIn, async (req, res) => {
     const id = req.params.id
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
@@ -111,10 +118,80 @@ router.get("/agregar_icc/:id", isLoggedIn, async (req, res) => {
 })
 
 
+
+
+router.get("/agregariccgral", isLoggedIn, async (req, res) => {
+  
+   
+    res.render('cuotas/agregariccgral')
+})
+
+
+
+router.post('/agregariccgral', async (req, res, ) => {
+    const { ICC, mes,anio} = req.body;
+    const todas = await pool.query("select * from cuotas where mes =? and anio =?",[mes,anio])
+    const parcialidad = "Final"
+    for (var i=0; i<todas.length; i++) {
+   
+        if (todas[0]["nro_cuota"] == 1){
+            saldo_inicial = todas[i]["saldo_inicial"]
+            const Ajuste_ICC =  0
+            const Base_calculo = todas[i]["Amortizacion"]
+            const cuota_con_ajuste = todas[i]["Amortizacion"]
+            const Saldo_real = todas[i]["saldo_inicial"]
+    
+            
+            var cuota = {
+                ICC,
+                Ajuste_ICC,
+                Base_calculo,
+                cuota_con_ajuste,
+                Saldo_real,
+                parcialidad
+            }
+        }else {
+            const nro = todas[i]["nro_cuota"]
+            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?',[nro-1,todas[i]["cuil_cuit"]])
+           
+            var  Saldo_real_anterior =  anterior[0]["Saldo_real"]
+            
+            const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
+           
+            const Base_calculo = cuota_con_ajuste_anterior
+            const Ajuste_ICC =  cuota_con_ajuste_anterior*ICC
+           
+            const cuota_con_ajuste = cuota_con_ajuste_anterior+Ajuste_ICC
+            Saldo_real_anterior+=Ajuste_ICC
+            const Saldo_real = Saldo_real_anterior
+    
+            var cuota = {
+                ICC,
+                Ajuste_ICC,
+                Base_calculo,
+                cuota_con_ajuste,
+                Saldo_real,
+                parcialidad
+                
+            }
+           
+        }
+        await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
+       
+    
+    }
+
+    res.redirect(`/cuotas`);
+})
+
+
+
+
+
 router.post('/agregaricc', async (req, res, ) => {
     const { id,  ICC, nro_cuota,cuil_cuit, Amortizacion} = req.body;
   const cuotaa = await pool.query("select * from cuotas where id = ? ", [id])
-  console.log(cuotaa)
+  
    const parcialidad = "Final"
     if (nro_cuota == 1){
         saldo_inicial = cuotaa[0]["saldo_inicial"]
@@ -143,14 +220,8 @@ router.post('/agregaricc', async (req, res, ) => {
         const Ajuste_ICC =  cuota_con_ajuste_anterior*ICC
        
         const cuota_con_ajuste = cuota_con_ajuste_anterior+Ajuste_ICC
-
-
         Saldo_real_anterior+=Ajuste_ICC
-
-
-        const Saldo_real = Saldo_real_anterior 
-
-
+        const Saldo_real = Saldo_real_anterior
 
         var cuota = {
             ICC,

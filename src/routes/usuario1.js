@@ -122,6 +122,17 @@ router.get("/notificaciones", async (req, res) => {
 
 })
 
+
+router.get("/menu2", async (req, res) => {
+
+  
+  
+    res.render('usuario1/menu2/menu2')
+
+})
+
+
+
 router.get("/legajo", async (req, res) => {
     const razon = await pool.query('Select razon from users where cuil_cuit = ?', [req.user.cuil_cuit])
     if (razon[0]['razon'] == 'Empresa') {

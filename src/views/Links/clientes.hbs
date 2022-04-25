@@ -1,20 +1,20 @@
- <div class="submenu">
-    <div >   
+<div class="submenu">
+    <div>
         <div class=>
             <div class="card text-center">
                 <div>
-                   
+
 
                     <div>
-                    <a href="/links/clientes" class="btn btn-primary m-4">
-                        Ve a clientes
-                    </a>
-                    <a href="/cuotas" class="btn btn-primary m-4">
-                        Ve a cuotas
-                    </a>
-                    <a href="/pagos" class="btn btn-success m-4">
-                        pagos 
-                    </a>
+                        <a href="/links/clientes" class="btn btn-primary m-4">
+                            Ve a clientes
+                        </a>
+                        <a href="/cuotas" class="btn btn-primary m-4">
+                            Ve a cuotas
+                        </a>
+                        <a href="/pagos" class="btn btn-success m-4">
+                            pagos
+                        </a>
                     </div>
 
                 </div>
@@ -23,34 +23,36 @@
     </div>
 </div><br>
 <h3 class="titulo">Buscar Clientes</h3>
- 
- <a href="/links/add" class=" btn btn-primary "> Crear Cliente</a></td>
-<div>
-     
-<div class="container p-4">
-    <div class="row">
-        <div class="col-md-4 mx-auto">
-            <div class="card rext-center">
-                <div class="card-body">
-                    <div class="card-header">
-                        <h3> Buscar por cuil_cuit  </h3>
-                    </div>
-                    <div class="card-body">
-                        <img src="img/logo.png" alt="" class =" card-img top mx-auto m-2  w-50">
 
-                        <form action="/links/listacuil_cuit" method="POST" name="cuil_cuit" >
-                            <div class="form-group">
-                                <input type="text" name="cuil_cuit" placeholder="Ej:34800558"  class="form-control" placeholder="Nombre de usuario">
-                            </div>
+<a href="/links/add" class=" btn btn-primary "> Crear Cliente</a></td>
+<div>
+
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-md-4 mx-auto">
+                <div class="card rext-center">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h3> Buscar por cuil_cuit </h3>
+                            <h6>Atencion, ingresar con "-"</h6>
+                        </div>
+                        <div class="card-body">
+                            <img src="img/logo.png" alt="" class=" card-img top mx-auto m-2  w-50">
+
+                            <form action="/links/listacuil_cuit" method="POST" name="cuil_cuit">
+                                <div class="form-group">
+                                    <input type="text" name="cuil_cuit" placeholder="Ej:34800558" class="form-control"
+                                        placeholder="Nombre de usuario">
+                                </div>
                                 <button class="btn btn-success btn-block">Buscar</button>
-                            </div>
+                        </div>
 
 
                         </form>
 
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>
@@ -63,29 +65,30 @@
             <div class="card rext-center">
                 <div class="card-body">
                     <div class="card-header">
-                        <h3> Buscar por Apellido  </h3>
+                        <h3> Buscar por Apellido </h3>
                     </div>
                     <div class="card-body">
-                        <img src="img/logo.png" alt="" class =" card-img top mx-auto m-2  w-50">
+                        <img src="img/logo.png" alt="" class=" card-img top mx-auto m-2  w-50">
 
-                        <form action="/links/listapp" method="POST" name="app" >
+                        <form action="/links/listapp" method="POST" name="app">
                             <div class="form-group">
-                                <input type="text" name="app" placeholder="Ej:Gomez"  class="form-control" placeholder="Nombre de usuario">
+                                <input type="text" name="app" placeholder="Ej:Gomez" class="form-control"
+                                    placeholder="Nombre de usuario">
                             </div>
-                                <button class="btn btn-success btn-block">Buscar</button>
-                            </div>
-
-
-                        </form>
-                        
-
+                            <button class="btn btn-success btn-block">Buscar</button>
                     </div>
 
-                    
+
+                    </form>
+
+
                 </div>
+
+
             </div>
         </div>
     </div>
+</div>
 </div>
 
 </div>

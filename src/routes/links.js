@@ -3,6 +3,87 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
+const XLSX = require('xlsx')
+
+
+router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
+    console.log("entra")
+  const workbook = XLSX.readFile('./src/Excel/Base de Clientes TANGO 04-22.xlsx')
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    //console.log(dataExcel)
+    console.log(dataExcel)
+
+    const palabra = 'LEY'
+    console.log(palabra.includes('LEY'))
+    var a=1
+    for (const property in dataExcel) {
+        a+=1
+        try{
+        const newLink = {
+            id:dataExcel[property]['Cód. cliente'],
+            razon_social: dataExcel[property]['Razón social'],
+            nombre : dataExcel[property]['Nombre comercial'],
+            tipo_dni:dataExcel[property]['Tipo de documento'],
+            domicilio:dataExcel[property]['Domicilio'],
+            cuil_cuit: dataExcel[property]['Número'],
+            localidad: dataExcel[property]['Localidad'],
+            cp: dataExcel[property]['Cód. Postal'],
+            telefono: dataExcel[property]['Teléfono'],
+            movil:dataExcel[property]['Móvil'],
+            email: dataExcel[property]['E-mail'],
+            responsable_del_pago: dataExcel[property]['Responsable del pago'],
+            cod_provincia: dataExcel[property]['Cód. provincia'],
+            provincia: dataExcel[property]['Provincia'],
+            cod_zona: dataExcel[property]['Cód. de Zona'],
+            zona: dataExcel[property]['Zona'],
+            condicion_de_iva: dataExcel[property]['Condición de IVA'],
+            condicion_de_venta: dataExcel[property]['Sucursal'],
+            descripcion_cond_de_venta: dataExcel[property]['Descripción Condición de Venta'],
+            porc_bonificacion: dataExcel[property]['% de bonificación'],
+            clausula_moneda_extranjera: dataExcel[property]['Cláusula moneda extranjera'],
+            fecha_alta: dataExcel[property]['Fecha de alta'],
+            Inhabilitado: dataExcel[property]['Inhabilitado'],
+            RG_1817: dataExcel[property]['RG 1817'],
+            otros_impuestos: dataExcel[property]['Otros impuestos'],
+            iva_liberado_habitual: dataExcel[property]['I.V.A. liberado (habitual)'],
+            percepcion_ib: dataExcel[property]['Percepción IB (habitual)'],
+            percepcion_ib_bs_as_59_98: dataExcel[property]['Percep. IB. Bs.AS. 59/98 (habitual)'],
+            direcciones_de_entrega: dataExcel[property]['Direcciones de entrega'],
+            observaciones: dataExcel[property]['Observaciones'],
+            idiomas_comprobantes: dataExcel[property]['Idioma Comprobantes de Exportación'],
+            incluye_comentarios_de_articulos: dataExcel[property]['Incluye Comentarios de los Artículos'],
+            debitos_por_mora: dataExcel[property]['Débitos por mora'],
+            empresa_vinculada: dataExcel[property]['Empresa vinculada'],
+            inhabilitado_nexo_cobranzas: dataExcel[property]['Inhabilitado nexo Cobranzas'],
+            id_lote_nombre: dataExcel[property]['Identificación Lote (Adic.)'],
+           
+
+
+
+        }
+      
+
+        await pool.query('INSERT INTO clientes set ?', [newLink]);
+    }catch(e){
+        console.log(e)
+    }
+       
+        /* if ((dataExcel[property]['Sucursal']).includes(cuil_cuit)) {
+            estado = 'A'
+        }*/
+
+    }
+ 
+
+
+
+    res.redirect('/links/clientes')
+})
+
+
 
 
 router.get('/add', isLoggedIn, isLevel2, (req, res) => {
@@ -29,6 +110,8 @@ router.get("/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit // requiere el parametro id 
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit]) //[req.user.id]
 
+    console.log(links)
+
     res.render('links/list', { links })
 })
 
@@ -39,14 +122,35 @@ router.get("/app/:app", isLoggedIn, isLevel2, async (req, res) => {
 })
 
 
+router.get("/algo/prueba", isLoggedIn, isLevel2, async (req, res) => { //probando
+    var str = 20-32587415-3
+    /*part1 = str.substring(0, 2);
+    part3 = str.substring(3, 11);
+    part3 = str.substring(12 , str.length);
+    const cuil_cuit= part1 + part2 + part3
+  
+    console.log (cuil_cuit);*/
+
+
+   /*var a = "01234156789"
+   a =  (a).slice(0, 2) + "-" + (a).slice(2);
+   console.log(a)
+   a =  (a).slice(0, 11) + "-" + (a).slice(11);
+    console.log(a)
+  */
+    res.render('links/prueba')
+})
+
+
+
 
 router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
-    const { Nombre, Apellido, Direccion, cuil_cuit, razon } = req.body;
+    const { Nombre, Apellido, domicilio, cuil_cuit, razon } = req.body;
     const newLink = {
         Nombre,
         Apellido,
         razon,
-        Direccion,
+        domicilio,
         cuil_cuit
         //user_id: req.user.id
     };
@@ -77,11 +181,11 @@ router.get('/delete/:id', isLoggedIn, isLevel2, async (req, res) => {
 
 router.post('/edit/:id', isLevel2, async (req, res) => {
     const { id } = req.params
-    const { Nombre, Apellido, Direccion } = req.body
+    const { Nombre, Apellido, domicilio } = req.body
     const newLink = {
         Nombre,
         Apellido,
-        Direccion
+        domicilio
     }
     await pool.query('UPDATE clientes set ? WHERE id = ?', [newLink, id])
     
@@ -94,9 +198,9 @@ router.post('/edit/:id', isLevel2, async (req, res) => {
 // buscar cliente por apellido no esta conectado
 router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
     const { cuil_cuit } = req.body
-
+    console.log(cuil_cuit)
     const rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit])
-
+    console.log(rows)
     if (rows.length > 0) {
         res.redirect(`/links/${cuil_cuit}`)
 
