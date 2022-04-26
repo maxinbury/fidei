@@ -21,7 +21,7 @@
     <thead>
       <tr>
         <th scope="col">#</th>
-        <th scope="col">Mes</th>
+        <th scope="col">Fecha</th>
         <th scope="col">Cuota</th>
         <th scope="col">Monto</th>
     
@@ -32,15 +32,13 @@
    
        <a href="/usuario1/cuotasamp" class=" btn btn-primary"> Ampliar</a></td>
       <tr>
-        {{#each cuotas}}
+        {{#each pagos}}
         <th scope="row">{{id}}</th>
          <td> {{mes}} / {{anio}}</td>
         <td> {{nro_cuota}}</td>
-        <td> {{cuota_con_ajuste}}</td>
+        <td> {{monto}}</td>
     
      
-
-
 
 
 
@@ -60,5 +58,3 @@
     </tbody>
   </table>
 {{/each }}
- 
-
