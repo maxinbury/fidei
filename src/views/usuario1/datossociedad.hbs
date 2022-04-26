@@ -1,144 +1,431 @@
-<body>
-  <div class="alinear">
-    <nav id="menuizquierda">
-      <div class="encabezado">
-        {{!-- <h3> Menu vertical</h3> --}}
+<div class="bgded overlay" style="background-image:url('/chillaid/images/demo/backgrounds/01.png');">
+  <div id="breadcrumb" class="hoc clear">
+    <!-- ################################################################################################ -->
+    <ul>
+      <li><a href="/usuario1/legajo">Datos de la sociedad</a></li>
+      <li><a href="/usuario1/ingresos">Ingresos declarados</a></li>
+      <li><a href="/usuario1/infocbu">CBUS declarados</a></li>
+      <li><a href="/usuario1/djs">Declaraciones Juradas</a></li>
+      <li><a href="/usuario1/contacto">Contacto</a></li>
+      <li><a href="/usuario1/">Datos adicionales</a></li>
+    
+    </ul>
+    <!-- ################################################################################################ -->
+  </div>
+</div>
+
+<div > <!--Colocar fondo -->
+  <section id="services" class="hoc container clear">
+    <!-- ################################################################################################ -->
+    <div class="sectiontitle">
+      <h6 class="heading font-x2">Datos de la Sociedad</h6>
+      <p class="nospace font-xs">Completar legajo</p>
+      
+    </div>
+    <ul class="nospace group elements elements-three">
+      <li class="one_third"> 
+        <article><a href="#"><i class="fas fa-hourglass-half"></i></a>
+          <form action="/usuario1/edit_comp_dni" method="POST">
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Subir foto dni </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
       </div>
 
-      <ul class="list-unstyled">
-        <li><a href="/usuario1/legajo">Datos de la sociedad</a></li>
-        <li><a href="/usuario1/ingresos">Ingresos declarados</a></li>
-        <li><a href="/usuario1/infocbu">CBUS declarados</a></li>
-        <li><a href="/usuario1/djs">Declaraciones Juradas</a></li>
-        <li><a href="/usuario1/contacto">Contacto</a></li>
-        <li><a href="/usuario1/">Datos adicionales</a></li>
-      </ul>
-    </nav>
-    <div class="container">
-      <h2>Datos de la Sociedad</h2>
 
-      <form action="/usuario1/edit_comp_dni" method="POST" class="formulario" id="formulario">
+    </form>
+        </article>
+      </li>
+      <li class="one_third">
+        <article><a href="#"><i class="fas fa-paw"></i></a>
+          <form action="/usuario1/edit_comp_afip" method="POST" >
 
-        <div>
-          <label for="exampleFormControlFile1">
-            <h3>Subir foto dni </h3>
-          </label>
-          <div class="formulario__grupo-input">
-            <input type="file" class="form-control-file" id="comprobante" name="comprobante">
-            <i class="formulario__validacion-estado fas fa-times-circle"></i>
-          </div>
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Subir Constancia de la AFIP</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
 
         </div>
-        <div class="formulario__grupo formulario__grupo-btn-enviar">
-          <button type="submit" class="formulario__btn">Guardar</button>
-          <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
-        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
 
 
 
-      </form>
+    </form>
 
 
-      <form action="/usuario1/edit_comp_afip" method="POST" class="formulario" id="formulario">
+        </article>
+      </li>
+      
+      <li class="one_third">
+        <article><a href="#"><i class="fas fa-tty"></i></a>
+          <form action="/usuario1/edit_comp_estatuto" method="POST" >
 
-        <div>
-          <label for="exampleFormControlFile1">
-            <h3>Subir Constancia de la AFIP</h3>
-          </label>
-          <div class="formulario__grupo-input">
-            <input type="file" class="form-control-file" id="comprobante" name="comprobante">
-
-          </div>
-
-        </div>
-        <div class="formulario__grupo formulario__grupo-btn-enviar">
-          <button type="submit" class="formulario__btn">Guardar</button>
-          <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
-        </div>
-
-
-
-      </form>
-
-
-
-      <form action="/usuario1/edit_comp_domicilio" method="POST" class="formulario" id="formulario">
-
-        <div>
-          <label for="exampleFormControlFile1">
-            <h3>Acreditacion de domicilio </h3>
-          </label>
-          <div class="formulario__grupo-input">
-            <input type="file" class="form-control-file" id="comprobante" name="comprobante">
-
-          </div>
-
-          <div class="form-group">
-            <label for=""> Detalle domicilio </label>
-            <input type="text" name="descripcion" placeholder="Descripcion" class="form-control"
-              placeholder="Nombre de usuario">
-          </div>
-        </div>
-
-        <div class="formulario__grupo formulario__grupo-btn-enviar">
-          <button type="submit" class="formulario__btn">Guardar</button>
-          <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
-        </div>
-
-
-
-      </form>
-
-
-      <form action="/usuario1/edit_comp_estatuto" method="POST" class="formulario" id="formulario">
-
-        <div>
-          <label for="exampleFormControlFile1">
-            <h3>Estatuto Social</h3>
-          </label>
-          <div class="formulario__grupo-input">
-            <input type="file" class="form-control-file" id="comprobante" name="comprobante">
-
-          </div>
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Estatuto Social</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
 
         </div>
-        <div class="formulario__grupo formulario__grupo-btn-enviar">
-          <button type="submit" class="formulario__btn">Guardar</button>
-          <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+        </article>
+      </li>
+      <li class="one_third">
+        <article><a href="#"><i class="fas fa-table"></i></a>
+          <form action="/usuario1/edit_comp_acta" method="POST">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Acta del organo decisorio designado </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
         </div>
 
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
 
 
-      </form>
 
-      <form action="/usuario1/edit_comp_acta" method="POST" class="formulario" id="formulario">
+    </form>
+        </article>
+      </li>
+     <li class="one_third">
+        <article><a href="#"><i class="fas fa-sliders-h"></i></a>
+         <form action="/usuario1/edit_comp_domicilio" method="POST" >
 
-        <div>
-          <label for="exampleFormControlFile1">
-            <h3>Acta del organo decisorio designado </h3>
-          </label>
-          <div class="formulario__grupo-input">
-            <input type="file" class="form-control-file" id="comprobante" name="comprobante">
-
-          </div>
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Acreditacion de domicilio </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
 
         </div>
-        <div class="formulario__grupo formulario__grupo-btn-enviar">
-          <button type="submit" class="formulario__btn">Guardar</button>
-          <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+
+        <div class="form-group">
+          <label for=""> Detalle domicilio </label>
+          <input type="text" name="descripcion" placeholder="Descripcion" class="form-control"
+            placeholder="Nombre de usuario">
+        </div>
+      </div>
+
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+        </article>
+      </li>
+    </ul>
+    <!-- ################################################################################################ -->
+  </section>
+
+
+
+  <div class="container">
+
+    <h2>Datos de la Sociedad</h2>
+
+    <form action="/usuario1/edit_comp_dni" method="POST" class="formulario" id="formulario">
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Subir foto dni </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
         </div>
 
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
 
 
-      </form>
+    </form>
+
+
+
+
+    <form action="/usuario1/edit_comp_afip" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Subir Constancia de la AFIP</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+
+    <form action="/usuario1/edit_comp_domicilio" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Acreditacion de domicilio </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+        <div class="form-group">
+          <label for=""> Detalle domicilio </label>
+          <input type="text" name="descripcion" placeholder="Descripcion" class="form-control"
+            placeholder="Nombre de usuario">
+        </div>
+      </div>
+
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+    <form action="/usuario1/edit_comp_estatuto" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Estatuto Social</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+    <form action="/usuario1/edit_comp_acta" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Acta del organo decisorio designado </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+
+    </section>
+
+  </div>
+</div>
 
 
 
 
 
+
+
+
+
+
+
+
+
+<div class="alinear">
+  <nav id="menuizquierda">
+    <div class="encabezado">
+      {{!-- <h3> Menu vertical</h3> --}}
     </div>
 
+    <ul class="list-unstyled">
+      <li><a href="/usuario1/legajo">Datos de la sociedad</a></li>
+      <li><a href="/usuario1/ingresos">Ingresos declarados</a></li>
+      <li><a href="/usuario1/infocbu">CBUS declarados</a></li>
+      <li><a href="/usuario1/djs">Declaraciones Juradas</a></li>
+      <li><a href="/usuario1/contacto">Contacto</a></li>
+      <li><a href="/usuario1/">Datos adicionales</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h2>Datos de la Sociedad</h2>
 
+    <form action="/usuario1/edit_comp_dni" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Subir foto dni </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+    <form action="/usuario1/edit_comp_afip" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Subir Constancia de la AFIP</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+
+    <form action="/usuario1/edit_comp_domicilio" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Acreditacion de domicilio </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+        <div class="form-group">
+          <label for=""> Detalle domicilio </label>
+          <input type="text" name="descripcion" placeholder="Descripcion" class="form-control"
+            placeholder="Nombre de usuario">
+        </div>
+      </div>
+
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+    <form action="/usuario1/edit_comp_estatuto" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Estatuto Social</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+    <form action="/usuario1/edit_comp_acta" method="POST" class="formulario" id="formulario">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Acta del organo decisorio designado </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
 
 
 
@@ -147,6 +434,12 @@
   </div>
 
 
-  </nav>
 
-</body>
+
+
+
+
+</div>
+
+
+</nav>

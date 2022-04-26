@@ -1,54 +1,78 @@
- {{#if pagos_p }}
+{{#if pagos_p }}
 <div class="alert alert-primary" role="alert">
- Existen nuevas aprobaciones de pagos <a href="/pagos/pendientes" class="alert-link">ir a Aprobaciones</a>
+    Existen nuevas aprobaciones de pagos <a href="/pagos/pendientes" class="alert-link">ir a Aprobaciones</a>
 </div>
 {{/if}}
 
 {{#if constancias_p }}
 <div class="alert alert-primary" role="alert">
- Existen nuevas aprobaciones de comprobantes pendientes  <a href="/aprobaciones" class="alert-link">ir a Aprobaciones</a>
+    Existen nuevas aprobaciones de comprobantes pendientes <a href="/aprobaciones" class="alert-link">ir a
+        Aprobaciones</a>
 </div>
 {{/if}}
 
 {{#if cbus }}
 <div class="alert alert-primary" role="alert">
- Existen nuevas aprobaciones de comprobantes pendientes  <a href="/aprobaciones/cbu" class="alert-link">ir a Aprobaciones de CBUS</a>
+    Existen nuevas aprobaciones de comprobantes pendientes <a href="/aprobaciones/cbu" class="alert-link">ir a
+        Aprobaciones de CBUS</a>
 </div>
 
 {{/if}}
 
-<div class="container m-4">
-    <div class="row">   
-        <div class="col-md-4 mk-auto">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3>Bienvenido {{ user.nombrecompleto }}</h3>
-                    <h4>{{ user.usuario }}</h4>
-                    <a href="/links/clientes" class="btn btn-primary m-4">
-                        Ve a clientes
-                    </a>
-                    <a href="/cuotas" class="btn btn-primary m-4">
-                        Ve a cuotas
-                    </a>
-                    <a href="/pagos" class="btn btn-success m-4">
-                        pagos 
-                    </a>
-                     <a href="//pagos/pendientes" class="btn btn-success m-4">
-                        aprobaciones de pagos
-                    </a>
-                     <a href="/aprobaciones" class="btn btn-success m-4">
-                        aprobacion de legajos
-                    </a>
-                    <a href="/aprobaciones/cbu" class="btn btn-success m-4">
-                        aprobacion CBU
-                    </a>
 
-                     <a href="/cuotas/agregariccgral" class="btn btn-success m-4">
-                        Agregar ICC
-                    </a>
+<div class="bgded overlay" style="background-image:url('/img/fondogris.jpg');">
+    <div id="breadcrumb" class="hoc clear">
+        <!-- ################################################################################################ -->
+        <ul>
+            <li><a href="/links/clientes"> Ir a clientes</a></li>
+            <li><a href="/links/clientes"> Ir a cuotas</a></li>
+            <li><a href="/cuotas">Ve a cuotas</a></li>
+            <li><a href="/pagos">Ir a Pagos</a></li>
+            <li><a href="/pagos/pendientes">Aprobaciones de pagos</a></li>
+            <li><a href="aprobacion de legajos">aprobacion de legajos</a></li>
+            <li><a href="aprobacion de legajos">aprobacion CBU</a></li>
+            <li><a href="/aprobaciones/cbu">aprobacion CBU</a></li>
+            <li><a href="/cuotas/agregariccgrals"> Agregar ICC</a></li>
+        </ul>
+    </div>
 
+</div>
+
+
+
+        
+        {{!-- <div class="container m-4">
+            <div class="row">
+                <div class="col-md-4 mk-auto">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h3>Bienvenido {{ user.nombrecompleto }}</h3>
+                            <h4>{{ user.usuario }}</h4>
+                            <a href="/links/clientes" class="btn btn-primary m-4">
+                                Ve a clientes
+                            </a>
+                            <a href="/cuotas" class="btn btn-primary m-4">
+                                Ve a cuotas
+                            </a>
+                            <a href="/pagos" class="btn btn-success m-4">
+                                pagos
+                            </a>
+                            <a href="/pagos/pendientes" class="btn btn-success m-4">
+                                aprobaciones de pagos
+                            </a>
+                            <a href="/aprobaciones" class="btn btn-success m-4">
+                                aprobacion de legajos
+                            </a>
+                            <a href="/aprobaciones/cbu" class="btn btn-success m-4">
+                                aprobacion CBU
+                            </a>
+
+                            <a href="/cuotas/agregariccgral" class="btn btn-success m-4">
+                                Agregar ICC
+                            </a>
+
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </div> --}}

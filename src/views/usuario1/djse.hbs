@@ -1,4 +1,125 @@
-<body >
+<div class="bgded overlay" style="background-image:url('/chillaid/images/demo/backgrounds/01.png');">
+  <div id="breadcrumb" class="hoc clear">
+    <!-- ################################################################################################ -->
+    <ul>
+      <li><a href="/usuario1/legajo">Datos de la sociedad</a></li>
+      <li><a href="/usuario1/ingresos">Ingresos declarados</a></li>
+      <li><a href="/usuario1/infocbu">CBUS declarados</a></li>
+      <li><a href="/usuario1/djs">Declaraciones Juradas</a></li>
+      <li><a href="/usuario1/contacto">Contacto</a></li>
+      <li><a href="/usuario1/">Datos adicionales</a></li>
+    
+    </ul>
+    <!-- ################################################################################################ -->
+  </div>
+</div>
+
+
+<section id="services" class="hoc container clear"> 
+    <!-- ################################################################################################ -->
+    <div class="sectiontitle">
+      
+      <h6 class="heading font-x2">Declaraciones juradas</h6>
+      <p class="nospace font-xs">Descargar formulario y subir completo</p>
+    </div>
+    <ul class="nospace group elements elements-three">
+      <li class="one_third">
+        <article> <a href="../documents/Modelo_DDJJ_Datos_Personales.pdf" download="Modelo DJ Datos Personales" ><i class="fas fa-download"></i><br>
+        Descargar</a>
+           <form action="/usuario1/edit_comp_djdatospers" method="POST" >
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Declaracion jurada datos personales</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+        </article>
+      </li>
+      <li class="one_third">
+        <article><a href="../documents/Modelo DDJJ Persona Expuesta Politicamente.pdf"><i class="fas fa-download"></i><br>
+        Descargar</a>
+          <form action="/usuario1/edit_comp_djcalidadpers" method="POST">
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Declaracion jurada Calidad de persona</h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+        </article>
+      </li>
+      <li class="one_third">
+        <article><a href="../documents/MODELO ORIGEN Y LICITUD DE FONDOS.pdf"><i class="fas fa-download"></i><br>
+        Descargar</a>
+          <form action="/usuario1/edit_comp_jdorigen" method="POST" >
+
+      <div>
+        <label for="exampleFormControlFile1">
+          <h3>Declaracion jurada origen </h3>
+        </label>
+        <div class="formulario__grupo-input">
+          <input type="file" class="form-control-file" id="comprobante" name="comprobante">
+          <i class="formulario__validacion-estado fas fa-times-circle"></i>
+        </div>
+
+      </div>
+      <div class="formulario__grupo formulario__grupo-btn-enviar">
+        <button type="submit" class="formulario__btn">Guardar</button>
+        <p class="formulario__mensaje-exito" id="formulario__mensaje-exito">Formulario enviado exitosamente!</p>
+      </div>
+
+
+
+    </form>
+
+
+        </article>
+      </li>
+     
+     
+    </ul>
+    <!-- ################################################################################################ -->
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="alinear">
   <nav id="menuizquierda">
     <div class="encabezado">
@@ -93,4 +214,3 @@
 
 </nav>
 
-</body>
