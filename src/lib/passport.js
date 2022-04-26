@@ -33,8 +33,8 @@ passport.use('local.signup', new LocalStrategy({
 }, async (req, cuil_cuit, password, done) => {
     
     const { nombre, mail, telefono, nro_cliente } = req.body
-    const razon = await pool.query('Select razon from clientes where cuil_cuit like  %?% ', [cuil_cuit])
-    console.log(mail)
+   //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
+    
     const nivel = 1
     const habilitado ='NO'
     const newUser = {
@@ -42,7 +42,7 @@ passport.use('local.signup', new LocalStrategy({
         cuil_cuit,
         nombre,
         nivel,
-        razon,
+       
         telefono,
         mail,
         habilitado,
@@ -60,8 +60,9 @@ passport.use('local.signup', new LocalStrategy({
        
    
      //fin transformar 
-
-    var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
+    
+    var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
+    console.log(rows)
     if (rows.length == 0) {
             rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit])
             if (rows.length == 0) {

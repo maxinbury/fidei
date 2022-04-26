@@ -127,7 +127,7 @@ router.get("/menu2", async (req, res) => {
 
   
   
-    res.render('usuario1/menu2/menu2')
+    res.render('usuario1/menu2/index')
 
 })
 
