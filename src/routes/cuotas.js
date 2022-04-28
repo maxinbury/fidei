@@ -295,7 +295,7 @@ router.post('/editarr', async (req, res, ) => {
 })
  */
 
-
+//-----Borar Cuota
 router.get('/delete/:id', async (req, res) => {
     const { id } = req.params
     await pool.query('DELETE FROM cuotas WHERE ID = ?', [id])
@@ -303,7 +303,7 @@ router.get('/delete/:id', async (req, res) => {
     res.redirect('/cuotas')
 })
 
-//-----
+//----- Ver... no esta enchufado
 
 router.post('/cuotas', async (req, res, next) => {
     const { id } = req.body
