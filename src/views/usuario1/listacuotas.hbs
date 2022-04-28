@@ -60,5 +60,29 @@
     </tbody>
   </table>
 {{/each }}
+
+  <a href="/usuario1/estado" class=" btn btn-primary"> Estado</a></td>
  
 
+<button id="boton" onclick="mostrar()"> Mostrar estado </button>
+
+<div id="boton">
+    <div id = "estado">
+        <button id="boton" onclick="ocultar()">Ocultar Estado</button>
+        Pagado:{{#each cuotas}}
+        {{{pagado}}}
+
+        {{/each }}
+        Devengado:{{#each cuotas}}{{{devengado}}}{{/each }}
+    </div>
+</div>
+<script>
+    function mostrar() {
+        document.getElementById("estado").style.display= "block"
+    }
+    function ocultar() {
+        document.getElementById("estado").style.display= "none"
+    }
+
+
+</script>

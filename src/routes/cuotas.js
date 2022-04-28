@@ -4,27 +4,37 @@ const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 
-router.get("/cuotas/:cuil_cuit", isLoggedIn, async (req, res) => {
-    const cuil_cuit = req.params.cuil_cuit
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
-    res.render('cuotas/lista', { cuotas })
-})
 
-router.get("/", isLevel2, isLoggedIn, async (req, res) => {
+
+//
+
+
+
+//LISTADO DE TODAS LAS CUOTAS 
+router.get("/lista", isLevel2, isLoggedIn, async (req, res) => {
+
     const cuotas = await pool.query('SELECT * FROM  cuotas ')
-    res.render('cuotas/lista', { cuotas })
-})
 
+
+    res.render('cuotas/lista', { cuotas }) 
+
+})
+//LISTADO AMPLIO DE TODAS LAS CUOTAS
 router.get("/ampliar", isLevel2, isLoggedIn, async (req, res) => {
     const cuotas = await pool.query('SELECT * FROM cuotas ')
     res.render('cuotas/listaamp', { cuotas })
 })
 
+
+//--------INICIO AGREGAR CUOTAS---------------------------------------------------------------------------
+
+
+//PAGINA DE AGREGAR CUOTAS UAN O VARIAS 
 router.get('/add', isLoggedIn, (req, res) => {
     res.render('cuotas/add')
 
 })
-
+// AGREGAR UNA SOLA CUOTA 
 router.post('/add', async (req, res) => {
     const { saldo_inicial, saldo_cierre, cuil_cuit } = req.body;
     const newLink = {
@@ -38,9 +48,9 @@ router.post('/add', async (req, res) => {
     req.flash('success', 'Guardado correctamente')
     res.redirect('/cuotas');
 
-
 })
 
+// AGREGA VARIAS CUOTAS 
 router.post('/addaut', async (req, res) => {
     var { cuil_cuit, monto_total, cantidad_cuotas, lote, mes, anio} = req.body;
     const Amortizacion = monto_total / cantidad_cuotas;
@@ -84,7 +94,7 @@ router.post('/addaut', async (req, res) => {
             saldo_inicial -= Amortizacion
             saldo_cierre = saldo_inicial - Amortizacion
         } req.flash('success', 'Guardado correctamente')
-        res.redirect('/cuotas')
+        res.redirect('/cuotas/lista')
     }
 
     else {
@@ -94,6 +104,15 @@ router.post('/addaut', async (req, res) => {
 })
 
 
+
+//--------FIN AGREGAR CUOTAS----------------------------------------------------------------------------
+
+
+
+
+
+// LISTADO DE CUOTAS DE UN CUIL DETERMINADO 
+
 router.get("/cuotas/:cuil_cuit", isLoggedIn, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
@@ -102,6 +121,9 @@ router.get("/cuotas/:cuil_cuit", isLoggedIn, async (req, res) => {
 
 
 
+
+
+// PAGINA DE EDITAR CLIENTE    **NO PROBADO 
 router.get("/edit/:id", isLoggedIn, async (req, res) => {
     const id = req.params.id
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
@@ -109,85 +131,14 @@ router.get("/edit/:id", isLoggedIn, async (req, res) => {
 })
 
 
-
-
+//-------------------------------------------------------------------------AGREGAR ICC
+// AGREGAR ICC DE UN SOLO CLIENTE
 router.get("/agregar_icc/:id", isLoggedIn, async (req, res) => {
     const id = req.params.id
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
     res.render('cuotas/agregaricc', { cuotas })
 })
-
-
-
-
-router.get("/agregariccgral", isLoggedIn, async (req, res) => {
-  
-   
-    res.render('cuotas/agregariccgral')
-})
-
-
-
-router.post('/agregariccgral', async (req, res, ) => {
-    const { ICC, mes,anio} = req.body;
-    const todas = await pool.query("select * from cuotas where mes =? and anio =?",[mes,anio])
-    const parcialidad = "Final"
-    for (var i=0; i<todas.length; i++) {
-   
-        if (todas[0]["nro_cuota"] == 1){
-            saldo_inicial = todas[i]["saldo_inicial"]
-            const Ajuste_ICC =  0
-            const Base_calculo = todas[i]["Amortizacion"]
-            const cuota_con_ajuste = todas[i]["Amortizacion"]
-            const Saldo_real = todas[i]["saldo_inicial"]
-    
-            
-            var cuota = {
-                ICC,
-                Ajuste_ICC,
-                Base_calculo,
-                cuota_con_ajuste,
-                Saldo_real,
-                parcialidad
-            }
-        }else {
-            const nro = todas[i]["nro_cuota"]
-            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?',[nro-1,todas[i]["cuil_cuit"]])
-           
-            var  Saldo_real_anterior =  anterior[0]["Saldo_real"]
-            
-            const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
-           
-            const Base_calculo = cuota_con_ajuste_anterior
-            const Ajuste_ICC =  cuota_con_ajuste_anterior*ICC
-           
-            const cuota_con_ajuste = cuota_con_ajuste_anterior+Ajuste_ICC
-            Saldo_real_anterior+=Ajuste_ICC
-            const Saldo_real = Saldo_real_anterior
-    
-            var cuota = {
-                ICC,
-                Ajuste_ICC,
-                Base_calculo,
-                cuota_con_ajuste,
-                Saldo_real,
-                parcialidad
-                
-            }
-           
-        }
-        await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
-       
-    
-    }
-
-    res.redirect(`/cuotas`);
-})
-
-
-
-
-
+// ACCION DE  AGREGAR ICC
 router.post('/agregaricc', async (req, res, ) => {
     const { id,  ICC, nro_cuota,cuil_cuit, Amortizacion} = req.body;
   const cuotaa = await pool.query("select * from cuotas where id = ? ", [id])
@@ -241,25 +192,83 @@ router.post('/agregaricc', async (req, res, ) => {
     
 })
 
-router.post('/prueba', async (req, res, ) => {
-    const { saldo_inicial, Amortizacion, Base_calculo, ICC, Ajuste_ICC ,cuota_con_ajuste , saldo_cierre, id } = req.body;
-      
-        }
 
-    /* const cuota = {
-        saldo_inicial,
-        Amortizacion,
-        Base_calculo,
-        ICC,
-        Ajuste_ICC,
-        cuota_con_ajuste,
-        saldo_cierre
+//PAGINA  AGREGAR ICC GENERAL
+router.get("/agregariccgral", isLoggedIn, async (req, res) => {
+  
+   
+    res.render('cuotas/agregariccgral')
+})
+
+
+//ACCION DE  AGREGAR ICC GENERAL
+router.post('/agregariccgral', async (req, res, ) => {
+    const { ICC, mes,anio} = req.body;
+    const todas = await pool.query("select * from cuotas where mes =? and anio =?",[mes,anio])
+    const parcialidad = "Final"
+    for (var i=0; i<todas.length; i++) {
+   
+        if (todas[0]["nro_cuota"] == 1){
+            saldo_inicial = todas[i]["saldo_inicial"]
+            const Ajuste_ICC =  0
+            const Base_calculo = todas[i]["Amortizacion"]
+            const cuota_con_ajuste = todas[i]["Amortizacion"]
+            const Saldo_real = todas[i]["saldo_inicial"]
+    
+            
+            
+        }else {
+            const nro = todas[i]["nro_cuota"]
+            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?',[nro-1,todas[i]["cuil_cuit"]])
+           
+            var  Saldo_real_anterior =  anterior[0]["Saldo_real"]
+            
+            const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
+           
+            const Base_calculo = cuota_con_ajuste_anterior
+            const Ajuste_ICC =  cuota_con_ajuste_anterior*ICC
+           
+            const cuota_con_ajuste = cuota_con_ajuste_anterior+Ajuste_ICC
+            Saldo_real_anterior+=Ajuste_ICC
+            const Saldo_real = Saldo_real_anterior
+    
+           
+           
+        }
+        var cuota = {
+            ICC,
+            Ajuste_ICC,
+            Base_calculo,
+            cuota_con_ajuste,
+            Saldo_real,
+            parcialidad
+            
+        }
+        try {
+            await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
+            
+        } catch (error) {
+            console.log(error)
+            res.redirect(`/cuotas`);
+            
+        }
+       
+       
+    
     }
 
-    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
-    req.flash('success', 'Guardado correctamente')
-    res.redirect(`/cuotas`);} */
-)
+    res.redirect(`/cuotas`);
+})
+
+
+
+
+
+
+//-------------------------------------------------------------------------FIN  AGREGAR ICC---------------------------------------
+
+
+
 
 
 
@@ -307,6 +316,27 @@ router.post('/cuotas', async (req, res, next) => {
     } else { res.redirect('clientes') }
 
 })
+
+//PRUEBA
+router.post('/prueba', async (req, res, ) => {
+    const { saldo_inicial, Amortizacion, Base_calculo, ICC, Ajuste_ICC ,cuota_con_ajuste , saldo_cierre, id } = req.body;
+      
+        }
+
+    /* const cuota = {
+        saldo_inicial,
+        Amortizacion,
+        Base_calculo,
+        ICC,
+        Ajuste_ICC,
+        cuota_con_ajuste,
+        saldo_cierre
+    }
+
+    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
+    req.flash('success', 'Guardado correctamente')
+    res.redirect(`/cuotas`);} */
+)
 module.exports = router
 
 

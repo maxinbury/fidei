@@ -87,12 +87,21 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 
 
 router.get('/add', isLoggedIn, isLevel2, (req, res) => {
+
     res.render('links/add')
 
 })
 
+router.get('/clientes/todos', isLoggedIn, isLevel2,async (req, res) => {
+    const links = await pool.query('SELECT * FROM clientes ')
+
+    res.render('links/todos',{links})
+
+})
+
 router.get('/clientes', isLoggedIn, isLevel2, (req, res) => {
-    res.render('links/clientes')
+
+    res.render('links/busqueda')
 
 })
 //editar
@@ -105,25 +114,56 @@ router.get('/edit/:id', isLoggedIn, async (req, res) => {
 })
 
 
+router.get("/detallecliente/:id", isLoggedIn, isLevel2, async (req, res) => {  // DETALLE DE CLIENTE RECIBE EL ID
+    const { id } = req.params
+    const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
 
-router.get("/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
-    const cuil_cuit = req.params.cuil_cuit // requiere el parametro id 
-    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit]) //[req.user.id]
 
-    console.log(links)
 
-    res.render('links/list', { links })
+    res.render('links/detallecliente', { links })
 })
+
+
+
 
 router.get("/app/:app", isLoggedIn, isLevel2, async (req, res) => {
     const app = req.params.app // requiere el parametro id 
-    const links = await pool.query('SELECT * FROM clientes WHERE Apellido = ?', [app]) //[req.user.id]
+    aux = '%'+app+'%'
+    console.log(app)
+    console.log(aux)
+    const links = await pool.query('SELECT * FROM clientes WHERE Nombre like ?', [aux]) //[req.user.id]
+    res.render('links/list', { links })
+})
+
+
+router.get("/busquedacuil/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {  //RECIBE EL CUIT DEL POST
+    const cuil_cuit = req.params.cuil_cuit // requiere el parametro id
+     console.log(cuil_cuit)
+     aux = '%'+cuil_cuit+'%'
+    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux]) //[req.user.id]
+    console.log(links)
     res.render('links/list', { links })
 })
 
 
 router.get("/algo/prueba", isLoggedIn, isLevel2, async (req, res) => { //probando
-    var str = 20-32587415-3
+    
+    const cuotas = await pool.query('SELECT * FROM  cuotas ')
+    /*for (var i = 0; i < cuotas.length; i++) {
+        if ( cuotas[i]['' ]){
+
+        }
+
+    }*/
+
+    uno = {si: 5,
+    no: 8
+    }
+    dos = [uno]
+    const algo = [dos, cuotas]
+    console.log(algo)
+
+
     /*part1 = str.substring(0, 2);
     part3 = str.substring(3, 11);
     part3 = str.substring(12 , str.length);
@@ -138,7 +178,7 @@ router.get("/algo/prueba", isLoggedIn, isLevel2, async (req, res) => { //proband
    a =  (a).slice(0, 11) + "-" + (a).slice(11);
     console.log(a)
   */
-    res.render('links/prueba')
+    res.render('links/prueba',[algo])
 })
 
 
@@ -197,13 +237,15 @@ router.post('/edit/:id', isLevel2, async (req, res) => {
 
 // buscar cliente por apellido no esta conectado
 router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
-    const { cuil_cuit } = req.body
-    console.log(cuil_cuit)
-    const rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit])
-    console.log(rows)
+    var { cuil_cuit } = req.body
+   aux= '%'+cuil_cuit+'%'
+   
+    
+    const rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+    
     if (rows.length > 0) {
-        res.redirect(`/links/${cuil_cuit}`)
-
+        res.redirect(`/links/busquedacuil/${cuil_cuit}`)
+        
 
     } else {
         req.flash('message', 'Error, cuil/cuit no encontrado ')
@@ -213,17 +255,25 @@ router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
 
 router.post('/listapp', isLoggedIn, isLevel2, async (req, res, next) => {
     const { app } = req.body
-    console.log(app)
-    const rows = await pool.query('SELECT * FROM clientes WHERE Apellido = ?', [app])
-
-    if (rows.length > 0) {
-        res.redirect(`/links/app/${app}`)
-
-
-    } else {
-        req.flash('message', 'Error, Apellido no encontrado ')
+    
+    aux = '%'+app+'%'
+    try {
+        const rows = await pool.query('SELECT * FROM clientes WHERE Nombre like ?', [aux])
+        console.log(rows)
+        if (rows.length > 0) {
+            res.redirect(`/links/app/${app}`)
+    
+    
+        } else {
+            req.flash('message', 'Error, Apellido no encontrado ')
+            res.redirect('clientes')
+        }
+    } catch (error) {
+        console.log(error)
         res.redirect('clientes')
+        
     }
+    
 })
 
 module.exports = router

@@ -15,30 +15,6 @@
 
 </div>
 
-<div class="submenu">
-    <div >   
-        <div class=>
-            <div class="card text-center">
-                <div>
-                   
-
-                    <div>
-                    <a href="/links/clientes" class="btn btn-primary m-4">
-                        Ve a clientes
-                    </a>
-                    <a href="/cuotas" class="btn btn-primary m-4">
-                        Ve a cuotas
-                    </a>
-                    <a href="/pagos" class="btn btn-success m-4">
-                        pagos 
-                    </a>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div><br>
 
 
 
@@ -59,7 +35,7 @@
         
     {{#each links}}
       <th scope="row">{{id}}</th>
-      <td><a href="/links/detallecliente/{{id}}" class=" btn btn-secondary"> {{Nombre}} </a></td>
+      <td> {{Nombre}}</td>
   
       <td>{{cuil_cuit}}</td>
       
@@ -79,7 +55,3 @@
         {{/each }}
   </tbody>
 </table>
-
-
-
-

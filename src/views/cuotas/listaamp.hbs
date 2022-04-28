@@ -1,20 +1,4 @@
-<div class="bgded overlay" style="background-image:url('/chillaid/images/demo/backgrounds/fondosc.jpeg');">
-    <div id="breadcrumb" class="hoc clear">
-        <!-- ################################################################################################ -->
-        <ul>
-            <li><a href="/links/clientes"> Ir a clientes</a></li>
-            <li><a href="/links/clientes"> Ir a cuotas</a></li>
-            <li><a href="/cuotas">Ve a cuotas</a></li>
-            <li><a href="/pagos">Ir a Pagos</a></li>
-            <li><a href="/pagos/pendientes">Aprobaciones de pagos</a></li>
-            <li><a href="aprobacion de legajos">aprobacion de legajos</a></li>
-            <li><a href="aprobacion de legajos">aprobacion CBU</a></li>
-            <li><a href="/aprobaciones/cbu">aprobacion CBU</a></li>
-            <li><a href="/cuotas/agregariccgrals"> Agregar ICC</a></li>
-        </ul>
-    </div>
 
-</div>
 
 
 
@@ -43,7 +27,7 @@
         <th scope="col" style="color: darkorange;">Ajuste ICC</th>
         <th scope="col" style="color: darkorange;">Cuota con Ajuste</th>
         <th scope="col">Saldo Real</th>
-        <th scope="col">Saldo cierre</th>
+   
     
 
 
@@ -51,7 +35,7 @@
     </thead>
     <tbody>
       <a href="/cuotas/add" class=" btn btn-primary"> Añadir</a></td>
-       <a href="/cuotas/" class=" btn btn-primary"> Reducir</a></td>
+       <a href="/cuotas/lista" class=" btn btn-primary"> Reducir</a></td>
       <tr>
         {{#each cuotas}}
         <th scope="row">{{id}}</th>
@@ -63,7 +47,7 @@
         <td> {{Ajuste_ICC}}</td>
         <td>{{cuota_con_ajuste}}</td>
          <td>{{Saldo_real}}</td>
-        <td>{{saldo_cierre}}</td>
+  
 
         
         <td>{{cuil_cuit}}</td>

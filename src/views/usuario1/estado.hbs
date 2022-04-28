@@ -79,7 +79,7 @@
 
 <button id="boton" onclick="mostrar()"> Mostrar estado </button>
 
-<div id="boton" style="display: block;">
+<div id="boton">
     <div id = "estado">
         <button id="boton" onclick="ocultar()">Ocultar Estado</button>
         Pagado:{{#each cuotas}}
@@ -96,5 +96,6 @@
     function ocultar() {
         document.getElementById("estado").style.display= "none"
     }
+
 
 </script>

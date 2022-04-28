@@ -115,8 +115,32 @@ router.get('/leer/:id', isLoggedIn, async (req, res) => {
 
 router.get("/cuotas", async (req, res) => {
 
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [req.user.cuil_cuit])
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? and parcialidad != "Original" ', [req.user.cuil_cuit])
+    var devengado = 0
+    var pagado = 0
+  
+    for (var i = 0; i < cuotas.length; i++) {
+        if (cuotas[i]['parcialidad'] ='Final') {
+            devengado+= cuotas[i]['cuota_con_ajuste']
+        }
+        ;
+    }
+    const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
 
+    for (var i = 0; i < pagos.length; i++) {
+           
+            pagado+= pagos[i]['monto']
+        
+        ;
+    }
+    const total  ={
+        pagado,
+        devengado
+
+    }
+  //  const total = [totall]
+    
+    cuotas.push(total)
     res.render('usuario1/listacuotas', { cuotas })
 
 })
@@ -138,17 +162,18 @@ router.get("/estado", async (req, res) => {
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
     var devengado = 0
-    var pagado
+    var pagado = 0
+  
     for (var i = 0; i < cuotas.length; i++) {
-        if (cuotas[i]['parcialidad'] !='Final') {
-            devengado+= cuotas[i]['parcialidad']
+        if (cuotas[i]['parcialidad'] ='Final') {
+            devengado+= cuotas[i]['cuota_con_ajuste']
         }
         ;
     }
     const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
 
     for (var i = 0; i < pagos.length; i++) {
-        
+           
             pagado+= pagos[i]['monto']
         
         ;
@@ -158,8 +183,12 @@ router.get("/estado", async (req, res) => {
         devengado
 
     }
+  //  const total = [totall]
+    
+    cuotas.push(total)
+   
 
-    res.render('usuario1/listacuotasamp', { total })
+    res.render('usuario1/estado', { cuotas })
 
 })
 
@@ -167,8 +196,32 @@ router.get("/estado", async (req, res) => {
 
 router.get("/cuotasamp", async (req, res) => {
 
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [req.user.cuil_cuit])
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? and parcialidad != "Original" ', [req.user.cuil_cuit])
+    var devengado = 0
+    var pagado = 0
+  
+    for (var i = 0; i < cuotas.length; i++) {
+        if (cuotas[i]['parcialidad'] ='Final') {
+            devengado+= cuotas[i]['cuota_con_ajuste']
+        }
+        ;
+    }
+    const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? and estado = "A"', [req.user.cuil_cuit])
 
+    for (var i = 0; i < pagos.length; i++) {
+           
+            pagado+= pagos[i]['monto']
+        
+        ;
+    }
+    const total  ={
+        pagado,
+        devengado
+
+    }
+  //  const total = [totall]
+    
+    cuotas.push(total)
     res.render('usuario1/listacuotasamp', { cuotas })
 
 })
