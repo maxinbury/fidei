@@ -1,0 +1,35 @@
+<h5>Estado: 
+    A= Aprobado
+    P= pendiente
+    R= Rechazado</h5>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Cuil/Cuit</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Comprobante 1</th>
+           <th scope="col">Comprobante 2</th>
+           <th scope="col">Comprobante 3</th>
+            <th scope="col">Estado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each constancias}}
+        <tr>
+            <th>{{cuil_cuit}}</th>
+            <td>{{tipo}}</td>
+            <td>{{comprobante}}</td>
+            <td>{{comprobante2}}</td>
+            <td>{{comprobante3}}</td>
+            <td>{{estado}}</td>
+        </tr>
+        {{else}}
+        <tr>
+            <td>No posee constancias </td>
+        </tr>
+        {{/each }}
+    </tbody>
+</table>
+ <a class="btn" href="/constancias/aprobadas/{{cuil_cuit}}">Ver solo aprobadas</a>
+  <a class="btn" href="/constancias/pendientes/{{cuil_cuit}}">Ver Pendientes</a>
+   <a class="btn" href="/constancias/rechazadas/{{cuil_cuit}}">Ver Rechazadas</a>

@@ -23,12 +23,10 @@
 
 
                     <div>
-                        <a href="/links/clientes" class="btn btn-primary m-4">
-                            Ve a clientes
+                        <a href="/links/clientes/todos" class="btn btn-primary m-4">
+                            Ver todos los Clientes
                         </a>
-                        <a href="/cuotas" class="btn btn-primary m-4">
-                            Ve a cuotas
-                        </a>
+                        <a href="/links/add" class=" btn btn-primary "> Crear Cliente</a>
                         <a href="/pagos" class="btn btn-success m-4">
                             pagos
                         </a>
@@ -41,25 +39,24 @@
 </div><br>
 <h3 class="titulo">Buscar Clientes</h3>
 
-<a href="/links/add" class=" btn btn-primary "> Crear Cliente</a></td>
+<a href="/links/add" class=" btn btn-primary "> Crear Cliente</a>
 
-<div>
+<div style="display: grid; grid-template-columns: 1fr 1fr">
 
-    <div class="container p-4">
-        <div class="row">
-            <div class="col-md-4 mx-auto">
+    <div class="container ">
+        
+            <div class="col-md-auto mx-auto">
                 <div class="card rext-center">
                     <div class="card-body">
                         <div class="card-header">
-                            <h3> Buscar por cuil_cuit </h3>
-                            <h6>Atencion, ingresar con "-"</h6>
+                            <h3> Buscar por cuil_cuit o dni </h3>
                         </div>
                         <div class="card-body">
                        
 
                             <form action="/links/listacuil_cuit" method="POST" name="cuil_cuit">
                                 <div class="form-group">
-                                    <input type="text" name="cuil_cuit" placeholder="Ej:34800558" class="form-control"
+                                    <input type="text" name="cuil_cuit" placeholder='Ej:"20-34821482-3" ó "34821482"' class="form-control"
                                         placeholder="Nombre de usuario">
                                 </div>
                                 <button class="btn btn-success btn-block">Buscar</button>
@@ -73,13 +70,13 @@
 
                 </div>
             </div>
-        </div>
+       
     </div>
-</div>
+
 <td></td>
-<div class="container p-4">
-    <div class="row">
-        <div class="col-md-4 mx-auto">
+<div class="container">
+  
+        <div class="col-md-auto mx-auto">
             <div class="card rext-center">
                 <div class="card-body">
                     <div class="card-header">
@@ -105,7 +102,8 @@
 
             </div>
         </div>
-    </div>
+   
 </div>
 
 
+</div>

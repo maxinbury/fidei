@@ -469,7 +469,7 @@ router.post('/edit_comp_estatuto', async (req, res) => {
 
 //  ACTA DE ORGANO
 router.post('/edit_comp_acta', async (req, res) => {
-    const { comprobante } = req.body;
+    const { comprobante, mes, anio } = req.body;
 
 
     if (comprobante.length > 0) {
@@ -479,14 +479,23 @@ router.post('/edit_comp_acta', async (req, res) => {
         const id_cliente = req.user.id
         const newr = {
             id_cliente,
+            mes,
+            anio,
             cuil_cuit,
             comprobante,
             estado,
             tipo
         }
-        await pool.query('INSERT INTO constancias SET ?', [newr])
-        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-        res.redirect(`/usuario1`);
+        try {
+            await pool.query('INSERT INTO constancias SET ?', [newr])
+            req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+            res.redirect(`/usuario1`);
+        } catch (error) {
+            console.log(error)
+            req.flash('message', 'Error, algo sucedio inesperadamente ')
+            res.redirect('/usuario1/legajo')
+        }
+      
 
 
     } else {

@@ -60,6 +60,7 @@ app.use(`/cuotas`, require('./routes/cuotas'))
 app.use('/pagos', require('./routes/pagos'))
 app.use('/usuario1', require('./routes/usuario1'))
 app.use('/aprobaciones', require('./routes/aprobaciones'))
+app.use('/constancias', require('./routes/constancias'))
 
 
 

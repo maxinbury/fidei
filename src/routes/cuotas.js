@@ -113,12 +113,18 @@ router.post('/addaut', async (req, res) => {
 
 // LISTADO DE CUOTAS DE UN CUIL DETERMINADO 
 
-router.get("/cuotas/:cuil_cuit", isLoggedIn, async (req, res) => {
+router.get("/cuotas/:cuil_cuit", isLoggedIn,isLevel2, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
+    console.log(cuil_cuit)
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
     res.render('cuotas/lista', { cuotas })
 })
-
+router.get("/cuotas/:cuil_cuit", isLoggedIn,isLevel2, async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    console.log(cuil_cuit)
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
+    res.render('cuotas/lista', { cuotas })
+})
 
 
 

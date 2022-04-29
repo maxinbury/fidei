@@ -91,7 +91,7 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 
 
 //    --------------------------------------------------------CREAR CLIENTE---------
-//            CRER CLIENTE -------PANTALLA FORMULARIO---  ACTUALIZAR
+//            CRER/agregar CLIENTE -------PANTALLA FORMULARIO---  ACTUALIZAR
 router.get('/add', isLoggedIn, isLevel2, (req, res) => {
 
     res.render('links/add')
@@ -99,28 +99,41 @@ router.get('/add', isLoggedIn, isLevel2, (req, res) => {
 })
 // METODO DE GUARDAR CLIENTE NUEVO
 router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
-    const { Nombre, Apellido, domicilio, cuil_cuit, razon } = req.body;
+    const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, osbervaciones,movil } = req.body;
     const newLink = {
         Nombre,
-        Apellido,
+        movil,
+        tipo_dni,
         razon,
+        telefono,
         domicilio,
+        osbervaciones,
         cuil_cuit
         //user_id: req.user.id
     };
 
 
     const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
+try { if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
+    req.flash('message', 'Error cuil_cuit ya existe')
+    res.redirect('/links/clientes')
+}
+else {
+    await pool.query('INSERT INTO clientes set ?', [newLink]);
+    req.flash('success', 'Guardado correctamente')
+    res.redirect('/links/clientes')
+}
+    
+} catch (error) {
+    console.log(error)
+    req.flash('message', 'Error algo salio mal')
+    res.redirect('/links/clientes')
+    
+}
+   
 
-    if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
-        req.flash('message', 'Error cuil_cuit ya existe')
-        res.redirect('/links/clientes')
-    }
-    else {
-        await pool.query('INSERT INTO clientes set ?', [newLink]);
-        req.flash('success', 'Guardado correctamente')
-        res.redirect('/links/clientes')
-    }
+
+
     
 })
 
@@ -130,15 +143,6 @@ router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
 // -------------------------- BUSQUEDA DE CLIENTES
 //BUSQUEDA POR CUIL
 // /METODO INTERNO DE BUSQUEDA POR CUIL_CUIT, RECIBE, BUSCA LOS QUE COINCIDEN Y REDIRECCIONA A LISTA FILTRADA
-router.get("/busquedacuil/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {  //RECIBE EL CUIT DEL POST
-    const cuil_cuit = req.params.cuil_cuit // requiere el parametro id
-     console.log(cuil_cuit)
-     aux = '%'+cuil_cuit+'%'
-    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux]) //[req.user.id]
-    console.log(links)
-    res.render('links/list', { links })
-})
-
 
 // BUSCAR CLIENTE POR CUIL_CUIT  ---------
 router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
@@ -147,8 +151,11 @@ router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
    
     
     const rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
-    
+ 
+
+
     if (rows.length > 0) {
+      
         res.redirect(`/links/busquedacuil/${cuil_cuit}`)
         
 
@@ -157,6 +164,31 @@ router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
         res.redirect('clientes')
     }
 })
+
+
+
+router.get("/busquedacuil/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {  //RECIBE EL CUIT DEL POST
+    const cuil_cuit = req.params.cuil_cuit // requiere el parametro id
+    
+     aux = '%'+cuil_cuit+'%'
+    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux]) //[req.user.id]
+    console.log(links)
+
+    /*
+        Contar cuantos encontro
+        dividir por 10
+        70
+
+
+    */
+
+
+
+    res.render('links/list', { links })
+})
+
+
+
 
 
 

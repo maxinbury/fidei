@@ -1,4 +1,4 @@
-<div class="bgded overlay" style="background-image:url('/img/fondogris.jpg');">
+<div class="bgded overlay" style="background-image:url('/img/fondosc.jpeg');">
     <div id="breadcrumb" class="hoc clear">
         <!-- ################################################################################################ -->
         <ul>
@@ -14,3 +14,47 @@
     </div>
 
 </div>
+
+
+
+{{#each links}}
+
+
+
+<div class="wrapper row2">
+  <a class="btn" href="javascript:history.back()">Volver</a>
+  <a class="btn" href="links/clientes">Busqueda de clientes</a>
+  <a href="/links/delete/{{id}}" class=" btn btn-danger"> Borrar cliente </a>
+  <section id="ctdetails" class="hoc container clear"> 
+    <!-- ################################################################################################ -->
+    <div class="sectiontitle">
+      <p class="nospace font-xs">Datos personales</p>
+      <h6 class="heading font-x2">{{Nombre}}</h6>
+       
+    </div>
+    <figure class="one_half first">
+      <ul class="nospace clear">
+        <li class="block clear"><a href="#"><i class="fas fa-phone"></i></a> <span><strong>Telefono de contacto</strong>[ {{telefono}}  ]<a href="#">Editar</a></span></li>
+        <li class="block clear"><a href="#"><i class="fas fa-envelope"></i></a> <span><strong>Email</strong> [ {{email}}  ]<a href="#">Editar</a></span></li>
+        <li class="block clear"><a href="#"><i class="fas fa-map-marker-alt"></i></a> <span><strong>Direccion</strong>[ {{email}}  ] <a href="#">Editar</a></span></li>
+      </ul>
+    </figure>
+    <article class="one_half">
+      <h6 class="heading">Descripcion cond_de_venta</h6>
+      <p class="nospace btmspace-15">{{descripcion_cond_de_venta}}</p> <br> <br>
+     <h6 class="heading">Datos adicionales </h6>
+      <p class="nospace btmspace-15">{{observaciones}}</p>
+    </article>
+     <a class="btn" href="/cuotas/cuotas/{{cuil_cuit}}">Cuotas</a>
+     <a class="btn" href="/links/clientes">Pagos</a>
+     <a class="btn" href="/constancias/lista/{{cuil_cuit}}">Ver constancias</a>
+     <br>
+     <a class="btn" href="">Determinar Ingreso declarado (Vacio)</a>
+
+    <!-- ################################################################################################ -->
+  </section>
+</div>
+
+
+
+{{/each}}
