@@ -10,7 +10,8 @@ const { isLoggedIn } = require('../lib/auth') //proteger profile
 
 
 
-//LISTADO DE TODAS LAS CUOTAS 
+//LISTADO DE TODAS LAS CUOTAS ------------- no esta conectado
+
 router.get("/lista", isLevel2, isLoggedIn, async (req, res) => {
 
     const cuotas = await pool.query('SELECT * FROM  cuotas ')
@@ -30,10 +31,16 @@ router.get("/ampliar", isLevel2, isLoggedIn, async (req, res) => {
 
 
 //PAGINA DE AGREGAR CUOTAS UAN O VARIAS 
-router.get('/add', isLoggedIn, (req, res) => {
-    res.render('cuotas/add')
+router.get('/add/cliente/:cuil_cuit', isLoggedIn, async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    let aux = '%'+cuil_cuit+'%'
+    
+    const cliente = await pool.query('SELECT * FROM  clientes where cuil_cuit like ?',[aux])
+
+    res.render('cuotas/add',{cliente})
 
 })
+
 // AGREGAR UNA SOLA CUOTA 
 router.post('/add', async (req, res) => {
     const { saldo_inicial, saldo_cierre, cuil_cuit } = req.body;
@@ -50,21 +57,25 @@ router.post('/add', async (req, res) => {
 
 })
 
+
 // AGREGA VARIAS CUOTAS 
 router.post('/addaut', async (req, res) => {
     var { cuil_cuit, monto_total, cantidad_cuotas, lote, mes, anio} = req.body;
     const Amortizacion = monto_total / cantidad_cuotas;
-  
-    var nro_cuota = 1
-    var saldo_inicial = monto_total
-    console.log(cuil_cuit)
-    const row = await pool.query('SELECT * from clientes where cuil_cuit = ?', [req.body.cuil_cuit])
+ 
+    let nro_cuota = 1
+    let saldo_inicial = monto_total
+    let aux =  '%'+cuil_cuit+'%'  
+   
+    const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
+   
     if (row.length > 0) {
         var saldo_cierre = saldo_inicial - Amortizacion
         const Saldo_real = saldo_inicial
         const id_cliente = row[0].id
-
-
+        
+        try {
+            
         for (var i = 1; i <= cantidad_cuotas; i++) {
             nro_cuota = i
             const newLink = {
@@ -93,13 +104,22 @@ router.post('/addaut', async (req, res) => {
 
             saldo_inicial -= Amortizacion
             saldo_cierre = saldo_inicial - Amortizacion
-        } req.flash('success', 'Guardado correctamente')
-        res.redirect('/cuotas/lista')
+        }
+        
+    }catch (error) {
+            console.log(error)
+        }
+    
+        
+        
+        
+        req.flash('success', 'Guardado correctamente')
+        res.redirect('/links/clientes')
     }
 
     else {
         req.flash('message', 'Error cliente no existe')
-        res.redirect('/cuotas/add')
+        res.redirect('/links/clientes')
     }
 })
 
@@ -115,15 +135,16 @@ router.post('/addaut', async (req, res) => {
 
 router.get("/cuotas/:cuil_cuit", isLoggedIn,isLevel2, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
-    console.log(cuil_cuit)
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
-    res.render('cuotas/lista', { cuotas })
-})
-router.get("/cuotas/:cuil_cuit", isLoggedIn,isLevel2, async (req, res) => {
-    const cuil_cuit = req.params.cuil_cuit
-    console.log(cuil_cuit)
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
-    res.render('cuotas/lista', { cuotas })
+    if (cuotas.length===0){
+        let aux = '%'+cuil_cuit+'%'
+     
+        const cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+        
+        res.render('cuotas/listavacia', { cliente })
+
+    }else{  res.render('cuotas/lista', { cuotas })}
+   
 })
 
 

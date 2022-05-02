@@ -134,12 +134,22 @@ router.get('/leer/:id', isLoggedIn, async (req, res) => {
 // ------------------------------------- FIN   NOTIFICACIONES 
 
 
+
 //----------------------------LISTA DE CUOTAS
 
 //LISTAR CUOTAS 
 router.get("/cuotas", async (req, res) => {
 
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? and parcialidad != "Original" ', [req.user.cuil_cuit])
+    cuil_cuit = req.user.cuil_cuit
+   
+    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+     console.log(cuil_cuit)
+     
+    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux ='%'+ cuil_cuit+'%'
+
+
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
     var devengado = 0
     var pagado = 0
   
@@ -149,7 +159,7 @@ router.get("/cuotas", async (req, res) => {
         }
         ;
     }
-    const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
+    const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [aux])
 
     for (var i = 0; i < pagos.length; i++) {
            
@@ -274,8 +284,15 @@ router.get("/subir", isLoggedIn, (req, res) => {
 // GUARDADO DE TRANSFERENCIA 
 router.post('/realizar', async (req, res) => {
     const { monto, comprobante, mes, anio } = req.body;
-    const cuil_cuit = req.user.cuil_cuit
     var estado = 'P'
+
+    let cuil_cuit = req.user.cuil_cuit
+   
+    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+     console.log(cuil_cuit)
+     
+    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux ='%'+ cuil_cuit+'%'
     /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
      const workbooksheets = workbook.SheetNames
      const sheet = workbooksheets[0]
@@ -292,8 +309,9 @@ router.post('/realizar', async (req, res) => {
          }
      }
   */
+ aux = '%'+cuil_cuit+'%'
 
-    const existe = await pool.query('Select * from cuotas where cuil_cuit=? and mes = ? and anio =?  and parcialidad = "Final"', [cuil_cuit, mes, anio])
+    const existe = await pool.query('Select * from cuotas where cuil_cuit like ? and mes = ? and anio =?  and parcialidad = "Final"', [aux, mes, anio])
 
     if (existe.length > 0) {
 
@@ -342,9 +360,16 @@ router.post('/addcbu', async (req, res) => {
         dc,
         estado
     }
-    await pool.query('INSERT INTO cbus SET ?', [newcbu])
-
     req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+    try {
+        await pool.query('INSERT INTO cbus SET ?', [newcbu])
+    } catch (error) {
+        req.flash('message', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        console.log(error)
+    }
+  
+
+   
     res.redirect(`/usuario1`);
 })
 

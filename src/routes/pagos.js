@@ -15,13 +15,15 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
   
     var pagot = await pool.query('select * from pagos where id = ?',[id])
     
-   
-    const cuota = await pool.query('select * from cuotas where id = ?',pagot[0]["id_cuota"]) //objeto cuota
-    console.log(cuota[0]["Saldo_cierre"])
+    let auxiliar = pagot[0]["id_cuota"]
+    const cuota = await pool.query('select * from cuotas where id = ?',[auxiliar]) //objeto cuota
+
+
     
   try { 
       if (cuota[0]["nro_cuota"] === 1){
-    var saldo_realc = cuota[0]["saldo_real"]
+    var saldo_realc = cuota[0]["Saldo_real"]
+    console.log(cuota)
 }else {
     const cuotaant= await pool.query("Select * from cuotas where cuil_cuit=? and nro_cuota= ?",[cuota[0]["cuil_cuit"],(cuota[0]["nro_cuota"])-1])
     var saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["Ajuste_ICC"]
@@ -43,7 +45,7 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
    // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
     Saldo_real = saldo_realc  - pago 
   
-    console.log(Saldo_real)
+  
     const update= {
         Saldo_real,
         pago,

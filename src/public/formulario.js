@@ -9,6 +9,7 @@ const expresiones = {
 	correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
 	telefono: /^\d{7,14}$/, // 7 a 14 numeros.,
 	cuil_cuit:/^\d{11,11}$/,
+	nro_cliente:/^\d{1,12}$/
 	//cuil_cuit: /^([0-9]{11}|[0-9]{2}-[0-9]{8}-[0-9]{1})$/g // 7 a 14 numeros.,
 }
 
@@ -20,7 +21,8 @@ const campos = {
 	password: false,
 	correo: false,
 	telefono: false,
-	cuil_cuit: false
+	cuil_cuit: false,
+	nro_cliente: false
 }
 
 const validarFormulario = (e) => {
@@ -54,6 +56,9 @@ const validarFormulario = (e) => {
 		case "cuil_cuit":
 			validarCampo(expresiones.cuil_cuit, e.target, 'cuil_cuit');
 			let prueba = verificar(e.target)
+			break;
+		case "nro_cliente":
+			validarCampo(expresiones.nro_cliente, e.target, 'nro_cliente');
 			break;
 	}
 }
@@ -119,7 +124,7 @@ formulario.addEventListener('submit', (e) => {
 	
 
 	const terminos = document.getElementById('terminos');
-	if (campos.nombre && campos.password && campos.correo && campos.telefono && terminos.checked) {
+	if (campos.nombre && campos.password && campos.correo && campos.telefono && campos.nro_cliente && terminos.checked ) {
 		// formulario.reset();
 
 

@@ -1,0 +1,25 @@
+<div class="container " style="margin: 10px  align=right ">
+    <label>Buscar por cuil/cuit</label>
+    <form action="/links/listacuil_cuit" method="POST" name="cuil_cuit">
+        <div class="form-group">
+            <input type="text" name="cuil_cuit" placeholder="Ej:34800558" class="form-control"
+                placeholder="Nombre de usuario">
+        </div>
+        <button class="btn btn-primary btn-block">Buscar</button>
+    </form>
+
+</div>
+</div>
+
+{{#each cliente}}
+
+<a href="/cuotas/add/cliente/{{cuil_cuit}}" class=" btn btn-primary"> Añadir</a></td>
+
+<div class="col-md-4 mx-auto">
+    <div class="card card-body text-center">
+        <p> No hay cuotas</p>
+        <a href="/cuotas/add/cliente/{{cuil_cuit}}"> Añadir</a>
+    </div>
+</div>
+</div>
+{{/each }}

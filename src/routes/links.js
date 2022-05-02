@@ -320,20 +320,8 @@ router.get("/detallecliente/:id", isLoggedIn, isLevel2, async (req, res) => {  /
 
 router.get("/algo/prueba", isLoggedIn, isLevel2, async (req, res) => { //probando
     
-    const cuotas = await pool.query('SELECT * FROM  cuotas ')
-    /*for (var i = 0; i < cuotas.length; i++) {
-        if ( cuotas[i]['' ]){
-
-        }
-
-    }*/
-
-    uno = {si: 5,
-    no: 8
-    }
-    dos = [uno]
-    const algo = [dos, cuotas]
-    console.log(algo)
+    const algo = await pool.query('SELECT * FROM  cuotas ')
+   
 
 
     /*part1 = str.substring(0, 2);

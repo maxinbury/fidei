@@ -15,6 +15,57 @@
     </div>
 
 </div>
+{{#each cliente}}
+<div style="display: grid;">
+
+    <div class="container p-4">
+        <div class="card-header">
+						<h3>  Añadir automaticamente</h3>
+					</div>
+        <div class="row">
+            <div class="col-md-4 ">
+                <div class="card mx-4 x-auto ">
+                    <div class="card-body">
+                        <form action="/cuotas/addaut" method="POST">
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Cuil_cuit</label>
+                                <input type="float"value = "{{cuil_cuit}}" name="cuil_cuit" class="form-control"
+                                    placeholder="cuil_cuit cliente">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Mes inicio de plan</label>
+                                <input type="float" class="form-control" name="mes" placeholder="Mes"
+                                    > 
+                                     <input type="integer" class="form-control" name="anio" placeholder="Año"
+                                    >
+                            </div>
+                             <div class="form-group">
+                                 <label for="exampleFormControlFile1">Valor del terreno</label>
+                                 <p style="color: brown;">agregar valor del anticipo</p>
+                                <input type="float" class="form-control" name="monto_total" placeholder="monto_total"
+                                    > 
+                            </div>
+                            <div class="form-group">
+                                 <label for="exampleFormControlFile1">Cantidad Cuotas</label>
+                                <input type="float" name="cantidad_cuotas" class="form-control"
+                                    placeholder="cantidad_cuotas">
+                            </div>
+                        
+                            <label for="exampleFormControlFile1">Lote</label>
+                            <div class="form-group">
+                                <input type="float" name="lote" class="form-control" placeholder="Lote">
+                            </div>
+                            <div class="form-group">
+                                <button class="tbn btn-primary btn-block"> Guardar</button>
+                            </div>
+                        </form>
+                        </card-body>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <div class="container p-4" style="width: 100%;">
@@ -25,7 +76,7 @@
                         <form action="/cuotas/add" method="POST">
                             <div class="form-group">
                                 <label for="exampleFormControlFile1">cuil/cuit</label>
-                                <input type="int" name="cuil_cuit" class="form-control" placeholder="cuil_cuit Cliente">
+                                <input type="int" value = "{{cuil_cuit}}"name="cuil_cuit" class="form-control" placeholder={{cuil_cuit}}>
                             </div>
                             <label for="exampleFormControlFile1">Saldo inicial</label>
                             <div class="form-group">
@@ -58,49 +109,6 @@
 
     </div>
     </tr>
-    <div class="container p-4">
-        <div class="card-header">
-						<h3>  Añadir automticamente</h3>
-					</div>
-        <div class="row">
-            <div class="col-md-4 ">
-                <div class="card mx-4 x-auto ">
-                    <div class="card-body">
-                        <form action="/cuotas/addaut" method="POST">
-                            <div class="form-group">
-                                <label for="exampleFormControlFile1">Cuil_cuit</label>
-                                <input type="float" name="cuil_cuit" class="form-control"
-                                    placeholder="cuil_cuit cliente">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleFormControlFile1">fecha</label>
-                                <input type="float" class="form-control" name="mes" placeholder="Mes"
-                                    > 
-                                     <input type="integer" class="form-control" name="anio" placeholder="Año"
-                                    >
-                            </div>
-                             <div class="form-group">
-                                 <label for="exampleFormControlFile1">Monto Total</label>
-                                <input type="float" class="form-control" name="monto_total" placeholder="monto_total"
-                                    > 
-                            </div>
-                            <div class="form-group">
-                                 <label for="exampleFormControlFile1">Cantidad Cuotas</label>
-                                <input type="float" name="cantidad_cuotas" class="form-control"
-                                    placeholder="cantidad_cuotas">
-                            </div>
-                        
-                            <label for="exampleFormControlFile1">Lote</label>
-                            <div class="form-group">
-                                <input type="float" name="lote" class="form-control" placeholder="Lote">
-                            </div>
-                            <div class="form-group">
-                                <button class="tbn btn-primary btn-block"> Guardar</button>
-                            </div>
-                        </form>
-                        </card-body>
-                    </div>
-                </div>
-            </div>
-        </div>
+    
     </div>
+ {{/each }}
