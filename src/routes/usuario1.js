@@ -282,7 +282,7 @@ router.get("/subir", isLoggedIn, (req, res) => {
 })
 
 // GUARDADO DE TRANSFERENCIA 
-router.post('/realizar', async (req, res) => {
+router.post('/realizar', async (req, res, done) => {
     const { monto, comprobante, mes, anio } = req.body;
     var estado = 'P'
 
@@ -300,8 +300,7 @@ router.post('/realizar', async (req, res) => {
      const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
      //console.log(dataExcel)
  
-     const palabra = 'LEY'
-     console.log(palabra.includes('LEY'))
+
  
      for (const property in dataExcel) {
          if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
@@ -314,6 +313,20 @@ router.post('/realizar', async (req, res) => {
     const existe = await pool.query('Select * from cuotas where cuil_cuit like ? and mes = ? and anio =?  and parcialidad = "Final"', [aux, mes, anio])
 
     if (existe.length > 0) {
+        let montomaxx= await pool.query('Select * from clientes where cuil_cuit like ? ',[aux])
+        try {
+            montomax = montomaxx[0]['ingresos ']
+        
+
+        } catch (error) {
+            console.log(error)
+        }
+       
+        if (montomax < monto ) {
+            done(null, false, req.flash('message', 'Atencion, pago inusual ')) 
+
+        }
+
 
         const id_cuota = existe[0]["id"]
         const newLink = {

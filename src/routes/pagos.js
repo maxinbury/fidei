@@ -12,18 +12,19 @@ router.get("/",isLevel2, async (req,res)=> {
 
 router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot es el objeto pago
     const { id } = req.params
-  
+   
     var pagot = await pool.query('select * from pagos where id = ?',[id])
     
     let auxiliar = pagot[0]["id_cuota"]
-    const cuota = await pool.query('select * from cuotas where id = ?',[auxiliar]) //objeto cuota
 
+    const cuota = await pool.query('select * from cuotas where id = ?',[auxiliar]) //objeto cuota
+    console.log(cuota)// aca ver error
 
     
   try { 
       if (cuota[0]["nro_cuota"] === 1){
     var saldo_realc = cuota[0]["Saldo_real"]
-    console.log(cuota)
+   
 }else {
     const cuotaant= await pool.query("Select * from cuotas where cuil_cuit=? and nro_cuota= ?",[cuota[0]["cuil_cuit"],(cuota[0]["nro_cuota"])-1])
     var saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["Ajuste_ICC"]
@@ -39,7 +40,7 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
   }
    
 
-    pago = cuota[0]["pago"] + pagot[0]["monto"]
+    let pago = cuota[0]["pago"] + pagot[0]["monto"]
    
  
    // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
@@ -53,13 +54,10 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
 
     }
 
-
     await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update ,cuota[0]["id"]])
 
         
-    
-    
-    
+
     
     await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A",id])
     req.flash('success','Guardado correctamente')

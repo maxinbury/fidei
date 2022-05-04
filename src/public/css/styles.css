@@ -172,6 +172,9 @@ body {
 .titulocarrusel{
 	background-color: rgb(40, 40, 77);
 }
+.oculto {
+	display: none;
+}
 .formulario {
 	display: grid;
 	grid-template-columns: 1fr 1fr;

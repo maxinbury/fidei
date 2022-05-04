@@ -200,11 +200,15 @@ router.get("/busquedacuil/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) =>
 // RECEPCION DE PARAMETROS DE APELLIDO Y FILTRO 
 router.post('/listapp', isLoggedIn, isLevel2, async (req, res, next) => {
     const { app } = req.body
+    if (app==[]){
+        res.redirect('/links/clientes/todos')
+    }else{
     
+
     aux = '%'+app+'%'
     try {
         const rows = await pool.query('SELECT * FROM clientes WHERE Nombre like ?', [aux])
-        console.log(rows)
+       
         if (rows.length > 0) {
             res.redirect(`/links/app/${app}`)
     
@@ -217,7 +221,7 @@ router.post('/listapp', isLoggedIn, isLevel2, async (req, res, next) => {
         console.log(error)
         res.redirect('clientes')
         
-    }
+    }}
     
 })
 
@@ -225,8 +229,7 @@ router.post('/listapp', isLoggedIn, isLevel2, async (req, res, next) => {
 router.get("/app/:app", isLoggedIn, isLevel2, async (req, res) => {
     const app = req.params.app // requiere el parametro id 
     aux = '%'+app+'%'
-    console.log(app)
-    console.log(aux)
+ 
     const links = await pool.query('SELECT * FROM clientes WHERE Nombre like ?', [aux]) //[req.user.id]
     res.render('links/list', { links })
 })
@@ -311,10 +314,35 @@ router.get("/detallecliente/:id", isLoggedIn, isLevel2, async (req, res) => {  /
 
 
 
+//  PAGINA DE AGREGAR INGRESO DECLARADO
+router.get('/agregaringreso/:cuil_cuit', isLoggedIn, isLevel2, async (req, res) => {
+    const { cuil_cuit } = req.params
+    aux = '%' + cuil_cuit + '%'
+    const cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
+   
+   
+    res.render('links/agregaringreso', { cliente })
+})
 
+router.post('/agregaringreso', isLevel2, async (req, res) => {
+    const {id, ingresos,cuil_cuit } = req.body
+    console.log(cuil_cuit)
+    const newLink = {
+      ingresos
+    }
+   try {
+    await pool.query('UPDATE clientes set ? WHERE id = ?', [newLink, id])
+    
+   } catch (error) {
+       console.log(error)
+       
+   }
 
-
-
+    
+    
+    res.redirect('/links/detallecliente/'+id)
+})
+////////////////////////////////
 
 
 

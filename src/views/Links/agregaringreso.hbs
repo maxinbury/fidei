@@ -1,0 +1,23 @@
+{{#each cliente}}
+
+<form action="/links/agregaringreso" method="POST">
+    <div class="oculto">
+        <label for="exampleFormControlFile1">cuil/cuit</label>
+        <input type="int" value="{{id}}" name="id" class="form-control" placeholder={{cuil_cuit}}>
+    </div>
+
+    <div class="oculto">
+        <label for="">cuil/cuit</label>
+        <input type="int" value="{{cuil_cuit}}" name="cuil_cuit" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="">Ingresos</label>
+        <input type="int" value="" name="ingresos" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <button class="tbn btn-primary btn-block"> Guardar</button>
+    </div>
+
+</form>
+{{/each}}
