@@ -1,12 +1,33 @@
-const pool = require('../database')
+/* express = require('express')
+  let poool = require('../database/db') */
+let miboton = document.getElementById("miboton")
+miboton.addEventListener("click",calcular)
 
 
-    const verificar = async(req,res, next)=> {  
-    const cuil_cuit = req.body.cuil_cuit
-     const aux = await pool.query('SELECT * FROM users WHERE cuil_cuit=? ',[cuil_cuit])
+
+const calcularr = async()  =>{
+    let nombre = await pool.query('select * from users where cuil_cuit= "34825125"')
+       // let aux = document.getElementById("uno")
+       //alert(nombre[0]['nombre'])
+    //  let a = 'sadas-sad-as-das-das-'
+   //   let  b = a.Split();
+
+
     
-    if (aux >0  ) {    
-        return true  
-    }
-    return false}
+}
+
+
+ function calcular () {
+  let a = 'sadas-sad-as-das-das-'
+    let  b = a.Split('-');
+    console.log(b)
+   // let nombre = await pool.query('select * from users where cuil_cuit= "34825125"')
+       // let aux = document.getElementById("uno")
+       //alert(nombre[0]['nombre'])
+       }
+
+
+
+
+ 
 

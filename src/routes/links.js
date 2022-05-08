@@ -20,13 +20,18 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 
     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
     //console.log(dataExcel)
-    console.log(dataExcel)
+  
 
-    const palabra = 'LEY'
-    console.log(palabra.includes('LEY'))
+    
+    
     var a=1
     for (const property in dataExcel) {
         a+=1
+        aux = dataExcel[property]['Número']
+        cuil_cuit= aux.replace(/\s+/g, '')
+        obs = dataExcel[property]['Observaciones']
+        observaciones= obs.replace(/\s+/g, '')
+        cadena = observaciones.split('-');
         try{
         const newLink = {
             id:dataExcel[property]['Cód. cliente'],
@@ -34,7 +39,7 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
             nombre : dataExcel[property]['Nombre comercial'],
             tipo_dni:dataExcel[property]['Tipo de documento'],
             domicilio:dataExcel[property]['Domicilio'],
-            cuil_cuit: dataExcel[property]['Número'],
+            cuil_cuit,
             localidad: dataExcel[property]['Localidad'],
             cp: dataExcel[property]['Cód. Postal'],
             telefono: dataExcel[property]['Teléfono'],
@@ -58,7 +63,7 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
             percepcion_ib: dataExcel[property]['Percepción IB (habitual)'],
             percepcion_ib_bs_as_59_98: dataExcel[property]['Percep. IB. Bs.AS. 59/98 (habitual)'],
             direcciones_de_entrega: dataExcel[property]['Direcciones de entrega'],
-            observaciones: dataExcel[property]['Observaciones'],
+            observaciones,
             idiomas_comprobantes: dataExcel[property]['Idioma Comprobantes de Exportación'],
             incluye_comentarios_de_articulos: dataExcel[property]['Incluye Comentarios de los Artículos'],
             debitos_por_mora: dataExcel[property]['Débitos por mora'],
@@ -66,13 +71,24 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
             inhabilitado_nexo_cobranzas: dataExcel[property]['Inhabilitado nexo Cobranzas'],
             id_lote_nombre: dataExcel[property]['Identificación Lote (Adic.)'],
            
-
-
-
         }
-      
 
-        await pool.query('INSERT INTO clientes set ?', [newLink]);
+          
+        let auxiliarid = await pool.query('select * from clientes  where cuil_cuit = ?',[aux])
+        try {
+            if (auxiliarid.length>0){
+                //hacer la carga al manzanero
+            }else{
+                await pool.query('INSERT INTO clientes set ?', [newLink]);
+            }
+            
+
+        } catch (error) {
+            console.log(error)
+        }
+
+
+      
     }catch(e){
         console.log(e)
     }
@@ -82,7 +98,14 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
         }*/
 
     }
- 
+    try {
+        fraccion=
+        manzana= 
+        lote=2
+
+    } catch (error) {
+        console.log(error)
+    }
 
 
 
@@ -303,9 +326,10 @@ router.get('/delete/:id', isLoggedIn, isLevel2, async (req, res) => {
 
 
 // VER EL DETALLE DE CLIENTE--
-router.get("/detallecliente/:id", isLoggedIn, isLevel2, async (req, res) => {  // DETALLE DE CLIENTE RECIBE EL ID
-    const { id } = req.params
-    const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [id])
+router.get("/detallecliente/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {  // DETALLE DE CLIENTE RECIBE EL ID
+    const { cuil_cuit } = req.params
+    let aux = '%'+cuil_cuit+'%'
+    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like  ?', [aux])
 
 
 
@@ -340,17 +364,21 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
     
     
-    res.redirect('/links/detallecliente/'+id)
+    res.redirect('/links/detallecliente/'+cuil_cuit)
 })
 ////////////////////////////////
 
 
 
-router.get("/algo/prueba", isLoggedIn, isLevel2, async (req, res) => { //probando
+router.get("/algo/prueba",  async (req, res) => { //probando
     
-    const algo = await pool.query('SELECT * FROM  cuotas ')
-   
 
+   
+    let a = 'IC3 - FD - M2 - L6'
+    let b = a.replace(/\s+/g, '');
+    
+    b = b.split('-');
+    console.log(b)
 
     /*part1 = str.substring(0, 2);
     part3 = str.substring(3, 11);
@@ -366,7 +394,7 @@ router.get("/algo/prueba", isLoggedIn, isLevel2, async (req, res) => { //proband
    a =  (a).slice(0, 11) + "-" + (a).slice(11);
     console.log(a)
   */
-    res.render('links/prueba',[algo])
+    res.render('links/prueba')
 })
 
 

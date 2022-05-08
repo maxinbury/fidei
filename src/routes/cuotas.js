@@ -21,8 +21,11 @@ router.get("/lista", isLevel2, isLoggedIn, async (req, res) => {
 
 })
 //LISTADO AMPLIO DE TODAS LAS CUOTAS
-router.get("/ampliar", isLevel2, isLoggedIn, async (req, res) => {
-    const cuotas = await pool.query('SELECT * FROM cuotas ')
+router.get("/ampliar/:cuil_cuit", isLevel2, isLoggedIn, async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    let aux = '%' + cuil_cuit + '%'
+   
+    const cuotas = await pool.query('SELECT * FROM cuotas where cuil_cuit like ?',[aux])
     res.render('cuotas/listaamp', { cuotas })
 })
 
@@ -261,7 +264,7 @@ router.post('/agregaricc', async (req, res,) => {
 
     }
     await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
-    res.redirect(`/cuotas/ampliar`);
+    res.redirect(`/cuotas/cuotas/`+cuil_cuit);
 
 
 
@@ -336,8 +339,12 @@ router.post('/agregariccgral', async (req, res,) => {
 })
 
 
+// redireccion a lotes del cliente 
+router.get("/lotes/:cuil_cuit", isLoggedIn, async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
 
-
+    res.render('cuotas/lotes',{s})
+})
 
 
 //-------------------------------------------------------------------------FIN  AGREGAR ICC---------------------------------------

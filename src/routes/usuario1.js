@@ -8,89 +8,12 @@ const XLSX = require('xlsx')
 
 ///////////////////-------------MENU PRINCIPAL--- VERIFICACION DE HABILITACION PARA PAGAR 
 router.get('/', isLoggedIn, async (req, res) => {
+    let cuil_cuit = req.user.cuil_cuit
 
-
-    const habilitado = await pool.query('select habilitado from users where cuil_cuit=? ', [req.user.cuil_cuit])
-    const habil = pool.query('Select * from users where cuil_cuit= ? and habilitado ="SI"', [req.user.cuil_cuit])
-
-    if (habilitado[0]['habilitado'] = 'NO') {
-        var Recibo_sueldo = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Recibo_sueldo" and estado="A" ', [req.user.cuil_cuit])
-
-        var Dni = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Dni" and estado="A" ', [req.user.cuil_cuit])
-        var ConstAFIP = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "ConstAFIP" and estado="A" ', [req.user.cuil_cuit])
-        var Domicilio = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Domicilio" and estado="A" ', [req.user.cuil_cuit])
-        var Estatuto = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Estatuto" and estado="A" ', [req.user.cuil_cuit])
-        var Actaorgano = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Actaorgano" and estado="A" ', [req.user.cuil_cuit])
-        var Balance = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Balance" and estado="A" ', [req.user.cuil_cuit])
-        var DjIVA = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "DjIVA" and estado="A" ', [req.user.cuil_cuit])
-        var Djprovision = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "Djprovision" and estado="A" ', [req.user.cuil_cuit])
-        var djdatospers = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "djdatospers" and estado="A" ', [req.user.cuil_cuit])
-        var djcalidadpers = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "djcalidadpers" and estado="A" ', [req.user.cuil_cuit])
-        var djorigen = await pool.query('select * from constancias where cuil_cuit = ? and tipo = "djorigen" and estado="A" ', [req.user.cuil_cuit])
-
-        var habilitar = true
-        if (Recibo_sueldo.length == 0) {
-            Recibo_sueldo = 'Recibo de sueldoo'
-            habilitar = false
-        } else { Recibo_sueldo = '' }
-        if (Dni.length == 0) {
-            Dni = 'Foto de DNI'
-            habilitar = false
-        } else { Dni = '' }
-        if (ConstAFIP.length == 0) {
-            ConstAFIP = 'Constancia de la Afip'
-            habilitar = false
-        } else { ConstAFIP = '' }
-        if (Domicilio.length == 0) {
-            Domicilio = 'Certificado de domicilio'
-            habilitar = false
-        } else { Domicilio = '' }
-        if (Estatuto.length == 0) {
-            Estatuto = 'Estatuto'
-            habilitar = false
-        } else { Estatuto = '' }
-        if (Actaorgano.length == 0) {
-            Actaorgano = 'Acta de organo'
-            habilitar = false
-        } else { Actaorgano = '' }
-        if (Balance.length == 0) {
-            Balance = 'Balance'
-            habilitar = false
-        } else { Balance = '' }
-        if (DjIVA.length == 0) {
-            DjIVA = 'Dj IVA'
-            habilitar = false
-        } else { DjIVA = '' }
-        if (Djprovision.length == 0) {
-            Djprovision = 'Djprovision'
-            habilitar = false
-        } else { Djprovision = '' }
-        if (djdatospers.length == 0) {
-            djdatospers = 'DJ datos personales'
-            habilitar = false
-        } else { djdatospers = '' }
-        if (djcalidadpers.length == 0) {
-            djcalidadpers = 'DJ Calidad persona'
-            habilitar = false
-        } else { djcalidadpers = '' }
-        if (djorigen.length == 0) {
-            djorigen = 'DJ Origen de fondos '
-            habilitar = false
-        } else { djorigen = '' }
-        if (habilitar) {
-            await pool.query('UPDATE `fideicomiso`.`users` SET `habilitado` = "SI" WHERE (`id` = ?)', [req.user.cuil_cuit])
-        }
-        const faltantes = { habil, Dni, ConstAFIP, Domicilio, Estatuto, Actaorgano, Balance, DjIVA, Djprovision, djdatospers, djorigen }
-
-        res.render('usuario1/menu', { faltantes })
-
-
-    } else {
-        const algo = 'algoo'
-
-        res.render('usuario1/menu', { algo })
-    }
-
+    let cliente = await pool.query('select * from users where cuil_cuit = ? ',[cuil_cuit])
+    console.log(cliente)
+    
+    res.render('usuario1/menu',{cliente})
 
 })
 
@@ -141,6 +64,8 @@ router.get('/leer/:id', isLoggedIn, async (req, res) => {
 router.get("/cuotas", async (req, res) => {
 
     cuil_cuit = req.user.cuil_cuit
+
+
    
     cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
      console.log(cuil_cuit)
@@ -227,8 +152,6 @@ router.get("/pagos", async (req, res) => {
 
  
 
-
-
     res.render('usuario1/pagos', { pagos })
 
 })
@@ -274,12 +197,31 @@ router.get("/estado", async (req, res) => {
 //------------------------------------------INFORMAR PAGO -------------------------------------------------
 
 // PAGINA DE INFO DE TRANSFERENCIA 
-router.get("/subir", isLoggedIn, (req, res) => {
+router.get("/subir", isLoggedIn,async (req, res) => {
+    try {
+      let aux=req.user.cuil_cuit
+         aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
+    
+        aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+        aux = '%'+aux+'%'
+
+        cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
+        console.log(aux)
+        
+    } catch (error) {
+        console.log(error)
+    }
+   
+
     if (req.user.habilitado == 'SI') {
-        res.render('usuario1/subir')
-    } else { res.render('usuario1/subirno') }
+        res.render('usuario1/subir', { cliente })
+    } else { res.render('usuario1/subirno', { cliente }) }
+
+    
 
 })
+
+
 
 // GUARDADO DE TRANSFERENCIA 
 router.post('/realizar', async (req, res, done) => {
@@ -289,7 +231,7 @@ router.post('/realizar', async (req, res, done) => {
     let cuil_cuit = req.user.cuil_cuit
    
     cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-     console.log(cuil_cuit)
+    
      
     cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
     aux ='%'+ cuil_cuit+'%'
@@ -314,20 +256,18 @@ router.post('/realizar', async (req, res, done) => {
 
     if (existe.length > 0) {
         let montomaxx= await pool.query('Select * from clientes where cuil_cuit like ? ',[aux])
+        
         try {
-            montomax = montomaxx[0]['ingresos ']
+            montomax = montomaxx[0]['ingresos']
+           
         
 
         } catch (error) {
             console.log(error)
         }
        
-        if (montomax < monto ) {
-            done(null, false, req.flash('message', 'Atencion, pago inusual ')) 
-
-        }
-
-
+       
+        
         const id_cuota = existe[0]["id"]
         const newLink = {
             id_cuota,
@@ -339,13 +279,44 @@ router.post('/realizar', async (req, res, done) => {
             anio
         };
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+
+        if (montomax < monto ) {
+
+            req.flash('message', 'Atencion pago inusual, sera notificado como tal')
+        
+
+        }else {
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')}
         res.redirect(`/usuario1`);
     } else {
         req.flash('message', 'Error la cuota no existe')
         res.redirect(`/usuario1/subir`)
 
     }
+
+})
+
+
+/////////////   SUBIR INUSUAL
+
+router.get("/subirinusual", isLoggedIn,async (req, res) => {
+    
+    try {
+      let aux=req.user.cuil_cuit
+         aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
+    
+        aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+        aux = '%'+aux+'%'
+        console.log('%')
+        cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
+       
+            
+    } catch (error) {
+        console.log(error)
+    }
+   
+        res.render('usuario1/subirinusual')
+   
 
 })
 
@@ -385,6 +356,7 @@ router.post('/addcbu', async (req, res) => {
    
     res.redirect(`/usuario1`);
 })
+
 
 
 

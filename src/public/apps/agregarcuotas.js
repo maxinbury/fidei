@@ -1,17 +1,17 @@
 // const agregarcuotas = document.getElementById('agregarcuotas');
-const pool = require('../database')
+//const pool = require('../database')
 
 
-
+  /* 
 function calcular () {
     let a = getElementById('uno').value
     alert(a)
 
-   /* 
+ 
     alert(a)
-    document.getElementById('valido').style.display="block" */
+    document.getElementById('valido').style.display="block" 
 }
-
+*/
 
 
 /*

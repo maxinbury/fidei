@@ -26,8 +26,12 @@
       </tr>
     </thead>
     <tbody>
+  {{#with cuotas}}
+      <a href="/links/detallecliente/{{0.cuil_cuit}}" class=" btn btn-primary"> Volver al cliente</a></td>
+  <a href="/cuotas/ampliar/{{0.cuil_cuit}}" class=" btn btn-primary"> Ampliar</a></td>
+ {{/with }}
       <a href="/cuotas/add" class=" btn btn-primary"> Añadir</a></td>
-       <a href="/cuotas/ampliar" class=" btn btn-primary"> Ampliar</a></td>
+      
       <tr>
         {{#each cuotas}}
         <th scope="row">{{id}}</th>

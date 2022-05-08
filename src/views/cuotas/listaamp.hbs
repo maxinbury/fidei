@@ -32,10 +32,14 @@
 
 
       </tr>
-    </thead>
-    <tbody>
+      {{#with cuotas}}
+    
       <a href="/cuotas/add" class=" btn btn-primary"> Añadir</a></td>
-       <a href="/cuotas/lista" class=" btn btn-primary"> Reducir</a></td>
+      <a href="/cuotas/cuotas/{{0.cuil_cuit}}" class=" btn btn-primary"> Reducir</a></td>
+      {{/with}}
+    </thead>
+    
+    <tbody> 
       <tr>
         {{#each cuotas}}
         <th scope="row">{{id}}</th>
