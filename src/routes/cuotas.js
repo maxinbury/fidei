@@ -38,8 +38,8 @@ router.get('/add/cliente/:cuil_cuit', isLoggedIn, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     let aux = '%' + cuil_cuit + '%'
 
-    const cliente = await pool.query('SELECT * FROM  clientes where cuil_cuit like ?', [aux])
-
+    const cliente = await pool.query('SELECT * FROM  clientes left join lotes on clientes.cuil_cuit = lotes.cuil_cuit where clientes.cuil_cuit like ?', [aux])
+    console.log(cliente)
     res.render('cuotas/add', { cliente })
 
 })
@@ -63,7 +63,7 @@ router.post('/add', async (req, res) => {
 
 // AGREGA VARIAS CUOTAS 
 router.post('/addaut', async (req, res) => {
-    var { cuil_cuit, monto_total, cantidad_cuotas, lote, mes, anio } = req.body;
+    var { cuil_cuit, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote } = req.body;
 
 
     let aux = '%' + cuil_cuit + '%'
@@ -80,10 +80,11 @@ router.post('/addaut', async (req, res) => {
         } else {
 
             const Amortizacion = monto_total / cantidad_cuotas;
+            let tol = row[0]['toleranciadec'] + Amortizacion
             let tolerancia = row[0]['ingresos'] * 0.3
 
-            if (tolerancia < Amortizacion) {
-                req.flash('message', 'Error, la amortizacion es mayor al 30% de los ingresos declarados')
+            if (tolerancia < tol) {
+                req.flash('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
                 res.redirect('/links/clientes')
 
 
@@ -113,6 +114,9 @@ router.post('/addaut', async (req, res) => {
                                 saldo_cierre,
                                 cuil_cuit,
                                 id_cliente,
+                                zona,
+                                manzana,
+                                fraccion,
                                 lote,
                                 Saldo_real
 
@@ -177,13 +181,53 @@ router.post('/addaut', async (req, res) => {
 
 
 //--------FIN AGREGAR CUOTAS----------------------------------------------------------------------------
+// elegir lote
+
+router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    let aux = '%' + cuil_cuit + '%'
+
+    const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [cuil_cuit])
+    if (lote.length === 0) {
+        let aux = '%' + cuil_cuit + '%'
+
+        const cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+
+        res.render('cuotas/notienelote', { cliente })
+
+    } else { res.render('cuotas/quelote', { lote }) }
+
+})
+// LISTADO DE CUOTAS DE UN lote DETERMINADO 
+
+router.get("/lote/:id", isLoggedIn, isLevel2, async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    auxiliar = await pool.query('Select * from lotes where id =?',[id])
+    console.log(auxiliar)
+    zona=auxiliar[0]['zona']
+    manzana=auxiliar[0]['manzana']
+    fraccion=auxiliar[0]['fraccion']
+    lote=auxiliar[0]['lote']
+
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona,manzana,fraccion,lote])
+    if (cuotas.length === 0) {
+       
+        let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+      cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux])
+
+        res.render('cuotas/listavacia', { cliente })
+
+    } else { res.render('cuotas/lista', { cuotas }) } 
+})
+   
 
 
 
 
 
 // LISTADO DE CUOTAS DE UN CUIL DETERMINADO 
-
+//desconectamos 
 router.get("/cuotas/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
@@ -197,6 +241,8 @@ router.get("/cuotas/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
     } else { res.render('cuotas/lista', { cuotas }) }
 
 })
+
+
 
 
 
@@ -377,13 +423,26 @@ router.post('/editarr', async (req, res, ) => {
 })
  */
 
+
 //-----Borar Cuota
 router.get('/delete/:id', async (req, res) => {
     const { id } = req.params
-    await pool.query('DELETE FROM cuotas WHERE ID = ?', [id])
+    try {
+        
+    } catch (error) {
+        
+    }
+    console.log(id)
+    let aux = await pool.query('select * from cuotas where id =?',[id])
+    console.log(aux)
+    cuil_cuit = aux[0]['cuil_cuit']
+    await pool.query('DELETE FROM cuotas WHERE id = ?', [id])
     req.flash('success', 'Cuotas eliminadas')
-    res.redirect('/cuotas')
+
+
+    res.redirect('/cuotas/cuotas/'+cuil_cuit)
 })
+
 
 //----- Ver... no esta enchufado
 

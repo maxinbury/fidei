@@ -109,7 +109,18 @@ router.get("/cuotas", async (req, res) => {
 
 router.get("/cuotasamp", async (req, res) => {
 
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? and parcialidad != "Original" ', [req.user.cuil_cuit])
+    cuil_cuit = req.user.cuil_cuit
+
+
+   
+    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+
+     
+    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux ='%'+ cuil_cuit+'%'
+    console.log(aux)
+
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
     var devengado = 0
     var pagado = 0
   

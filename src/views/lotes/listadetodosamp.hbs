@@ -1,0 +1,73 @@
+<div class="bgded overlay" style="background-image:url('/img/fondogris.jpg');">
+    <div id="breadcrumb" class="hoc clear">
+        <!-- ################################################################################################ -->
+        <ul>
+            <li><a href="/links/clientes"> Ir a clientes</a></li>
+            <li><a href="/cuotas/lista"> Ir a cuotas</a></li>
+            <li><a href="/pagos">Ir a Pagos</a></li>
+            <li><a href="/pagos/pendientes">Aprobaciones de pagos</a></li>
+            <li><a href="aprobacion de legajos">aprobacion de legajos</a></li>
+            <li><a href="aprobacion de legajos">aprobacion CBU</a></li>
+            <li><a href="/aprobaciones/cbu">aprobacion CBU</a></li>
+            <li><a href="/cuotas/agregariccgrals"> Agregar ICC</a></li>
+        </ul>
+    </div>
+
+</div>
+
+
+
+<table >
+  <thead>
+    <tr>
+      <th scope="col">Zona</th>
+      <th scope="col">Fraccion</th>
+   
+      <th scope="col">Manzana</th>
+        <th scope="col">lote</th>
+        <th scope="col">Orden</th>
+            <th scope="col">Mensura</th>
+          <th scope="col">Adrema</th>
+           <th scope="col">Superficie</th>
+            <th scope="col">Observaciones</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Cuil</th>
+        <th scope="col">Estado</th>
+
+    </tr>
+  </thead>
+  <tbody>
+      <a href="/lotes/listadetodos" class=" btn btn-primary"> reducir</a></td>
+      
+       
+    <tr>
+        
+    {{#each lotes}}
+      <th scope="row">{{zona}}</th>
+      <td> {{fraccion}}</td>
+     <td> {{manzana}}</td>
+      <td> {{lote}}</td>
+       <td> {{orden}}</td>
+              <td> {{mensura}}</td>
+       <td> {{adrema}}</td>
+       <td> {{superficie}}</td>
+       <td> {{observaciones}}</td>
+        <td> {{nombre_razon}}</td>
+      <td>{{cuil_cuit}}</td>
+       <td> {{estado}}</td>
+      
+   
+     
+    </tr>   
+    {{else}}
+        <div class="col-md-4 mx-auto">
+            <div class="card card-body text-center">
+                <p> No hay Lotes cargados</p>
+                <a href=""> Crear uno</a>
+            </div>
+        </div>
+   
+
+        {{/each }}
+  </tbody>
+</table>

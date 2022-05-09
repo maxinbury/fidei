@@ -146,6 +146,35 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 */
 
 
+
+//LISTA DE LOTES 
+router.get('/listadetodos', isLoggedIn, isLevel2, async (req, res) => {
+
+    const lotes = await pool.query('select * from lotes')
+   
+   
+    res.render('lotes/listadetodos', { lotes })
+})
+
+router.get('/listadetodosamp', isLoggedIn, isLevel2, async (req, res) => {
+
+    const lotes = await pool.query('select * from lotes')
+   
+   
+    res.render('lotes/listadetodosamp', { lotes })
+})
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router
 
 

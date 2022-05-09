@@ -21,14 +21,16 @@
     <div class="container p-4">
         <div class="card-header">
 						<h3>  Añadir automaticamente</h3>
+                        <h3> Zona: {{zona}} Fraccion: {{fraccion}} Manzana: {{manzana}} Lote: {{lote}} </h3>
+                        <h4>Cuil/cuit: {{cuil_cuit}}</h4>
 					</div>
         <div class="row">
             <div class="col-md-4 ">
                 <div class="card mx-4 x-auto ">
                     <div class="card-body">
                         <form action="/cuotas/addaut" method="POST">
-                            <div class="form-group">
-                                <label for="exampleFormControlFile1">Cuil_cuit</label>
+                            <div class="oculto">
+                               
                                 <input type="float"value = "{{cuil_cuit}}" name="cuil_cuit" class="form-control"
                                     placeholder="cuil_cuit cliente">
                             </div>
@@ -51,9 +53,19 @@
                                     placeholder="cantidad_cuotas">
                             </div>
                         
-                            <label for="exampleFormControlFile1">Lote</label>
-                            <div class="form-group">
-                                <input type="float" name="lote" class="form-control" placeholder="Lote">
+                            <div class="oculto">
+                                <input type="float" name="zona" value = "{{zona}}" class="form-control">
+                            </div>
+                         
+                            <div class="oculto">
+                                <input type="float" name="fraccion"  value = "{{fraccion}}"class="form-control" >
+                            </div>
+                            <div class="oculto">
+                                <input type="float" name="manzana"  value = "{{manzana}}"class="form-control" >
+                            </div>
+                          
+                            <div class="oculto">
+                                <input type="float" name="lote" value = "{{lote}}"class="form-control" placeholder="Lote">
                             </div>
                             <div class="form-group">
                                 <button class="tbn btn-primary btn-block"> Guardar</button>
@@ -114,19 +126,6 @@
 
  <form >
 
-<input type="text" name="" id="uno" value="4">
-
-<button type="boton" onclick="calcular()" >boton</button>
- </form>
-
-
-
- <button type="boton" onclick="calculdar()" >boton</button>
- <div class ="oculto" id = "valido">
- <h3 > Ess</h3>
- </div>
-<h3 class ="oculto">no es</h3>
-<br><br><br><br>
 
 
 

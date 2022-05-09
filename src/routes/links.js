@@ -14,24 +14,52 @@ const XLSX = require('xlsx')
 //  LEER Y CARGAR DEL EXCEL LOS CLIENTES DEL TANGO. NO CONECTAR
 router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
     console.log("entra")
-  const workbook = XLSX.readFile('./src/Excel/Base de Clientes TANGO 04-22.xlsx')
+    const workbook = XLSX.readFile('./src/Excel/Base de Clientes TANGO 04-22.xlsx')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
     //console.log(dataExcel)
   
-
     
     
     var a=1
     for (const property in dataExcel) {
         a+=1
         aux = dataExcel[property]['Número']
-        cuil_cuit= aux.replace(/\s+/g, '')
+        console.log(aux)
+        cuil_cuit = 0
+        try {
+            cuil_cuit= aux.replace(/\s+/g, '')
+        } catch (error) {
+            console.log(error)
+        }
+        
         obs = dataExcel[property]['Observaciones']
-        observaciones= obs.replace(/\s+/g, '')
-        cadena = observaciones.split('-');
+         console.log(obs)
+        try {
+
+            
+            
+           
+            observaciones= obs.replace(/\s+/g, '')
+            a = observaciones.replace('F','')
+            b = a.replace('M','')
+            a = b.replace('L','')
+            cadena = a.split('-');
+            fraccion= cadena[1]
+            manzana=cadena[2]
+            lote=cadena[3]
+    
+            cargarcuit={
+                cuil_cuit
+            }
+            await pool.query('UPDATE lotes set ? WHERE manzana = ? lote = ? fraccion = ?', [cargarcuit, manzana, lote, fraccion])
+            
+        } catch (error) {
+            console.log(error)
+        }
+     
         try{
         const newLink = {
             id:dataExcel[property]['Cód. cliente'],
@@ -98,14 +126,8 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
         }*/
 
     }
-    try {
-        fraccion=
-        manzana= 
-        lote=2
-
-    } catch (error) {
-        console.log(error)
-    }
+   
+    
 
 
 
@@ -372,29 +394,33 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 router.get("/algo/prueba",  async (req, res) => { //probando
     
+let lotes = await pool.query('select * from lotes')
 
-   
-    let a = 'IC3 - FD - M2 - L6'
-    let b = a.replace(/\s+/g, '');
-    
-    b = b.split('-');
-    console.log(b)
+for (var i=0; i<lotes.length; i++) { 
+    nombre= lotes[i]['nombre_razon']
+    nombree =  nombre.substr(0, nombre.length - 1);
+    nombreee = '%'+nombree+'%'
+    console.log(nombreee)
+    id = lotes[i]['id']
+    cliente  = await pool.query('select * from clientes where Nombre like ?',[nombreee])
+ try {
+        cuil_cuit = cliente[0]['cuil_cuit']
+        
+        
+        insert = {
+            cuil_cuit
+        }
+        await pool.query('UPDATE lotes set ? WHERE id = ? ', [insert,id])
+    } catch (error) {
+        console.log(error)
+        
+    }
 
-    /*part1 = str.substring(0, 2);
-    part3 = str.substring(3, 11);
-    part3 = str.substring(12 , str.length);
-    const cuil_cuit= part1 + part2 + part3
-  
-    console.log (cuil_cuit);*/
+}
 
 
-   /*var a = "01234156789"
-   a =  (a).slice(0, 2) + "-" + (a).slice(2);
-   console.log(a)
-   a =  (a).slice(0, 11) + "-" + (a).slice(11);
-    console.log(a)
-  */
-    res.render('links/prueba')
+
+res.redirect('/clientes/todos')
 })
 
 
