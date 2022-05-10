@@ -85,7 +85,7 @@ router.post('/addaut', async (req, res) => {
 
             if (tolerancia < tol) {
                 req.flash('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
-                res.redirect('/links/clientes')
+                res.redirect('cuotas/add/cliente/'+cuil_cuit)
 
 
 
@@ -143,7 +143,7 @@ router.post('/addaut', async (req, res) => {
 
 
                     req.flash('success', 'Guardado correctamente')
-                    res.redirect('/links/clientes')
+                    res.redirect('links/detallecliente/'+cuil_cuit)
                 }
 
                 else {

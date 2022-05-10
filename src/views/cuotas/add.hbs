@@ -16,6 +16,7 @@
 
 </div>
 {{#each cliente}}
+
 <div style="display: grid;">
 
     <div class="container p-4">
@@ -24,6 +25,7 @@
                         <h3> Zona: {{zona}} Fraccion: {{fraccion}} Manzana: {{manzana}} Lote: {{lote}} </h3>
                         <h4>Cuil/cuit: {{cuil_cuit}}</h4>
 					</div>
+                    t
         <div class="row">
             <div class="col-md-4 ">
                 <div class="card mx-4 x-auto ">
@@ -35,22 +37,24 @@
                                     placeholder="cuil_cuit cliente">
                             </div>
                             <div class="form-group">
-                                <label for="exampleFormControlFile1">Mes inicio de plan</label>
+                                <label for="">Mes inicio de plan</label>
                                 <input type="float" class="form-control" name="mes" placeholder="Mes"
                                     > 
                                      <input type="integer" class="form-control" name="anio" placeholder="Año"
                                     >
                             </div>
                              <div class="form-group">
-                                 <label for="exampleFormControlFile1">Valor del terreno</label>
+                                 <label for="">Valor del terreno</label>
                                  <p style="color: brown;">agregar valor del anticipo</p>
-                                <input type="float" class="form-control" name="monto_total" placeholder="monto_total"
+                                <input type="float" class="form-control" id="monto" name="monto_total" placeholder="monto_total"
                                     > 
+
                             </div>
                             <div class="form-group">
-                                 <label for="exampleFormControlFile1">Cantidad Cuotas</label>
-                                <input type="float" name="cantidad_cuotas" class="form-control"
+                                 <label for="">Cantidad Cuotas</label>
+                                <input type="float" id="cantidad_cuotas" name="cantidad_cuotas" class="form-control"
                                     placeholder="cantidad_cuotas">
+                                    <p id = "ingresodeclarado" class="oculto">  no cumple</p>
                             </div>
                         
                             <div class="oculto">
@@ -78,7 +82,7 @@
         </div>
     </div>
 
-
+<button class="tbn btn-primary btn-block" id = "comprobar"> comprobar</button>
 
     <div class="container p-4" style="width: 100%;">
         <div class="row">
@@ -130,3 +134,4 @@
 
 
 
+<script src="/verificacionc.js"></script>

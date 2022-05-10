@@ -192,6 +192,10 @@ else {
 // BUSCAR CLIENTE POR CUIL_CUIT  ---------
 router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
     var { cuil_cuit } = req.body
+
+    if (cuil_cuit==[]){
+        res.redirect('/links/clientes/todos')
+    }else{
    aux= '%'+cuil_cuit+'%'
    
     
@@ -207,14 +211,14 @@ router.post('/listacuil_cuit', isLoggedIn, isLevel2, async (req, res, next) => {
     } else {
         req.flash('message', 'Error, cuil/cuit no encontrado ')
         res.redirect('clientes')
-    }
+    }}
 })
 
 
 
 router.get("/busquedacuil/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {  //RECIBE EL CUIT DEL POST
     const cuil_cuit = req.params.cuil_cuit // requiere el parametro id
-    
+
      aux = '%'+cuil_cuit+'%'
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux]) //[req.user.id]
     console.log(links)
@@ -391,8 +395,16 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 ////////////////////////////////
 
 
+router.get("/algo/prueba",  async (req, res) => {
+    links =('')
+    res.render('links/prueba', { links })
+  
+})
 
-router.get("/algo/prueba",  async (req, res) => { //probando
+
+
+
+router.get("/algo/pruebaaaa",  async (req, res) => { //probando
     
 let lotes = await pool.query('select * from lotes')
 

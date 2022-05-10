@@ -8,8 +8,8 @@ const expresiones = {
 	password: /^.{4,12}$/, // 4 a 12 digitos.
 	correo: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
 	telefono: /^\d{7,14}$/, // 7 a 14 numeros.,
-	cuil_cuit:/^\d{11,11}$/,
-	nro_cliente:/^\d{1,12}$/
+	cuil_cuit: /^\d{11,11}$/,
+	nro_cliente: /^\d{1,12}$/
 	//cuil_cuit: /^([0-9]{11}|[0-9]{2}-[0-9]{8}-[0-9]{1})$/g // 7 a 14 numeros.,
 }
 
@@ -49,7 +49,7 @@ const validarFormulario = (e) => {
 			console.log(e.target)
 			break;
 		//case "cuil_cuit": 
-		   // console.log(expresiones.cuil_cuit + '____' + e.target)
+		// console.log(expresiones.cuil_cuit + '____' + e.target)
 		//	validarCampo(expresiones.cuil_cuit, e.target, 'cuil_cuit');
 		//	let prueba = verificar(e.target)
 		//	break;
@@ -115,46 +115,33 @@ const validarPassword2 = () => {
 }
 
 inputs.forEach((input) => {  // para que al sacar click se verifique
-	input.addEventListener('keyup', validarFormulario); 
+	input.addEventListener('keyup', validarFormulario);
 	input.addEventListener('blur', validarFormulario);
 });
 
 formulario.addEventListener('submit', (e) => {
 	//e.preventDefault(); //PARA QUENO ENVIE 
-	
+
 
 	const terminos = document.getElementById('terminos');
-	if (campos.nombre && campos.password && campos.correo && campos.telefono && campos.nro_cliente && terminos.checked ) {
+	if (campos.nombre && campos.password && campos.correo && campos.telefono && campos.nro_cliente && terminos.checked) {
 		// formulario.reset();
 
 
 		document.getElementById('formulario__mensaje-exito').classList.add('formulario__mensaje-exito-activo');
 		setTimeout(() => {
 			document.getElementById('formulario__mensaje-exito').classList.remove('formulario__mensaje-exito-activo');
-		}, 5000); 
+		}, 5000);
 
 		document.querySelectorAll('.formulario__grupo-correcto').forEach((icono) => {
 			icono.classList.remove('formulario__grupo-correcto');
-		}); 
-	
+		});
+
 	} else {
 		document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
+
+
 	}
-	/*
-	const data= Object.fromEntries(
-		new FormData(e.target)
-	)
-//	alert(JSON.stringify(data))*/
 
-
-
-
-
-
-
-
-
-
-
-
+	
 });

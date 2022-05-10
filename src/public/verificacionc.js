@@ -1,33 +1,48 @@
 /* express = require('express')
   let poool = require('../database/db') */
 let miboton = document.getElementById("miboton")
-miboton.addEventListener("click",calcular)
+
+var monto = parseFloat(document.getElementById("monto").value)
+
+
+let comprobar = document.getElementById("comprobar")
+
+comprobar.addEventListener('click', validar)
+//monto.addEventListener('blur', validar);
+
+function validar () {
+  
+ alert(monto)
+
+       }
+
+//miboton.addEventListener("click",calcularrr)
+
 
 
 
 const calcularr = async()  =>{
-    let nombre = await pool.query('select * from users where cuil_cuit= "34825125"')
+  
+    let nombre = await ('select * from users where cuil_cuit= "34825125"')
+    console.log(nombre)
        // let aux = document.getElementById("uno")
        //alert(nombre[0]['nombre'])
     //  let a = 'sadas-sad-as-das-das-'
    //   let  b = a.Split();
-
-
-    
 }
-
 
  function calcular () {
   let a = 'sadas-sad-as-das-das-'
-    let  b = a.Split('-');
-    console.log(b)
-   // let nombre = await pool.query('select * from users where cuil_cuit= "34825125"')
-       // let aux = document.getElementById("uno")
-       //alert(nombre[0]['nombre'])
+    let  b = a.split('-');
+    console.log(uno)
+
        }
 
 
-
+     async  function calcularrr () {
+        let nombre = await  ('select * from users where cuil_cuit= "34825125"')
+        console.log(nombre)
+             }
 
  
 

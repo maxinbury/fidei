@@ -208,6 +208,28 @@ router.get("/estado", async (req, res) => {
 //------------------------------------------INFORMAR PAGO -------------------------------------------------
 
 // PAGINA DE INFO DE TRANSFERENCIA 
+router.get("/subirelegir", isLoggedIn,async (req, res) => {
+    let aux=req.user.cuil_cuit
+    try {
+        let aux=req.user.cuil_cuit
+           aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
+      
+          aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+          aux = '%'+aux+'%'
+  
+          const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [aux])
+          res.render('usuario1/subirelegir', { lote }) 
+      } catch (error) {
+          console.log(error)
+          res.redirect('/usuario1')
+      }
+
+
+      
+
+})
+
+
 router.get("/subir", isLoggedIn,async (req, res) => {
     try {
       let aux=req.user.cuil_cuit
