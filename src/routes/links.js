@@ -400,7 +400,11 @@ router.get("/algo/prueba",  async (req, res) => {
     res.render('links/prueba', { links })
   
 })
-
+router.get("/chat",  async (req, res) => {
+    links =('')
+    res.render('links/chat', { links })
+  
+})
 
 
 

@@ -1,5 +1,7 @@
  
  {{#each lote}}
- <a href="/{{id}}" class=" btn btn-primary"> {{zona}}F{{fraccion}}M{{manzana}} L{{lote}}</a></td>
-
+<form action="/usuario1/subir" method="post">
+ <input name="id" type="text"class="oculto" value ="{{id}}">
+  <button class="btn btn-success "> {{zona}}F{{fraccion}}M{{manzana}} L{{lote}}</button>
+</form>
  {{/each}}

@@ -80,17 +80,17 @@ router.post('/addaut', async (req, res) => {
         } else {
 
             const Amortizacion = monto_total / cantidad_cuotas;
-            let tol = row[0]['toleranciadec'] + Amortizacion
+            let toleranciadec = row[0]['toleranciadec'] + Amortizacion
             let tolerancia = row[0]['ingresos'] * 0.3
 
-            if (tolerancia < tol) {
+            if (tolerancia < toleranciadec) {
                 req.flash('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
-                res.redirect('cuotas/add/cliente/'+cuil_cuit)
+                res.redirect('http://localhost:4000/links/clientes/todos')
 
 
 
             } else {
-
+               
                 let nro_cuota = 1
                 let saldo_inicial = monto_total
 
@@ -101,6 +101,11 @@ router.post('/addaut', async (req, res) => {
                     const id_cliente = row[0].id
 
                     try {
+
+                        let actualizar = {
+                            toleranciadec
+                        }
+                        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [actualizar, aux])
 
                         for (var i = 1; i <= cantidad_cuotas; i++) {
                             nro_cuota = i
@@ -143,12 +148,13 @@ router.post('/addaut', async (req, res) => {
 
 
                     req.flash('success', 'Guardado correctamente')
-                    res.redirect('links/detallecliente/'+cuil_cuit)
+                    res.redirect('links/clientes/todos')
                 }
+
 
                 else {
                     req.flash('message', 'Error cliente no existe')
-                    res.redirect('/links/clientes')
+                    res.redirect('links/clientes/todos')
                 }
 
 
@@ -198,6 +204,7 @@ router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
     } else { res.render('cuotas/quelote', { lote }) }
 
 })
+
 // LISTADO DE CUOTAS DE UN lote DETERMINADO 
 
 router.get("/lote/:id", isLoggedIn, isLevel2, async (req, res) => {
@@ -389,7 +396,7 @@ router.post('/agregariccgral', async (req, res,) => {
 router.get("/lotes/:cuil_cuit", isLoggedIn, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
 
-    res.render('cuotas/lotes',{s})
+    res.render('cuotas/lotes')
 })
 
 

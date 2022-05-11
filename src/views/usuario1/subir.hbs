@@ -15,12 +15,11 @@
         <!-- ################################################################################################ -->
     </div>
 </div>
-{{#with cliente}}
-{{{0.Nombre}}}
-{{/with}}
+<div>
 
+ <p>Nota: cada pago se ubicará en la ultima cuota</p>
 
-<form class="container p-0 needs-validation" novalidate action="/usuario1/realizar" method="POST">
+<form class="container" novalidate action="/usuario1/realizar" method="POST">
   <div class="form-group">
     <label for="exampleFormControlFile1">Subir comprobante</label>
     <input type="file" class="form-control-file" id="exampleFormControlFile1 " name ="comprobante">
@@ -38,8 +37,12 @@
     <div class="col-md-3 mb-3">
       <label for="validationTooltip04">CBU de pago </label>
       <select class="custom-select" id="validationTooltip04" required>
-        <option selected disabled value="">Seleccionar</option>
-        <option>CBU personal</option>
+          {{#each cbus}}
+      
+        <option>{{descripcion}}</option>
+      
+          {{/each}}
+
       </select>
       <div class="invalid-tooltip">
         Seleccionar CBU

@@ -100,6 +100,7 @@ router.get("/cuotas", async (req, res) => {
   //  const total = [totall]
     
     cuotas.push(total)
+    console.log(cuotas)
     res.render('usuario1/listacuotas', { cuotas })
 
 })
@@ -225,30 +226,57 @@ router.get("/subirelegir", isLoggedIn,async (req, res) => {
       }
 
 
+
       
 
 })
 
+router.post('/subirprueba', async (req, res, done) => {
+    const { id } = req.body;
+    console.log(id)
+})
 
-router.get("/subir", isLoggedIn,async (req, res) => {
-    try {
-      let aux=req.user.cuil_cuit
-         aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
+
+
+
+router.post("/subir", isLoggedIn,async (req, res) => {
+    const { id } = req.body;
     
-        aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+    try {
+        lote = await pool.query('select * from lotes where id = ?', id)
+      
+        
+
+        let aux=req.user.cuil_cuit
+        aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
+       aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+      
+       
+     if(lote[0]['cuil_cuit'] === aux ){
         aux = '%'+aux+'%'
 
-        cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
-        console.log(aux)
+       // cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
+       
+        cbus = await pool.query('select * from cbus  where cuil_cuit like ? and estado ="A" ', aux)
         
+        console.log(cbus)} else 
+        
+        
+        {
+
+            req.flash('message', 'Error, ACCESO DENEGADO ')
+            res.redirect('/usuario1')
+        }
+    
     } catch (error) {
         console.log(error)
+        res.redirect('/usuario1')
     }
    
 
     if (req.user.habilitado == 'SI') {
-        res.render('usuario1/subir', { cliente })
-    } else { res.render('usuario1/subirno', { cliente }) }
+        res.render('usuario1/subir', { cbus })
+    } else { res.render('usuario1/subirno', { cuotas }) }
 
     
 
@@ -340,7 +368,7 @@ router.get("/subirinusual", isLoggedIn,async (req, res) => {
     
         aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
         aux = '%'+aux+'%'
-        console.log('%')
+        
         cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
        
             
@@ -367,7 +395,12 @@ router.get("/cbu", (req, res) => {
 router.post('/addcbu', async (req, res) => {
 
     const { lazo, dc, numero, descripcion } = req.body;
-    const cuil_cuit = req.user.cuil_cuit
+    let aux = req.user.cuil_cuit
+    aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
+    
+    aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+  
+    const cuil_cuit = aux
     const estado = "P"
     const newcbu = {
         cuil_cuit,
@@ -377,11 +410,12 @@ router.post('/addcbu', async (req, res) => {
         dc,
         estado
     }
-    req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+    
     try {
         await pool.query('INSERT INTO cbus SET ?', [newcbu])
-    } catch (error) {
         req.flash('message', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+    } catch (error) {
+        req.flash('message', 'Error algo paso ')
         console.log(error)
     }
   
@@ -938,7 +972,42 @@ router.post('/edit_const_cuil', async (req, res) => {
 
 
 
-// PRUEBA
+// CHAT
+
+
+
+
+
+
+
+router.post('/chatenviar', async (req, res) => {
+    const { mensaje } = req.body;
+    
+
+        const cuil_cuit = req.user.cuil_cuit
+      
+        const newr = {
+          mensaje
+        }
+        await pool.query('INSERT INTO constancias SET ?', [newr])
+        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        res.redirect(`/usuario1`);
+
+        
+
+})
+
+router.get("/chat", async (req, res) => {
+
+  
+
+    res.render('usuario1/chat')
+
+})
+
+
+
+
 
 router.get("/menu2", async (req, res) => {
 
@@ -947,6 +1016,10 @@ router.get("/menu2", async (req, res) => {
     res.render('usuario1/menu2/index')
 
 })
+
+
+
+
 
 
 
