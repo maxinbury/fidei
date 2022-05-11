@@ -981,27 +981,37 @@ router.post('/edit_const_cuil', async (req, res) => {
 
 
 router.post('/chatenviar', async (req, res) => {
-    const { mensaje } = req.body;
+    const { mensaje_cliente } = req.body;
     
 
-        const cuil_cuit = req.user.cuil_cuit
-      
-        const newr = {
-          mensaje
-        }
-        await pool.query('INSERT INTO constancias SET ?', [newr])
-        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-        res.redirect(`/usuario1`);
-
+        let cuil_cuit = req.user.cuil_cuit
+        cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+        console.log(cuil_cuit)
         
+       cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+        const newr = {
+          mensaje_cliente,
+          cuil_cuit
+          
+        }
+        await pool.query('INSERT INTO chats SET ?', [newr])
+       
+        res.redirect(`/usuario1/chat`);
+
+    
 
 })
 
 router.get("/chat", async (req, res) => {
-
-  
-
-    res.render('usuario1/chat')
+    let cuil_cuit = req.user.cuil_cuit
+    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+    console.log(cuil_cuit)
+    
+   cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+   const aux = '%'+cuil_cuit+'%'
+    const chat = await pool.query('select * from chats where cuil_cuit like ?',[aux])
+    console.log(chat)
+    res.render('usuario1/chat',{chat})
 
 })
 

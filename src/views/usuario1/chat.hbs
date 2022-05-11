@@ -42,34 +42,48 @@
                     </div>
                 </div>
                 <div class="chat-history">
+                    {{#each chat}}
                     <ul class="m-b-0">
                           <li class="clearfix">
                             <div class="message-data">
-                                <span class="message-data-time">10:10 AM, hoy</span>
+                                <span class="message-data-time">{{fecha}}</span>
                             </div>
-                            <div class="message my-message">hola cuanto debo</div>    
+                            <div class="message my-message">{{mensaje_nivel2}}</div>    
 
 
                         </li>  
 
                         <li class="clearfix">
                             <div class="message-data text-right">
-                                <span class="message-data-time">10:12 AM, hoy</span>
+                                <span class="message-data-time">{{fecha}}</span>
                                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                             </div>
-                            <div class="message other-message float-right">cuanto debe de que? </div>
+                            <div class="message other-message float-right">{{mensaje_cliente}} </div>
                         </li>
                                                    
                        
                        
                     </ul>
+                    {{/each}}
                 </div>
                 <div class="chat-message clearfix">
+                
                     <div class="input-group mb-0">
                         <div class="input-group-prepend">
+
                             <span class="input-group-text"><i class="fa fa-send"></i></span>
+                        
+                        
                         </div>
-                        <input type="text" class="form-control" placeholder="Enter text here...">                                    
+                        <form action="/usuario1/chatenviar" method="post">
+                            <input type="text" name="mensaje_cliente" class="form-control" placeholder="Enter text here...">  
+                            <button class="btn"> Enviar</button>
+
+                        </form>
+                                                          
+                    
+                    
+                    
                     </div>
                 </div>
             </div>
