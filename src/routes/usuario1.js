@@ -1005,9 +1005,10 @@ router.post('/chatenviar', async (req, res) => {
 router.get("/chat", async (req, res) => {
     let cuil_cuit = req.user.cuil_cuit
     cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-    console.log(cuil_cuit)
+   
     
    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+   console.log(cuil_cuit)
    const aux = '%'+cuil_cuit+'%'
     const chat = await pool.query('select * from chats where cuil_cuit like ?',[aux])
     console.log(chat)

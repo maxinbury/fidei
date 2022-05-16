@@ -46,12 +46,18 @@ router.post('/signin', (req, res, next) =>{
 
 //sORIGINAL
 router.get('/profile', isLoggedIn,isLevel2, async (req, res)=>{
+    if(req.user.nivel==2){
     const pagos_p = await pool.query(" Select * from pagos where estado = 'P' ")
     const constancias_p = await pool.query(" Select * from constancias where estado = 'P' ")
     const cbus = await pool.query(" Select * from cbus where estado = 'P' ")
-   
+    const chats = await pool.query(" Select * from chats where leido = 'NO' ")
     
-    res.render('profile',{pagos_p, constancias_p, cbus})}) 
+    res.render('profile',{pagos_p, constancias_p, cbus, chats})}
+    else{
+        res.render('nivel3/profile')
+    }
+}
+) 
 
 /*
 router.get('/profile', isLoggedIn, async (req, res)=>{

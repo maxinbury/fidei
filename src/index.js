@@ -62,6 +62,8 @@ app.use('/usuario1', require('./routes/usuario1'))
 app.use('/aprobaciones', require('./routes/aprobaciones'))
 app.use('/constancias', require('./routes/constancias'))
 app.use('/lotes', require('./routes/lotes'))
+app.use('/chats', require('./routes/chats'))
+app.use('/nivel3', require('./routes/nivel3'))
 
 
 
