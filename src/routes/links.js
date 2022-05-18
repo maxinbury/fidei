@@ -4,6 +4,8 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
 const XLSX = require('xlsx')
+const ponerguion = require('../public/apps/transformarcuit')
+const sacarguion = require('../public/apps/transformarcuit')
 
 
 
@@ -353,13 +355,21 @@ router.get('/delete/:id', isLoggedIn, isLevel2, async (req, res) => {
 
 // VER EL DETALLE DE CLIENTE--
 router.get("/detallecliente/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {  // DETALLE DE CLIENTE RECIBE EL ID
-    const { cuil_cuit } = req.params
+    let { cuil_cuit } = req.params
     let aux = '%'+cuil_cuit+'%'
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like  ?', [aux])
 
+    cuil_cuit = sacarguion.sacarguion(cuil_cuit)
+    
+    const usuarios = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit])
+    console.log(usuarios)
 
 
-    res.render('links/detallecliente', { links })
+
+    res.render('links/detallecliente',{links, usuarios})
+
+    
+
 })
 
 
@@ -409,7 +419,12 @@ router.get("/chat",  async (req, res) => {
 
 
 router.get("/algo/pruebaaaa",  async (req, res) => { //probando
-    
+
+    const algo = ponerguion.ponerguion('hola')
+      console.
+      log(algo)
+
+    /*
 let lotes = await pool.query('select * from lotes')
 
 for (var i=0; i<lotes.length; i++) { 
@@ -435,8 +450,8 @@ for (var i=0; i<lotes.length; i++) {
 }
 
 
-
-res.redirect('/clientes/todos')
+*/
+res.redirect('/links/clientes/todos')
 })
 
 

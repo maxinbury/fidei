@@ -57,16 +57,21 @@
             <th scope="row">{{id}}</th>
             <td>{{tipo}}</td>
             <td>{{cuil_cuit}}</td>
-            <td>{{!-- {{comprobante}} --}}
+            <td> {{comprobante}} 
                 <a id="a1">algo </a>
       <script>
-          const pendientes = await pool.query("Select * from constancias where estado = 'P'")
-          let vSQL = pendientes[0]["comprobante"]
+         const fileinput = document.querySelector("fileinput")
 
-          const a1 =document.getElementById("a1")
-            const blob1 = new Blob(["asd","as"],{type:"text/plain"} )
-            a1.href =  URL.createObjectURL(blob1)
 
+
+         fileinput.addEventListener("click", async =>{
+             console.log(fileinput.innertext)
+             const myBlob= fileinput.files[0]
+             cont myb64 = await blobto64(myBlob)
+         })
+         
+    
+             
 
       </script>
 

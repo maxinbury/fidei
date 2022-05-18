@@ -148,7 +148,7 @@ router.post('/addaut', async (req, res) => {
 
 
                     req.flash('success', 'Guardado correctamente')
-                    res.redirect('links/clientes/todos')
+                    res.redirect('/links/detallecliente/'+cuil_cuit)
                 }
 
 

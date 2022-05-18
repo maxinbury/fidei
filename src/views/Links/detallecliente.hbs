@@ -15,6 +15,15 @@
 
 </div>
 
+  <li class="block clear"><a href="#"><i class="fas fa-map-marker-alt"></i></a> <span><strong>Es usuario:</strong>
+       {{#each usuarios }}
+        [ SI ] </span></li>
+        <span><strong>Legajo habilitado: </strong>  [ {{habilitado}} ]
+        <a href="#">Solicitar habilitacion de legajo</a>
+
+        {{else}}
+        [ No]</a></span></li>
+        {{/each}}
 
 
 {{#each links}}
@@ -38,6 +47,7 @@
         <li class="block clear"><a href="#"><i class="fas fa-phone"></i></a> <span><strong>Telefono de contacto</strong>[ {{telefono}}  ]<a href="#">Editar</a></span></li>
         <li class="block clear"><a href="#"><i class="fas fa-envelope"></i></a> <span><strong>Email</strong> [ {{email}}  ]<a href="#">Editar</a></span></li>
         <li class="block clear"><a href="#"><i class="fas fa-map-marker-alt"></i></a> <span><strong>Direccion</strong>[ {{email}}  ] <a href="#">Editar</a></span></li>
+      
       </ul>
     </figure>
     <article class="one_half">
@@ -61,3 +71,5 @@
 
 
 {{/each}}
+
+ [ {{#with usuario}} {{0.habilitado}}  {{/with}}]

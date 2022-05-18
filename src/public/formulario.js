@@ -1,6 +1,6 @@
 const formulario = document.getElementById('formulario');
 const inputs = document.querySelectorAll('#formulario input');
-document.querySelector('form')
+//document.querySelector('form')
 
 const expresiones = {
 	usuario: /^[a-zA-Z0-9\_\-]{4,16}$/, // Letras, numeros, guion y guion_bajo
@@ -27,11 +27,11 @@ const campos = {
 
 const validarFormulario = (e) => {
 	switch (e.target.name) {
-		case "usuario":
-			validarCampo(expresiones.usuario, e.target, 'usuario');
+		case "cuil_cuit":
+			validarCampo(expresiones.usuario, e.target, 'cuil_cuit');
 			break;
-		case "nombre":
-			validarCampo(expresiones.nombre, e.target, 'nombre');
+		case "nro_cliente":
+			validarCampo(expresiones.nombre, e.target, 'nro_cliente');
 			break;
 		case "password":
 			validarCampo(expresiones.password, e.target, 'password');
@@ -121,13 +121,12 @@ inputs.forEach((input) => {  // para que al sacar click se verifique
 
 formulario.addEventListener('submit', (e) => {
 	//e.preventDefault(); //PARA QUENO ENVIE 
-
+	console.log("no")
 
 	const terminos = document.getElementById('terminos');
 	if (campos.nombre && campos.password && campos.correo && campos.telefono && campos.nro_cliente && terminos.checked) {
 		// formulario.reset();
-
-
+		console.log("si")
 		document.getElementById('formulario__mensaje-exito').classList.add('formulario__mensaje-exito-activo');
 		setTimeout(() => {
 			document.getElementById('formulario__mensaje-exito').classList.remove('formulario__mensaje-exito-activo');
@@ -139,7 +138,7 @@ formulario.addEventListener('submit', (e) => {
 
 	} else {
 		document.getElementById('formulario__mensaje').classList.add('formulario__mensaje-activo');
-
+		console.log("no")
 
 	}
 

@@ -59,23 +59,7 @@ router.get('/profile', isLoggedIn,isLevel2, async (req, res)=>{
 }
 ) 
 
-/*
-router.get('/profile', isLoggedIn, async (req, res)=>{
-        const nivel = await pool.query('SELECT nivel FROM users WHERE nivel = ? '[req.user.nivel]) //[req.user.id]
-        console.log(links)
-    switch (isClient){
-        case 1 : res.send(console.log('cliente'))
 
-        default: res.render('profile')
-
-
-    }
-}) */
-
-/* router.get("/",isLoggedIn,  async (req,res)=> {
-    const links = await pool.query('SELECT * FROM clientes') //[req.user.id]
-    console.log(links)
-    res.render('links/list', {links}) */
 
 
 
@@ -83,6 +67,23 @@ router.get('/logout', isLoggedIn,(req,res) =>{
     req.logout()
     res.redirect('/signin')
 })
+
+
+
+
+
+
+
+
+//  ACCIONES NIVEL 3
+
+router.post('/agregarunusuario',passport.authenticate('local.signupnivel3', {
+    successRedirect: '/signin',
+    failureRedirect:'/signup',
+    failureFlash:true
+
+}))
+
 
 
 module.exports= router
