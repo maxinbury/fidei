@@ -4,7 +4,7 @@ const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 
-
+const { isLevel3 } = require('../lib/authnivel3')
 
 //
 
@@ -324,72 +324,7 @@ router.post('/agregaricc', async (req, res,) => {
 })
 
 
-//PAGINA  AGREGAR ICC GENERAL
-router.get("/agregariccgral", isLoggedIn, async (req, res) => {
 
-
-    res.render('cuotas/agregariccgral')
-})
-
-
-//ACCION DE  AGREGAR ICC GENERAL
-router.post('/agregariccgral', async (req, res,) => {
-    const { ICC, mes, anio } = req.body;
-    const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
-    const parcialidad = "Final"
-    for (var i = 0; i < todas.length; i++) {
-
-        if (todas[0]["nro_cuota"] == 1) {
-            saldo_inicial = todas[i]["saldo_inicial"]
-            const Ajuste_ICC = 0
-            const Base_calculo = todas[i]["Amortizacion"]
-            const cuota_con_ajuste = todas[i]["Amortizacion"]
-            const Saldo_real = todas[i]["saldo_inicial"]
-
-
-
-        } else {
-            const nro = todas[i]["nro_cuota"]
-            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro - 1, todas[i]["cuil_cuit"]])
-
-            var Saldo_real_anterior = anterior[0]["Saldo_real"]
-
-            const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
-
-            const Base_calculo = cuota_con_ajuste_anterior
-            const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
-
-            const cuota_con_ajuste = cuota_con_ajuste_anterior + Ajuste_ICC
-            Saldo_real_anterior += Ajuste_ICC
-            const Saldo_real = Saldo_real_anterior
-
-
-
-        }
-        var cuota = {
-            ICC,
-            Ajuste_ICC,
-            Base_calculo,
-            cuota_con_ajuste,
-            Saldo_real,
-            parcialidad
-
-        }
-        try {
-            await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
-
-        } catch (error) {
-            console.log(error)
-            res.redirect(`/cuotas`);
-
-        }
-
-
-
-    }
-
-    res.redirect(`/cuotas`);
-})
 
 
 // redireccion a lotes del cliente 

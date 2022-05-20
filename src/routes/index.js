@@ -10,6 +10,11 @@ const pool = require('../database')
 
 router.get('/', async (req, res) => {
   res.render('index')
+})
+
+
+
+
 
   /* const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (cuil_cuit = 34825125 and lote = 1) ',[34825125, 1])
         const nro_cuota = cantidad[0]['count(*)'] + 1
@@ -36,7 +41,7 @@ router.get('/', async (req, res) => {
 
 
 
-})
+
 
 
 module.exports = router

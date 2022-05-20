@@ -14,21 +14,29 @@
     </div>
 
 </div>
-
+NIVEL 3
   <li class="block clear"><a href="#"><i class="fas fa-map-marker-alt"></i></a> <span><strong>Es usuario:</strong>
+  213
        {{#each usuarios }}
         [ SI ] </span></li>
         <span><strong>Legajo habilitado: </strong>  [ {{habilitado}} ]
-      
 
         {{else}}
         [ No]</a></span></li>
         {{/each}}
 
 
+
+
+{{#each habilitar}}
+<h4></h4><a href="/nivel3/deshabilitarusuario/{{cuil_cuit}}"><i class="fas fa-map-marker-alt"></i>Deshabilitar</a>
+{{cuil_cuit}}
+{{/each}}
+{{#each deshabilitar}}
+<h4></h4><a href="/nivel3/habilitarusuario/{{cuil_cuit}}"><i class="fas fa-map-marker-alt"></i>Habilitar</a>
+{{/each}}
+
 {{#each links}}
-
-
 
 <div class="wrapper row2">
   <a class="btn" href="javascript:history.back()">Volver</a>
@@ -68,8 +76,4 @@
   </section>
 </div>
 
-
-
 {{/each}}
-
- [ {{#with usuario}} {{0.habilitado}}  {{/with}}]
