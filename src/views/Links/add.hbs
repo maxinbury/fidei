@@ -4,48 +4,57 @@
             <div class="card mx-4 x-auto ">
                 <div class="card-body">
                     <form action="/links/add" method="POST">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr">
-                        <label for="nombre" class="formulario__label">Nombre</label>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="Nombre" placeholder="Nombre" autofocus> {{!--
-                            autofocus: aparece ya seleccionado el cursor para ingresar form group para separar --}}
-                        </div>
-                        <label for="nombre" class="formulario__label">Tipo dni</label>
-                        <div class="form-group">
-                            <input type="text" name="tipo_dni" class="form-control" placeholder="C.U.I.L./C.U.I.T./C.I.">
-                        </div>
-                        <label for="nombre" class="formulario__label">N°:Cuil/Cuit</label>
-                        <div class="form-group">
-                            <input type="text" name="cuil_cuit" class="form-control" placeholder="cuil_cuit">
-                        </div>
-                        <label for="correo" class="formulario__label">Razon</label>
-                        <div class="form-group">
-                            <label for="validationTooltip04">Razon </label>
-                            <select class="custom-select" id="validationTooltip04" name="razon" required>
-                                <option>Empresa</option>
-                                <option>Persona</option>
-                            </select>
-                        </div>
-                        <label for="nombre" class="formulario__label">Domicilio </label>
-                        <div class="form-group">
-                            <input type="text" name="domicilio" class="form-control" placeholder="Domicilio">
-                        </div>
-                        <label for="nombre" class="formulario__label">Telefono Fijo</label>
-                        <div class="form-group">
-                            <input type="text" name="telefono" class="form-control" placeholder="telefono">
-                        </div>
-                         <label for="nombre" class="formulario__label">Tel Movil </label>
-                        <div class="form-group">
-                            <input type="text" name="movil" class="form-control" placeholder="Tel-movil">
-                        </div>
-                        <label for="nombre" class="formulario__label">Observaciones </label>
-                        <div class="form-group">
-                            <input type="text" name="osbervaciones" class="form-control" placeholder="osbervaciones">
-                        </div>
-                       
-                        <div class="form-group">
-                            <button class="tbn btn-primary btn-block"> Guardar</button>
-                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr">
+                            <div class="form-group"></div>
+                            <label for="nombre">Nombre</label>
+                                <input type="text" class="form-control" name="Nombre" placeholder="Nombre" autofocus>
+                                {{!--
+                                autofocus: aparece ya seleccionado el cursor para ingresar form group para separar --}}
+                            </div>
+                            <div class="form-group">
+                                <label for="inputGroupSelect01">Tipo de Dni</label>
+                                <select name="tipo_dni"  class="custom-select" id="inputGroupSelect01">
+                                    
+                                    <option value="C.U.I.L.">'C.U.I.L.'</option>
+                                    <option value="'C.U.I.T.'">'C.U.I.T.'</option>
+                                    <option value="D.N.I.">'D.N.I.'</option>
+                                    <option value="C.I. POLICIA FEDERA">'C.I. POLICIA FEDERAL'</option>
+                                    <option value="Otro">'Otro'</option>
+                                </select>
+                            </div>
+                            <label for="nombre" class="formulario__label">N°:Cuil/Cuit</label>
+                            <div class="form-group">
+                                <input type="text" name="cuil_cuit" class="form-control" placeholder="cuil_cuit">
+                            </div>
+                            <label for="correo" class="formulario__label">Razon</label>
+                            <div class="form-group">
+                                <label for="validationTooltip04">Razon </label>
+                                <select class="custom-select" id="validationTooltip04" name="razon" required>
+                                    <option>Empresa</option>
+                                    <option>Persona</option>
+                                </select>
+                            </div>
+                            <label for="nombre" class="formulario__label">Domicilio </label>
+                            <div class="form-group">
+                                <input type="text" name="domicilio" class="form-control" placeholder="Domicilio">
+                            </div>
+                            <label for="nombre" class="formulario__label">Telefono Fijo</label>
+                            <div class="form-group">
+                                <input type="text" name="telefono" class="form-control" placeholder="telefono">
+                            </div>
+                            <label for="nombre" class="formulario__label">Tel Movil </label>
+                            <div class="form-group">
+                                <input type="text" name="movil" class="form-control" placeholder="Tel-movil">
+                            </div>
+                            <label for="nombre" class="formulario__label">Observaciones </label>
+                            <div class="form-group">
+                                <input type="text" name="osbervaciones" class="form-control"
+                                    placeholder="osbervaciones">
+                            </div>
+
+                            <div class="form-group">
+                                <button class="tbn btn-primary btn-block"> Guardar</button>
+                            </div>
                         </div>
                     </form>
                     </card-body>

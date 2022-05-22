@@ -15,6 +15,7 @@
     <thead>
       <tr>
         <th >#</th>
+      <th >Cuota</th>
         <th >Cuota</th>
         <th >Saldo Inicial</th>
         <th >Cuota Con Ajuste</th>
@@ -35,6 +36,7 @@
       <tr>
         {{#each cuotas}}
         <th style="color:rgb(206, 250, 13)">{{zona}}-F{{fraccion}}-M{{manzana}}-L{{lote}}</th>
+        <td> {{mes}}/{{anio}}</td>
         <td> {{nro_cuota}}</td>
         <td> {{saldo_inicial}}</td>
          <td>{{cuota_con_ajuste}}</td>
