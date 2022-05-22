@@ -489,6 +489,15 @@ for (var i=0; i<lotes.length; i++) {
 })
 
 
+router.get('/clientesconcuotas', isLoggedIn, async (req, res) => {
+   
+    const links = await pool.query('SELECT clientes.cuil_cuit, clientes.Nombre  FROM  cuotas left join clientes on cuotas.cuil_cuit = clientes.cuil_cuit group by clientes.cuil_cuit')
+
+    res.render('links/list', { links })
+
+})
+
+
 module.exports = router
 
 

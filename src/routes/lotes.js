@@ -45,13 +45,13 @@ router.get("/completar_cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
 
 router.get('/cargar_movimientos', isLoggedIn, isLevel2, async (req, res) => {
     console.log("entra")
-  const workbook = XLSX.readFile('./src/Book1.xlsx')
+  const workbook = XLSX.readFile('./src/Book2.xlsx')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
     //console.log(dataExcel)
-    console.log(dataExcel)
+  
 
 
     var a=1
@@ -59,22 +59,28 @@ router.get('/cargar_movimientos', isLoggedIn, isLevel2, async (req, res) => {
         a+=1
         try{
         const newLink = {
-            numero_orden:dataExcel[property]['N° Orden'],
+            zona: 'PIT',
             mensura: dataExcel[property]['N° Mensura'],
-            fraccion : dataExcel[property]['Fraccion'],
+            parcela : dataExcel[property]['Parcela'],
             manzana:dataExcel[property]['Manzana'],
             lote:dataExcel[property]['Lote'],
-            adrema: dataExcel[property]['N° Adrema'],
+            adrema: dataExcel[property]['Adrema'],
             superficie: dataExcel[property]['Superficie en m²'],
             nombre_razon: dataExcel[property]['Apellido y Nombre / Razon Social'],
             estado: dataExcel[property]['Estado'],
             observaciones:dataExcel[property]['Observacion'],
+            pocentaje:dataExcel[property]['pocentaje'],
+            compradorreserva:dataExcel[property]['Comprador/Reserva'],
+            proyecto:dataExcel[property]['Proyecto'],
+         
+             
             
 
         }
       
 
         await pool.query('INSERT INTO lotes set ?', [newLink]);
+        console.log('Exito '+a)
     }catch(e){
         console.log(e)
     }

@@ -3,8 +3,8 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
-
-
+const ponerguion = require('../public/apps/transformarcuit')
+const sacarguion = require('../public/apps/transformarcuit')
 
 ///////////////////-------------MENU PRINCIPAL--- VERIFICACION DE HABILITACION PARA PAGAR 
 router.get('/', isLoggedIn, async (req, res) => {
@@ -213,9 +213,8 @@ router.get("/subirelegir", isLoggedIn,async (req, res) => {
     let aux=req.user.cuil_cuit
     try {
         let aux=req.user.cuil_cuit
-           aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
-      
-          aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
+           aux = ponerguion.ponerguion(aux)
+         
           aux = '%'+aux+'%'
   
           const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [aux])

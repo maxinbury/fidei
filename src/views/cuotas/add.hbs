@@ -32,8 +32,12 @@
                     <div class="card-body">
                         <form action="/cuotas/addaut" method="POST">
                             <div class="oculto">
-                               
                                 <input type="float"value = "{{cuil_cuit}}" name="cuil_cuit" class="form-control"
+                                    placeholder="cuil_cuit cliente">
+                            </div>
+                            <div class="">
+                                <label for="">ID del lote</label>
+                                <input type="float"value = "{{id}}" name="id" class="form-control"
                                     placeholder="cuil_cuit cliente">
                             </div>
                             <div class="form-group">
@@ -45,11 +49,17 @@
                             </div>
                              <div class="form-group">
                                  <label for="">Valor del terreno</label>
-                                 <p style="color: brown;">agregar valor del anticipo</p>
                                 <input type="float" class="form-control" id="monto" name="monto_total" placeholder="monto_total"
                                     > 
 
                             </div>
+
+                              <div >
+                                 <label for="">Valor del Anticipo</label>
+                                <input type="float" name="anticipo" placeholder="valor dle anticipo " class="form-control">
+                            </div>
+
+
                             <div class="form-group">
                                  <label for="">Cantidad Cuotas</label>
                                 <input type="float" id="cantidad_cuotas" name="cantidad_cuotas" class="form-control"
@@ -57,6 +67,7 @@
                                     <p id = "ingresodeclarado" class="oculto">  no cumple</p>
                             </div>
                         
+                           
                             <div class="oculto">
                                 <input type="float" name="zona" value = "{{zona}}" class="form-control">
                             </div>

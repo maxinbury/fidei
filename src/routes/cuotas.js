@@ -33,12 +33,14 @@ router.get("/ampliar/:cuil_cuit", isLevel2, isLoggedIn, async (req, res) => {
 //--------INICIO AGREGAR CUOTAS---------------------------------------------------------------------------
 
 
-//PAGINA DE AGREGAR CUOTAS UAN O VARIAS 
-router.get('/add/cliente/:cuil_cuit', isLoggedIn, async (req, res) => {
-    const cuil_cuit = req.params.cuil_cuit
+//PAGINA DE AGREGAR CUOTAS UNA O VARIAS 
+router.get('/add/cliente/:id', isLoggedIn, async (req, res) => {
+    const id = req.params.id
+    client = await pool.query('select * from lotes  where id = ?',[id])
+    cuil_cuit = client[0]['cuil_cuit']
     let aux = '%' + cuil_cuit + '%'
 
-    const cliente = await pool.query('SELECT * FROM  clientes left join lotes on clientes.cuil_cuit = lotes.cuil_cuit where clientes.cuil_cuit like ?', [aux])
+    const cliente = await pool.query('SELECT * FROM  clientes left join lotes on clientes.cuil_cuit = lotes.cuil_cuit where clientes.cuil_cuit like ? and lotes.id = ?', [aux, id])
     console.log(cliente)
     res.render('cuotas/add', { cliente })
 
@@ -63,22 +65,28 @@ router.post('/add', async (req, res) => {
 
 // AGREGA VARIAS CUOTAS 
 router.post('/addaut', async (req, res) => {
-    var { cuil_cuit, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote } = req.body;
+    var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo } = req.body;
 
+    const lot = await pool.query('SELECT * from lotes where id= ?', [id])
+    cuil_cuit= lot[0]['cuil_cuit']
 
     let aux = '%' + cuil_cuit + '%'
 
     const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
-
+//llega
     try {
         if (row[0]['ingresos']==0) {
 
             req.flash('message', 'Error, el cliente no tiene ingresos declarados ')
             res.redirect('/cuotas/add/cliente/'+cuil_cuit)
 
-
         } else {
-
+            monto_total-= anticipo
+            anticipolote={
+                anticipo
+            }
+           
+           //llega
             const Amortizacion = monto_total / cantidad_cuotas;
             let toleranciadec = row[0]['toleranciadec'] + Amortizacion
             let tolerancia = row[0]['ingresos'] * 0.3
@@ -86,7 +94,6 @@ router.post('/addaut', async (req, res) => {
             if (tolerancia < toleranciadec) {
                 req.flash('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
                 res.redirect('http://localhost:4000/links/clientes/todos')
-
 
 
             } else {
@@ -123,7 +130,8 @@ router.post('/addaut', async (req, res) => {
                                 manzana,
                                 fraccion,
                                 lote,
-                                Saldo_real
+                                Saldo_real,
+                                anticipo
 
                             };
                             mes++
@@ -135,6 +143,8 @@ router.post('/addaut', async (req, res) => {
                             }
 
                             await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+                            
+                            
 
                             saldo_inicial -= Amortizacion
                             saldo_cierre = saldo_inicial - Amortizacion
@@ -145,7 +155,7 @@ router.post('/addaut', async (req, res) => {
                     }
 
 
-
+                    await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
                     req.flash('success', 'Guardado correctamente')
                     res.redirect('/links/detallecliente/'+cuil_cuit)
@@ -157,29 +167,16 @@ router.post('/addaut', async (req, res) => {
                     res.redirect('links/clientes/todos')
                 }
 
-
-
             }
-
-
 
 
         }
 
 
-
     } catch (error) {
         console.log(error)
 
-
-
-
     }
-
-
-
-
-
 
 
 })
@@ -223,7 +220,7 @@ router.get("/lote/:id", isLoggedIn, isLevel2, async (req, res) => {
         let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
       cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux])
 
-        res.render('cuotas/listavacia', { cliente })
+        res.render('cuotas/listavacia', { auxiliar })
 
     } else { res.render('cuotas/lista', { cuotas }) } 
 })
@@ -370,16 +367,16 @@ router.post('/editarr', async (req, res, ) => {
 router.get('/delete/:id', async (req, res) => {
     const { id } = req.params
     try {
-        
+        console.log(id)
+        let aux = await pool.query('select * from cuotas where id =?',[id])
+        console.log(aux)
+        cuil_cuit = aux[0]['cuil_cuit']
+        await pool.query('DELETE FROM cuotas WHERE id = ?', [id])
+        req.flash('success', 'Cuota eliminadas')
     } catch (error) {
-        
+    
     }
-    console.log(id)
-    let aux = await pool.query('select * from cuotas where id =?',[id])
-    console.log(aux)
-    cuil_cuit = aux[0]['cuil_cuit']
-    await pool.query('DELETE FROM cuotas WHERE id = ?', [id])
-    req.flash('success', 'Cuotas eliminadas')
+  
 
 
     res.redirect('/cuotas/cuotas/'+cuil_cuit)
@@ -420,6 +417,15 @@ router.post('/prueba', async (req, res,) => {
     req.flash('success', 'Guardado correctamente')
     res.redirect(`/cuotas`);} */
 )
+
+
+
+
+
+
+
+
+
 module.exports = router
 
 
