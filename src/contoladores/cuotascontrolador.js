@@ -1,0 +1,250 @@
+const pool = require('../database')
+
+
+
+//Lista 
+const lista =async (req, res) => {
+
+    const cuotas = await pool.query('SELECT * FROM  cuotas ')
+
+
+    res.render('cuotas/lista', { cuotas })
+
+}
+
+//ampliar
+
+const ampliar = async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    let aux = '%' + cuil_cuit + '%'
+   
+    const cuotas = await pool.query('SELECT * FROM cuotas where cuil_cuit like ?',[aux])
+    res.render('cuotas/listaamp', { cuotas })
+}
+
+
+
+
+const add_cliente = async (req, res) => {
+    const id = req.params.id
+    client = await pool.query('select * from lotes  where id = ?',[id])
+    cuil_cuit = client[0]['cuil_cuit']
+    let aux = '%' + cuil_cuit + '%'
+
+    const cliente = await pool.query('SELECT * FROM  clientes left join lotes on clientes.cuil_cuit = lotes.cuil_cuit where clientes.cuil_cuit like ? and lotes.id = ?', [aux, id])
+    console.log(cliente)
+    res.render('cuotas/add', { cliente })
+
+}
+
+const postadd = async (req, res) => {
+    const { saldo_inicial, saldo_cierre, cuil_cuit } = req.body;
+    const newLink = {
+        saldo_inicial,
+        saldo_cierre,
+        cuil_cuit
+    };
+
+    await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+
+    req.flash('success', 'Guardado correctamente')
+    res.redirect('/cuotas');
+
+}
+
+const postaddaut = async (req, res) => {
+    var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo } = req.body;
+
+    const lot = await pool.query('SELECT * from lotes where id= ?', [id])
+    cuil_cuit= lot[0]['cuil_cuit']
+
+    let aux = '%' + cuil_cuit + '%'
+
+    const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
+//llega
+    try {
+        if (row[0]['ingresos']==0) {
+
+            req.flash('message', 'Error, el cliente no tiene ingresos declarados ')
+            res.redirect('/cuotas/add/cliente/'+cuil_cuit)
+
+        } else {
+            monto_total-= anticipo
+            anticipolote={
+                anticipo
+            }
+           
+           //llega
+            const Amortizacion = monto_total / cantidad_cuotas;
+            let toleranciadec = row[0]['toleranciadec'] + Amortizacion
+            let tolerancia = row[0]['ingresos'] * 0.3
+
+            if (tolerancia < toleranciadec) {
+                req.flash('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
+                res.redirect('http://localhost:4000/links/clientes/todos')
+
+
+            } else {
+               
+                let nro_cuota = 1
+                let saldo_inicial = monto_total
+
+
+                if (row.length > 0) {
+                    var saldo_cierre = saldo_inicial - Amortizacion
+                    const Saldo_real = saldo_inicial
+                    const id_cliente = row[0].id
+
+                    try {
+
+                        let actualizar = {
+                            toleranciadec
+                        }
+                        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [actualizar, aux])
+
+                        for (var i = 1; i <= cantidad_cuotas; i++) {
+                            nro_cuota = i
+                            const newLink = {
+                                //fecha,
+                                mes,
+                                anio,
+                                nro_cuota,
+                                Amortizacion,
+                                saldo_inicial,
+                                saldo_cierre,
+                                cuil_cuit,
+                                id_cliente,
+                                zona,
+                                manzana,
+                                fraccion,
+                                lote,
+                                Saldo_real,
+                                anticipo
+
+                            };
+                            mes++
+
+                            if (mes > 12) {
+
+                                anio++
+                                mes -= 12
+                            }
+
+                            await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+                            
+                            
+
+                            saldo_inicial -= Amortizacion
+                            saldo_cierre = saldo_inicial - Amortizacion
+                        }
+
+                    } catch (error) {
+                        console.log(error)
+                    }
+
+
+                    await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
+
+                    req.flash('success', 'Guardado correctamente')
+                    res.redirect('/links/detallecliente/'+cuil_cuit)
+                }
+
+
+                else {
+                    req.flash('message', 'Error cliente no existe')
+                    res.redirect('links/clientes/todos')
+                }
+
+            }
+
+
+        }
+
+
+    } catch (error) {
+        console.log(error)
+
+    }
+
+
+}
+
+
+const quelote =  async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    let aux = '%' + cuil_cuit + '%'
+
+    const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [cuil_cuit])
+    if (lote.length === 0) {
+        let aux = '%' + cuil_cuit + '%'
+
+        const cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+
+        res.render('cuotas/notienelote', { cliente })
+
+    } else { res.render('cuotas/quelote', { lote }) }
+
+}
+
+
+
+const lote = async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    auxiliar = await pool.query('Select * from lotes where id =?',[id])
+    console.log(auxiliar)
+    zona=auxiliar[0]['zona']
+    manzana=auxiliar[0]['manzana']
+    fraccion=auxiliar[0]['fraccion']
+    lote=auxiliar[0]['lote']
+
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona,manzana,fraccion,lote])
+    if (cuotas.length === 0) {
+       
+        let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+      cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux])
+
+        res.render('cuotas/listavacia', { auxiliar })
+
+    } else { res.render('cuotas/lista', { cuotas }) } 
+}
+
+
+
+const cuotascli = async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ?', [cuil_cuit])
+    if (cuotas.length === 0) {
+        let aux = '%' + cuil_cuit + '%'
+
+        const cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+
+        res.render('cuotas/listavacia', { cliente })
+
+    } else { res.render('cuotas/lista', { cuotas }) }
+
+}
+
+const edit_c = async (req, res) => {
+    const id = req.params.id
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
+    res.render('cuotas/edit', { cuotas })
+}
+
+
+
+
+
+
+module.exports={
+    lista,
+    ampliar,
+    add_cliente,
+    postadd,
+    postaddaut,
+    quelote,
+    lote,
+    cuotascli,
+    edit_c
+
+}
