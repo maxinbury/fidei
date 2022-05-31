@@ -27,8 +27,10 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
    
 }else {
     const cuotaant= await pool.query("Select * from cuotas where cuil_cuit=? and nro_cuota= ?",[cuota[0]["cuil_cuit"],(cuota[0]["nro_cuota"])-1])
-    var saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["Ajuste_ICC"]
-    var saldo_inicial =  cuotaant[0]["Saldo_real"] 
+    console.log(cuotaant[0]["Saldo_real"])
+    console.log(cuota[0]["Saldo_real"])
+     saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["cuota_con_ajuste"]
+     saldo_inicial =  cuotaant[0]["Saldo_real"] 
 
 }
       
@@ -39,7 +41,6 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
       
   }
    
-
     let pago = cuota[0]["pago"] + pagot[0]["monto"]
    
  

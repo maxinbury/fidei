@@ -9,10 +9,34 @@ const XLSX = require('xlsx')
 const pool = require('../database')
 
 router.get('/', async (req, res) => {
-  res.render('index')
+  const auxs = await pool.query('Select * from chats')
+
+  res.json(auxs);
+//res.render('index')
 })
 
+router.get('/logueado', async (req, res) => {
+console.log(req.user)
+  res.json(req.user);
 
+  
+//res.render('index')
+})
+
+router.get('/estalogeado', async (req, res) => {
+  let  aux = req.user
+
+  if (aux === undefined ) {
+    logueado= false
+
+  }else {
+    logueado= true
+  }
+
+
+console.log(logueado)
+res.json(logueado);
+})
 
 
 

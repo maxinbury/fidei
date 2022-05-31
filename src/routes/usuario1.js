@@ -350,7 +350,7 @@ router.post('/realizar', async (req, res, done) => {
         res.redirect(`/usuario1`);
     } else {
         req.flash('message', 'Error la cuota no existe')
-        res.redirect(`/usuario1/subir`)
+        res.redirect(`/usuario1`)
 
     }
 

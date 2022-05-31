@@ -7,10 +7,14 @@ const session = require('express-session')
 const MySQLStore = require('express-mysql-session')
 const {database} = require('./keys')
 const passport = require('passport')
+const cors = require("cors");
+const jwt = require('jsonwebtoken')
+const keys = require('./keys')
 
 //inicializacion
 const app = express()
 require('./lib/passport')
+app.set('key',keys.key)
 
 //settings
 
@@ -41,6 +45,8 @@ app.use(express.urlencoded({extended:false})) // para recibir datos de formulari
 app.use(express.json())
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(cors());
+
 
 
 //globalvariables

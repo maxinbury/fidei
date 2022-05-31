@@ -5,7 +5,7 @@ const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 
 const { isLevel3 } = require('../lib/authnivel3')
-const { lista, ampliar, add_cliente, postadd, postaddaut, quelote, lote, cuotascli, edit_c } = require('../contoladores/cuotascontrolador')
+const { lista, ampliar, add_cliente, postadd, postaddaut, quelote, lotefuncion, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
 
 require('../contoladores/cuotascontrolador')
 
@@ -30,11 +30,11 @@ router.get("/ampliar/:cuil_cuit", isLevel2, isLoggedIn, ampliar)
 router.get('/add/cliente/:id', isLoggedIn, add_cliente)
 
 // AGREGAR UNA SOLA CUOTA 
-router.post('/add', postadd)
+router.post('/add',isLevel2, postadd)
 
 
 // AGREGA VARIAS CUOTAS 
-router.post('/addaut', postaddaut)
+router.post('/addaut',isLevel2, postaddaut)
 
 
 
@@ -45,7 +45,7 @@ router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, quelote)
 
 // LISTADO DE CUOTAS DE UN lote DETERMINADO 
 
-router.get("/lote/:id", isLoggedIn, isLevel2, lote)
+router.get("/lote/:id", isLoggedIn, isLevel2, lotefuncion)
    
 
 
@@ -62,80 +62,23 @@ router.get("/cuotas/:cuil_cuit", isLoggedIn, isLevel2, cuotascli)
 
 
 // PAGINA DE EDITAR CLIENTE    **NO PROBADO 
-router.get("/edit/:id", isLoggedIn, edit_c)
+router.get("/edit/:id", isLoggedIn,isLevel2, edit_c)
 
 
 //-------------------------------------------------------------------------AGREGAR ICC
 // AGREGAR ICC DE UN SOLO CLIENTE
-router.get("/agregar_icc/:id", isLoggedIn, async (req, res) => {
-    const id = req.params.id
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
-    res.render('cuotas/agregaricc', { cuotas })
-})
+router.get("/agregar_icc/:id", isLoggedIn, isLevel2, agregar_icc)
+
+
 // ACCION DE  AGREGAR ICC
-router.post('/agregaricc', async (req, res,) => {
-    const { id, ICC, nro_cuota, cuil_cuit, Amortizacion } = req.body;
-    const cuotaa = await pool.query("select * from cuotas where id = ? ", [id])
-
-    const parcialidad = "Final"
-    if (nro_cuota == 1) {
-        saldo_inicial = cuotaa[0]["saldo_inicial"]
-        const Ajuste_ICC = 0
-        const Base_calculo = Amortizacion
-        const cuota_con_ajuste = Amortizacion
-        const Saldo_real = saldo_inicial
-
-
-        var cuota = {
-            ICC,
-            Ajuste_ICC,
-            Base_calculo,
-            cuota_con_ajuste,
-            Saldo_real,
-            parcialidad
-        }
-    } else {
-        const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
-
-        var Saldo_real_anterior = anterior[0]["Saldo_real"]
-
-        const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
-
-        const Base_calculo = cuota_con_ajuste_anterior
-        const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
-
-        const cuota_con_ajuste = cuota_con_ajuste_anterior + Ajuste_ICC
-        Saldo_real_anterior += Ajuste_ICC
-        const Saldo_real = Saldo_real_anterior
-
-        var cuota = {
-            ICC,
-            Ajuste_ICC,
-            Base_calculo,
-            cuota_con_ajuste,
-            Saldo_real,
-            parcialidad
-
-        }
-
-    }
-    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
-    res.redirect(`/cuotas/cuotas/`+cuil_cuit);
-
-
-
-})
+router.post('/agregaricc',isLevel2,post_agregaricc)
 
 
 
 
 
 // redireccion a lotes del cliente 
-router.get("/lotes/:cuil_cuit", isLoggedIn, async (req, res) => {
-    const cuil_cuit = req.params.cuil_cuit
-
-    res.render('cuotas/lotes')
-})
+router.get("/lotes/:cuil_cuit", isLoggedIn, lotes)
 
 
 //-------------------------------------------------------------------------FIN  AGREGAR ICC---------------------------------------

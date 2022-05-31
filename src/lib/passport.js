@@ -15,9 +15,18 @@ passport.use('local.signin', new LocalStrategy({
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
     if (rows.length > 0) {
         const user = rows[0]
+
         const validPassword = await helpers.matchPassword(password, user.password)
         if (validPassword) {
+           
+          /*  const userFoRToken = {
+                id: req.user.id,
+                cuil_cuit: req.user.cuil_cuit
+            }
+            const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
+            res.send({ id: req.user.id,cuil_cuit: req.user.cuil_cuit,token})*/
             done(null, user, req.flash('success', 'Welcome' + user.nombrecompleto)) // done termina, null el error, user lo pasa para serializar
+            console.log(req.user)
         } else {
             done(null, false, req.flash('message', 'Pass incorrecta')) // false para no avanzar
         }
@@ -154,7 +163,7 @@ passport.use('local.signupnivel3', new LocalStrategy({
             try {
                 const result = await pool.query('INSERT INTO users  set ?', [newUser])
                 newUser.id = result.insertId// porque newuser no tiene el id
-              
+
                 return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
             } catch (error) {

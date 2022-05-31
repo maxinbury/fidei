@@ -188,10 +188,10 @@ const quelote =  async (req, res) => {
 
 
 
-const lote = async (req, res) => {
+const lotefuncion = async (req, res) => {
     const id = req.params.id
     console.log(id)
-    auxiliar = await pool.query('Select * from lotes where id =?',[id])
+   let auxiliar = await pool.query('Select * from lotes where id =?',[id])
     console.log(auxiliar)
     zona=auxiliar[0]['zona']
     manzana=auxiliar[0]['manzana']
@@ -232,9 +232,70 @@ const edit_c = async (req, res) => {
 }
 
 
+const agregar_icc = async (req, res) => {
+    const id = req.params.id
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE id = ?', [id])
+    res.render('cuotas/agregaricc', { cuotas })
+}
+
+const post_agregaricc =  async (req, res,) => {
+    const { id, ICC, nro_cuota, cuil_cuit, Amortizacion } = req.body;
+    const cuotaa = await pool.query("select * from cuotas where id = ? ", [id])
+
+    const parcialidad = "Final"
+    if (nro_cuota == 1) {
+        saldo_inicial = cuotaa[0]["saldo_inicial"]
+        const Ajuste_ICC = 0
+        const Base_calculo = Amortizacion
+        const cuota_con_ajuste = Amortizacion
+        const Saldo_real = saldo_inicial
+
+
+        var cuota = {
+            ICC,
+            Ajuste_ICC,
+            Base_calculo,
+            cuota_con_ajuste,
+            Saldo_real,
+            parcialidad
+        }
+    } else {
+        const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
+
+        var Saldo_real_anterior = anterior[0]["Saldo_real"]
+
+        const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
+
+        const Base_calculo = cuota_con_ajuste_anterior
+        const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
+
+        const cuota_con_ajuste = cuota_con_ajuste_anterior + Ajuste_ICC
+        Saldo_real_anterior += Ajuste_ICC
+        const Saldo_real = Saldo_real_anterior
+
+        var cuota = {
+            ICC,
+            Ajuste_ICC,
+            Base_calculo,
+            cuota_con_ajuste,
+            Saldo_real,
+            parcialidad
+
+        }
+
+    }
+    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
+    res.redirect(`/cuotas/cuotas/`+cuil_cuit);
 
 
 
+}
+
+const lotes = async (req, res) => {
+    const cuil_cuit = req.params.cuil_cuit
+
+    res.render('cuotas/lotes')
+}
 
 module.exports={
     lista,
@@ -243,8 +304,11 @@ module.exports={
     postadd,
     postaddaut,
     quelote,
-    lote,
+    lotefuncion,
     cuotascli,
-    edit_c
+    edit_c,
+    agregar_icc,
+    post_agregaricc,
+    lotes
 
 }

@@ -361,19 +361,37 @@ router.get("/detallecliente/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) 
     let { cuil_cuit } = req.params
     let aux = '%' + cuil_cuit + '%'
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like  ?', [aux])
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE parcialidad = "Final" and cuil_cuit like  ?', [aux])
+    let cuota = {
+          
+    }
+    try {
+        
 
+        for (var i = 0; i < cuotas.length; i++) {
+            cuotaa = cuotas[i]
+
+
+        }
+         cuota = {
+            cuotaa
+        }
+    } catch (error) {
+        
+
+    }
     cuil_cuit = sacarguion.sacarguion(cuil_cuit)
-  
+
     const usuarios = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
-  
+
 
 
     if ((req.user.nivel > 2) && (usuarios.length > 0)) {
-        
+
         if (usuarios[0]['habilitado'] == "SI") {
             habilitar = {
                 cuil_cuit: usuarios[0]['cuil_cuit']
-                
+
             }
             deshabilitar = {}
             habilitar = [habilitar]
@@ -385,13 +403,13 @@ router.get("/detallecliente/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) 
             habilitar = {}
             deshabilitar = [deshabilitar]
         }
-        
 
-        res.render('nivel3/detalleclientenivel3', { links, usuarios, habilitar,deshabilitar })
-       
+        console.log(cuota)
+        res.render('nivel3/detalleclientenivel3', { links, usuarios, cuota, habilitar, deshabilitar })
+
     } else {
         console.log("nivel2")
-        res.render('links/detallecliente', { links, usuarios })
+        res.render('links/detallecliente', { links, usuarios, cuota })
     }
 
 
@@ -490,7 +508,7 @@ for (var i=0; i<lotes.length; i++) {
 
 
 router.get('/clientesconcuotas', isLoggedIn, async (req, res) => {
-   
+
     const links = await pool.query('SELECT clientes.cuil_cuit, clientes.Nombre  FROM  cuotas left join clientes on cuotas.cuil_cuit = clientes.cuil_cuit group by clientes.cuil_cuit')
 
     res.render('links/list', { links })
