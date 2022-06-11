@@ -515,7 +515,14 @@ router.get('/clientesconcuotas', isLoggedIn, async (req, res) => {
 
 })
 
+router.get('/detalle/:cuil_cuit', async (req, res) => {
+    const { cuil_cuit } = req.params
+  
+    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
 
+    res.json(links)
+
+})
 module.exports = router
 
 

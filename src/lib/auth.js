@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken")
-
-
-
 module.exports = {
-    isLoggedIn(req,res, next){
+
+
+
+    isLoggedInn(req,res, next){
         console.log('entra1')
         //
         const authorization = req.get('authorization')
@@ -23,22 +23,16 @@ module.exports = {
         if (!token || !decodedToken.id){
             return res.send('error login')
         }
-    
-    
+      
+        res.send(decodedToken.cuil_cuit)
         
-        next()
+        //next()
     },
 
-    isNotLoggedIn(req,res, next){
-        if (!req.isAuthenticated()) {    
-            return next()
-    }
-    return res.redirect('/profile')
-
-    }
+   
 
 
-   /* isLoggedIn(req,res, next){
+    isLoggedIn(req,res, next){
         if (req.isAuthenticated()) {     /// isathenticated metodo de pasport
             return next()   //si existe esta seccion continua con el codigo
         }
@@ -50,6 +44,6 @@ module.exports = {
     }
     return res.redirect('/profile')
 
-    }*/
+    }
 
 }

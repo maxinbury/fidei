@@ -7,5 +7,4 @@ module.exports = {
         return res.redirect('/usuario1') //si no es nivel 1 logueado 
     },
     
-
 }

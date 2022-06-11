@@ -31,18 +31,21 @@ router.get('/signin',isNotLoggedIn,(req,res) => {
 }) 
 
 /////////////jwt prueba
-router.post('/signin', passport.authenticate('local.signin', { failureRedirect: '/login' }),
+router.post('/signinn', passport.authenticate('local.signin', { failureRedirect: '/login' }),
   function(req, res) {
     console.log(req.user)
     const userFoRToken ={
         id :req.user.id,
-        cuil_cuit: req.user.cuil_cuit
+        cuil_cuit: req.user.cuil_cuit,
+     
     }
+  
     const token = jwt.sign(userFoRToken, 'fideicomisocs121',{ expiresIn: 60*60*24*7})
     console.log(token)
     res.send({
         id :req.user.id,
         cuil_cuit: req.user.cuil_cuit,
+        nivel: req.user.nivel,
         token
     } )
   
@@ -53,7 +56,7 @@ router.post('/signin', passport.authenticate('local.signin', { failureRedirect: 
   );
 /////////////////
 
-router.post('/signinn', (req, res, next) =>{
+router.post('/signin', (req, res, next) =>{
     passport.authenticate('local.signin',{   
         successRedirect: '/profile',
         failureRedirect:'/signin',
@@ -77,7 +80,10 @@ router.get('/profile',isLoggedIn, async (req, res)=>{
     
     res.render('profile',{pagos_p, constancias_p, cbus, chats})}
     else{
-        res.render('nivel3/profile')
+        if(req.user.nivel==3){
+        res.render('nivel3/profile')}else{
+            res.render('usuario1/menu')
+        }
     }
 }
 ) 
@@ -119,12 +125,12 @@ res.json(rows)
 
 })
 
-router.get('/prueba',isLoggedIn,async(req,res)  =>{
-    const { cuil_cuit, algo, token } = req.body;
-    
-
-   rows = {nombre: 'Fer'}
-    console.log(cuil_cuit)
+router.get('/prueba',async(req,res)  =>{
+    /*const { cuil_cuit, algo, token } = req.body;*/
+    console.log('hola')
+   
+   rows = await pool.query ('select * from clientes ')
+  
     
 res.json(rows)
 

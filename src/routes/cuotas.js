@@ -45,10 +45,10 @@ router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, quelote)
 
 // LISTADO DE CUOTAS DE UN lote DETERMINADO 
 
-router.get("/lote/:id", isLoggedIn, isLevel2, lotefuncion)
+router.get("/lote/:id", lotefuncion)
    
 
-
+//async (req, res) => {console.log(req.params.id)}
 
 
 

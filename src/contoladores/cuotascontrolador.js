@@ -190,6 +190,7 @@ const quelote =  async (req, res) => {
 
 const lotefuncion = async (req, res) => {
     const id = req.params.id
+    console.log('controladorloteduncion')
     console.log(id)
    let auxiliar = await pool.query('Select * from lotes where id =?',[id])
     console.log(auxiliar)
@@ -199,15 +200,17 @@ const lotefuncion = async (req, res) => {
     lote=auxiliar[0]['lote']
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona,manzana,fraccion,lote])
-    if (cuotas.length === 0) {
+    console.log(cuotas)
+    if (cuotas.length > 0) {
        
-        let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
-      cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux])
+   /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+      cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
+        res.json(cuotas)
+       //res.render('cuotas/listavacia', { auxiliar })
 
-        res.render('cuotas/listavacia', { auxiliar })
-
-    } else { res.render('cuotas/lista', { cuotas }) } 
+    } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('')  } 
 }
+
 
 
 
