@@ -1,0 +1,64 @@
+{{#each cliente}}
+
+<div class="container">
+
+    <div class="col-md-auto mx-auto">
+        <div class="card rext-center">
+            <div class="card-body">
+                <div class="card-header">
+                    <h3> Vender lote a {{Nombre}}</h3>
+                    <p>{{cuil_cuit}}</p>
+                </div>
+                <div class="card-body">
+
+
+                    <form action="/links/ventalotepit" method="POST" name="app">
+                        <div class="col-md-3 mb-3">
+                            <label for="validationTooltip04">Zona </label>
+                            <select name="zona" class="custom-select" id="validationTooltip04" required>
+                            
+                                <option  value="PIT">PIT</option>
+                             
+
+
+
+                            </select>
+                            <div class="invalid-tooltip">
+                                Seleccionar CBU
+                            </div>
+                        </div>
+                    
+                        <div class="form-group">
+                             <label for="">Manzana </label>
+                            <input type="text" name="manzana" placeholder="Manzana" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                        <div class="form-group">
+                              <label for="">Parcela </label>
+                            <input type="text" name="parcela" placeholder="Parcela" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                    <div class="form-group" >
+                              <label for="">cuil_cuit </label>
+                            <input type="text" name="cuil_cuit" value="{{cuil_cuit}}" class="form-control"
+                                placeholder="Nombre de usuario">
+                        </div>
+                      
+                        <button class="btn btn-success btn-block">Buscar</button>
+                </div>
+
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+
+</div>
+{{/each}}

@@ -3,7 +3,7 @@ const pool = require('../database')
 
 
 //Lista 
-const lista =async (req, res) => {
+const lista = async (req, res) => {
 
     const cuotas = await pool.query('SELECT * FROM  cuotas ')
 
@@ -17,8 +17,8 @@ const lista =async (req, res) => {
 const ampliar = async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     let aux = '%' + cuil_cuit + '%'
-   
-    const cuotas = await pool.query('SELECT * FROM cuotas where cuil_cuit like ?',[aux])
+
+    const cuotas = await pool.query('SELECT * FROM cuotas where cuil_cuit like ?', [aux])
     res.render('cuotas/listaamp', { cuotas })
 }
 
@@ -27,7 +27,8 @@ const ampliar = async (req, res) => {
 
 const add_cliente = async (req, res) => {
     const id = req.params.id
-    client = await pool.query('select * from lotes  where id = ?',[id])
+    client = await pool.query('select * from lotes  where id = ?', [id])
+    console.log(client)
     cuil_cuit = client[0]['cuil_cuit']
     let aux = '%' + cuil_cuit + '%'
 
@@ -53,28 +54,28 @@ const postadd = async (req, res) => {
 }
 
 const postaddaut = async (req, res) => {
-    var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo } = req.body;
+    var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo,parcela } = req.body;
 
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
-    cuil_cuit= lot[0]['cuil_cuit']
+    cuil_cuit = lot[0]['cuil_cuit']
 
     let aux = '%' + cuil_cuit + '%'
 
     const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
-//llega
+    //llega
     try {
-        if (row[0]['ingresos']==0) {
+        if (row[0]['ingresos'] == 0) {
 
             req.flash('message', 'Error, el cliente no tiene ingresos declarados ')
-            res.redirect('/cuotas/add/cliente/'+cuil_cuit)
+            res.redirect('/links/detallecliente/' + cuil_cuit)
 
         } else {
-            monto_total-= anticipo
-            anticipolote={
+            monto_total -= anticipo
+            anticipolote = {
                 anticipo
             }
-           
-           //llega
+
+            //llega
             const Amortizacion = monto_total / cantidad_cuotas;
             let toleranciadec = row[0]['toleranciadec'] + Amortizacion
             let tolerancia = row[0]['ingresos'] * 0.3
@@ -85,7 +86,7 @@ const postaddaut = async (req, res) => {
 
 
             } else {
-               
+
                 let nro_cuota = 1
                 let saldo_inicial = monto_total
 
@@ -119,6 +120,7 @@ const postaddaut = async (req, res) => {
                                 fraccion,
                                 lote,
                                 Saldo_real,
+                                parcela,
                                 anticipo
 
                             };
@@ -131,8 +133,8 @@ const postaddaut = async (req, res) => {
                             }
 
                             await pool.query('INSERT INTO cuotas SET ?', [newLink]);
-                            
-                            
+
+
 
                             saldo_inicial -= Amortizacion
                             saldo_cierre = saldo_inicial - Amortizacion
@@ -146,7 +148,7 @@ const postaddaut = async (req, res) => {
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
                     req.flash('success', 'Guardado correctamente')
-                    res.redirect('/links/detallecliente/'+cuil_cuit)
+                    res.redirect('/links/detallecliente/' + cuil_cuit)
                 }
 
 
@@ -170,7 +172,7 @@ const postaddaut = async (req, res) => {
 }
 
 
-const quelote =  async (req, res) => {
+const quelote = async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     let aux = '%' + cuil_cuit + '%'
 
@@ -192,27 +194,64 @@ const lotefuncion = async (req, res) => {
     const id = req.params.id
     console.log('controladorloteduncion')
     console.log(id)
-   let auxiliar = await pool.query('Select * from lotes where id =?',[id])
+    let auxiliar = await pool.query('Select * from lotes where id =?', [id])
     console.log(auxiliar)
-    zona=auxiliar[0]['zona']
-    manzana=auxiliar[0]['manzana']
-    fraccion=auxiliar[0]['fraccion']
-    lote=auxiliar[0]['lote']
-
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona,manzana,fraccion,lote])
+    zona = auxiliar[0]['zona']
+    manzana = auxiliar[0]['manzana']
+    fraccion = auxiliar[0]['fraccion']
+    lote = auxiliar[0]['lote']
+    parcela = auxiliar[0]['parcela']
+    let cuotas 
+    if (zona == 'IC3') {
+        cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona, manzana, fraccion, lote])
+    }
+    else {
+        console.log(zona, manzana, parcela)
+        cuotas= await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and parcela =  ?', [zona, manzana, parcela])
+        
+       
+    }
     console.log(cuotas)
     if (cuotas.length > 0) {
-       
-   /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
-      cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
-        res.json(cuotas)
-       //res.render('cuotas/listavacia', { auxiliar })
+        res.render('cuotas/lista', { cuotas }) } 
+        else {
 
-    } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('')  } 
+            let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+            cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux])
+    
+            res.render('cuotas/listavacia', { auxiliar })
+    
+        }
+
+
 }
 
 
 
+//// para react
+const lotefuncion2 = async (req, res) => {
+    const id = req.params.id
+    console.log('controladorloteduncion')
+    console.log(id)
+    let auxiliar = await pool.query('Select * from lotes where id =?', [id])
+    console.log(auxiliar)
+    zona = auxiliar[0]['zona']
+    manzana = auxiliar[0]['manzana']
+    fraccion = auxiliar[0]['fraccion']
+    lote = auxiliar[0]['lote']
+
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona, manzana, fraccion, lote])
+    console.log(cuotas)
+    if (cuotas.length > 0) {
+
+        /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+           cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
+        res.json(cuotas)
+        //res.render('cuotas/listavacia', { auxiliar })
+
+    } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
+}
+/// fin para react
 
 const cuotascli = async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
@@ -241,7 +280,7 @@ const agregar_icc = async (req, res) => {
     res.render('cuotas/agregaricc', { cuotas })
 }
 
-const post_agregaricc =  async (req, res,) => {
+const post_agregaricc = async (req, res,) => {
     const { id, ICC, nro_cuota, cuil_cuit, Amortizacion } = req.body;
     const cuotaa = await pool.query("select * from cuotas where id = ? ", [id])
 
@@ -288,7 +327,7 @@ const post_agregaricc =  async (req, res,) => {
 
     }
     await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, id])
-    res.redirect(`/cuotas/cuotas/`+cuil_cuit);
+    res.redirect(`/cuotas/cuotas/` + cuil_cuit);
 
 
 
@@ -300,7 +339,7 @@ const lotes = async (req, res) => {
     res.render('cuotas/lotes')
 }
 
-module.exports={
+module.exports = {
     lista,
     ampliar,
     add_cliente,
@@ -312,6 +351,7 @@ module.exports={
     edit_c,
     agregar_icc,
     post_agregaricc,
-    lotes
+    lotes,
+    lotefuncion2
 
 }

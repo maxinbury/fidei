@@ -146,7 +146,7 @@ router.get('/add', isLoggedIn, isLevel2, (req, res) => {
 })
 // METODO DE GUARDAR CLIENTE NUEVO
 router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
-    const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, osbervaciones, movil } = req.body;
+    const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones, movil } = req.body;
     const newLink = {
         Nombre,
         movil,
@@ -154,14 +154,15 @@ router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
         razon,
         telefono,
         domicilio,
-        osbervaciones,
+        observaciones,
         cuil_cuit
         //user_id: req.user.id
     };
 
 
-    const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
+   
     try {
+         const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
         if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
             req.flash('message', 'Error cuil_cuit ya existe')
             res.redirect('/links/clientes')
@@ -426,6 +427,44 @@ router.get('/agregaringreso/:cuil_cuit', isLoggedIn, isLevel2, async (req, res) 
 
     res.render('links/agregaringreso', { cliente })
 })
+//////////vender un lote
+router.get('/ventalotepit/:cuil_cuit', isLoggedIn, isLevel2, async (req, res) => {
+    const { cuil_cuit } = req.params
+    aux = '%' + cuil_cuit + '%'
+    const cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
+  
+
+
+    res.render('links/ventalote', { cliente })
+})
+router.post('/ventalotepit/', isLoggedIn, isLevel2, async (req, res) => {
+   const { zona, manzana,parcela,cuil_cuit } = req.body
+  console.log(cuil_cuit)
+    venta  = {
+      cuil_cuit
+    }
+try {
+    
+// fraccion=?, manzana =?, parcela =?, lote=? 
+ const existe = await pool.query('select * from lotes where zona=?  and manzana =? and parcela=? ',[zona,manzana,parcela])
+ if( existe.length>0){
+    console.log(existe)
+    await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
+    res.redirect('/links/detallecliente/'+cuil_cuit)
+
+ }else{console.log('no existe')}
+ req.flash('Lote no xiste')
+ res.redirect('/links/ventalote/'+cuil_cuit)
+
+   // res.render('links/ventalote', { cliente })
+
+
+} catch (error) {
+    
+}
+})
+
+
 
 router.post('/agregaringreso', isLevel2, async (req, res) => {
     const { id, ingresos, cuil_cuit } = req.body

@@ -1,4 +1,4 @@
-<div class="container " style="margin: 10px  align=right ">
+{{!-- <div class="container " style="margin: 10px  align=right ">
     <label>Buscar por cuil/cuit</label>
     <form action="/links/listacuil_cuit" method="POST" name="cuil_cuit">
         <div class="form-group">
@@ -9,15 +9,15 @@
     </form>
 
 </div>
-</div>
+</div> --}}
 
 {{#each auxiliar}}
 
-<a href="/cuotas/add/cliente/{{id}}" class=" btn btn-primary"> Añadir</a></td>
+<a href="/cuotas/add/cliente/{{id}}" class=" btn btn-primary"> Añadir{{id}}</a></td>
 
 <div class="col-md-4 mx-auto">
     <div class="card card-body text-center">
-        <p> No hay cuotas</p>
+        <p> No hay cuotasss</p> 
         <a href="/cuotas/add/cliente/{{id}}"> Añadir</a>
     </div>
 </div>
