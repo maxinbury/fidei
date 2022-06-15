@@ -89,11 +89,12 @@ router.get("/deshabilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, r
 //ACCION DE  AGREGAR ICC GENERAL
 router.post('/agregariccgral',isLevel3, async (req, res,) => {
     const { ICC, mes, anio } = req.body;
+    console.log('icc gral')
     const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
     const parcialidad = "Final"
     for (var i = 0; i < todas.length; i++) {
-        nro_cuota = todas[0]["nro_cuota"]
-        cuil_cuit = todas[0]["cuil_cuit"]
+        nro_cuota = todas[i]["nro_cuota"]
+        cuil_cuit = todas[i]["cuil_cuit"]
        
         if (nro_cuota == 1) {
         
@@ -114,11 +115,11 @@ router.post('/agregariccgral',isLevel3, async (req, res,) => {
 
         } else {
             const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
-
+            console.log(anterior)
             var Saldo_real_anterior = anterior[0]["Saldo_real"]
             
             const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
-    
+            
             const Base_calculo = cuota_con_ajuste_anterior
             const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
     

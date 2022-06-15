@@ -171,7 +171,127 @@ const postaddaut = async (req, res) => {
 
 }
 
+const postaddaut2 = async (req, res) => {
+    var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo,parcela } = req.body;
 
+    const lot = await pool.query('SELECT * from lotes where id= ?', [id])
+
+    cuil_cuit = lot[0]['cuil_cuit']
+    cuil_cuit = lot[0]['cuil_cuit']
+    cuil_cuit = lot[0]['cuil_cuit']
+    cuil_cuit = lot[0]['cuil_cuit']
+
+    let aux = '%' + cuil_cuit + '%'
+
+    const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
+    //llega
+    try {
+        if (row[0]['ingresos'] == 0) {
+
+            requestAnimationFrame.send('message', 'Error, el cliente no tiene ingresos declarados ')
+            res.redirect('/links/detallecliente/' + cuil_cuit)
+
+        } else {
+            monto_total -= anticipo
+            anticipolote = {
+                anticipo
+            }
+
+            //llega
+            const Amortizacion = monto_total / cantidad_cuotas;
+            let toleranciadec = row[0]['toleranciadec'] + Amortizacion
+            let tolerancia = row[0]['ingresos'] * 0.3
+
+            if (tolerancia < toleranciadec) {
+                res.send('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
+          
+
+
+            } else {
+
+                let nro_cuota = 1
+                let saldo_inicial = monto_total
+
+
+                if (row.length > 0) {
+                    var saldo_cierre = saldo_inicial - Amortizacion
+                    const Saldo_real = saldo_inicial
+                    const id_cliente = row[0].id
+
+                    try {
+
+                        let actualizar = {
+                            toleranciadec
+                        }
+                        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [actualizar, aux])
+
+                        for (var i = 1; i <= cantidad_cuotas; i++) {
+                            nro_cuota = i
+                            const newLink = {
+                                //fecha,
+                                mes,
+                                anio,
+                                nro_cuota,
+                                Amortizacion,
+                                saldo_inicial,
+                                saldo_cierre,
+                                cuil_cuit,
+                                id_cliente,
+                                zona,
+                                manzana,
+                                fraccion,
+                                lote,
+                                Saldo_real,
+                                parcela,
+                                anticipo
+
+                            };
+                            mes++
+
+                            if (mes > 12) {
+
+                                anio++
+                                mes -= 12
+                            }
+
+                            await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+
+
+
+                            saldo_inicial -= Amortizacion
+                            saldo_cierre = saldo_inicial - Amortizacion
+                        }
+
+                    } catch (error) {
+                        console.log(error)
+                    }
+
+
+                    await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
+
+                    req.flash('success', 'Guardado correctamente')
+                    res.redirect('/links/detallecliente/' + cuil_cuit)
+                }
+
+
+                else {
+                    res.send('message', 'Error cliente no existe')
+                    res.redirect('links/clientes/todos')
+                }
+
+            }
+
+
+        }
+
+
+    } catch (error) {
+        console.log(error)
+
+    }
+
+
+}
 const quelote = async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     let aux = '%' + cuil_cuit + '%'
@@ -305,9 +425,11 @@ const post_agregaricc = async (req, res,) => {
         const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
 
         var Saldo_real_anterior = anterior[0]["Saldo_real"]
-
+        console.log('Saldo_real_anterior')
+            console.log(Saldo_real_anterior)
         const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
-
+        console.log('cuota_con_ajuste_anterior')
+        console.log(cuota_con_ajuste_anterior)
         const Base_calculo = cuota_con_ajuste_anterior
         const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
 
@@ -344,6 +466,7 @@ module.exports = {
     ampliar,
     add_cliente,
     postadd,
+    postaddaut2,
     postaddaut,
     quelote,
     lotefuncion,

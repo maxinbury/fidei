@@ -486,6 +486,27 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 
 })
+router.post('/agregaringreso2', async (req, res) => {
+    const {  ingresos, cuil_cuit } = req.body
+    console.log(cuil_cuit)
+    console.log(ingresos)
+    const newLink = {
+        ingresos
+    }
+    try {
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+
+    } catch (error) {
+        console.log(error)
+
+    }
+
+
+
+    res.send('exito')
+
+
+})
 ////////////////////////////////
 
 
