@@ -48,7 +48,7 @@ router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, quelote)
 
 router.get("/lote/:id", lotefuncion)
 // auxililar react
-router.get("/lote/:id", lotefuncion2)
+router.get("/lote2/:id", lotefuncion2)
    
 
 //async (req, res) => {console.log(req.params.id)}

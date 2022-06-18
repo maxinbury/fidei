@@ -173,13 +173,16 @@ const postaddaut = async (req, res) => {
 
 const postaddaut2 = async (req, res) => {
     var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo,parcela } = req.body;
-
+    
+    console.log('controlador')
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
+    cuil_cuit = lot[0]['cuil_cuit']
+    lote = lot[0]['lote']
+    zona = lot[0]['zona']
+    manzana = lot[0]['manzana']
+    fraccion = lot[0]['fraccion']
+    parcela = lot[0]['parcela']
 
-    cuil_cuit = lot[0]['cuil_cuit']
-    cuil_cuit = lot[0]['cuil_cuit']
-    cuil_cuit = lot[0]['cuil_cuit']
-    cuil_cuit = lot[0]['cuil_cuit']
 
     let aux = '%' + cuil_cuit + '%'
 
@@ -269,14 +272,14 @@ const postaddaut2 = async (req, res) => {
 
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
-                    req.flash('success', 'Guardado correctamente')
-                    res.redirect('/links/detallecliente/' + cuil_cuit)
+                    res.send('Guardado Correctamente ')
+                    
                 }
 
 
                 else {
                     res.send('message', 'Error cliente no existe')
-                    res.redirect('links/clientes/todos')
+                   
                 }
 
             }
@@ -371,6 +374,7 @@ const lotefuncion2 = async (req, res) => {
 
     } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
 }
+
 /// fin para react
 
 const cuotascli = async (req, res) => {
