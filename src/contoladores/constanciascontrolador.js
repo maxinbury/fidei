@@ -1,6 +1,15 @@
 const pool = require('../database')
 
 
+
+
+
+
+
+
+///
+
+
 const lista = async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     console.log(cuil_cuit)
@@ -86,5 +95,6 @@ module.exports = {
     aprobadas,
     solicitaraprobacion,
     pendientes,
-    rechazadas
+    rechazadas,
+    
 }

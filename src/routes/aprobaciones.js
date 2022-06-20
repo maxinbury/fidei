@@ -3,7 +3,18 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
-const {pendientes, aprobarcomp, rechazarcomp, rechazo, aprobacioncbu, aprobarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
+const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, rechazo, aprobacioncbu, aprobarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
+
+
+// LISTA TODAS PENDIENTES PAra React
+router.get('/pendientestodas',pendientestodas)
+
+router.get('/aprobar/:id', aprobar)
+
+router.post('/rechazarr/:id', rechazar2)
+
+//
+
 
 
 
