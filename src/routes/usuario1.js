@@ -6,6 +6,105 @@ const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
 
+
+
+
+//// REACT  
+
+
+
+router.post('/realizar', async (req, res, done) => {
+    const { monto, comprobante, mes, anio } = req.body;
+    var estado = 'P'
+
+    let cuil_cuit = req.user.cuil_cuit
+   
+    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+    
+     
+    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux ='%'+ cuil_cuit+'%'
+    /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
+     const workbooksheets = workbook.SheetNames
+     const sheet = workbooksheets[0]
+ 
+     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+     //console.log(dataExcel)
+ 
+
+ 
+     for (const property in dataExcel) {
+         if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+             estado = 'A'
+         }
+     }
+  */
+ aux = '%'+cuil_cuit+'%'
+
+    const existe = await pool.query('Select * from cuotas where cuil_cuit like ? and mes = ? and anio =?  and parcialidad = "Final"', [aux, mes, anio])
+
+    if (existe.length > 0) {
+        let montomaxx= await pool.query('Select * from clientes where cuil_cuit like ? ',[aux])
+        
+        try {
+            montomax = montomaxx[0]['ingresos']
+           
+        
+
+        } catch (error) {
+            console.log(error)
+        }
+       
+       
+        
+        const id_cuota = existe[0]["id"]
+        const newLink = {
+            id_cuota,
+            monto,
+            cuil_cuit,
+            estado,
+            comprobante,
+            mes,
+            anio
+        };
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+        if (montomax < monto ) {
+
+            res.send('Atencion pago inusual, sera notificado como tal')
+            const tipo = 'inusual'
+            const  guardado =  {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                comprobante,
+                mes,
+                anio,
+                tipo
+            };
+            await pool.query('INSERT INTO pagos SET ?', [guardado]);
+
+        }else {
+        res.send('Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')}
+   
+    } else {
+        res.send('Error la cuota no existe')
+     
+
+    }
+
+})
+
+
+
+
+
+
+
+
+
+
+
 ///////////////////-------------MENU PRINCIPAL--- VERIFICACION DE HABILITACION PARA PAGAR 
 router.get('/', isLoggedIn, async (req, res) => {
     let cuil_cuit = req.user.cuil_cuit
