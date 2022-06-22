@@ -50,6 +50,33 @@ router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
 res.json(lotes)
 
 })
+///////
+
+router.get('/lotescliente2/:cuil_cuit',  async (req, res) => {
+    cuil_cuit = req.params.cuil_cuit
+    let aux = cuil_cuit
+        cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+
+        cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+
+
+        aux = '%' + cuil_cuit + '%'
+    console.log(cuil_cuit)
+    lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote from lotes where cuil_cuit like  ?', [aux]);
+    console.log(lotes)
+
+
+res.json(lotes)
+
+})
+
+
+
+
+
+
+
+//////
 
 
 router.get('/cargar_movimientos', isLoggedIn, isLevel2, async (req, res) => {

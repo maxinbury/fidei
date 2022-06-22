@@ -8,22 +8,27 @@ const sacarguion = require('../public/apps/transformarcuit')
 
 
 
-
 //// REACT  
 
 
 
-router.post('/realizar', async (req, res, done) => {
-    const { monto, comprobante, mes, anio } = req.body;
+router.post('/realizarr', async (req, res, done) => {
+    let { monto, cuil_cuit, mes, anio } = req.body;
+    console.log(cuil_cuit)
+    console.log(monto)
     var estado = 'P'
 
-    let cuil_cuit = req.user.cuil_cuit
-   
+    
+   try {
     cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
     
      
     cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
     aux ='%'+ cuil_cuit+'%'
+   } catch (error) {
+    res.send('error de login')
+   }
+    
     /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
      const workbooksheets = workbook.SheetNames
      const sheet = workbooksheets[0]
@@ -63,7 +68,6 @@ router.post('/realizar', async (req, res, done) => {
             monto,
             cuil_cuit,
             estado,
-            comprobante,
             mes,
             anio
         };
@@ -77,12 +81,11 @@ router.post('/realizar', async (req, res, done) => {
                 id_cuota,
                 monto,
                 cuil_cuit,
-                comprobante,
                 mes,
                 anio,
                 tipo
             };
-            await pool.query('INSERT INTO pagos SET ?', [guardado]);
+            await pool.query('INSERT INTO historial_pagosi SET ?', [guardado]);
 
         }else {
         res.send('Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')}

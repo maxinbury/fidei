@@ -11,7 +11,7 @@ router.get('/pendientestodas',pendientestodas)
 
 router.get('/aprobar/:id', aprobar)
 
-router.post('/rechazarr/:id', rechazar2)
+router.post('/rechazarr/', rechazar2)
 
 //
 

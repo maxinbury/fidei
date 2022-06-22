@@ -5,6 +5,17 @@ const {isLevel2} = require('../lib/authnivel2')
 const {isLoggedIn} = require('../lib/auth') //proteger profile
 
 
+
+
+
+///////// reaxct
+router.get("/listainusual", async (req,res)=> {
+    const pagos = await pool.query('SELECT * FROM historial_pagosi join clientes on historial_pagosi.cuil_cuit= clientes.cuil_cuit')
+    res.json(pagos)
+})
+
+///////
+
 router.get("/",isLevel2, async (req,res)=> {
     const pagos = await pool.query('SELECT * FROM pagos ')
     res.render('pagos/listap', {pagos})
@@ -67,7 +78,6 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) =>{ // pagot e
 
     res.redirect('/profile')
 })
-
 
 
 

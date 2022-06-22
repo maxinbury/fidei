@@ -206,6 +206,10 @@ const postaddaut2 = async (req, res) => {
             let tolerancia = row[0]['ingresos'] * 0.3
 
             if (tolerancia < toleranciadec) {
+             
+
+                await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+                ///////
                 res.send('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
           
 
@@ -246,7 +250,8 @@ const postaddaut2 = async (req, res) => {
                                 lote,
                                 Saldo_real,
                                 parcela,
-                                anticipo
+                                anticipo,
+                                id
 
                             };
                             mes++
