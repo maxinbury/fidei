@@ -195,11 +195,14 @@ const aprobarcomp = async (req, res) => {
 
 
 const rechazar2 = async (req, res) => {
-    const { id, asunto, cuil_cuit, descripcion, nombre } = req.body;
-    try {
+    const { id, detalle} = req.body;
+    console.log(id)
+    console.log(detalle)
+    console.log('holaa')
+  /*   try {
          console.log(id)
        await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["R", id])
- /* 
+ 
         leida = "No"
         const noti = {
             cuil_cuit,
@@ -207,15 +210,15 @@ const rechazar2 = async (req, res) => {
             asunto,
             leida
         }
-        await pool.query('INSERT INTO notificaciones set ?', [noti]) */
+        await pool.query('INSERT INTO notificaciones set ?', [noti]) 
     
         res.send('rechazado')
     } catch (error) {
         res.send('Algo salio mal')
-    }
+    }*/
    
 
-    
+    res.send('todo en orden ')
 
 }
 

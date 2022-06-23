@@ -173,8 +173,11 @@ const postaddaut = async (req, res) => {
 
 const postaddaut2 = async (req, res) => {
     var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo,parcela } = req.body;
-    
+    console.log(monto_total)
+    console.log(cantidad_cuotas)
+    console.log(id)
     console.log('controlador')
+    id_lote= id
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
     cuil_cuit = lot[0]['cuil_cuit']
     lote = lot[0]['lote']
@@ -251,7 +254,7 @@ const postaddaut2 = async (req, res) => {
                                 Saldo_real,
                                 parcela,
                                 anticipo,
-                                id
+                                id_lote
 
                             };
                             mes++

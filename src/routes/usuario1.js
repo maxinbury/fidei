@@ -52,7 +52,7 @@ router.post('/realizarr', async (req, res, done) => {
         let montomaxx= await pool.query('Select * from clientes where cuil_cuit like ? ',[aux])
         
         try {
-            montomax = montomaxx[0]['ingresos']
+            montomax = montomaxx[0]['ingresos']/3
            
         
 
