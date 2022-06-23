@@ -8,7 +8,49 @@ const XLSX = require('xlsx')
 const sacarguion = require('../public/apps/transformarcuit')
 
 
+/////////////React
+router.post('/ventalote/',  async (req, res) => {
+    let { zona, manzana,fraccion,parcela,cuil_cuit,lote } = req.body
 
+
+    switch (zona) {
+        case 'PIT':
+           parcela= '0'
+          fraccion= '0'
+           break;
+        case IC3:
+            parcela='0'
+          break;
+
+
+    }
+          
+
+
+     venta  = {
+       cuil_cuit
+     }
+
+ try {
+     
+ // fraccion=?, manzana =?, parcela =?, lote=? 
+  const existe = await pool.query('select * from lotes where zona=?  and manzana =? and parcela=? ',[zona,manzana,parcela])
+  if( existe.length>0){
+     console.log(existe)
+     await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
+     res.redirect('/links/detallecliente/'+cuil_cuit)
+ 
+  }else{console.log('no existe')}
+  req.flash('Lote no xiste')
+  res.redirect('/links/ventalote/'+cuil_cuit)
+ 
+    // res.render('links/ventalote', { cliente })
+ 
+ 
+ } catch (error) {
+     
+ }
+ })
 
 
 

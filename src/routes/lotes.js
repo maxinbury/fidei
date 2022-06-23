@@ -191,11 +191,27 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 
 //LISTA DE LOTES 
 router.get('/listadetodos', async (req, res) => {
-
+    console.log('si')
     const lotes = await pool.query('select * from lotes')
    
    
     res.json( lotes )
+})
+router.post('/prueba', async (req, res) => {
+const {zona}= req.body
+    console.log(zona)
+    
+   
+   
+    
+})
+//filtro solo lotes
+router.get('/listadelotes', async (req, res) => {
+
+    const zona = await pool.query('select zona from lotes group by=zona')
+   
+   
+    res.json( zona )
 })
 
 router.get('/listadetodosamp', isLoggedIn, isLevel2, async (req, res) => {
