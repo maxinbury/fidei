@@ -9,48 +9,53 @@ const sacarguion = require('../public/apps/transformarcuit')
 
 
 /////////////React
-router.post('/ventalote/',  async (req, res) => {
-    let { zona, manzana,fraccion,parcela,cuil_cuit,lote } = req.body
+router.post('/ventalote', async (req, res) => {
+    let { zona, manzana, fraccion, parcela, cuil_cuit, lote } = req.body
 
-
+  
     switch (zona) {
         case 'PIT':
-           parcela= '0'
-          fraccion= '0'
-           break;
-        case IC3:
-            parcela='0'
-          break;
+           
+        
+            fraccion = '0'
+            lote='0'
+            break;
+        case 'IC3':
+            parcela = '0'
+            fraccion = fraccion.toUpperCase()
+            break;
 
 
     }
-          
 
 
-     venta  = {
-       cuil_cuit
-     }
+    venta = {
+        cuil_cuit
+    }
 
- try {
-     
- // fraccion=?, manzana =?, parcela =?, lote=? 
-  const existe = await pool.query('select * from lotes where zona=?  and manzana =? and parcela=? ',[zona,manzana,parcela])
-  if( existe.length>0){
-     console.log(existe)
-     await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-     res.redirect('/links/detallecliente/'+cuil_cuit)
- 
-  }else{console.log('no existe')}
-  req.flash('Lote no xiste')
-  res.redirect('/links/ventalote/'+cuil_cuit)
- 
-    // res.render('links/ventalote', { cliente })
- 
- 
- } catch (error) {
-     
- }
- })
+    try {
+        if (zona = 'PIT') {
+            // fraccion=?, manzana =?, parcela =?, lote=? 
+            console.log(zona)    
+            console.log(manzana)
+          console.log(parcela)
+            console.log(lote)
+            const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion,manzana, parcela,lote])
+            if (existe.length > 0) {
+                console.log(existe)
+                await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
+              
+                res.send('Lote asignado')
+            } else {  res.send('No existe el lote') }
+           
+
+            // res.render('links/ventalote', { cliente })
+        }
+
+    } catch (error) {
+
+    }
+})
 
 
 
@@ -202,9 +207,9 @@ router.post('/add', isLoggedIn, isLevel2, async (req, res) => {
     };
 
 
-   
+
     try {
-         const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
+        const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
         if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
             req.flash('message', 'Error cuil_cuit ya existe')
             res.redirect('/links/clientes')
@@ -406,21 +411,21 @@ router.get("/detallecliente/:cuil_cuit", isLoggedIn, isLevel2, async (req, res) 
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like  ?', [aux])
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE parcialidad = "Final" and cuil_cuit like  ?', [aux])
     let cuota = {
-          
+
     }
     try {
-        
+
 
         for (var i = 0; i < cuotas.length; i++) {
             cuotaa = cuotas[i]
 
 
         }
-         cuota = {
+        cuota = {
             cuotaa
         }
     } catch (error) {
-        
+
 
     }
     cuil_cuit = sacarguion.sacarguion(cuil_cuit)
@@ -474,36 +479,36 @@ router.get('/ventalotepit/:cuil_cuit', isLoggedIn, isLevel2, async (req, res) =>
     const { cuil_cuit } = req.params
     aux = '%' + cuil_cuit + '%'
     const cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
-  
+
 
 
     res.render('links/ventalote', { cliente })
 })
 router.post('/ventalotepit/', isLoggedIn, isLevel2, async (req, res) => {
-   const { zona, manzana,parcela,cuil_cuit } = req.body
-  console.log(cuil_cuit)
-    venta  = {
-      cuil_cuit
+    const { zona, manzana, parcela, cuil_cuit } = req.body
+    console.log(cuil_cuit)
+    venta = {
+        cuil_cuit
     }
-try {
-    
-// fraccion=?, manzana =?, parcela =?, lote=? 
- const existe = await pool.query('select * from lotes where zona=?  and manzana =? and parcela=? ',[zona,manzana,parcela])
- if( existe.length>0){
-    console.log(existe)
-    await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-    res.redirect('/links/detallecliente/'+cuil_cuit)
+    try {
 
- }else{console.log('no existe')}
- req.flash('Lote no xiste')
- res.redirect('/links/ventalote/'+cuil_cuit)
+        // fraccion=?, manzana =?, parcela =?, lote=? 
+        const existe = await pool.query('select * from lotes where zona=?  and manzana =? and parcela=? ', [zona, manzana, parcela])
+        if (existe.length > 0) {
+            console.log(existe)
+            await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
+            res.redirect('/links/detallecliente/' + cuil_cuit)
 
-   // res.render('links/ventalote', { cliente })
+        } else { console.log('no existe') }
+        req.flash('Lote no xiste')
+        res.redirect('/links/ventalote/' + cuil_cuit)
+
+        // res.render('links/ventalote', { cliente })
 
 
-} catch (error) {
-    
-}
+    } catch (error) {
+
+    }
 })
 
 
@@ -529,7 +534,7 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 })
 router.post('/agregaringreso2', async (req, res) => {
-    const {  ingresos, cuil_cuit } = req.body
+    const { ingresos, cuil_cuit } = req.body
     console.log(cuil_cuit)
     console.log(ingresos)
     const newLink = {
@@ -619,7 +624,7 @@ router.get('/clientesconcuotas', isLoggedIn, async (req, res) => {
 
 router.get('/detalle/:cuil_cuit', async (req, res) => {
     const { cuil_cuit } = req.params
-  
+
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
 
     res.json(links)

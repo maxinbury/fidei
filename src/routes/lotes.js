@@ -198,8 +198,10 @@ router.get('/listadetodos', async (req, res) => {
     res.json( lotes )
 })
 router.post('/prueba', async (req, res) => {
-const {zona}= req.body
-    console.log(zona)
+let {zona, fraccion}= req.body
+console.log(fraccion)
+fraccion= fraccion.toUpperCase()
+    console.log(fraccion)
     
    
    
