@@ -2,6 +2,21 @@ const pool = require('../database')
 
 
 
+
+////////////cuotas de un lote, react
+const cuotasdeunlote = async (req, res) => {
+   const id = req.params.id
+   console.log(id)
+    const cuotas = await pool.query('SELECT * FROM  cuotas where id_lote = ? and parcialidad ="Final"',[id])
+    console.log(cuotas)
+
+
+    res.json(cuotas)
+
+}
+
+
+
 //Lista 
 const lista = async (req, res) => {
 
@@ -361,26 +376,32 @@ const lotefuncion = async (req, res) => {
 
 //// para react
 const lotefuncion2 = async (req, res) => {
-    const id = req.params.id
-    console.log('controladorloteduncion')
-    console.log(id)
-    let auxiliar = await pool.query('Select * from lotes where id =?', [id])
-    console.log(auxiliar)
-    zona = auxiliar[0]['zona']
-    manzana = auxiliar[0]['manzana']
-    fraccion = auxiliar[0]['fraccion']
-    lote = auxiliar[0]['lote']
-
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona, manzana, fraccion, lote])
-    console.log(cuotas)
-    if (cuotas.length > 0) {
-
-        /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
-           cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
-        res.json(cuotas)
-        //res.render('cuotas/listavacia', { auxiliar })
-
-    } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
+    try {
+        const id = req.params.id
+        console.log('controladorloteduncion')
+        console.log(id)
+        let auxiliar = await pool.query('Select * from lotes where id =?', [id])
+        console.log(auxiliar) 
+        zona = auxiliar[0]['zona']
+        manzana = auxiliar[0]['manzana']
+        fraccion = auxiliar[0]['fraccion']
+        lote = auxiliar[0]['lote']
+    
+        const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona, manzana, fraccion, lote])
+        console.log(cuotas)
+        if (cuotas.length > 0) {
+    
+            /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+               cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
+            res.json(cuotas)
+            //res.render('cuotas/listavacia', { auxiliar })
+    
+        } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
+        
+    } catch (error) {
+        
+    }
+ 
 }
 
 /// fin para react
@@ -487,6 +508,7 @@ module.exports = {
     agregar_icc,
     post_agregaricc,
     lotes,
-    lotefuncion2
+    lotefuncion2,
+    cuotasdeunlote
 
 }

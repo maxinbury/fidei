@@ -5,7 +5,7 @@ const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 
 const { isLevel3 } = require('../lib/authnivel3')
-const { lista, ampliar, add_cliente, postadd,postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2,cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
+const { lista, ampliar, add_cliente, cuotasdeunlote, postadd,postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2,cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
 
 require('../contoladores/cuotascontrolador')
 
@@ -36,6 +36,11 @@ router.post('/add',isLevel2, postadd)
 // AGREGA VARIAS CUOTAS 
 router.post('/addaut', postaddaut)
 router.post('/addaut2', postaddaut2)
+
+
+
+/// cuotasdeunloteReact
+router.get("/cuotasdeunlote/:id",  cuotasdeunlote)
 
 
 

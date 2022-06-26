@@ -50,6 +50,10 @@ router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
 res.json(lotes)
 
 })
+
+
+
+
 ///////
 
 router.get('/lotescliente2/:cuil_cuit',  async (req, res) => {

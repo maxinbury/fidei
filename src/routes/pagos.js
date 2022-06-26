@@ -6,7 +6,12 @@ const { isLoggedIn } = require('../lib/auth') //proteger profile
 
 
 
-
+///////// Cantidad inusuales 
+router.get("/cantidadinusuales", async (req, res) => {
+    const cantidad = await pool.query('SELECT count(*) FROM historial_pagosi where estado = "Pendiente"')
+    res.json(cantidad)
+  //*  res.json(cantidad[0]["count(*)"])
+})
 
 ///////// reaxct
 router.get("/listainusual", async (req, res) => {
@@ -17,7 +22,7 @@ router.get("/listainusual", async (req, res) => {
 //react pendientes
 router.get('/pendientess', async (req, res) => {
     const pendientes = await pool.query("Select * from pagos where estado = 'P'")
-  
+
     res.json(pendientes)
 
 
@@ -30,71 +35,86 @@ router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
 
     var pagot = await pool.query('select * from pagos where id = ?', [id])
 
-    let auxiliar = pagot[0]["id_cuota"]
+    let id_cuota = pagot[0]["id_cuota"]
 
-    const cuota = await pool.query('select * from cuotas where id = ?', [auxiliar]) //objeto cuota
+    const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
     console.log(cuota)// aca ver error
+    var saldo_realc = cuota[0]["Saldo_real"]
+    var nro_cuota = cuota[0]["nro_cuota"]
+    var id_lote = cuota[0]["id_lote"]
 
 
-    try {
-        if (cuota[0]["nro_cuota"] === 1) {
-           
-            var saldo_realc = cuota[0]["Saldo_real"]
-
-        } else {
-            const cuotaant = await pool.query("Select * from cuotas where cuil_cuit=? and nro_cuota= ?", [cuota[0]["cuil_cuit"], (cuota[0]["nro_cuota"]) - 1])
-            console.log(cuotaant[0]["Saldo_real"])
-            console.log(cuota[0]["Saldo_real"])
-            saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["cuota_con_ajuste"]
-            saldo_inicial = cuotaant[0]["Saldo_real"]
-
-        }
-
-    } catch (error) {
-        console.log(error)
-        res.redirect('/profile')
-
-
-    }
     try {
         let pago = cuota[0]["pago"] + pagot[0]["monto"]
 
 
         // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
         Saldo_real = saldo_realc - pago
-    
-    
+
+
         const update = {
             Saldo_real,
             pago,
-        
-    
+
+
         }
-    
+
         await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
-    
-    
-    
-    
+        cant_finales= await pool.query('select *from cuotas where   WHERE id_lote = ? and parcialidad = "Final"', [id_lote, ])
+        console.log(cant_finales)
+        if (nro_cuota === cant_finales.length ) {
+        for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
+        
+            try {//
+                aux =  await pool.query('select *from cuotas where   WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
+                 saldo_realc =  aux[0]["Saldo_real"]
+                 id =  aux[0]["id"] 
+                 Saldo_real = saldo_realc - pago
+                 const update = {
+                    Saldo_real,
+           
+        
+        
+                }
+                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
+            } catch (error) {//
+                
+            }
+
+         }}
+
+
         await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
         res.send('Guardado correctamente')
-    
-    
-    
+
+
+
         res.send('Exito')
     } catch (error) {
-        
-    }
-   
-})
 
+    }
+
+})
+///// inusuales mensuales react
+router.post("/mensualesinusuales", async (req, res) => {
+    const { mes, anio } = req.body
+    console.log(mes)
+    console.log(anio)
+    const pagos = await pool.query('select * from historial_pagosi where mes =? and anio=?', [mes, anio])
+    console.log(pagos)
+    if (pagos.length > 0) {
+        res.json(pagos)
+    } else { res.json([]) }
+
+
+})
 
 ////////rechazar 
 router.post("/rechazarr", async (req, res) => {
-  const   {id, detalle} = req.body
-  console.log(id)
-  console.log(detalle)
- res.send('Todo en orden')
+    const { id, detalle } = req.body
+    console.log(id)
+    console.log(detalle)
+    res.send('Todo en orden')
 
 
 })
