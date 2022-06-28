@@ -77,6 +77,8 @@ app.use('/nivel3', require('./routes/nivel3'))
 //public  
 app.use(express.static(path.join(__dirname, 'public') ))
 
+app.use(express.static(path.join(__dirname, 'dbimages') ))
+
 //start 
 app.listen(app.get('port'), ()=>{
     console.log(`server onport`, app.get('port'))

@@ -4,11 +4,44 @@ const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
 const XLSX = require('xlsx')
+const fs = require('fs')
+const multer = require('multer')
+const path = require('path')
 
+const diskstorage = multer.diskStorage({ 
+    destination: path.join(__dirname, '../../pdfs'),
+    filename: (req, file, cb) =>{
+        cb(null,Date.now() +'-legajo-'+ file.originalname)
+
+    }
+}) //para que almacene temporalmente la imagen
+const fileUpload = multer({
+    storage: diskstorage,
+
+}).single('image')
 const sacarguion = require('../public/apps/transformarcuit')
 
 
 /////////////React
+
+//lista legajos de un cliente
+router.get('/legajos/:cuil_cuit', async (req, res) => {
+    const  cuil_cuit = req.params.cuil_cuit
+  //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
+    
+   const legajos = await pool.query('select * from constancias where cuil_cuit =?',[cuil_cuit])
+   legajos.map( img=>{
+    fs.writeFileSync(path.join(__dirname,'../dbimages/' + img.id+'--.png'),img.comprobante) 
+    
+    })
+    const imagedir = fs.readdirSync(path.join(__dirname,'../dbimages/'))
+    res.json(legajos)
+
+
+})
+
+
+
 router.post('/ventalote', async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote } = req.body
 

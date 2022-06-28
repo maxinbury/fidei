@@ -7,10 +7,13 @@ const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
 const multer = require('multer')
 const path = require('path')
-const diskstorage = multer.diskStorage({ 
+const fs = require('fs')
+
+
+const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../../pdfs'),
-    filename: (req, file, cb) =>{
-        cb(null,Date.now() +'-legajo-'+ file.originalname)
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-legajo-' + file.originalname)
 
     }
 }) //para que almacene temporalmente la imagen
@@ -20,10 +23,42 @@ const fileUpload = multer({
 }).single('image')
 
 //// REACT  
-router.post('/subirlegajoprueba',fileUpload, async (req, res, done) => {
-  console.log(req.file)
-    
+router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
+    const type = req.file.mimetype
+    const name = req.file.originalname
+    const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
 
+    const datos = {
+        descripcion: name
+    }
+    try {
+        await pool.query('insert into constancias set?', datos)
+        res.send('Imagen guardada con exito')
+
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+
+})
+
+router.get('/leerimagen ', async (req, res, done) => {
+    fs.writeFileSync(path.join(__dirname, '../dbimages/'))
+
+    try {
+        rows = await pool.query('select * from consancias')
+        res.send('Imagen guardada con exito')
+
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+    rows.map(img => {
+        fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
+
+    })
+    const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))
+    res.json(imagedir)
 })
 
 /// Probando recibir imagenes
@@ -35,17 +70,17 @@ router.post('/realizarr', async (req, res, done) => {
     console.log(monto)
     var estado = 'P'
 
-    
-   try {
-    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-    
-     
-    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    aux ='%'+ cuil_cuit+'%'
-   } catch (error) {
-    res.send('error de login')
-   }
-    
+
+    try {
+        cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+
+
+        cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+        aux = '%' + cuil_cuit + '%'
+    } catch (error) {
+        res.send('error de login')
+    }
+
     /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
      const workbooksheets = workbook.SheetNames
      const sheet = workbooksheets[0]
@@ -61,24 +96,24 @@ router.post('/realizarr', async (req, res, done) => {
          }
      }
   */
- aux = '%'+cuil_cuit+'%'
+    aux = '%' + cuil_cuit + '%'
 
     const existe = await pool.query('Select * from cuotas where cuil_cuit like ? and mes = ? and anio =?  and parcialidad = "Final"', [aux, mes, anio])
 
     if (existe.length > 0) {
-        let montomaxx= await pool.query('Select * from clientes where cuil_cuit like ? ',[aux])
-        
+        let montomaxx = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+
         try {
-            montomax = montomaxx[0]['ingresos']*0.3
-           
-        
+            montomax = montomaxx[0]['ingresos'] * 0.3
+
+
 
         } catch (error) {
             console.log(error)
         }
-       
-       
-        
+
+
+
         const id_cuota = existe[0]["id"]
         const newLink = {
             id_cuota,
@@ -90,11 +125,11 @@ router.post('/realizarr', async (req, res, done) => {
         };
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
-        if (montomax < monto ) {
+        if (montomax < monto) {
 
             res.send('Atencion pago inusual, sera notificado como tal')
             const tipo = 'inusual'
-            const  guardado =  {
+            const guardado = {
                 id_cuota,
                 monto,
                 cuil_cuit,
@@ -104,12 +139,13 @@ router.post('/realizarr', async (req, res, done) => {
             };
             await pool.query('INSERT INTO historial_pagosi SET ?', [guardado]);
 
-        }else {
-        res.send('Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')}
-   
+        } else {
+            res.send('Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        }
+
     } else {
         res.send('Error la cuota no existe')
-     
+
 
     }
 
@@ -129,10 +165,10 @@ router.post('/realizarr', async (req, res, done) => {
 router.get('/', isLoggedIn, async (req, res) => {
     let cuil_cuit = req.user.cuil_cuit
 
-    let cliente = await pool.query('select * from users where cuil_cuit = ? ',[cuil_cuit])
+    let cliente = await pool.query('select * from users where cuil_cuit = ? ', [cuil_cuit])
     console.log(cliente)
-    
-    res.render('usuario1/menu',{cliente})
+
+    res.render('usuario1/menu', { cliente })
 
 })
 
@@ -185,39 +221,39 @@ router.get("/cuotas", async (req, res) => {
     cuil_cuit = req.user.cuil_cuit
 
 
-   
-    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-     console.log(cuil_cuit)
-     
-    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    aux ='%'+ cuil_cuit+'%'
+
+    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+    console.log(cuil_cuit)
+
+    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux = '%' + cuil_cuit + '%'
 
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
     var devengado = 0
     var pagado = 0
-  
+
     for (var i = 0; i < cuotas.length; i++) {
-        if (cuotas[i]['parcialidad'] ='Final') {
-            devengado+= cuotas[i]['cuota_con_ajuste']
+        if (cuotas[i]['parcialidad'] = 'Final') {
+            devengado += cuotas[i]['cuota_con_ajuste']
         }
         ;
     }
     const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [aux])
 
     for (var i = 0; i < pagos.length; i++) {
-           
-            pagado+= pagos[i]['monto']
-        
-        ;
+
+        pagado += pagos[i]['monto']
+
+            ;
     }
-    const total  ={
+    const total = {
         pagado,
         devengado
 
     }
-  //  const total = [totall]
-    
+    //  const total = [totall]
+
     cuotas.push(total)
     console.log(cuotas)
     res.render('usuario1/listacuotas', { cuotas })
@@ -232,39 +268,39 @@ router.get("/cuotasamp", async (req, res) => {
     cuil_cuit = req.user.cuil_cuit
 
 
-   
-    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
 
-     
-    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    aux ='%'+ cuil_cuit+'%'
+    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+
+
+    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux = '%' + cuil_cuit + '%'
     console.log(aux)
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
     var devengado = 0
     var pagado = 0
-  
+
     for (var i = 0; i < cuotas.length; i++) {
-        if (cuotas[i]['parcialidad'] ='Final') {
-            devengado+= cuotas[i]['cuota_con_ajuste']
+        if (cuotas[i]['parcialidad'] = 'Final') {
+            devengado += cuotas[i]['cuota_con_ajuste']
         }
         ;
     }
     const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? and estado = "A"', [req.user.cuil_cuit])
 
     for (var i = 0; i < pagos.length; i++) {
-           
-            pagado+= pagos[i]['monto']
-        
-        ;
+
+        pagado += pagos[i]['monto']
+
+            ;
     }
-    const total  ={
+    const total = {
         pagado,
         devengado
 
     }
-  //  const total = [totall]
-    
+    //  const total = [totall]
+
     cuotas.push(total)
     res.render('usuario1/listacuotasamp', { cuotas })
 
@@ -281,7 +317,7 @@ router.get("/pagos", async (req, res) => {
 
     const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
 
- 
+
 
     res.render('usuario1/pagos', { pagos })
 
@@ -296,29 +332,29 @@ router.get("/estado", async (req, res) => {
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
     var devengado = 0
     var pagado = 0
-  
+
     for (var i = 0; i < cuotas.length; i++) {
-        if (cuotas[i]['parcialidad'] ='Final') {
-            devengado+= cuotas[i]['cuota_con_ajuste']
+        if (cuotas[i]['parcialidad'] = 'Final') {
+            devengado += cuotas[i]['cuota_con_ajuste']
         }
         ;
     }
     const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [req.user.cuil_cuit])
 
     for (var i = 0; i < pagos.length; i++) {
-           
-            pagado+= pagos[i]['monto']
-        
-        ;
+
+        pagado += pagos[i]['monto']
+
+            ;
     }
-    const total  ={
+    const total = {
         pagado,
         devengado
 
     }
-    
+
     cuotas.push(total)
-   
+
 
     res.render('usuario1/estado', { cuotas })
 
@@ -328,24 +364,24 @@ router.get("/estado", async (req, res) => {
 //------------------------------------------INFORMAR PAGO -------------------------------------------------
 
 // PAGINA DE INFO DE TRANSFERENCIA 
-router.get("/subirelegir", isLoggedIn,async (req, res) => {
-    let aux=req.user.cuil_cuit
+router.get("/subirelegir", isLoggedIn, async (req, res) => {
+    let aux = req.user.cuil_cuit
     try {
-        let aux=req.user.cuil_cuit
-           aux = ponerguion.ponerguion(aux)
-         
-          aux = '%'+aux+'%'
-  
-          const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [aux])
-          res.render('usuario1/subirelegir', { lote }) 
-      } catch (error) {
-          console.log(error)
-          res.redirect('/usuario1')
-      }
+        let aux = req.user.cuil_cuit
+        aux = ponerguion.ponerguion(aux)
+
+        aux = '%' + aux + '%'
+
+        const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [aux])
+        res.render('usuario1/subirelegir', { lote })
+    } catch (error) {
+        console.log(error)
+        res.redirect('/usuario1')
+    }
 
 
 
-      
+
 
 })
 
@@ -357,46 +393,44 @@ router.post('/subirprueba', async (req, res, done) => {
 
 
 
-router.post("/subir", isLoggedIn,async (req, res) => {
+router.post("/subir", isLoggedIn, async (req, res) => {
     const { id } = req.body;
-    
+
     try {
         lote = await pool.query('select * from lotes where id = ?', id)
-      
-        
 
-        let aux=req.user.cuil_cuit
-        aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
-       aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
-      
-       
-     if(lote[0]['cuil_cuit'] === aux ){
-        aux = '%'+aux+'%'
 
-       // cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
-       
-        cbus = await pool.query('select * from cbus  where cuil_cuit like ? and estado ="A" ', aux)
-        
-        console.log(cbus)} else 
-        
-        
-        {
+
+        let aux = req.user.cuil_cuit
+        aux = (aux).slice(0, 2) + "-" + (aux).slice(2);
+        aux = (aux).slice(0, 11) + "-" + (aux).slice(11);
+
+
+        if (lote[0]['cuil_cuit'] === aux) {
+            aux = '%' + aux + '%'
+
+            // cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
+
+            cbus = await pool.query('select * from cbus  where cuil_cuit like ? and estado ="A" ', aux)
+
+            console.log(cbus)
+        } else {
 
             req.flash('message', 'Error, ACCESO DENEGADO ')
             res.redirect('/usuario1')
         }
-    
+
     } catch (error) {
         console.log(error)
         res.redirect('/usuario1')
     }
-   
+
 
     if (req.user.habilitado == 'SI') {
         res.render('usuario1/subir', { cbus })
     } else { res.render('usuario1/subirno', { cuotas }) }
 
-    
+
 
 })
 
@@ -408,12 +442,12 @@ router.post('/realizar', async (req, res, done) => {
     var estado = 'P'
 
     let cuil_cuit = req.user.cuil_cuit
-   
-    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-    
-     
-    cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    aux ='%'+ cuil_cuit+'%'
+
+    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+
+
+    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    aux = '%' + cuil_cuit + '%'
     /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
      const workbooksheets = workbook.SheetNames
      const sheet = workbooksheets[0]
@@ -429,24 +463,24 @@ router.post('/realizar', async (req, res, done) => {
          }
      }
   */
- aux = '%'+cuil_cuit+'%'
+    aux = '%' + cuil_cuit + '%'
 
     const existe = await pool.query('Select * from cuotas where cuil_cuit like ? and mes = ? and anio =?  and parcialidad = "Final"', [aux, mes, anio])
 
     if (existe.length > 0) {
-        let montomaxx= await pool.query('Select * from clientes where cuil_cuit like ? ',[aux])
-        
+        let montomaxx = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+
         try {
             montomax = montomaxx[0]['ingresos']
-           
-        
+
+
 
         } catch (error) {
             console.log(error)
         }
-       
-       
-        
+
+
+
         const id_cuota = existe[0]["id"]
         const newLink = {
             id_cuota,
@@ -459,13 +493,14 @@ router.post('/realizar', async (req, res, done) => {
         };
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
-        if (montomax < monto ) {
+        if (montomax < monto) {
 
             req.flash('message', 'Atencion pago inusual, sera notificado como tal')
-        
 
-        }else {
-        req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')}
+
+        } else {
+            req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
+        }
         res.redirect(`/usuario1`);
     } else {
         req.flash('message', 'Error la cuota no existe')
@@ -478,24 +513,24 @@ router.post('/realizar', async (req, res, done) => {
 
 /////////////   SUBIR INUSUAL
 
-router.get("/subirinusual", isLoggedIn,async (req, res) => {
-    
+router.get("/subirinusual", isLoggedIn, async (req, res) => {
+
     try {
-      let aux=req.user.cuil_cuit
-         aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
-    
-        aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
-        aux = '%'+aux+'%'
-        
+        let aux = req.user.cuil_cuit
+        aux = (aux).slice(0, 2) + "-" + (aux).slice(2);
+
+        aux = (aux).slice(0, 11) + "-" + (aux).slice(11);
+        aux = '%' + aux + '%'
+
         cliente = await pool.query('select * from clientes where cuil_cuit like ?', aux)
-       
-            
+
+
     } catch (error) {
         console.log(error)
     }
-   
-        res.render('usuario1/subirinusual')
-   
+
+    res.render('usuario1/subirinusual')
+
 
 })
 
@@ -514,10 +549,10 @@ router.post('/addcbu', async (req, res) => {
 
     const { lazo, dc, numero, descripcion } = req.body;
     let aux = req.user.cuil_cuit
-    aux =  (aux).slice(0, 2) + "-" + (aux).slice(2);
-    
-    aux =  (aux).slice(0, 11) + "-" + (aux).slice(11);
-  
+    aux = (aux).slice(0, 2) + "-" + (aux).slice(2);
+
+    aux = (aux).slice(0, 11) + "-" + (aux).slice(11);
+
     const cuil_cuit = aux
     const estado = "P"
     const newcbu = {
@@ -528,7 +563,7 @@ router.post('/addcbu', async (req, res) => {
         dc,
         estado
     }
-    
+
     try {
         await pool.query('INSERT INTO cbus SET ?', [newcbu])
         req.flash('message', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
@@ -536,9 +571,9 @@ router.post('/addcbu', async (req, res) => {
         req.flash('message', 'Error algo paso ')
         console.log(error)
     }
-  
 
-   
+
+
     res.redirect(`/usuario1`);
 })
 
@@ -690,7 +725,7 @@ router.post('/edit_comp_acta', async (req, res) => {
             req.flash('message', 'Error, algo sucedio inesperadamente ')
             res.redirect('/usuario1/legajo')
         }
-      
+
 
 
     } else {
@@ -1100,37 +1135,37 @@ router.post('/edit_const_cuil', async (req, res) => {
 
 router.post('/chatenviar', async (req, res) => {
     const { mensaje_cliente } = req.body;
-    
 
-        let cuil_cuit = req.user.cuil_cuit
-        cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-        console.log(cuil_cuit)
-        
-       cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-        const newr = {
-          mensaje_cliente,
-          cuil_cuit
-          
-        }
-        await pool.query('INSERT INTO chats SET ?', [newr])
-       
-        res.redirect(`/usuario1/chat`);
 
-    
+    let cuil_cuit = req.user.cuil_cuit
+    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+    console.log(cuil_cuit)
+
+    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    const newr = {
+        mensaje_cliente,
+        cuil_cuit
+
+    }
+    await pool.query('INSERT INTO chats SET ?', [newr])
+
+    res.redirect(`/usuario1/chat`);
+
+
 
 })
 
 router.get("/chat", async (req, res) => {
     let cuil_cuit = req.user.cuil_cuit
-    cuil_cuit =  (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-   
-    
-   cuil_cuit =  (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-   console.log(cuil_cuit)
-   const aux = '%'+cuil_cuit+'%'
-    const chat = await pool.query('select * from chats where cuil_cuit like ?',[aux])
+    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+
+
+    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
+    console.log(cuil_cuit)
+    const aux = '%' + cuil_cuit + '%'
+    const chat = await pool.query('select * from chats where cuil_cuit like ?', [aux])
     console.log(chat)
-    res.render('usuario1/chat',{chat})
+    res.render('usuario1/chat', { chat })
 
 })
 
