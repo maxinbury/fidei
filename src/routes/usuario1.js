@@ -5,11 +5,28 @@ const { isLoggedIn } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
+const multer = require('multer')
+const path = require('path')
+const diskstorage = multer.diskStorage({ 
+    destination: path.join(__dirname, '../../pdfs'),
+    filename: (req, file, cb) =>{
+        cb(null,Date.now() +'-legajo-'+ file.originalname)
 
+    }
+}) //para que almacene temporalmente la imagen
+const fileUpload = multer({
+    storage: diskstorage,
 
+}).single('image')
 
 //// REACT  
+router.post('/subirlegajoprueba',fileUpload, async (req, res, done) => {
+  console.log(req.file)
+    
 
+})
+
+/// Probando recibir imagenes
 
 
 router.post('/realizarr', async (req, res, done) => {
