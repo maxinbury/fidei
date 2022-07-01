@@ -22,8 +22,13 @@ const fileUpload = multer({
 
 }).single('image')
 
+
 //// REACT  
 router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
+    const {formdata, file} = req.body
+  //  console.log(formdata)
+    //console.log(file)
+  console.log(req.file)
     const type = req.file.mimetype
     const name = req.file.originalname
     const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
@@ -38,6 +43,7 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
     } catch (error) {
         res.send('algo salio mal')
     }
+
 
 
 })

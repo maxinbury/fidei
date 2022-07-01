@@ -7,11 +7,16 @@ const XLSX = require('xlsx')
 const fs = require('fs')
 const multer = require('multer')
 const path = require('path')
+const sacarguion = require('../public/apps/transformarcuit')
 
-const diskstorage = multer.diskStorage({ 
+
+
+const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../../pdfs'),
-    filename: (req, file, cb) =>{
-        cb(null,Date.now() +'-legajo-'+ file.originalname)
+    filename: (req, file, cb) => {
+        
+        cb(null, Date.now() + '-legajo-' + file.originalname)
+
 
     }
 }) //para que almacene temporalmente la imagen
@@ -19,22 +24,85 @@ const fileUpload = multer({
     storage: diskstorage,
 
 }).single('image')
-const sacarguion = require('../public/apps/transformarcuit')
 
 
-/////////////React
+
+
+
+////////////inicio carga de legajos manual Total 11
+router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
+ const { tipo, cuil_cuit} = req.body
+   console.log(cuil_cuit)
+
+    try {
+        console.log('1')
+        const type = req.file.mimetype
+        console.log('2')
+        const name = req.file.originalname
+        console.log('3')
+        const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
+        console.log(req.file.filename)
+        
+        const datos = {
+            descripcion: req.file.filename,
+            tipo:tipo,
+            cuil_cuit:cuil_cuit,
+            estado:'A',
+        }
+        await pool.query('insert into constancias set?', datos)
+        res.send('Imagen guardada con exito')
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+    // console.log(req.file)
+
+    
+
+ 
+    
+
+})
+
+
+router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
+    const { tipo, legform } = req.body
+    console.log('hola')
+    console.log(tipo)
+    console.log(legform)
+
+    /*const type = req.file.mimetype
+    const name = req.file.originalname
+    const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
+
+    const datos = {
+        descripcion: name
+    }
+    try {
+        await pool.query('insert into constancias set?', datos)
+        res.send('Imagen guardada con exito')
+
+    } catch (error) {
+        res.send('algo salio mal')
+    }*/
+
+
+})
+
+
+
+
 
 //lista legajos de un cliente
 router.get('/legajos/:cuil_cuit', async (req, res) => {
-    const  cuil_cuit = req.params.cuil_cuit
-  //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
-    
-   const legajos = await pool.query('select * from constancias where cuil_cuit =?',[cuil_cuit])
-   legajos.map( img=>{
-    fs.writeFileSync(path.join(__dirname,'../dbimages/' + img.id+'--.png'),img.comprobante) 
-    
+    const cuil_cuit = req.params.cuil_cuit
+    //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
+
+    const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
+  /*  legajos.map(img => {
+        fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
+
     })
-    const imagedir = fs.readdirSync(path.join(__dirname,'../dbimages/'))
+    const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
     res.json(legajos)
 
 
@@ -45,13 +113,13 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 router.post('/ventalote', async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote } = req.body
 
-  
+
     switch (zona) {
         case 'PIT':
-           
-        
+
+
             fraccion = '0'
-            lote='0'
+            lote = '0'
             break;
         case 'IC3':
             parcela = '0'
@@ -69,18 +137,18 @@ router.post('/ventalote', async (req, res) => {
     try {
         if (zona = 'PIT') {
             // fraccion=?, manzana =?, parcela =?, lote=? 
-            console.log(zona)    
+            console.log(zona)
             console.log(manzana)
-          console.log(parcela)
+            console.log(parcela)
             console.log(lote)
-            const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion,manzana, parcela,lote])
+            const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
             if (existe.length > 0) {
                 console.log(existe)
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-              
+
                 res.send('Lote asignado')
-            } else {  res.send('No existe el lote') }
-           
+            } else { res.send('No existe el lote') }
+
 
             // res.render('links/ventalote', { cliente })
         }
