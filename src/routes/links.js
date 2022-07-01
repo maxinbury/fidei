@@ -32,7 +32,7 @@ const fileUpload = multer({
 ////////////inicio carga de legajos manual Total 11
 router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
  const { tipo, cuil_cuit} = req.body
-   console.log(cuil_cuit)
+
 
     try {
         console.log('1')
@@ -44,12 +44,13 @@ router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
         console.log(req.file.filename)
         
         const datos = {
-            descripcion: req.file.filename,
+            ubicacion: req.file.filename,
             tipo:tipo,
             cuil_cuit:cuil_cuit,
             estado:'A',
         }
         await pool.query('insert into constancias set?', datos)
+        console.log('req.file.filename')
         res.send('Imagen guardada con exito')
     } catch (error) {
         res.send('algo salio mal')
@@ -97,7 +98,9 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
 
+
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
+    
   /*  legajos.map(img => {
         fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
 
@@ -158,8 +161,46 @@ router.post('/ventalote', async (req, res) => {
     }
 })
 
+////react 
+router.post('/add2', async (req, res) => {
+    const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
+    const newLink = {
+        Nombre,
+        tipo_dni,
+        razon,
+        telefono,
+        domicilio,
+        observaciones,
+        cuil_cuit
+        //user_id: req.user.id
+    };
 
 
+
+    try {
+        const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
+        if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
+            res.send('Error cuil_cuit ya existe')
+         
+        }
+        else {
+            await pool.query('INSERT INTO clientes set ?', [newLink]);
+            res.send( 'Guardado correctamente')
+        
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.send('message', 'Error algo salio mal')
+       
+
+    }
+
+
+
+
+
+})
 
 //  LEER Y CARGAR DEL EXCEL LOS CLIENTES DEL TANGO. NO CONECTAR
 router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
