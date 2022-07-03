@@ -17,6 +17,92 @@ router.get('/profile', isLoggedIn, isLevel2, (req, res) => {
 })
 */
 
+//REACT GET HISTORIAL
+router.get('/historialicc', async (req, res) => {
+
+    const historial = await pool.query('select * from icc_historial')
+    console.log(historial)
+    res.json(historial)
+
+})
+
+///// REACT ii gral
+router.post('/agregariccgral2', async (req, res,) => {
+    const { ICC, mes, anio } = req.body;
+    console.log(ICC)
+    console.log(mes)
+    console.log(anio)
+    var datoss = {
+        ICC,
+        mes,
+        anio
+
+    }
+    const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
+    const parcialidad = "Final"
+    for (var i = 0; i < todas.length; i++) {
+        nro_cuota = todas[i]["nro_cuota"]
+        cuil_cuit = todas[i]["cuil_cuit"]
+       
+        if (nro_cuota == 1) {
+        
+            saldo_inicial = todas[i]["saldo_inicial"]
+            const Ajuste_ICC = 0
+            const Base_calculo = todas[i]["Amortizacion"]
+            const cuota_con_ajuste = todas[i]["Amortizacion"]
+            const Saldo_real = todas[i]["Amortizacion"]
+            var cuota = {
+                ICC,
+                Ajuste_ICC,
+                Base_calculo,
+                cuota_con_ajuste,
+                Saldo_real,
+                parcialidad
+    
+            }
+
+        } else {
+            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
+            console.log(anterior)
+            var Saldo_real_anterior = anterior[0]["Saldo_real"]
+            
+            const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
+            
+            const Base_calculo = cuota_con_ajuste_anterior
+            const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
+    
+            const cuota_con_ajuste = cuota_con_ajuste_anterior + Ajuste_ICC
+            Saldo_real_anterior += cuota_con_ajuste
+            const Saldo_real = Saldo_real_anterior
+
+            var cuota = {
+                ICC,
+                Ajuste_ICC,
+                Base_calculo,
+                cuota_con_ajuste,
+                Saldo_real,
+                parcialidad
+    
+            }
+        }
+    
+        try {
+            await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
+            await pool.query('insert into icc_historial set?', datoss)
+
+        } catch (error) {
+            console.log(error)
+            res.send('Error');
+
+        }
+
+
+
+    }
+
+    res.send('Icc asignado con éxito');
+})
+
 //ACCESO A MENU DE USUARIO NIVEL 2
 router.get('/perfilnivel2', isLoggedIn, isLevel3, async (req, res) => {
 
