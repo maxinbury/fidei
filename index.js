@@ -13,7 +13,7 @@ const keys = require('./src/keys')
 
 //inicializacion
 const app = express()
-require('./lib/passport')
+require('./src/lib/passport')
 app.set('key',keys.key)
 
 //settings
@@ -59,13 +59,13 @@ app.use((req,res,next)=>{
 
 
 //routes
-app.use(require('./routes/index'))
-app.use(require('./routes/authentication'))
+app.use(require('./src/routes/index'))
+app.use(require('./src/routes/authentication'))
 app.use(`/src/links`, require('./src/routes/links'))
 app.use(`/src/cuotas`, require('./src/routes/cuotas'))
 app.use('/src/pagos', require('./src/routes/pagos'))
 app.use('/src/usuario1', require('./src/routes/usuario1'))
-app.use('/src/aprobaciones', require('./src/outes/aprobaciones'))
+app.use('/src/aprobaciones', require('./src/routes/aprobaciones'))
 app.use('/src/constancias', require('./src/routes/constancias'))
 app.use('/src/lotes', require('./src/routes/lotes'))
 app.use('/src/chats', require('./src/routes/chats'))
