@@ -100,7 +100,7 @@ router.post("/mensualesinusuales", async (req, res) => {
     const { mes, anio } = req.body
     console.log(mes)
     console.log(anio)
-    const pagos = await pool.query('select * from historial_pagosi where mes =? and anio=?', [mes, anio])
+    const pagos = await pool.query('select * from historial_pagosi join clientes on historial_pagosi.cuil_cuit= clientes.cuil_cuit where historial_pagosi.mes =? and historial_pagosi.anio=?', [mes, anio])
     console.log(pagos)
     if (pagos.length > 0) {
         res.json(pagos)
@@ -114,6 +114,27 @@ router.post("/rechazarr", async (req, res) => {
     const { id, detalle } = req.body
     console.log(id)
     console.log(detalle)
+    const update ={
+        estado:"R",
+
+    }
+   
+    try {
+        await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
+       const aux = await pool.query('select * from  pagos  WHERE id = ?', [id])
+       cuil_cuit = aux[0]['cuil_cuit']
+       const update2 ={
+        
+        cuil_cuit: cuil_cuit,
+        id_referencia: id,
+        descripcion: detalle
+    }
+        await pool.query('INSERT INTO notificaciones set ?', [update2]);
+    } catch (error) {
+        console.log(error)
+        res.send('algo salio mal')
+    }
+  
     res.send('Todo en orden')
 
 
