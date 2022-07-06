@@ -69,7 +69,7 @@ router.get('/leerimagen ', async (req, res, done) => {
 
 /// Probando recibir imagenes
 
-
+////pago react nivel 1
 router.post('/realizarr', async (req, res, done) => {
     let { monto, cuil_cuit, mes, anio } = req.body;
     console.log(cuil_cuit)
@@ -87,7 +87,10 @@ router.post('/realizarr', async (req, res, done) => {
         res.send('error de login')
     }
 
-    /*  const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
+    /*  
+        hacer comparacion del 30%
+
+    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
      const workbooksheets = workbook.SheetNames
      const sheet = workbooksheets[0]
  
@@ -133,7 +136,7 @@ router.post('/realizarr', async (req, res, done) => {
 
         if (montomax < monto) {
 
-            res.send('Atencion pago inusual, sera notificado como tal')
+            res.send('Atencion pago inusual')
             const tipo = 'inusual'
             const guardado = {
                 id_cuota,
