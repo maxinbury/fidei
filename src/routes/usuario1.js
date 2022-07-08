@@ -86,7 +86,9 @@ router.post('/realizarr', async (req, res, done) => {
     } catch (error) {
         res.send('error de login')
     }
-
+    let cuil_cuit_distinto = 'Si'
+    let monto_distinto = 'Si'
+    let monto_inusual = 'No'
     /*  
         hacer comparacion del 30%
 
@@ -102,8 +104,10 @@ router.post('/realizarr', async (req, res, done) => {
      for (const property in dataExcel) {
          if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
              estado = 'A'
+             // tipo de pago normal 
          }
      }
+      let cuil_cuit_distinto = 'Si'
   */
     aux = '%' + cuil_cuit + '%'
 
@@ -120,7 +124,10 @@ router.post('/realizarr', async (req, res, done) => {
         } catch (error) {
             console.log(error)
         }
+        if (montomax < monto) {
 
+            monto_inusual='Si'
+        }
 
 
         const id_cuota = existe[0]["id"]
@@ -130,27 +137,15 @@ router.post('/realizarr', async (req, res, done) => {
             cuil_cuit,
             estado,
             mes,
-            anio
+            anio,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+
         };
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
-        if (montomax < monto) {
-
-            res.send('Atencion pago inusual')
-            const tipo = 'inusual'
-            const guardado = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                anio,
-                tipo
-            };
-            await pool.query('INSERT INTO historial_pagosi SET ?', [guardado]);
-
-        } else {
-            res.send('Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
-        }
+        
 
     } else {
         res.send('Error la cuota no existe')

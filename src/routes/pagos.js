@@ -15,15 +15,17 @@ router.get("/cantidadinusuales", async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", async (req, res) => {
-    const pagos = await pool.query('SELECT * FROM historial_pagosi join clientes on historial_pagosi.cuil_cuit= clientes.cuil_cuit')
+    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where estado="averificarnivel3"')
     res.json(pagos)
 })
 
 //react pendientes
 router.get('/pendientess', async (req, res) => {
-    const pendientes = await pool.query("Select * from pagos where estado = 'P'")
+    const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
 
     res.json(pendientes)
+
+
 
 
 })
@@ -36,6 +38,9 @@ router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
     var pagot = await pool.query('select * from pagos where id = ?', [id])
 
     let id_cuota = pagot[0]["id_cuota"]
+
+    
+
 
     const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
     console.log(cuota)// aca ver error
@@ -111,11 +116,40 @@ router.post("/mensualesinusuales", async (req, res) => {
 
 ////////rechazar 
 router.post("/rechazarr", async (req, res) => {
-    const { id, detalle } = req.body
+    const { id, detalle, accion } = req.body
     console.log(id)
     console.log(detalle)
+    console.log(accion)
+    auxi = await pool.query('select *  from pagos where id=?', [id]);
+    cuil_cuit= auxi[0]['cuil_cuit']
+
+    
+    switch (accion) {
+        case 'rechazar':
+            console.log('rechazar')
+            estado='averificarnivel3'
+          //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
+       
+
+
+          break;
+        case 'solicitar_doc':
+            console.log('solicitar_doc')
+            estado='ajustificar'
+          //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
+          const update2 ={
+        
+            cuil_cuit: cuil_cuit,
+            id_referencia: id,
+            descripcion: detalle
+        }
+            await pool.query('INSERT INTO notificaciones set ?', [update2]);
+          break
+    }
+
+
     const update ={
-        estado:"R",
+        estado
 
     }
    
@@ -123,13 +157,7 @@ router.post("/rechazarr", async (req, res) => {
         await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
        const aux = await pool.query('select * from  pagos  WHERE id = ?', [id])
        cuil_cuit = aux[0]['cuil_cuit']
-       const update2 ={
-        
-        cuil_cuit: cuil_cuit,
-        id_referencia: id,
-        descripcion: detalle
-    }
-        await pool.query('INSERT INTO notificaciones set ?', [update2]);
+       
     } catch (error) {
         console.log(error)
         res.send('algo salio mal')
