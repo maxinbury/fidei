@@ -114,19 +114,17 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 
 
 router.post('/ventalote', async (req, res) => {
-    let { zona, manzana, fraccion, parcela, cuil_cuit, lote } = req.body
+    let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
 
 
     switch (zona) {
         case 'PIT':
-
-
-            fraccion = '0'
+         
             lote = '0'
             break;
         case 'IC3':
             parcela = '0'
-            fraccion = fraccion.toUpperCase()
+          //  fraccion = fraccion.toUpperCase()
             break;
 
 
@@ -134,7 +132,8 @@ router.post('/ventalote', async (req, res) => {
 
 
     venta = {
-        cuil_cuit
+        cuil_cuit, 
+        estado
     }
 
     try {
@@ -144,6 +143,7 @@ router.post('/ventalote', async (req, res) => {
             console.log(manzana)
             console.log(parcela)
             console.log(lote)
+            console.log(fraccion)
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
             if (existe.length > 0) {
                 console.log(existe)
@@ -770,6 +770,35 @@ router.get('/detalle/:cuil_cuit', async (req, res) => {
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
 
     res.json(links)
+
+})
+
+// MODIDICACION CLIENTES
+router.post('/modificarcli', async (req, res) => {
+    const { cuil_cuit, email, provincia,telefono,ingresos,domicilio,razon_social } = req.body
+    console.log(cuil_cuit)
+    console.log(email)
+    console.log(telefono)
+    console.log(provincia)
+    console.log(ingresos)
+    console.log(domicilio)
+    console.log(razon_social)
+    try {
+        aux = '%'+cuil_cuit+'%'
+        const newLink = {
+            email, 
+            provincia,
+            telefono,
+            ingresos,
+            domicilio,
+            razon_social 
+        }
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
+        res.send('Cliente modificado')
+    } catch (error) {
+        res.send('Error algo ssucedió'+error)
+    }
+   
 
 })
 module.exports = router
