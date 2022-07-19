@@ -4,7 +4,110 @@ const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 
+///////////////// REALIZAR PAGO MANUAL NIVEL 2 
 
+router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
+    let { id, tipo, cuil_cuit, monto  } = req.body 
+console.log(cuil_cuit)
+    ///// cuil_cuit es del usuario que esta ene l sistema
+
+    //var pagot = await pool.query('select * from pagos where id = ?', [id]) PAGO QUE HAY QUE CREAR
+
+    //
+
+
+    const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+   
+    let saldo_realc = cuota[0]["Saldo_real"]
+    let nro_cuota = (cuota[0]["nro_cuota"])
+    let id_lote = cuota[0]["id_lote"]
+//// hasta aca se trae la cuota
+
+    try {
+
+
+        Saldo_real = parseFloat(saldo_realc) - monto
+    let pago =   parseFloat(monto) + parseFloat(cuota[0]["pago"])
+
+
+       
+      
+        
+      //  console.log(Saldo_real)  llega bien 
+/// crear el apgo nuevo agregar idcuota
+
+        const nuevo = {
+          //  Saldo_real,
+            monto,
+            cuil_cuit_administrador: cuil_cuit,
+            tipo,
+            id_cuota: id
+
+
+
+        }
+
+        const update = {
+              Saldo_real,
+              pago,
+            
+        }
+  
+        console.log(nuevo)
+
+        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update,id])
+
+      await pool.query('INSERT INTO pagos set ?', [nuevo]);
+
+   
+      console.log('idlote'+id_lote)
+        cant_finales= await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote ])
+     
+        console.log(cant_finales.length) //bien
+        console.log(nro_cuota) // bien
+        if (nro_cuota < cant_finales.length ) {/// aca esta el errror
+           
+
+
+        for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
+        
+            try {//
+                
+                aux =  await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
+                console.log(aux)
+                 saldo_realc = parseFloat( aux[0]["Saldo_real"])
+                 console.log('saldoreal '+saldo_realc) 
+                 id =  aux[0]["id"] 
+                 console.log( id) 
+               
+                 console.log('pagop'+pago) 
+                 Saldo_real = saldo_realc - monto
+                 console.log(Saldo_real) 
+                 const update = {
+                    Saldo_real,
+           
+        
+        
+                }
+                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
+            } catch (error) {//
+                
+            }
+
+         }}
+
+
+        await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
+        res.send('Guardado correctamente')
+
+
+
+        res.send('Exito')
+    } catch (error) {
+
+    }
+
+})
 
 ///////// Cantidad inusuales 
 router.get("/cantidadinusuales", async (req, res) => {
