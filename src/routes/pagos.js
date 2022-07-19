@@ -109,6 +109,18 @@ console.log(cuil_cuit)
 
 })
 
+///// Detalles del pago 
+router.get("/detallespago/:id", async (req, res) => {
+    const { id } = req.body 
+console.log(id)
+
+    const detalles = await pool.query('SELECT * FROM pagos where id_cuota = ?',[id])
+   
+    res.json(detalles)
+  //*  res.json(cantidad[0]["count(*)"])
+})
+
+
 ///////// Cantidad inusuales 
 router.get("/cantidadinusuales", async (req, res) => {
     const cantidad = await pool.query('SELECT count(*) FROM historial_pagosi where estado = "Pendiente"')
