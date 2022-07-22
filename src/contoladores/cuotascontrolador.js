@@ -209,8 +209,8 @@ const postaddaut2 = async (req, res) => {
     try {
         if (row[0]['ingresos'] == 0) {
 
-            requestAnimationFrame.send('message', 'Error, el cliente no tiene ingresos declarados ')
-            res.redirect('/links/detallecliente/' + cuil_cuit)
+            req.send('Error, el cliente no tiene ingresos declarados ')
+           
 
         } else {
             monto_total -= anticipo
@@ -228,7 +228,7 @@ const postaddaut2 = async (req, res) => {
 
                 
                 ///////
-                res.send('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
+                res.send( 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
           
 
 
