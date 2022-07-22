@@ -98,7 +98,7 @@ console.log(cuil_cuit)
 
 
         await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
-        res.send('Guardado correctamente')
+        res.send(cuotas[0]['cuil_cuit'])
 
 
 

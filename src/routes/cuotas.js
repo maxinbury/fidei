@@ -124,19 +124,16 @@ router.post('/editarr', async (req, res, ) => {
 router.get('/delete/:id', async (req, res) => {
     const { id } = req.params
     try {
-        console.log(id)
-        let aux = await pool.query('select * from cuotas where id =?',[id])
-        console.log(aux)
-        cuil_cuit = aux[0]['cuil_cuit']
+   
         await pool.query('DELETE FROM cuotas WHERE id = ?', [id])
-        req.flash('success', 'Cuota eliminadas')
+        res.send('Cuota eliminada')
     } catch (error) {
-    
+        res.send('Error algo sucedio')
     }
   
 
 
-    res.redirect('/cuotas/cuotas/'+cuil_cuit)
+
 })
 
 
