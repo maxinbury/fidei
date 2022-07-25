@@ -114,7 +114,7 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 
 
 router.post('/ventalote', async (req, res) => {
-    let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
+    let { zona, manzana, fraccion, parcela, cuil_cuit, lote } = req.body
 
     console.log('PIT')
     switch (zona) {

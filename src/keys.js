@@ -5,7 +5,7 @@ module.exports = {
         host: 'localhost',
         user: 'root',
        // password: 'root',
-       password: '11235Maxi',
+       password: 'root',
         database: 'fideicomiso'
     }
 
