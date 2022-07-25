@@ -14,7 +14,7 @@ const sacarguion = require('../public/apps/transformarcuit')
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../../pdfs'),
     filename: (req, file, cb) => {
-        
+
         cb(null, Date.now() + '-legajo-' + file.originalname)
 
 
@@ -31,7 +31,7 @@ const fileUpload = multer({
 
 ////////////inicio carga de legajos manual Total 11
 router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
- const { tipo, cuil_cuit} = req.body
+    const { tipo, cuil_cuit } = req.body
 
 
     try {
@@ -42,12 +42,12 @@ router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
         console.log('3')
         const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
         console.log(req.file.filename)
-        
+
         const datos = {
             ubicacion: req.file.filename,
-            tipo:tipo,
-            cuil_cuit:cuil_cuit,
-            estado:'A',
+            tipo: tipo,
+            cuil_cuit: cuil_cuit,
+            estado: 'A',
         }
         await pool.query('insert into constancias set?', datos)
         console.log('req.file.filename')
@@ -57,10 +57,10 @@ router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
     }
     // console.log(req.file)
 
-    
 
- 
-    
+
+
+
 
 })
 
@@ -100,12 +100,12 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
-    
-  /*  legajos.map(img => {
-        fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
 
-    })
-    const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
+    /*  legajos.map(img => {
+          fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
+  
+      })
+      const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
     res.json(legajos)
 
 
@@ -116,15 +116,15 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 router.post('/ventalote', async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
 
-
+    console.log('PIT')
     switch (zona) {
         case 'PIT':
-         
+
             lote = '0'
             break;
         case 'IC3':
             parcela = '0'
-          //  fraccion = fraccion.toUpperCase()
+            //  fraccion = fraccion.toUpperCase()
             break;
 
 
@@ -132,23 +132,21 @@ router.post('/ventalote', async (req, res) => {
 
 
     venta = {
-        cuil_cuit, 
-        estado
+        cuil_cuit,
+       
     }
 
     try {
         if (zona = 'PIT') {
             // fraccion=?, manzana =?, parcela =?, lote=? 
-            console.log(zona)
-            console.log(manzana)
-            console.log(parcela)
-            console.log(lote)
-            console.log(fraccion)
+
+
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
             if (existe.length > 0) {
-                console.log(existe)
+                //console.log(existe)
+                console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-
+                console.log('Lote asignado')
                 res.send('Lote asignado')
             } else { res.send('No existe el lote') }
 
@@ -157,7 +155,8 @@ router.post('/ventalote', async (req, res) => {
         }
 
     } catch (error) {
-
+        console.log(error)
+        res.send('algo salio mal')
     }
 })
 
@@ -181,18 +180,18 @@ router.post('/add2', async (req, res) => {
         const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
         if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
             res.send('Error cuil_cuit ya existe')
-         
+
         }
         else {
             await pool.query('INSERT INTO clientes set ?', [newLink]);
-            res.send( 'Guardado correctamente')
-        
+            res.send('Guardado correctamente')
+
         }
 
     } catch (error) {
         console.log(error)
         res.send('message', 'Error algo salio mal')
-       
+
 
     }
 
@@ -775,7 +774,7 @@ router.get('/detalle/:cuil_cuit', async (req, res) => {
 
 // MODIDICACION CLIENTES
 router.post('/modificarcli', async (req, res) => {
-    const { cuil_cuit, email, provincia,telefono,ingresos,domicilio,razon_social } = req.body
+    const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
     console.log(cuil_cuit)
     console.log(email)
     console.log(telefono)
@@ -784,21 +783,21 @@ router.post('/modificarcli', async (req, res) => {
     console.log(domicilio)
     console.log(razon_social)
     try {
-        aux = '%'+cuil_cuit+'%'
+        aux = '%' + cuil_cuit + '%'
         const newLink = {
-            email, 
+            email,
             provincia,
             telefono,
             ingresos,
             domicilio,
-            razon_social 
+            razon_social
         }
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
         res.send('Cliente modificado')
     } catch (error) {
-        res.send('Error algo ssucedió'+error)
+        res.send('Error algo ssucedió' + error)
     }
-   
+
 
 })
 module.exports = router
