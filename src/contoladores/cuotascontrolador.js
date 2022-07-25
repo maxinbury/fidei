@@ -209,8 +209,8 @@ const postaddaut2 = async (req, res) => {
     try {
         if (row[0]['ingresos'] == 0) {
 
-            requestAnimationFrame.send('message', 'Error, el cliente no tiene ingresos declarados ')
-            res.redirect('/links/detallecliente/' + cuil_cuit)
+            req.send('Error, el cliente no tiene ingresos declarados ')
+           
 
         } else {
             monto_total -= anticipo
@@ -226,9 +226,9 @@ const postaddaut2 = async (req, res) => {
             if (tolerancia < toleranciadec) {
              
 
-                await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+                
                 ///////
-                res.send('message', 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
+                res.send( 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
           
 
 
@@ -269,7 +269,8 @@ const postaddaut2 = async (req, res) => {
                                 Saldo_real,
                                 parcela,
                                 anticipo,
-                                id_lote
+                                id_lote,
+                                pago:0
 
                             };
                             mes++
@@ -301,7 +302,7 @@ const postaddaut2 = async (req, res) => {
 
 
                 else {
-                    res.send('message', 'Error cliente no existe')
+                    res.send( 'Error cliente no existe')
                    
                 }
 
@@ -388,7 +389,7 @@ const lotefuncion2 = async (req, res) => {
         lote = auxiliar[0]['lote']
     
         const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona, manzana, fraccion, lote])
-        console.log(cuotas)
+
         if (cuotas.length > 0) {
     
             /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'

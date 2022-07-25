@@ -41,8 +41,8 @@ router.get("/completar_cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
 
 router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
-    console.log("entra")
-    console.log(cuil_cuit)
+
+    
     lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote from lotes where cuil_cuit =  ?', [cuil_cuit]);
     console.log(lotes)
 
