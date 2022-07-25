@@ -191,7 +191,7 @@ const postaddaut2 = async (req, res) => {
     console.log(monto_total)
     console.log(cantidad_cuotas)
     console.log(id)
-    console.log('controlador')
+    
     id_lote= id
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
     cuil_cuit = lot[0]['cuil_cuit']
@@ -296,13 +296,13 @@ const postaddaut2 = async (req, res) => {
 
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
-                    res.send('Guardado Correctamente ')
+                    res.send(cuil_cuit)
                     
                 }
 
 
                 else {
-                    res.send( 'Error cliente no existe')
+                    res.send(cuil_cuit)
                    
                 }
 
@@ -314,6 +314,7 @@ const postaddaut2 = async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        res.send(cuil_cuit)
 
     }
 
