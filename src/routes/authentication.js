@@ -14,11 +14,17 @@ router.get('/signup', isNotLoggedIn,(req,res)=>{
 
 
 
-router.post('/signup', isNotLoggedIn,passport.authenticate('local.signup', {
+router.post('/signup', passport.authenticate('local.signup', {
   
     successRedirect: '/signin',
     failureRedirect:'/signup',
     failureFlash:true
+
+}))
+router.post('/signupp', passport.authenticate('local.signup', {
+    successRedirect: '/signin',
+
+    
 
 }))
 

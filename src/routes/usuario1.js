@@ -160,9 +160,42 @@ router.post('/realizarr', async (req, res, done) => {
 
 
 
+///lotes del cliente
+router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    
+    lotes = await pool.query('select  * from lotes where cuil_cuit =  ?', [cuil_cuit]);
 
 
+res.json(lotes)
 
+})
+
+///cuotasdeunlote
+router.get("/lote2/:id", async (req, res) => {
+    try {
+        const id = req.params.id
+        console.log('controladorloteduncion')
+        console.log(id)
+       
+    
+        const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ? and parcialidad="final"', [id])
+        console.log(cuotas)
+        if (cuotas.length > 0) {
+    
+            /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
+               cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
+            res.json(cuotas)
+            //res.render('cuotas/listavacia', { auxiliar })
+    
+        } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
+        
+    } catch (error) {
+        
+    }
+ 
+})
 
 
 ///////////////////-------------MENU PRINCIPAL--- VERIFICACION DE HABILITACION PARA PAGAR 
@@ -176,7 +209,72 @@ router.get('/', isLoggedIn, async (req, res) => {
 
 })
 
+/////////////////////INFORME ESTADO FINANCIERO
 
+router.get('/ief/:id',async (req, res) => {
+    const id = req.params
+    idaux = id.id
+    console.log(idaux)
+   
+    let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
+    const cantidad =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+   // console.log(cantidad)    cantidad de liquidadas y vencidas
+    const devengado =  (await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)']
+   // console.log(devengado)
+
+    const abonado  =  (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota  where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
+   //console.log(abonado)
+
+    exigible = devengado-abonado
+
+    const dato1 = {
+        'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+        'datob': cantidad
+    }
+    const dato2 = {
+        'datoa':  'Monto devengado hasta la cuota',
+        'datob': devengado
+    }
+    const dato3 = {
+        'datoa':  'Monto abonado hasta la cuota',
+        'datob': abonado
+    }
+    const dato4 = {
+        'datoa':  'Deuda Exigible',
+        'datob': exigible
+    }
+    const deuda_exigible =[dato1,dato2,dato3,dato4]
+
+    const cantidad2 =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['count(*)']
+
+    const Amortizacion =  (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
+   
+    const capital =  (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
+    console.log(cantidad2)
+    console.log(Amortizacion)
+    console.log(capital)
+
+    const dato5 = {
+        'datoa': 'Cantidad de cuotas a Vencer',
+        'datob': cantidad2
+    }
+    const dato6 = {
+        'datoa':  'Monto cuota pura',
+        'datob': Amortizacion
+    }
+    const dato7 = {
+        'datoa':  'Saldo de capital a vencer',
+        'datob': capital
+    }
+    const cuotas_pendientes = [dato5,dato6,dato7]
+
+const respuesta = [deuda_exigible,cuotas_pendientes]
+
+
+    res.json(respuesta)
+
+
+})
 
 
 
@@ -221,46 +319,16 @@ router.get('/leer/:id', isLoggedIn, async (req, res) => {
 
 //LISTAR CUOTAS 
 router.get("/cuotas", async (req, res) => {
-
-    cuil_cuit = req.user.cuil_cuit
-
-
-
-    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-    console.log(cuil_cuit)
-
-    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    aux = '%' + cuil_cuit + '%'
+    const { cuil_cuit } = req.params
+   
 
 
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
-    var devengado = 0
-    var pagado = 0
+    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit = ? and parcialidad != "Final" ', [cuil_cuit])
+  
 
-    for (var i = 0; i < cuotas.length; i++) {
-        if (cuotas[i]['parcialidad'] = 'Final') {
-            devengado += cuotas[i]['cuota_con_ajuste']
-        }
-        ;
-    }
-    const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? ', [aux])
 
-    for (var i = 0; i < pagos.length; i++) {
-
-        pagado += pagos[i]['monto']
-
-            ;
-    }
-    const total = {
-        pagado,
-        devengado
-
-    }
-    //  const total = [totall]
-
-    cuotas.push(total)
-    console.log(cuotas)
-    res.render('usuario1/listacuotas', { cuotas })
+ 
+    res.json(cuotas )
 
 })
 

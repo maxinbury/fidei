@@ -174,7 +174,70 @@ router.post('/prueba', async (req, res,) => {
 
 
 
+router.get('/ief/:id',async (req, res) => {
+    const id = req.params
+    idaux = id.id
+    console.log(idaux)
+   
+    let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
+    const cantidad =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+   // console.log(cantidad)    cantidad de liquidadas y vencidas
+    const devengado =  (await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)']
+   // console.log(devengado)
 
+    const abonado  =  (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota  where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
+   //console.log(abonado)
+
+    exigible = devengado-abonado
+
+    const dato1 = {
+        'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+        'datob': cantidad
+    }
+    const dato2 = {
+        'datoa':  'Monto devengado hasta la cuota',
+        'datob': devengado
+    }
+    const dato3 = {
+        'datoa':  'Monto abonado hasta la cuota',
+        'datob': abonado
+    }
+    const dato4 = {
+        'datoa':  'Deuda Exigible',
+        'datob': exigible
+    }
+    const deuda_exigible =[dato1,dato2,dato3,dato4]
+
+    const cantidad2 =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['count(*)']
+
+    const Amortizacion =  (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
+   
+    const capital =  (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
+    console.log(cantidad2)
+    console.log(Amortizacion)
+    console.log(capital)
+
+    const dato5 = {
+        'datoa': 'Cantidad de cuotas a Vencer',
+        'datob': cantidad2
+    }
+    const dato6 = {
+        'datoa':  'Monto cuota pura',
+        'datob': Amortizacion
+    }
+    const dato7 = {
+        'datoa':  'Saldo de capital a vencer',
+        'datob': capital
+    }
+    const cuotas_pendientes = [dato5,dato6,dato7]
+
+const respuesta = [deuda_exigible,cuotas_pendientes]
+
+
+    res.json(respuesta)
+
+
+})
 
 
 
