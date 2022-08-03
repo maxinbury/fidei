@@ -151,9 +151,16 @@ router.post('/cuotas', async (req, res, next) => {
 
 })
 
-//PRUEBA
-router.post('/prueba', async (req, res,) => {
-    const { saldo_inicial, Amortizacion, Base_calculo, ICC, Ajuste_ICC, cuota_con_ajuste, saldo_cierre, id } = req.body;
+//borrar cuotas
+router.get('/borrartodas/:id', async (req, res) => {
+    const {  id } = req.params;
+    try {
+        await pool.query('DELETE FROM cuotas WHERE id_lote = ?', [id])
+        res.send('Borradas correctamente')
+    } catch (error) {
+        res.send('Error algo sucedió')
+    }
+  
 
 }
 

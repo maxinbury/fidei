@@ -71,24 +71,17 @@ router.get('/leerimagen ', async (req, res, done) => {
 
 ////pago react nivel 1
 router.post('/realizarr', async (req, res, done) => {
-    let { monto, cuil_cuit, mes, anio } = req.body;
-    console.log(cuil_cuit)
-    console.log(monto)
+    let { monto, cuil_cuit, mes, anio, id } = req.body;
+   console.log(mes)
+   console.log(anio)
+   console.log(id)
     var estado = 'P'
 
 
-    try {
-        cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-
-
-        cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-        aux = '%' + cuil_cuit + '%'
-    } catch (error) {
-        res.send('error de login')
-    }
     let cuil_cuit_distinto = 'Si'
     let monto_distinto = 'Si'
     let monto_inusual = 'No'
+
     /*  
         hacer comparacion del 30%
 
@@ -110,24 +103,24 @@ router.post('/realizarr', async (req, res, done) => {
       let cuil_cuit_distinto = 'Si'
   */
     aux = '%' + cuil_cuit + '%'
-
-    const existe = await pool.query('Select * from cuotas where cuil_cuit like ? and mes = ? and anio =?  and parcialidad = "Final"', [aux, mes, anio])
-
+    console.log(1)
+    const existe = await pool.query('Select * from cuotas where mes = ? and anio =? and id_lote=? and parcialidad = "Final"', [ mes, anio, id])
+    console.log(existe)///
     if (existe.length > 0) {
-        let montomaxx = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
-
+        let cliente  = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+        console.log(3)
         try {
-            montomax = montomaxx[0]['ingresos'] * 0.3
+            montomax = cliente[0]['ingresos'] * 0.3
+            console.log(4)
+            if (montomax < monto) {
 
-
+                monto_inusual='Si'
+            }
 
         } catch (error) {
             console.log(error)
         }
-        if (montomax < monto) {
-
-            monto_inusual='Si'
-        }
+      
 
 
         const id_cuota = existe[0]["id"]
@@ -143,8 +136,9 @@ router.post('/realizarr', async (req, res, done) => {
             monto_inusual,
 
         };
+        console.log('entra')
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
-
+        console.log('entra')
         
 
     } else {

@@ -45,7 +45,7 @@ router.post('/agregariccgral2', async (req, res,) => {
         cuil_cuit = todas[i]["cuil_cuit"]
        
         if (nro_cuota == 1) {
-        
+            console.log('cuota1')
             saldo_inicial = todas[i]["saldo_inicial"]
             const Ajuste_ICC = 0
             const Base_calculo = todas[i]["Amortizacion"]
@@ -63,7 +63,7 @@ router.post('/agregariccgral2', async (req, res,) => {
 
         } else {
             const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
-            console.log(anterior)
+           
             var Saldo_real_anterior = anterior[0]["Saldo_real"]
             
             const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
