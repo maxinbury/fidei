@@ -240,7 +240,12 @@ const postaddaut2 = async (req, res) => {
 
                 if (row.length > 0) {
                     var saldo_cierre = saldo_inicial - Amortizacion
-                    const Saldo_real = saldo_inicial
+                    if (nro_cuota ==1){
+                         Saldo_real = 0
+                    }else{
+                         Saldo_real = saldo_inicial
+                    }
+                    
                     const id_cliente = row[0].id
 
                     try {

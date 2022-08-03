@@ -63,8 +63,7 @@ console.log(cuil_cuit)
       console.log('idlote'+id_lote)
         cant_finales= await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote ])
      
-        console.log(cant_finales.length) //bien
-        console.log(nro_cuota) // bien
+    
         if (nro_cuota < cant_finales.length ) {/// aca esta el errror
            
 
@@ -77,7 +76,7 @@ console.log(cuil_cuit)
                 console.log(aux)
                  saldo_realc = parseFloat( aux[0]["Saldo_real"])
                  console.log('saldoreal '+saldo_realc) 
-                 id =  aux[0]["id"] 
+                 idaux =  aux[0]["id"] 
                  console.log( id) 
                
                  console.log('pagop'+pago) 
@@ -89,7 +88,90 @@ console.log(cuil_cuit)
         
         
                 }
-                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
+                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+            } catch (error) {//
+                
+            }
+
+         }}
+
+
+        
+        res.send(cuotas[0]['cuil_cuit'])
+
+
+
+    } catch (error) {
+
+    }
+
+})
+/// aprobar pago nivel 2
+router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
+    const { id } = req.params
+
+    var pagot = await pool.query('select * from pagos where id = ?', [id])
+
+    let id_cuota = pagot[0]["id_cuota"]
+    let monto = pagot[0]["monto"]
+
+    
+
+
+    const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
+   
+    var saldo_realc = cuota[0]["Saldo_real"]
+    var nro_cuota = cuota[0]["nro_cuota"]
+    var id_lote = cuota[0]["id_lote"]
+
+   
+
+    try {
+        
+         Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
+         
+        let pago = cuota[0]["pago"] + pagot[0]["monto"]
+      
+
+        // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
+       
+
+
+        const update = {
+            Saldo_real,
+            pago,
+
+
+        }
+///////
+
+
+////  
+
+        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
+       
+        cant_finales= await pool.query('select *from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote, ])
+        console.log(cant_finales)
+       
+        if (nro_cuota < cant_finales.length ) {
+///
+
+
+
+        for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
+        
+            try {//
+                aux =  await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
+                saldo_realc = parseFloat( aux[0]["Saldo_real"])
+                 idaux =  aux[0]["id"] 
+                 Saldo_real = saldo_realc - pago
+                 const update = {
+                    Saldo_real,
+           
+        
+        
+                }
+                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
             } catch (error) {//
                 
             }
@@ -98,7 +180,7 @@ console.log(cuil_cuit)
 
 
         await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
-        res.send(cuotas[0]['cuil_cuit'])
+        res.send('Guardado correctamente')
 
 
 
@@ -108,7 +190,6 @@ console.log(cuil_cuit)
     }
 
 })
-
 ///// Detalles del pago 
 router.get("/detallespago/:id", async (req, res) => {
     const { id } = req.body 
@@ -136,8 +217,8 @@ router.get("/listainusual", async (req, res) => {
 
 //react pendientes
 router.get('/pendientess', async (req, res) => {
-    const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
-
+   // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
+   const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
     res.json(pendientes)
 
 
@@ -147,74 +228,7 @@ router.get('/pendientess', async (req, res) => {
 
 ///// aprobar react
 
-router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
-    const { id } = req.params
 
-    var pagot = await pool.query('select * from pagos where id = ?', [id])
-
-    let id_cuota = pagot[0]["id_cuota"]
-
-    
-
-
-    const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
-    console.log(cuota)// aca ver error
-    var saldo_realc = cuota[0]["Saldo_real"]
-    var nro_cuota = cuota[0]["nro_cuota"]
-    var id_lote = cuota[0]["id_lote"]
-
-
-    try {
-        let pago = cuota[0]["pago"] + pagot[0]["monto"]
-
-
-        // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
-        Saldo_real = saldo_realc - pago
-
-
-        const update = {
-            Saldo_real,
-            pago,
-
-
-        }
-
-        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
-        cant_finales= await pool.query('select *from cuotas where   WHERE id_lote = ? and parcialidad = "Final"', [id_lote, ])
-        console.log(cant_finales)
-        if (nro_cuota === cant_finales.length ) {
-        for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
-        
-            try {//
-                aux =  await pool.query('select *from cuotas where   WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
-                 saldo_realc =  aux[0]["Saldo_real"]
-                 id =  aux[0]["id"] 
-                 Saldo_real = saldo_realc - pago
-                 const update = {
-                    Saldo_real,
-           
-        
-        
-                }
-                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
-            } catch (error) {//
-                
-            }
-
-         }}
-
-
-        await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
-        res.send('Guardado correctamente')
-
-
-
-        res.send('Exito')
-    } catch (error) {
-
-    }
-
-})
 ///// inusuales mensuales react
 router.post("/mensualesinusuales", async (req, res) => {
     const { mes, anio } = req.body
