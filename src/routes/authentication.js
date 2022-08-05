@@ -22,11 +22,22 @@ router.post('/signup', passport.authenticate('local.signup', {
 
 }))
 router.post('/signupp', passport.authenticate('local.signup', {
-    successRedirect: '/signin',
-
-    
+    successRedirect: '/exitosignup',
+    failureRedirect:'/noexito',
+    failureFlash:true
 
 }))
+
+
+
+router.get('/exitosignup',(req,res)=>{
+    res.send('Exito')
+})
+
+router.get('/noexito',(req,res)=>{
+    res.send('Sin Exito')
+})
+
 
 
 //router.post('/signup', passport.authenticate('localsignup',))
@@ -45,7 +56,7 @@ router.post('/signinn', passport.authenticate('local.signin', { failureRedirect:
         cuil_cuit: req.user.cuil_cuit,
      
     }
-  
+ 
     const token = jwt.sign(userFoRToken, 'fideicomisocs121',{ expiresIn: 60*60*24*7})
     console.log(token)
     res.send({
@@ -54,10 +65,7 @@ router.post('/signinn', passport.authenticate('local.signin', { failureRedirect:
         nivel: req.user.nivel,
         token
     } )
-  
-
 }
-
   
   );
 /////////////////
