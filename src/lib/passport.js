@@ -11,7 +11,7 @@ passport.use('local.signin', new LocalStrategy({
     passReqToCallback: 'true' // para recibir mas datos 
 
 }, async (req, cuil_cuit, password, done) => {  // que es lo que va a hacer 
-
+    
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
     if (rows.length > 0) {
         const user = rows[0]
@@ -26,7 +26,7 @@ passport.use('local.signin', new LocalStrategy({
             const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
             res.send({ id: req.user.id,cuil_cuit: req.user.cuil_cuit,token})*/
             done(null, user, req.flash('success', 'Welcome' + user.nombrecompleto)) // done termina, null el error, user lo pasa para serializar
-            console.log(req.user)
+          
         } else {
             done(null, false, req.flash('message', 'Pass incorrecta')) // false para no avanzar
         }
@@ -36,17 +36,22 @@ passport.use('local.signin', new LocalStrategy({
 }))
 
 
+
 passport.use('local.signup', new LocalStrategy({
     usernameField: 'cuil_cuit',
     passwordField: 'password',
     passReqToCallback: 'true'
+    
 }, async (req, cuil_cuit, password, done) => {
-
+   
     const { nombre, mail, telefono, nro_cliente } = req.body
+  
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
     const razon = 'Empresa'
-    const nivel = 1
+    const nivel = 1 
+    console.log('cuil_cuit')
     const habilitado = 'NO'
+   
     const newUser = {
         password,
         cuil_cuit,
@@ -58,7 +63,7 @@ passport.use('local.signup', new LocalStrategy({
         habilitado,
         nro_cliente
     }
-
+ 
     // transformar 
 
 
@@ -67,47 +72,50 @@ passport.use('local.signup', new LocalStrategy({
     //fin transformar 
     try {
         var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
-
-        let aux = cuil_cuit
+        console.log('rows')
+      /*   let aux = cuil_cuit
         cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
 
         cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
 
 
-        aux = '%' + cuil_cuit + '%'
+        aux = '%' + cuil_cuit + '%' */
         if (rows.length == 0) { // si ya hay un USER con ese dni 
-            rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+          /*   rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
             if (rows.length == 0) { // so hay  un cliente con ese dni 
                 { done(null, false, req.flash('message', 'error, no hay ningun cliente con ese documento  ')) }
-            } else {
+            } else { */
                 try {
 
-                    rows = await pool.query('SELECT * FROM clientes WHERE id = ? and cuil_cuit like ?', [nro_cliente, aux])
+               /*      rows = await pool.query('SELECT * FROM clientes WHERE id = ? and cuil_cuit like ?', [nro_cliente, aux])
                     console.log(rows)
                     if (rows.length == 0) {
                         done(null, false, req.flash('message', 'error, el Numero de cliente no coincide'))
 
-                    } else {
+                    } else { */
+                   
                         newUser.password = await helpers.encryptPassword(password)
+                       
                         try {
                             const result = await pool.query('INSERT INTO users  set ?', [newUser])
                             newUser.id = result.insertId// porque newuser no tiene el id
-                            return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
+                          //  return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                         } catch (error) {
                             console.log(error)
                         }
-                    }
+                   // }
                 } catch (error) {
                     console.log(error)
-                    req.flash('message', 'error,algo sucedio ')
+                    req.send('error,algo sucedio ')
+                   // req.flash('message', 'error,algo sucedio ')
 
                 }
 
 
-            }
+           // }
         } else {
-            done(null, false, req.flash('message', 'error, ese cuit ya tiene un usuairo existente  ')) // false para no avanzar
+            done(null) // false para no avanzar
 
         }
     } catch (error) {

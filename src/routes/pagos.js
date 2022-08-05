@@ -19,6 +19,7 @@ console.log(cuil_cuit)
     const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
    
     let saldo_realc = cuota[0]["Saldo_real"]
+    console.log(saldo_realc)
     let nro_cuota = (cuota[0]["nro_cuota"])
     let id_lote = cuota[0]["id_lote"]
 //// hasta aca se trae la cuota
@@ -68,7 +69,7 @@ console.log(cuil_cuit)
            
 
 
-        for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
+        for (var i = (nro_cuota+1); i <=cant_finales.length; i++) {
         
             try {//
                 
@@ -96,13 +97,13 @@ console.log(cuil_cuit)
          }}
 
 
-        
-        res.send(cuotas[0]['cuil_cuit'])
+        console.log(cuota[0]['cuil_cuit'])
+        res.send([cuota[0]['cuil_cuit'], 'Pago Realizado'])
 
 
 
     } catch (error) {
-
+        res.send([cuota[0]['cuil_cuit'], 'Pago Realizado'])
     }
 
 })
@@ -212,6 +213,7 @@ router.get("/cantidadinusuales", async (req, res) => {
 ///////// reaxct
 router.get("/listainusual", async (req, res) => {
     const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where estado="averificarnivel3"')
+    console.log(pagos)
     res.json(pagos)
 })
 

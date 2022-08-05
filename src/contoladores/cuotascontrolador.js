@@ -209,7 +209,7 @@ const postaddaut2 = async (req, res) => {
     try {
         if (row[0]['ingresos'] == 0) {
 
-            req.send('Error, el cliente no tiene ingresos declarados ')
+            res.send([cuil_cuit,'Error, el cliente no tiene ingresos declarados '])
            
 
         } else {
@@ -228,7 +228,7 @@ const postaddaut2 = async (req, res) => {
 
                 
                 ///////
-                res.send( 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados')
+                res.send( [cuil_cuit,'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados'])
           
 
 
@@ -295,19 +295,19 @@ const postaddaut2 = async (req, res) => {
                         }
 
                     } catch (error) {
-                        console.log(error)
+                        res.send([cuil_cuit,'Error, algo sucedio'])
                     }
 
 
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
-                    res.send(cuil_cuit)
+                    res.send([cuil_cuit,'Cuotas agregadas con exito'])
                     
                 }
 
 
                 else {
-                    res.send(cuil_cuit)
+                    res.send([cuil_cuit,'Error, algo sucedio'])
                    
                 }
 
@@ -319,7 +319,7 @@ const postaddaut2 = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.send(cuil_cuit)
+        res.send([cuil_cuit,'Erro, algo sucedio'])
 
     }
 
