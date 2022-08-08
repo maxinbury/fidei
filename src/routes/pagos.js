@@ -203,6 +203,22 @@ console.log(id)
 })
 
 
+
+
+/////detalles de todos los pagos de una cuota
+router.post("/detallespagos", async (req, res) => {
+    const { id } = req.body 
+    console.log(id)
+const pagos =  await pool.query('SELECT * FROM pagos where id_cuota = ?',[id])
+  
+
+
+ 
+ res.json(pagos)
+})
+
+
+
 ///////// Cantidad inusuales 
 router.get("/cantidadinusuales", async (req, res) => {
     const cantidad = await pool.query('SELECT count(*) FROM historial_pagosi where estado = "Pendiente"')

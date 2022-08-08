@@ -35,6 +35,8 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
 
     const datos = {
         descripcion: name
+
+        
     }
     try {
         await pool.query('insert into constancias set?', datos)
@@ -43,7 +45,7 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
     } catch (error) {
         res.send('algo salio mal')
     }
-
+    
 
 
 })
