@@ -151,6 +151,7 @@ router.post('/cuotas', async (req, res, next) => {
 
 })
 
+
 //borrar cuotas
 router.get('/borrartodas/:id', async (req, res) => {
     const {  id } = req.params;

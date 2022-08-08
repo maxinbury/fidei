@@ -116,7 +116,7 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 router.post('/ventalote', async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote } = req.body
 
-    console.log('PIT')
+   
     switch (zona) {
         case 'PIT':
 
@@ -133,6 +133,7 @@ router.post('/ventalote', async (req, res) => {
 
     venta = {
         cuil_cuit,
+        estado
        
     }
 
@@ -140,8 +141,13 @@ router.post('/ventalote', async (req, res) => {
         if (zona = 'PIT') {
             // fraccion=?, manzana =?, parcela =?, lote=? 
 
-
+            console.log(zona)
+            console.log(fraccion)
+            console.log(manzana)
+            console.log(parcela)
+            console.log(lote)
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
+            console.log(existe)
             if (existe.length > 0) {
                 //console.log(existe)
                 console.log(existe[0]['id'])
