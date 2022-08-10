@@ -21,8 +21,19 @@ router.get('/profile', isLoggedIn, isLevel2, (req, res) => {
 router.get('/historialicc', async (req, res) => {
 
     const historial = await pool.query('select * from icc_historial')
-    console.log(historial)
+
     res.json(historial)
+
+})
+router.get('/borrarhistorial', async (req, res) => {
+
+    try {
+        await pool.query('DELETE FROM icc_historial ')
+        res.send('Borrados correctamente')
+    } catch (error) {
+        console.log(error)
+        res.send('Error algo sucedió')
+    }
 
 })
 
@@ -50,13 +61,13 @@ router.post('/agregariccgral2', async (req, res,) => {
             const Ajuste_ICC = 0
             const Base_calculo = todas[i]["Amortizacion"]
             const cuota_con_ajuste = todas[i]["Amortizacion"]
-            const Saldo_real = todas[i]["Amortizacion"]
+           
             var cuota = {
                 ICC,
                 Ajuste_ICC,
                 Base_calculo,
                 cuota_con_ajuste,
-                Saldo_real,
+               
                 parcialidad
     
             }

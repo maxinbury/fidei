@@ -241,7 +241,7 @@ const postaddaut2 = async (req, res) => {
                 if (row.length > 0) {
                     var saldo_cierre = saldo_inicial - Amortizacion
                     if (nro_cuota ==1){
-                         Saldo_real = 0
+                         Saldo_real = monto_total
                     }else{
                          Saldo_real = saldo_inicial
                     }
