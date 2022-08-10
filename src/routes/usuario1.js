@@ -162,9 +162,10 @@ router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
 
     
     lotes = await pool.query('select  * from lotes where cuil_cuit =  ?', [cuil_cuit]);
+    cuotas =  await pool.query('select  * from cuotas where cuil_cuit =  ? and parcialidad = "Final"', [cuil_cuit]);
 
 
-res.json(lotes)
+res.send([lotes,cuotas])
 
 })
 
@@ -274,7 +275,19 @@ const respuesta = [deuda_exigible,cuotas_pendientes]
 
 
 
+////notificaciones de un cliente, react
+router.get("/noticliente/:cuil_cuit", async (req, res) => {
+    const { cuil_cuit } = req.params
+    try {
+        const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE cuil_cuit = ?', [cuil_cuit])
 
+        res.json(notificaciones)
+    } catch (error) {
+        
+    }
+   
+
+})
 
 // -------------------------------------NOTIFICACIONES 
 
