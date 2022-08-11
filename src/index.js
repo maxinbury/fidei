@@ -70,7 +70,7 @@ app.use('/constancias', require('./routes/constancias'))
 app.use('/lotes', require('./routes/lotes'))
 app.use('/chats', require('./routes/chats'))
 app.use('/nivel3', require('./routes/nivel3'))
-
+app.use('/expedientes', require('./routes/expedientes'))
 app.use(express.static(path.join(__dirname,'../pdfs')))
 app.use(express.static(path.join(__dirname,'pdfs')))
 //public  

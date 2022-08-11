@@ -207,6 +207,76 @@ router.post('/add2', async (req, res) => {
 
 })
 
+
+/////////
+
+router.get('/cargar_todos_legales', async (req, res) => {
+    console.log("entra")
+    const workbook = XLSX.readFile('./src/Excel/Listado expedientes Barrios.xlsx')
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    //console.log(dataExcel)
+
+
+    var a = 1
+    for (const property in dataExcel) {
+        a += 1
+        aux = dataExcel[property]['Número']
+    
+       
+
+        obs = dataExcel[property]['Observaciones']
+       
+     
+
+        try {
+            const newLink = {
+                id: dataExcel[property]['Cód. cliente'],
+                Exp: dataExcel[property]['EXP.'],
+                L: dataExcel[property]['L.'],
+                Anio: dataExcel[property]['AÑO'],
+
+                Expediente: dataExcel[property]['EXP.']+'-'+ dataExcel[property]['L.']+ '-'+ dataExcel[property]['AÑO'],
+                Iniciador: dataExcel[property]['INICIADOR'],
+                Extracto: dataExcel[property]['EXTRACTO'],
+                Cpos: dataExcel[property]['Cpos.'],
+               
+                Fjs: dataExcel[property]['Fjs.'],
+                Barrio: 'IB6',
+                Observacion: dataExcel[property]['OBSERVACION'],
+                Rev: dataExcel[property]['REV.'],
+                Resp: dataExcel[property]['RESP.'],
+                Caratula: dataExcel[property]['CARÁTULA'],
+                
+            }
+
+
+           
+                    await pool.query('INSERT INTO expedientes set ?', [newLink]);
+         
+
+
+
+        } catch (e) {
+            console.log(e)
+        }
+
+        /* if ((dataExcel[property]['Sucursal']).includes(cuil_cuit)) {
+            estado = 'A'
+        }*/
+
+    }
+
+
+
+
+
+    res.redirect('/links/clientes')
+})
+/////
+
 //  LEER Y CARGAR DEL EXCEL LOS CLIENTES DEL TANGO. NO CONECTAR
 router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
     console.log("entra")
