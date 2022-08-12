@@ -34,6 +34,7 @@ router.post('/modifexpediente', async (req, res) => {
         Ubic,
         Caratula
     }
+    
     await pool.query('UPDATE expedientes set ? WHERE id = ?', [newLink, id])
 
         
