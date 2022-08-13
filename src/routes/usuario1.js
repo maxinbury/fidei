@@ -288,6 +288,19 @@ router.get("/noticliente/:cuil_cuit", async (req, res) => {
    
 
 })
+///una notificacion
+router.get("/notiid/:id", async (req, res) => {
+    const { id } = req.params
+    try {
+        const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE id = ?', [id])
+     
+        res.json(notificaciones)
+    } catch (error) {
+        
+    }
+   
+
+})
 
 // -------------------------------------NOTIFICACIONES 
 
