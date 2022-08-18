@@ -386,16 +386,9 @@ const lotefuncion = async (req, res) => {
 const lotefuncion2 = async (req, res) => {
     try {
         const id = req.params.id
-        console.log('controladorloteduncion')
-        console.log(id)
-        let auxiliar = await pool.query('Select * from lotes where id =?', [id])
-        console.log(auxiliar) 
-        zona = auxiliar[0]['zona']
-        manzana = auxiliar[0]['manzana']
-        fraccion = auxiliar[0]['fraccion']
-        lote = auxiliar[0]['lote']
+        
     
-        const cuotas = await pool.query('SELECT * FROM cuotas WHERE zona = ? and manzana = ? and fraccion = ? and lote =  ?', [zona, manzana, fraccion, lote])
+        const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
 
         if (cuotas.length > 0) {
     

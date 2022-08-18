@@ -87,7 +87,7 @@ router.post("/datos", async (req, res) => {
     
      const rangoo =[unoo,doss,tress]
   
-    const rta =[status,rangoo]
+    const rta =[status,rangoo,datos]
     console.log(rta)
     res.json(rta)
 
@@ -96,9 +96,9 @@ router.post("/datos", async (req, res) => {
 
 
 router.post("/cargar", async (req, res) => {
-    const { Zona, Material_Construccion,Status,Rango_Antiguedad,Observaciones } = req.body
+    const { Zona, Material_Construccion,Status,Rango_Antiguedad,Observaciones, Familia } = req.body
    const newDato ={
-    Zona, Material_Construccion,Status,Rango_Antiguedad,Observaciones 
+    Zona, Material_Construccion,Status,Rango_Antiguedad,Observaciones, Familia 
    }
    
    try {
