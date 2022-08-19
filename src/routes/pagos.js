@@ -236,7 +236,7 @@ router.get("/listainusual", async (req, res) => {
 //react pendientes
 router.get('/pendientess', async (req, res) => {
    // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
-   const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
+   const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' or estado='justificacionp' ")
     res.json(pendientes)
 
 
