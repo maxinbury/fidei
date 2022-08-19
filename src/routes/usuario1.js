@@ -74,11 +74,9 @@ router.get('/leerimagen ', async (req, res, done) => {
 ////pago react nivel 1
 router.post('/realizarr', async (req, res, done) => {
     let { monto, cuil_cuit, mes, anio, id } = req.body;
-   console.log(mes)
-   console.log(anio)
-   console.log(id)
-    var estado = 'P'
 
+    var estado = 'P'
+  
 
     let cuil_cuit_distinto = 'Si'
     let monto_distinto = 'Si'
@@ -123,9 +121,25 @@ router.post('/realizarr', async (req, res, done) => {
             console.log(error)
         }
       
-
+       
 
         const id_cuota = existe[0]["id"]
+        console.log(id_cuota)
+        if (estado != 'A') {
+            console.log(1)
+            const newInu = {
+                id_cuota,
+                cuil_cuit,
+                estado,
+                mes,
+                anio,
+             
+    
+            };
+            console.log(1)
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
+            console.log(1)
+        }
         const newLink = {
             id_cuota,
             monto,
@@ -151,7 +165,29 @@ router.post('/realizarr', async (req, res, done) => {
 
 })
 
+router.post('/justificacionp',  async (req, res) => {
+    const { observaciones, cuil_cuit,id} = req.body;
+    
+   
+   try {
+    
+   
+    const noti =  await pool.query('Select * from notificaciones where id = ? ', [id])
+    console.log(noti)
+    const act = {
+        observaciones,
+        estado:'justificacionp'
+    }
+       await pool.query('UPDATE pagos SET ?  where id = ?', [act,noti[0]['id_referencia']])
+    
 
+   } catch (error) {
+    
+   }
+  
+res.send()
+
+})
 
 
 
@@ -212,6 +248,8 @@ router.get('/ief/:id',async (req, res) => {
     const id = req.params
     idaux = id.id
     console.log(idaux)
+    try {
+        
    
     let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
     const cantidad =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
@@ -270,6 +308,9 @@ const respuesta = [deuda_exigible,cuotas_pendientes]
 
     res.json(respuesta)
 
+} catch (error) {
+        
+}
 
 })
 
