@@ -165,31 +165,27 @@ router.post('/realizarr', async (req, res, done) => {
 
 })
 
-router.post('/justificacionp',  async (req, res) => {
+router.post('/justificacion',  async (req, res) => {
     const { observaciones, cuil_cuit,id} = req.body;
-    
-   
+
    try {
-    
-   
+
     const noti =  await pool.query('Select * from notificaciones where id = ? ', [id])
     console.log(noti)
     const act = {
         observaciones,
         estado:'justificacionp'
     }
+  
        await pool.query('UPDATE pagos SET ?  where id = ?', [act,noti[0]['id_referencia']])
-    
+       res.send('Enviado con exito')
 
    } catch (error) {
-    
+    res.send('Error algo sucedio')
    }
   
-res.send()
 
 })
-
-
 
 
 ///lotes del cliente
