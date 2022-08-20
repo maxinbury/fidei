@@ -168,7 +168,6 @@ router.post('/realizarr', async (req, res, done) => {
 router.post('/justificacion',  async (req, res) => {
     const { observaciones, cuil_cuit,id} = req.body;
     
-   
    try {
     
    
