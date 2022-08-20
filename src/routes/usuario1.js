@@ -169,7 +169,6 @@ router.post('/justificacion',  async (req, res) => {
     const { observaciones, cuil_cuit,id} = req.body;
     
    try {
-    
    
     const noti =  await pool.query('Select * from notificaciones where id = ? ', [id])
     console.log(noti)
@@ -188,8 +187,6 @@ router.post('/justificacion',  async (req, res) => {
 
 
 })
-
-
 
 
 ///lotes del cliente
