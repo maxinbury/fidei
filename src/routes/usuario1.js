@@ -167,9 +167,9 @@ router.post('/realizarr', async (req, res, done) => {
 
 router.post('/justificacion',  async (req, res) => {
     const { observaciones, cuil_cuit,id} = req.body;
-    
+
    try {
-   
+
     const noti =  await pool.query('Select * from notificaciones where id = ? ', [id])
     console.log(noti)
     const act = {
@@ -184,7 +184,6 @@ router.post('/justificacion',  async (req, res) => {
     res.send('Error algo sucedio')
    }
   
-
 
 })
 
