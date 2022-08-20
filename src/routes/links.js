@@ -113,8 +113,10 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 
 
 
+
 router.post('/ventalotee', async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
+
 
    
     switch (zona) {
