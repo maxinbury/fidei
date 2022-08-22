@@ -9,7 +9,29 @@ const multer = require('multer')
 const path = require('path')
 const sacarguion = require('../public/apps/transformarcuit')
 
+/* const aws = require ('aws-sdk')
+/////////aws
+aws.config.update({
+    secretAccessKey: "4ShxwNJR7g4D7x+9NW6/gTjL6WbwHNea5Ig6JvLu",
+    accessKeyId: 'AKIAVMDPHXOO7ETOD76L',
+    region: "sa-east-1",
 
+});
+const BUCKET = "mypdfstorage"
+const s3 = new aws.S3();
+
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        acl: "public-read",
+        bucket: BUCKET,
+        key: function (req, file, cb) {
+            console.log(file);
+            cb(null, file.originalname)
+        }
+    })
+}) */
+/////////aws
 
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../../pdfs'),

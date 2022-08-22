@@ -31,11 +31,6 @@ console.log(cuil_cuit)
     let pago =   parseFloat(monto) + parseFloat(cuota[0]["pago"])
 
 
-       
-      
-        
-      //  console.log(Saldo_real)  llega bien 
-/// crear el apgo nuevo agregar idcuota
 
         const nuevo = {
           //  Saldo_real,
@@ -53,7 +48,7 @@ console.log(cuil_cuit)
               pago,
             
         }
-  
+  console.log(update)
         console.log(nuevo)
 
         await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update,id])

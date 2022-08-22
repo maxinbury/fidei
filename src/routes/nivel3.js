@@ -25,6 +25,15 @@ router.get('/historialicc', async (req, res) => {
     res.json(historial)
 
 })
+
+router.get('/pagosi', async (req, res) => {
+
+    const historial = await pool.query('select * from historial_pagosi')
+
+    res.json(historial)
+
+})
+
 router.get('/borrarhistorial', async (req, res) => {
 
     try {
@@ -39,16 +48,16 @@ router.get('/borrarhistorial', async (req, res) => {
 
 ///// REACT ii gral
 router.post('/agregariccgral2', async (req, res,) => {
-    const { ICC, mes, anio } = req.body;
-    console.log(ICC)
-    console.log(mes)
-    console.log(anio)
+    let { ICC, mes, anio } = req.body;
+   
     var datoss = {
         ICC,
         mes,
         anio
 
     }
+    ICC= ICC/100
+ 
     const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
     const parcialidad = "Final"
     for (var i = 0; i < todas.length; i++) {
@@ -56,7 +65,7 @@ router.post('/agregariccgral2', async (req, res,) => {
         cuil_cuit = todas[i]["cuil_cuit"]
        
         if (nro_cuota == 1) {
-            console.log('cuota1')
+            
             saldo_inicial = todas[i]["saldo_inicial"]
             const Ajuste_ICC = 0
             const Base_calculo = todas[i]["Amortizacion"]
