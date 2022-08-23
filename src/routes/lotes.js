@@ -67,9 +67,16 @@ router.post('/calcularvalor', async (req, res) => {
     console.log(lote[0]['superficie'])
     const final = lote[0]['superficie'] * valor
     console.log(final)
+    
+
+    const nombre = 'Zona: '+ lote[0]['zona'] +' Manzana: '+lote[0]['manzana']  +' Parcela: '+lote[0]['parcela']
+
+    const cuotas60 = final/60
     const detalle = {
         precio: final,
-        superficie: lote[0]['superficie']
+        superficie: lote[0]['superficie'],
+        nombre: nombre,
+        cuotas60: cuotas60
     }
 
 
