@@ -11,6 +11,12 @@ const XLSX = require('xlsx')
 /////
 
 
+
+
+
+
+
+
 router.get("/completar_cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
 
 
@@ -18,53 +24,74 @@ router.get("/completar_cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
 
     for (var i = 0; i < lotes.length; i++) {
         try {
-            
-       
-        aux= '%'+lotes[i]['nombre_razon']+'%'
-        console.log(aux)
-         cliente = await pool.query('select * from clientes where Nombre like ?',[aux])
-         console.log(cliente)
-        cuil_cuit = cliente[0]['cuil_cuit']
-        let neew = {cuil_cuit}
 
-       id= lotes[i]['id']
-         await pool.query('UPDATE lotes SET ? where id =?', [neew,id])
+
+            aux = '%' + lotes[i]['nombre_razon'] + '%'
+            console.log(aux)
+            cliente = await pool.query('select * from clientes where Nombre like ?', [aux])
+            console.log(cliente)
+            cuil_cuit = cliente[0]['cuil_cuit']
+            let neew = { cuil_cuit }
+
+            id = lotes[i]['id']
+            await pool.query('UPDATE lotes SET ? where id =?', [neew, id])
 
         } catch (error) {
             console.log(error)
         }
     }
-    
+
     res.render('links/list', { links })
 })
 
 
-router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
+router.get('/lotescliente/:cuil_cuit', async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
 
-    
+
     lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote, parcela from lotes where cuil_cuit =  ?', [cuil_cuit]);
     console.log(lotes)
 
 
-res.json(lotes)
+    res.json(lotes)
+
+})
+
+router.post('/calcularvalor', async (req, res) => {
+    const { zona, manzana, parcela, valor } = req.body
+
+    try {
+        
+   
+    const lote = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
+    console.log(lote[0]['superficie'])
+    const final = lote[0]['superficie'] * valor
+    console.log(final)
+    const detalle = {
+        precio: final,
+        superficie: lote[0]['superficie']
+    }
+
+
+    res.json(detalle)
+ } catch (error) {
+        res.send('Algo salio mal ')
+    }
 
 })
 
 
-
-
 ///////
 
-router.get('/lotescliente2/:cuil_cuit',  async (req, res) => {
+router.get('/lotescliente2/:cuil_cuit', async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
-    
- 
+
+
     lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote from lotes where cuil_cuit like  ?', [cuil_cuit]);
     console.log(lotes)
 
 
-res.json(lotes)
+    res.json(lotes)
 
 })
 
@@ -79,49 +106,49 @@ res.json(lotes)
 
 router.get('/cargar_movimientos', isLoggedIn, isLevel2, async (req, res) => {
     console.log("entra")
-  const workbook = XLSX.readFile('./src/Book2.xlsx')
+    const workbook = XLSX.readFile('./src/Book2.xlsx')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
     //console.log(dataExcel)
-  
 
 
-    var a=1
+
+    var a = 1
     for (const property in dataExcel) {
-        a+=1
-        try{
-        const newLink = {
-            zona: 'PIT',
-            mensura: dataExcel[property]['N° Mensura'],
-            parcela : dataExcel[property]['Parcela'],
-            manzana:dataExcel[property]['Manzana'],
-            lote:dataExcel[property]['Lote'],
-            adrema: dataExcel[property]['Adrema'],
-            superficie: dataExcel[property]['Superficie en m²'],
-            nombre_razon: dataExcel[property]['Apellido y Nombre / Razon Social'],
-            estado: dataExcel[property]['Estado'],
-            observaciones:dataExcel[property]['Observacion'],
-            pocentaje:dataExcel[property]['pocentaje'],
-            compradorreserva:dataExcel[property]['Comprador/Reserva'],
-            proyecto:dataExcel[property]['Proyecto'],
-         
-             
-            
+        a += 1
+        try {
+            const newLink = {
+                zona: 'PIT',
+                mensura: dataExcel[property]['N° Mensura'],
+                parcela: dataExcel[property]['Parcela'],
+                manzana: dataExcel[property]['Manzana'],
+                lote: dataExcel[property]['Lote'],
+                adrema: dataExcel[property]['Adrema'],
+                superficie: dataExcel[property]['Superficie en m²'],
+                nombre_razon: dataExcel[property]['Apellido y Nombre / Razon Social'],
+                estado: dataExcel[property]['Estado'],
+                observaciones: dataExcel[property]['Observacion'],
+                pocentaje: dataExcel[property]['pocentaje'],
+                compradorreserva: dataExcel[property]['Comprador/Reserva'],
+                proyecto: dataExcel[property]['Proyecto'],
 
+
+
+
+            }
+
+
+            await pool.query('INSERT INTO lotes set ?', [newLink]);
+            console.log('Exito ' + a)
+        } catch (e) {
+            console.log(e)
         }
-      
 
-        await pool.query('INSERT INTO lotes set ?', [newLink]);
-        console.log('Exito '+a)
-    }catch(e){
-        console.log(e)
-    }
-     
 
     }
- 
+
 
 
 
@@ -191,34 +218,34 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 router.get('/listadetodos', async (req, res) => {
     console.log('si')
     const lotes = await pool.query('select * from lotes')
-   
-   
-    res.json( lotes )
+
+
+    res.json(lotes)
 })
 router.post('/prueba', async (req, res) => {
-let {zona, fraccion}= req.body
-console.log(fraccion)
-fraccion= fraccion.toUpperCase()
+    let { zona, fraccion } = req.body
     console.log(fraccion)
-    
-   
-   
-    
+    fraccion = fraccion.toUpperCase()
+    console.log(fraccion)
+
+
+
+
 })
 //filtro solo lotes
 router.get('/listadelotes', async (req, res) => {
 
     const zona = await pool.query('select zona from lotes group by=zona')
-   
-   
-    res.json( zona )
+
+
+    res.json(zona)
 })
 
 router.get('/listadetodosamp', isLoggedIn, isLevel2, async (req, res) => {
 
     const lotes = await pool.query('select * from lotes')
-   
-   
+
+
     res.render('lotes/listadetodosamp', { lotes })
 })
 
