@@ -197,6 +197,13 @@ console.log(id)
   //*  res.json(cantidad[0]["count(*)"])
 })
 
+router.get("/cantidadpendientes", async (req, res) => { 
+
+    const detalles = await pool.query('SELECT count(*) FROM pagos where estado="p" or estado="justificacionp" ')
+   const rta = detalles[0]['count(*)']
+    res.json(rta)
+  
+})
 
 
 
@@ -232,7 +239,7 @@ router.get("/listainusual", async (req, res) => {
 router.get('/pendientess', async (req, res) => {
    // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
    const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' or estado='justificacionp' ")
-   console.log(pendientes)
+  
     res.json(pendientes)
 
 
