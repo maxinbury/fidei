@@ -288,7 +288,7 @@ router.post("/rechazarr", async (req, res) => {
             estado='ajustificar'
           //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
           const update2 ={
-        
+            leida:"No",
             cuil_cuit: cuil_cuit,
             id_referencia: id,
             descripcion: detalle

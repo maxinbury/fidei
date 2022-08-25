@@ -95,6 +95,26 @@ router.post("/datos", async (req, res) => {
 })
 
 
+router.post("/nuevazona", async (req, res) => {
+    const { zona } = req.body
+    console.log(zona)
+    try {
+        const  nuev ={
+            nombre:zona
+        }
+        await pool.query('INSERT INTO zonarelev SET ?', [nuev]);
+    
+        res.send('Guardado con exito')
+    } catch (error) {
+        res.send('Erro algo sucedio')
+    }
+  
+
+})
+
+
+
+
 router.post("/cargar", async (req, res) => {
     const { Zona, Material_Construccion,Status,Rango_Antiguedad,Observaciones, Familia } = req.body
    const newDato ={
