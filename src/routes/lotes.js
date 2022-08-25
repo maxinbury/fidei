@@ -58,27 +58,32 @@ router.get('/lotescliente/:cuil_cuit', async (req, res) => {
 })
 
 router.post('/calcularvalor', async (req, res) => {
-    const { zona, manzana, parcela, valor } = req.body
-
+    const { zona, manzana, parcela, valor, cuil_cuit } = req.body
+    console.log(cuil_cuit)
     try {
-        
-   
+       const  aux= '%'+cuil_cuit+'%'
+   const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
+   const ingresos = cliente[0]['ingresos']
     const lote = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
-    console.log(lote[0]['superficie'])
-    const final = lote[0]['superficie'] * valor
-    console.log(final)
+ 
+    let final = lote[0]['superficie'] * valor
     
 
     const nombre = 'Zona: '+ lote[0]['zona'] +' Manzana: '+lote[0]['manzana']  +' Parcela: '+lote[0]['parcela']
-
-    const cuotas60 = final/60
+    finalSant= final*0.8
+    const cuotas60 = finalSant/60
+    let puede = false
+    if (ingresos>= cuotas60){
+        puede=true
+    }
     const detalle = {
-        precio: final,
+        precio: final.toFixed(2),
         superficie: lote[0]['superficie'],
         nombre: nombre,
-        cuotas60: cuotas60
+        cuotas60: cuotas60.toFixed(2),
+        puede:puede
     }
-
+    console.log(detalle)
 
     res.json(detalle)
  } catch (error) {
