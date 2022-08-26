@@ -211,7 +211,7 @@ router.get("/cantidadpendientes", async (req, res) => {
 router.post("/detallespagos", async (req, res) => {
     const { id } = req.body 
     console.log(id)
-const pagos =  await pool.query('SELECT * FROM pagos where id_cuota = ?',[id])
+const pagos =  await pool.query('SELECT * FROM pagos where id_cuota = ? and estado = "A"',[id])
   
 
 

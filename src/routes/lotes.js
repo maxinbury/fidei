@@ -64,6 +64,7 @@ router.post('/calcularvalor', async (req, res) => {
        const  aux= '%'+cuil_cuit+'%'
    const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
    const ingresos = cliente[0]['ingresos']
+   const max = ingresos*0.3
     const lote = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
  
     let final = lote[0]['superficie'] * valor
@@ -73,7 +74,7 @@ router.post('/calcularvalor', async (req, res) => {
     finalSant= final*0.8
     const cuotas60 = finalSant/60
     let puede = 'No puede adquirir el lote'
-    if (ingresos>= cuotas60){
+    if (max >= cuotas60){
         puede='Puede adquirir el lote'
     }
     const detalle = {
