@@ -73,26 +73,23 @@ passport.use('local.signup', new LocalStrategy({
     try {
         var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
         console.log('rows')
-      /*   let aux = cuil_cuit
-        cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
+         let aux = cuil_cuit
 
-        cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-
-
-        aux = '%' + cuil_cuit + '%' */
+        aux = '%' + cuil_cuit + '%' 
         if (rows.length == 0) { // si ya hay un USER con ese dni 
-          /*   rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+            console.log('rw'+rows)
+           rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
             if (rows.length == 0) { // so hay  un cliente con ese dni 
-                { done(null, false, req.flash('message', 'error, no hay ningun cliente con ese documento  ')) }
-            } else { */
+                { done(null, false, req.send('message', 'error,algo sucedio ')) }
+            } else { 
                 try {
 
-               /*      rows = await pool.query('SELECT * FROM clientes WHERE id = ? and cuil_cuit like ?', [nro_cliente, aux])
-                    console.log(rows)
+                   rows = await pool.query('SELECT * FROM clientes WHERE id = ? and cuil_cuit like ?', [nro_cliente, aux])
+                    console.log('rw'+rows)
                     if (rows.length == 0) {
-                        done(null, false, req.flash('message', 'error, el Numero de cliente no coincide'))
+                        done(null, false, req.flash('message', 'error,algo sucedio '))
 
-                    } else { */
+                    } else { 
                    
                         newUser.password = await helpers.encryptPassword(password)
                        
@@ -104,16 +101,16 @@ passport.use('local.signup', new LocalStrategy({
                         } catch (error) {
                             console.log(error)
                         }
-                   // }
+                  }
                 } catch (error) {
                     console.log(error)
-                    req.send('error,algo sucedio ')
+                    req.flash('message', 'error,algo sucedio ')
                    // req.flash('message', 'error,algo sucedio ')
 
-                }
+                }  }
 
 
-           // }
+         
         } else {
             done(null) // false para no avanzar
 
