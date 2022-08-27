@@ -46,6 +46,37 @@ router.get('/borrarhistorial', async (req, res) => {
 
 })
 
+router.post('/consultaricc', async (req, res,) => {
+    let { ICC, mes, anio } = req.body;
+    let rta={} 
+try {
+        const existe = await pool.query('select * from icc_historial where mes=? and anio=?',[mes,anio])
+        if (existe.length>0){
+         
+         const valor = existe[0]['ICC']
+        
+            rta= {
+                resp:'El mes y año ya tiene un ICC asignado y es '+valor
+
+            }
+        }else{
+  
+            rta= {
+                resp:'El mes y año no tienen un ICC asignado'
+
+            }
+          
+
+        }
+   
+        res.json(rta)
+    } catch (error) {
+        
+   }
+
+
+})
+
 ///// REACT ii gral
 router.post('/agregariccgral2', async (req, res,) => {
     let { ICC, mes, anio } = req.body;

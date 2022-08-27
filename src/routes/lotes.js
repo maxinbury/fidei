@@ -68,7 +68,7 @@ router.post('/calcularvalor', async (req, res) => {
     const lote = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
  
     let final = lote[0]['superficie'] * valor
-    
+    const estado = lote[0]['estado']
 
     const nombre = 'Zona: '+ lote[0]['zona'] +' Manzana: '+lote[0]['manzana']  +' Parcela: '+lote[0]['parcela']
     finalSant= final*0.8
@@ -83,7 +83,8 @@ router.post('/calcularvalor', async (req, res) => {
         nombre: nombre,
         cuotas60: cuotas60.toFixed(2),
         ingresos: ingresos,
-        puede:puede
+        puede:puede,
+        estado:estado
     }
     console.log(detalle)
 
