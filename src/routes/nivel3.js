@@ -80,7 +80,7 @@ try {
 ///// REACT ii gral
 router.post('/agregariccgral2', async (req, res,) => {
     let { ICC, mes, anio } = req.body;
-   
+   console.log(mes)
     var datoss = {
         ICC,
         mes,
@@ -88,7 +88,13 @@ router.post('/agregariccgral2', async (req, res,) => {
 
     }
     ICC= ICC/100
- 
+    //////////////try
+    try {
+        await pool.query('insert into icc_historial set?', datoss)
+    } catch (error) {
+        
+    }
+    
     const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
     const parcialidad = "Final"
     for (var i = 0; i < todas.length; i++) {
@@ -139,7 +145,7 @@ router.post('/agregariccgral2', async (req, res,) => {
     
         try {
             await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
-            await pool.query('insert into icc_historial set?', datoss)
+            
 
         } catch (error) {
             console.log(error)
