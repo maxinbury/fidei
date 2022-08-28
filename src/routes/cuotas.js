@@ -5,7 +5,7 @@ const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 
 const { isLevel3 } = require('../lib/authnivel3')
-const { lista, ampliar, add_cliente, cuotasdeunlote, postadd,postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2,cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
+const { lista, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
 
 require('../contoladores/cuotascontrolador')
 
@@ -15,7 +15,7 @@ require('../contoladores/cuotascontrolador')
 
 //LISTADO DE TODAS LAS CUOTAS ------------- no esta conectado
 
-router.get("/lista", isLevel2, isLoggedIn,lista )
+router.get("/lista", isLevel2, isLoggedIn, lista)
 
 
 
@@ -30,7 +30,7 @@ router.get("/ampliar/:cuil_cuit", isLevel2, isLoggedIn, ampliar)
 router.get('/add/cliente/:id', isLoggedIn, add_cliente)
 
 // AGREGAR UNA SOLA CUOTA 
-router.post('/add',isLevel2, postadd)
+router.post('/add', isLevel2, postadd)
 
 
 // AGREGA VARIAS CUOTAS 
@@ -40,7 +40,7 @@ router.post('/addaut2', postaddaut2)
 
 
 /// cuotasdeunloteReact
-router.get("/cuotasdeunlote/:id",  cuotasdeunlote)
+router.get("/cuotasdeunlote/:id", cuotasdeunlote)
 
 
 
@@ -54,7 +54,7 @@ router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, quelote)
 router.get("/lote/:id", lotefuncion)
 // auxililar react
 router.get("/lote2/:id", lotefuncion2)
-   
+
 
 //async (req, res) => {console.log(req.params.id)}
 
@@ -70,7 +70,7 @@ router.get("/cuotas/:cuil_cuit", isLoggedIn, isLevel2, cuotascli)
 
 
 // PAGINA DE EDITAR CLIENTE    **NO PROBADO 
-router.get("/edit/:id", isLoggedIn,isLevel2, edit_c)
+router.get("/edit/:id", isLoggedIn, isLevel2, edit_c)
 
 
 //-------------------------------------------------------------------------AGREGAR ICC
@@ -79,7 +79,7 @@ router.get("/agregar_icc/:id", isLoggedIn, isLevel2, agregar_icc)
 
 
 // ACCION DE  AGREGAR ICC
-router.post('/agregaricc',isLevel2,post_agregaricc)
+router.post('/agregaricc', isLevel2, post_agregaricc)
 
 
 
@@ -124,13 +124,13 @@ router.post('/editarr', async (req, res, ) => {
 router.get('/delete/:id', async (req, res) => {
     const { id } = req.params
     try {
-   
+
         await pool.query('DELETE FROM cuotas WHERE id = ?', [id])
         res.send('Cuota eliminada')
     } catch (error) {
         res.send('Error algo sucedio')
     }
-  
+
 
 
 
@@ -154,14 +154,14 @@ router.post('/cuotas', async (req, res, next) => {
 
 //borrar cuotas
 router.get('/borrartodas/:id', async (req, res) => {
-    const {  id } = req.params;
+    const { id } = req.params;
     try {
         await pool.query('DELETE FROM cuotas WHERE id_lote = ?', [id])
         res.send('Borradas correctamente')
     } catch (error) {
         res.send('Error algo sucedió')
     }
-  
+
 
 }
 
@@ -182,67 +182,118 @@ router.get('/borrartodas/:id', async (req, res) => {
 
 
 
-router.get('/ief/:id',async (req, res) => {
+router.get('/ief/:id', async (req, res) => {
     const id = req.params
     idaux = id.id
     console.log(idaux)
-   
+
     let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
-    const cantidad =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
-   // console.log(cantidad)    cantidad de liquidadas y vencidas
-    const devengado =  (await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)']
-   // console.log(devengado)
+    const cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+    // console.log(cantidad)    cantidad de liquidadas y vencidas
+    const devengado = (await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)']
+    // console.log(devengado)
 
-    const abonado  =  (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota  where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
-   //console.log(abonado)
+    const abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota  where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
+    //console.log(abonado)
+    console.log(cantidad)
+    exigible = devengado - abonado
+    if (cantidad == undefined) {
+        console.log('no entra')
+        const dato1 = {
+            'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const dato2 = {
+            'datoa': 'Monto devengado hasta la cuota',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const dato3 = {
+            'datoa': 'Monto abonado hasta la cuota',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const dato4 = {
+            'datoa': 'Deuda Exigible',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const deuda_exigible = [dato1, dato2, dato3, dato4]
+        const dato5 = {
+            'datoa': 'Cantidad de cuotas a Vencer',
+            'datob': cantidad2
+        }
+        const dato6 = {
+            'datoa': 'Monto cuota pura',
+            'datob': Amortizacion
+        }
+        const dato7 = {
+            'datoa': 'Saldo de capital a vencer',
+            'datob': capital
+        }
 
-    exigible = devengado-abonado
+        const cuotas_pendientes = [dato5, dato6, dato7]
+        const respuesta = [deuda_exigible, cuotas_pendientes]
 
-    const dato1 = {
-        'datoa': 'Cantidad de cuotas liquidadas y vencidas',
-        'datob': cantidad
+
+        res.json(respuesta)
+    } else {
+        console.log('entra')
+        //////SI HAY CUOTAS 
+        const dato1 = {
+            'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+            'datob': cantidad
+        }
+        const dato2 = {
+            'datoa': 'Monto devengado hasta la cuota',
+            'datob': devengado
+        }
+        const dato3 = {
+            'datoa': 'Monto abonado hasta la cuota',
+            'datob': abonado
+        }
+        const dato4 = {
+            'datoa': 'Deuda Exigible',
+            'datob': exigible
+        }
+        const deuda_exigible = [dato1, dato2, dato3, dato4]
+        try {
+            const cantidad2 = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['count(*)']
+
+            const Amortizacion = (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
+
+            const capital = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
+            console.log(cantidad2)
+            console.log(Amortizacion)
+            console.log(capital)
+            const dato5 = {
+                'datoa': 'Cantidad de cuotas a Vencer',
+                'datob': cantidad2
+            }
+            const dato6 = {
+                'datoa': 'Monto cuota pura',
+                'datob': Amortizacion
+            }
+            const dato7 = {
+                'datoa': 'Saldo de capital a vencer',
+                'datob': capital
+            }
+            const cuotas_pendientes = [dato5, dato6, dato7]
+            const respuesta = [deuda_exigible, cuotas_pendientes]
+
+
+            res.json(respuesta)
+
+        } catch (error) {
+
+        }
+
+
+      
+
     }
-    const dato2 = {
-        'datoa':  'Monto devengado hasta la cuota',
-        'datob': devengado
-    }
-    const dato3 = {
-        'datoa':  'Monto abonado hasta la cuota',
-        'datob': abonado
-    }
-    const dato4 = {
-        'datoa':  'Deuda Exigible',
-        'datob': exigible
-    }
-    const deuda_exigible =[dato1,dato2,dato3,dato4]
 
-    const cantidad2 =  (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['count(*)']
 
-    const Amortizacion =  (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
+
+
    
-    const capital =  (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
-    console.log(cantidad2)
-    console.log(Amortizacion)
-    console.log(capital)
-
-    const dato5 = {
-        'datoa': 'Cantidad de cuotas a Vencer',
-        'datob': cantidad2
-    }
-    const dato6 = {
-        'datoa':  'Monto cuota pura',
-        'datob': Amortizacion
-    }
-    const dato7 = {
-        'datoa':  'Saldo de capital a vencer',
-        'datob': capital
-    }
-    const cuotas_pendientes = [dato5,dato6,dato7]
-
-const respuesta = [deuda_exigible,cuotas_pendientes]
-
-
-    res.json(respuesta)
 
 
 })
