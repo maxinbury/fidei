@@ -103,12 +103,25 @@ router.post('/realizarr', async (req, res, done) => {
       let cuil_cuit_distinto = 'Si'
   */
     aux = '%' + cuil_cuit + '%'
-    console.log(1)
-    const existe = await pool.query('Select * from cuotas where mes = ? and anio =? and id_lote=? and parcialidad = "Final"', [ mes, anio, id])
-    console.log(existe)///
+   
+    let  existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final"  order by nro_cuota', [ id])
+   // console.log(existe)///
+    ultima = ((existe.length)-1)
+  
+  
+    existe = await pool.query('Select * from cuotas where  id=? ', [ id_cuota])
+    id_cuota = existe[ultima]['id']
+    mes = existe[ultima]['mes']
+    anio = existe[ultima]['anio']
+     console.log('Cuota a pagar ')
+     console.log(existe)
     if (existe.length > 0) {
+        /// traer la ultima
+        
+         ///
+         console.log(aux)
         let cliente  = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
-        console.log(3)
+       
         try {
             montomax = cliente[0]['ingresos'] * 0.3
             console.log(4)
@@ -152,9 +165,9 @@ router.post('/realizarr', async (req, res, done) => {
             monto_inusual,
 
         };
-        console.log('entra')
+      
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        console.log('entra')
+        
         
 
     } else {
@@ -195,9 +208,11 @@ router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
     
     lotes = await pool.query('select  * from lotes where cuil_cuit =  ?', [cuil_cuit]);
     cuotas =  await pool.query('select  * from cuotas where cuil_cuit =  ? and parcialidad = "Final"', [cuil_cuit]);
+    
+    cuotaapagar= cuotas[(cuotas.length-1)]
+    console.log(cuotaapagar)
 
-
-res.send([lotes,cuotas])
+res.send([lotes,cuotas,cuotaapagar])
 
 })
 
