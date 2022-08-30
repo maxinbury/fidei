@@ -8,6 +8,10 @@ const sacarguion = require('../public/apps/transformarcuit')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
+////
+const s3Controller = require('./configAWS/s3-controller');
+////////
+
 
 
 const diskstorage = multer.diskStorage({
@@ -21,6 +25,14 @@ const fileUpload = multer({
     storage: diskstorage,
 
 }).single('image')
+
+////////////////
+
+router.post('/upload-to-s3', s3Controller.s3Upload);
+router.get('/all-files', s3Controller.s3Get);
+router.get('/get-object-url/:key', s3Controller.getSignedUrl);
+
+
 
 
 //// REACT  
