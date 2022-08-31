@@ -18,12 +18,15 @@ function createS3Instance() {
 async function uploadFileToS3(fileObj, bucketName) {
     const s3 = createS3Instance();
     const fileStream = fs.createReadStream(fileObj.filepath);
+    console.log('asd')
+    console.log(fileObj.originalFilename)
     const params = {
         Body: fileStream,
         Bucket: bucketName,
         Key: fileObj.originalFilename
     }
     const uploadData = await s3.upload(params).promise();
+   
     return uploadData;
 }
 ///trae todos la lista

@@ -33,6 +33,9 @@ router.get('/all-files', s3Controller.s3Get);
 router.get('/get-object-url/:key', s3Controller.getSignedUrl);
 
 
+//////PDFSS
+router.post('/subirlegajo', s3Controller.subirlegajo);
+
 
 
 //// REACT  
