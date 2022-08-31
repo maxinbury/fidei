@@ -200,5 +200,6 @@ module.exports = {
     s3Upload,
     s3Get,
     getSignedUrl,
-    subirlegajo
+    subirlegajo,
+    subirlegajo1
 }
