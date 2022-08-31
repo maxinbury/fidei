@@ -91,7 +91,7 @@ router.post('/realizarr', async (req, res, done) => {
     let { monto, cuil_cuit, mes, anio, id } = req.body;
 
     var estado = 'P'
-  
+console.log(id)
 
     let cuil_cuit_distinto = 'Si'
     let monto_distinto = 'Si'
@@ -119,12 +119,12 @@ router.post('/realizarr', async (req, res, done) => {
   */
     aux = '%' + cuil_cuit + '%'
    
-    let  existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final"  order by nro_cuota', [ id])
-   // console.log(existe)///
+    let  existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final"  order by nro_cuota', [id])
+  
     ultima = ((existe.length)-1)
+
   
-  
-    existe = await pool.query('Select * from cuotas where  id=? ', [ id_cuota])
+    
     id_cuota = existe[ultima]['id']
     mes = existe[ultima]['mes']
     anio = existe[ultima]['anio']
