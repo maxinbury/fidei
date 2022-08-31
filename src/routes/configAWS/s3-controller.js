@@ -106,6 +106,7 @@ async function subirlegajo (req, res) {
       
        console.log(formData.datos)
        const myArray = formData.datos.split(",");
+       cuil_cuit =myArray[0]
        tipo= myArray[1]
        descripcion = myArray[2]
       
@@ -113,9 +114,10 @@ async function subirlegajo (req, res) {
    
        const datoss = {
         ubicacion: formData.file.originalFilename,
-        cuil_cuit:myArray[0],
+        cuil_cuit:cuil_cuit,
         tipo:tipo,
         descripcion:descripcion,
+        estado:'A'
 
     }
     console.log(datoss)
@@ -177,15 +179,21 @@ async function subirlegajo1 (req, res) {
     
     formData = await leerformlegajo(req);
  
-  console.log(formData.file.originalFilename)
-  console.log(formData.datos)
- 
-  const datoss = {
-   ubicacion: formData.file.originalFilename,
-   cuil_cuit:formData.datos,
-   estado : 'P'
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit =myArray[0]
+    tipo= myArray[1]
+    descripcion = myArray[2]
+   
+    
 
-}
+    const datoss = {
+     ubicacion: formData.file.originalFilename,
+     cuil_cuit:cuil_cuit,
+     tipo:tipo,
+     descripcion:descripcion,
+    estado:'P'}
+     
 try {
 await pool.query('insert into constancias set?', datoss)
 } catch (error) {
