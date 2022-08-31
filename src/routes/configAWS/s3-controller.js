@@ -162,10 +162,44 @@ async function subirlegajo (req, res) {
     });
 }
 
+async function subirlegajo1 (req, res) {
+    
+    formData = await leerformlegajo(req);
+ 
+  console.log(formData.file.originalFilename)
+  console.log(formData.datos)
+ 
+  const datoss = {
+   ubicacion: formData.file.originalFilename,
+   cuil_cuit:formData.datos,
+   estado : 'P'
 
+}
+try {
+await pool.query('insert into constancias set?', datoss)
+} catch (error) {
+
+}
+   
+
+
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
 module.exports = {
     s3Upload,
     s3Get,
     getSignedUrl,
-    subirlegajo
+    subirlegajo,
+    subirlegajo1
 }

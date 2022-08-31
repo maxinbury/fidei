@@ -37,7 +37,7 @@ router.get('/get-object-url/:key', s3Controller.getSignedUrl);
 router.post('/subirlegajo', s3Controller.subirlegajo);
 
 
-
+router.post('/subirlegajo1', s3Controller.subirlegajo1);
 //// REACT  
 router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
     const {formdata, file} = req.body
