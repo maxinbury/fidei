@@ -1,14 +1,26 @@
 const formidable = require('formidable');
 const {uploadFileToS3, getBucketListFromS3, getPresignedURL} = require('./s3-service');
+const express = require('express')
+const router = express.Router()
+const pool = require('../../database')
+
+
+
 
 async function s3Upload (req, res) {
+ let {ingreso, formData} = req.body
+ 
+      formData = await readFormData(req);
+   
+     console.log(formData.ingreso)
+     console.log(formData.ingresoo)
 
-  
-    const  formData = await readFormData(req);
-
+      
    //  const etc =  req.formData
    
-   console.log(formData.name)
+ //  console.log(formData)
+  // console.log(formData.name)  FILE
+   //console.log(formData.ingreso) falla
     // falla console.log(req.formdata.ingreso)
         
     try{ 
@@ -52,18 +64,18 @@ async function readFormData(req) {
             dataObj.file = file;
         });
         ///
-        form.on('ingreso', (name, file) => {
-           
-            dataObj.name = name;
-            dataObj.file = file;
-            console.log(name)
-            console.log(file)
-            console.log(dataObj.name)
+       
+        form.on('field', (fieldName, fieldValue) => {
+            dataObj.ingreso = fieldName;
+            dataObj.ingresoo = fieldValue;
+     
+        
           
         });
-       
+      
          ///
         form.on('end', () => {
+            console.log(dataObj)
             resolve(dataObj);
         });
     });
@@ -83,8 +95,77 @@ async function getSignedUrl(req, res) {
     }
 }
 
+
+
+////////
+async function subirlegajo (req, res) {
+    
+         formData = await leerformlegajo(req);
+      
+       console.log(formData.file.originalFilename)
+       console.log(formData.datos)
+      
+       const datoss = {
+        ubicacion: formData.file.originalFilename,
+        cuil_cuit:formData.datos
+
+    }
+  try {
+    await pool.query('insert into constancias set?', datoss)
+  } catch (error) {
+    
+  }
+        
+
+    
+           
+       try{ 
+      
+         
+           await uploadFileToS3(formData.file, "mypdfstorage");
+          console.log(' Uploaded!!  ')
+          
+         
+          
+       } catch(ex) {
+        console.log('NOOO  ')
+       }
+   }
+
+
+   async function leerformlegajo(req) {
+    return new Promise(resolve => {
+        const dataObj = {};
+        var form = new formidable.IncomingForm();
+        form.parse(req);
+
+        form.on('file', (name, file) => {
+            dataObj.name = name;
+            dataObj.file = file;
+            dataObj.file.originalFilename =  Date.now() +'-legajo-' + file.originalFilename
+        });
+        ///
+       
+        form.on('field', (fieldName, fieldValue) => {
+            dataObj.cuil_cuit = fieldName;
+            dataObj.datos = fieldValue;
+     
+        
+          
+        });
+      
+         ///
+        form.on('end', () => {
+            //console.log(dataObj)
+            resolve(dataObj);
+        });
+    });
+}
+
+
 module.exports = {
     s3Upload,
     s3Get,
-    getSignedUrl
+    getSignedUrl,
+    subirlegajo
 }
