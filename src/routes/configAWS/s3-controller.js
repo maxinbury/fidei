@@ -102,16 +102,25 @@ async function subirlegajo (req, res) {
     
          formData = await leerformlegajo(req);
       
-       console.log(formData.file.originalFilename)
-       console.log(formData.datos)
+      // console.log(formData.file.originalFilename)
       
+       console.log(formData.datos)
+       const myArray = formData.datos.split(",");
+       tipo= myArray[1]
+       descripcion = myArray[2]
+      
+       
+   
        const datoss = {
         ubicacion: formData.file.originalFilename,
-        cuil_cuit:formData.datos
+        cuil_cuit:myArray[0],
+        tipo:tipo,
+        descripcion:descripcion,
 
     }
+    console.log(datoss)
   try {
-    await pool.query('insert into constancias set?', datoss)
+   await pool.query('insert into constancias set?', datoss)
   } catch (error) {
     
   }
@@ -122,13 +131,13 @@ async function subirlegajo (req, res) {
        try{ 
       
          
-           await uploadFileToS3(formData.file, "mypdfstorage");
+      await uploadFileToS3(formData.file, "mypdfstorage");
           console.log(' Uploaded!!  ')
           
          
           
        } catch(ex) {
-        console.log('NOOO  ')
+        console.log('NOO')
        }
    }
 
@@ -147,16 +156,18 @@ async function subirlegajo (req, res) {
         ///
        
         form.on('field', (fieldName, fieldValue) => {
-            dataObj.cuil_cuit = fieldName;
+            dataObj.dato = fieldName;
             dataObj.datos = fieldValue;
      
         
           
         });
+    
+       
       
          ///
         form.on('end', () => {
-            //console.log(dataObj)
+            console.log(dataObj)
             resolve(dataObj);
         });
     });
