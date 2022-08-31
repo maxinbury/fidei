@@ -122,10 +122,9 @@ console.log(id)
     let  existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final"  order by nro_cuota', [id])
   
     ultima = ((existe.length)-1)
-    
+
   
-    //existe = await pool.query('Select * from cuotas where  id=? ', [id_cuota])
-    //console.log(existe)///
+    
     id_cuota = existe[ultima]['id']
     mes = existe[ultima]['mes']
     anio = existe[ultima]['anio']
