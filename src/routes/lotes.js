@@ -73,18 +73,30 @@ router.post('/calcularvalor', async (req, res) => {
     const nombre = 'Zona: '+ lote[0]['zona'] +' Manzana: '+lote[0]['manzana']  +' Parcela: '+lote[0]['parcela']
     finalSant= final*0.8
     const cuotas60 = finalSant/60
-    let puede = 'No puede adquirir el lote'
-    if (max >= cuotas60){
-        puede='Puede adquirir el lote'
+   
+        let puede=true
+    let cuotamuygrande =""
+    if (max <= cuotas60){
+        cuotamuygrande='La cuota es mas grande que  el 30%'
+        puede=false
     }
+   
+    let lotetieneasignado =""
+    if ((estado != "DISPONIBLE" &&  "Disponible") ){
+        lotetieneasignado='El lote no se encuentra disponible'
+        puede=false
+    }
+
     const detalle = {
         precio: final.toFixed(2),
         superficie: lote[0]['superficie'],
         nombre: nombre,
         cuotas60: cuotas60.toFixed(2),
         ingresos: ingresos,
-        puede:puede,
-        estado:estado
+        estado:estado,
+        cuotamuygrande,
+        lotetieneasignado,
+        puede
     }
     console.log(detalle)
 
