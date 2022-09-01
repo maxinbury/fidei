@@ -215,10 +215,128 @@ await pool.query('insert into constancias set?', datoss)
    console.log('NOOO  ')
   }
 }
+
+//////////////pago
+async function pagarniv1 (req, res) {
+    
+    formData = await leerformlegajo(req);
+   
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit =myArray[0]
+    id= myArray[1]
+    monto = myArray[2]
+   
+    
+
+try {
+//// realizar el pago
+let estadoo = 'P'
+
+
+let cuil_cuit_distinto = 'Si'
+let monto_distinto = 'Si'
+let monto_inusual = 'No'
+aux = '%' + cuil_cuit + '%'
+   
+    let  existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final"  order by nro_cuota', [id])
+  
+    ultima = ((existe.length)-1)
+
+  
+    
+    id_cuota = existe[ultima]['id']
+    mes = existe[ultima]['mes']
+    anio = existe[ultima]['anio']
+    estado = existe[ultima]['estado']
+  
+    if (existe.length > 0) {
+        /// traer la ultima
+        
+         ///
+        
+        let cliente  = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+       
+       
+            montomax = cliente[0]['ingresos'] * 0.3
+            console.log(4)
+            if (montomax < monto) {
+
+                monto_inusual='Si'
+            }
+
+      
+       
+
+        const id_cuota = existe[0]["id"]
+        console.log(id_cuota)
+        if (estado != 'A') {
+            console.log(1)
+            const newInu = {
+                id_cuota,
+                cuil_cuit,
+                estado,
+                mes,
+                anio,
+             
+    
+            };
+            console.log(1)
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
+            console.log(1)
+      
+        const newLink = {
+            id_cuota,
+            monto,
+            cuil_cuit,
+            estado,
+            mes,
+            estado: estadoo,
+            anio,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+            ubicacion: formData.file.originalFilename,///////////aca ver el problema
+
+        };
+      
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        
+        
+
+    }   }else {
+        res.send('Error la cuota no existe')
+
+
+    }
+
+/////
+} catch (error) {
+
+}
+   
+
+
+      
+  try{ 
+ 
+    
+   await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
+
+
 module.exports = {
     s3Upload,
     s3Get,
     getSignedUrl,
     subirlegajo,
-    subirlegajo1
+    subirlegajo1,
+    pagarniv1
 }

@@ -39,6 +39,9 @@ router.post('/subirlegajo', s3Controller.subirlegajo);
 
 router.post('/subirlegajo1', s3Controller.subirlegajo1);
 //// REACT  
+
+router.post('/pagarnivel1', s3Controller.pagarniv1);
+
 router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
     const {formdata, file} = req.body
   //  console.log(formdata)
@@ -90,8 +93,8 @@ router.get('/leerimagen ', async (req, res, done) => {
 router.post('/realizarr', async (req, res, done) => {
     let { monto, cuil_cuit, mes, anio, id } = req.body;
 
-    var estado = 'P'
-console.log(id)
+    let estado = 'P'
+
 
     let cuil_cuit_distinto = 'Si'
     let monto_distinto = 'Si'
@@ -166,7 +169,7 @@ console.log(id)
             };
             console.log(1)
             await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
-            console.log(1)
+        
         }
         const newLink = {
             id_cuota,
