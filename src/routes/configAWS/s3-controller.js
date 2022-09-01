@@ -192,7 +192,7 @@ async function subirlegajo1 (req, res) {
      cuil_cuit:cuil_cuit,
      tipo:tipo,
      descripcion:descripcion,
-    estado:'P'}
+    estado:'Pendiente'}
      
 try {
 await pool.query('insert into constancias set?', datoss)

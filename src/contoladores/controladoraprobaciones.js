@@ -6,7 +6,7 @@ const pool = require('../database')
 const pendientestodas = async (req, res) => {
     
     try {
-        const constancias = await pool.query('SELECT * FROM constancias WHERE  estado = "P"')
+        const constancias = await pool.query('SELECT * FROM constancias WHERE  estado = "Pendiente"')
         res.json( constancias )
         
     } catch (error) {
@@ -22,7 +22,7 @@ const aprobar = async (req, res) => {
     try {
 
 
-        await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["A", id])
+        await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["Aprobada", id])
 
 
         let aux = await pool.query('select * from constancias  WHERE id = ?', [id])
@@ -33,7 +33,7 @@ const aprobar = async (req, res) => {
 
 
         aux = await pool.query('select * from constancias  WHERE tipo = "Dni" and estado ="A" and cuil_cuit = ?', [cuil_cuit])
-        if (aux.length > 0) {
+       /*  if (aux.length > 0) {
             
             aux = await pool.query('select * from constancias  WHERE tipo ="djorigen" and estado="A" and cuil_cuit = ?', [cuil_cuit])
             if (aux.length > 0) {
@@ -83,7 +83,7 @@ const aprobar = async (req, res) => {
                     }
                 }
             }
-        }
+        } */
     } catch (error) {
         console.log(error)
     }
@@ -196,29 +196,32 @@ const aprobarcomp = async (req, res) => {
 
 const rechazar2 = async (req, res) => {
     const { id, detalle} = req.body;
-    console.log(id)
+
     console.log(detalle)
-    console.log('holaa')
-  /*   try {
-         console.log(id)
-       await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["R", id])
+
+    try {
+        const constancia = await pool.query('select * from  constancias where id=?',[id])
+        const  cuil_cuit = constancia[0]['cuil_cuit']
+       await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["Rechazada", id])
  
+
         leida = "No"
         const noti = {
             cuil_cuit,
-            descripcion,
-            asunto,
-            leida
+            descripcion:detalle,
+            asunto:'Notificaciones',
+            leida,
+            id_referencia:id,
         }
         await pool.query('INSERT INTO notificaciones set ?', [noti]) 
     
         res.send('rechazado')
     } catch (error) {
         res.send('Algo salio mal')
-    }*/
+    }
    
 
-    res.send('todo en orden ')
+  
 
 }
 
