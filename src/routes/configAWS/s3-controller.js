@@ -117,7 +117,7 @@ async function subirlegajo (req, res) {
         cuil_cuit:cuil_cuit,
         tipo:tipo,
         descripcion:descripcion,
-        estado:'A'
+        estado:'Aprobada'
 
     }
     console.log(datoss)
