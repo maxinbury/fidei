@@ -187,11 +187,16 @@ const postaddaut = async (req, res) => {
 }
 
 const postaddaut2 = async (req, res) => {
-    var { id, monto_total, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, anticipo,parcela } = req.body;
-    console.log(monto_total)
-    console.log(cantidad_cuotas)
-    console.log(id)
+    var { id, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote,parcela } = req.body;
     
+    console.log(cantidad_cuotas)
+    
+
+
+    if (cantidad_cuotas == undefined){
+        cantidad_cuotas=60
+    }
+    console.log(cantidad_cuotas)
     id_lote= id
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
     cuil_cuit = lot[0]['cuil_cuit']
@@ -200,6 +205,7 @@ const postaddaut2 = async (req, res) => {
     manzana = lot[0]['manzana']
     fraccion = lot[0]['fraccion']
     parcela = lot[0]['parcela']
+    superficie= lot[0]['superficie']
 
 
     let aux = '%' + cuil_cuit + '%'
@@ -207,9 +213,16 @@ const postaddaut2 = async (req, res) => {
     const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
     //llega
     try {
+        valormetro= await pool.query('select * from nivel3 where nivel3col = "Valor metro cuadrado" order by id')
+        valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']
+        console.log(valor)
+        
+        monto_total = valor*superficie
+        anticipo = monto_total*0.2
         if (row[0]['ingresos'] == 0) {
-
-            res.send([cuil_cuit,'Error, el cliente no tiene ingresos declarados '])
+            rtaa=[cuil_cuit,'Error, el cliente no tiene ingresos declarados ']
+            
+          
            
 
         } else {
@@ -227,9 +240,9 @@ const postaddaut2 = async (req, res) => {
              
 
                 
-                ///////
-                res.send( [cuil_cuit,'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados'])
-          
+                ///////[cuil_cuit,'Error, el cliente no tiene ingresos declarados ']
+                rtaa= [cuil_cuit,'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados']
+                res.send( )
 
 
             } else {
