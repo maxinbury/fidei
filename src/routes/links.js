@@ -50,7 +50,70 @@ const fileUpload = multer({
 
 
 
+router.post('/agregaringreso', isLevel2, async (req, res) => {
+    const { id, ingresos, cuil_cuit } = req.body
+    console.log(cuil_cuit)
+    const newLink = {
+        ingresos
+    }
+    try {
+        await pool.query('UPDATE clientes set ? WHERE id = ?', [newLink, id])
 
+    } catch (error) {
+        console.log(error)
+
+    }
+
+
+
+    res.redirect('/links/detallecliente/' + cuil_cuit)
+
+
+})
+ router.post('/habilitar', async (req, res) => {
+     const { cuil_cuit } = req.body
+     console.log(cuil_cuit)
+     newLink = {
+         habilitado: 'Si'
+     }
+     
+    try {
+         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+
+     } catch (error) {
+         console.log(error)
+
+     }
+
+
+
+    res.send('exito')
+
+
+})
+
+
+ router.post('/deshabilitar', async (req, res) => {
+     const { cuil_cuit } = req.body
+    
+     newLink = {
+         habilitado: 'No'
+     }
+    
+     try {
+         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+ 
+     } catch (error) {
+        console.log(error)
+
+    }
+
+
+
+     res.send('exito')
+
+
+ })
 ////////////inicio carga de legajos manual Total 11
 router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
     const { tipo, cuil_cuit } = req.body
