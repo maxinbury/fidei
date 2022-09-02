@@ -58,15 +58,26 @@ router.get('/lotescliente/:cuil_cuit', async (req, res) => {
 })
 
 router.post('/calcularvalor', async (req, res) => {
-    const { zona, manzana, parcela, valor, cuil_cuit } = req.body
+    const { zona, manzana, parcela, cuil_cuit } = req.body
     console.log(cuil_cuit)
+    valormetro= await pool.query('select * from nivel3 where nivel3col = "Valor metro cuadrado" order by id')
+   let valor
+   console.log(valor)
+    try {
+        valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']
+    } catch (error) {
+        
+    }
+    console.log(valor)
+   if  (valor != undefined){
+    console.log(valor)
     try {
        const  aux= '%'+cuil_cuit+'%'
    const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
    const ingresos = cliente[0]['ingresos']
    const max = ingresos*0.3
     const lote = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
- 
+        
     let final = lote[0]['superficie'] * valor
     const estado = lote[0]['estado']
 
@@ -96,14 +107,15 @@ router.post('/calcularvalor', async (req, res) => {
         estado:estado,
         cuotamuygrande,
         lotetieneasignado,
-        puede
+        puede,
+        valor
     }
     console.log(detalle)
 
     res.json(detalle)
  } catch (error) {
         res.send('Algo salio mal ')
-    }
+    }}else {  res.send('Algo salio mal ') }
 
 })
 

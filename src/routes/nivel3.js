@@ -45,7 +45,19 @@ router.get('/borrarhistorial', async (req, res) => {
     }
 
 })
+router.post('/asignarvalormetroc', async (req, res) => {
+    const  { valor } = req.body;
+    try {
+        val ={valormetrocuadrado:valor,
+        nivel3col: 'Valor metro cuadrado'}
+        await pool.query('insert into nivel3 set ?', val)
+        res.send('Borrados correctamente')
+    } catch (error) {
+        console.log(error)
+        res.send('Error algo sucedió')
+    }
 
+})
 router.post('/consultaricc', async (req, res,) => {
     let { ICC, mes, anio } = req.body;
     let rta={} 
