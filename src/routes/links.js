@@ -91,7 +91,82 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 
 })
+router.post("/estadisticaslegajos", async (req, res) => {
+    const { cuil_cuit } = req.body
+   console.log(cuil_cuit)
+    const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
+   
 
+    'Pendiente'
+    let pendientes = 0
+    let aprobadas = 0
+    let rechazadas = 0
+
+    let uno = 0
+    let dos = 0
+    let tres = 0
+    console.log(legajos[0])
+    for (var i = 0; i < legajos.length; i++) {
+     
+    
+        switch (legajos[i]['estado']) {
+            case "'Pendiente'":
+                pendientes=pendientes+1
+
+                break;
+            case "Aprobada":
+                aprobadas=aprobadas+1
+                break;
+                case "Rechazada":
+                    rechazadas=rechazadas +1
+                    break;
+            default:
+                break;
+        }
+    
+        
+    }
+            porcP =  (pendientes/legajos.length*100).toFixed(2)
+          
+            porcA =  (aprobadas/legajos.length*100).toFixed(2)
+            porcR = (rechazadas/legajos.length*100).toFixed(2)
+
+    const status = {
+        "total":  legajos.length,
+
+        "Pendientes": pendientes,
+        "porcPendientes":porcP,
+
+        "Aprobadas":aprobadas,
+        "porcAprobadas":porcA,
+
+        "Rechazadas": rechazadas,
+        "porcRechazadas":porcR,
+
+    }
+
+   /*  unoo = {
+        rango: "0-4",
+        cantidad: uno,
+    }
+    doss={
+        rango: "4-8",
+        cantidad: uno, 
+    }
+    tress={
+        rango: "8-12",
+        cantidad: tres,
+     }
+    
+     const rangoo =[unoo,doss,tress] */
+  
+   // const rta =[status,rangoo,datos]
+   const rta =[status]
+    console.log(rta)
+    res.json(rta)
+
+
+})
 
  router.post('/deshabilitar', async (req, res) => {
      const { cuil_cuit } = req.body
