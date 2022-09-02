@@ -70,20 +70,20 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 
 })
- router.post('/habilitar', async (req, res) => {
-     const { cuil_cuit } = req.body
-     console.log(cuil_cuit)
-     newLink = {
-         habilitado: 'Si'
-     }
-     
+router.post('/habilitar', async (req, res) => {
+    const { cuil_cuit } = req.body
+    console.log(cuil_cuit)
+    newLink = {
+        habilitado: 'Si'
+    }
+
     try {
-         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
 
-     } catch (error) {
-         console.log(error)
+    } catch (error) {
+        console.log(error)
 
-     }
+    }
 
 
 
@@ -93,11 +93,89 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 })
 router.post("/estadisticaslegajos", async (req, res) => {
     const { cuil_cuit } = req.body
-   console.log(cuil_cuit)
+    console.log(cuil_cuit)
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
+    const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
+
+    a = "Dni "
+    b = "Constancia de Afip "
+    c = "Estatuto Social "
+    d = "Acta del organo decisorio "
+    e = "Acreditacion Domicilio "
+    f = "Ultimos balances "
+    g = "Dj Iva "
+    h = "Pagos Previsionales "
+    i = "Dj Datos personales "
+    j = "Dj CalidadPerso "
+    k = "Dj Origen de Fondos "
+    aa = 0
+    bb = 0
+    cc = 0
+    dd = 0
+    ee = 0
+    ff = 0
+    gg = 0
+    hh = 0
+    ii = 0
+    jj = 0
+    kk = 0
+    for (var i = 0; i < legajosAprobados.length; i++) {
+
+        switch (legajosAprobados[i]['tipo']) {
+            case "Dni":
+                a = ""
+                aa = 1
+                break;
+            case "Constancia de Afip":
+                b = ""
+                bb = 1
+                break;
+            case "Estatuto Social":
+                c = ""
+                cc = 1
+
+                break;
+            case "Acta del organo decisorio":
+                d =""
+                dd = 1
+                break;
+            case "Acreditacion Domicilio":
+                e = ""
+                ee = 1
+                break;
+            case "Ultimos balances":
+                f = ""
+                ff = 1
+                break;
+            case "DjIva":
+                g = ""
+                gg = 1
+
+                break;
+            case "Pagos Previsionales":
+                h = ""
+                hh = 1
+                break;
+            case "Dj Datospers":
+                i = ""
+                ii = 1
+                break;
+            case "Dj CalidadPerso":
+                j = ""
+                jj = 1
+                break;
+            case "Dj OrigenFondos":
+                k = ""
+                kk = 1
+                break;
+            default:
+                break;
+        }
+
+    }
+ Faltan ='Aun falta completar '+ a+b+c+d+e+f+g+h+i+j+k
    
 
-    'Pendiente'
     let pendientes = 0
     let aprobadas = 0
     let rechazadas = 0
@@ -105,90 +183,107 @@ router.post("/estadisticaslegajos", async (req, res) => {
     let uno = 0
     let dos = 0
     let tres = 0
-    console.log(legajos[0])
+
+
     for (var i = 0; i < legajos.length; i++) {
-     
-    
+
+
         switch (legajos[i]['estado']) {
-            case "'Pendiente'":
-                pendientes=pendientes+1
+            case "Pendiente":
+                pendientes = pendientes + 1
 
                 break;
             case "Aprobada":
-                aprobadas=aprobadas+1
+                aprobadas = aprobadas + 1
                 break;
-                case "Rechazada":
-                    rechazadas=rechazadas +1
-                    break;
+            case "Rechazada":
+                rechazadas = rechazadas + 1
+                break;
             default:
                 break;
         }
-    
-        
+
+
+
     }
-            porcP =  (pendientes/legajos.length*100).toFixed(2)
-          
-            porcA =  (aprobadas/legajos.length*100).toFixed(2)
-            porcR = (rechazadas/legajos.length*100).toFixed(2)
+    if (0 < legajos.length) {
+        porcP = (pendientes / legajos.length * 100).toFixed(2)
+
+        porcA = (aprobadas / legajos.length * 100).toFixed(2)
+        porcR = (rechazadas / legajos.length * 100).toFixed(2)
+    } else {
+        porcP = 0
+        porcA = 0
+        porcR = 0
+    }
+    porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + ii + jj+ kk) 
+
+    porccompleto= porccompleto/13
+  
+    porccompleto=( porccompleto*100).toFixed(2)
+  
 
     const status = {
-        "total":  legajos.length,
+        "total": legajos.length,
 
         "Pendientes": pendientes,
-        "porcPendientes":porcP,
+        "porcPendientes": porcP,
 
-        "Aprobadas":aprobadas,
-        "porcAprobadas":porcA,
+        "Aprobadas": aprobadas,
+        "porcAprobadas": porcA,
 
         "Rechazadas": rechazadas,
-        "porcRechazadas":porcR,
+        "porcRechazadas": porcR,
+
+        porccompleto,
+        Faltan
 
     }
 
-   /*  unoo = {
-        rango: "0-4",
-        cantidad: uno,
-    }
-    doss={
-        rango: "4-8",
-        cantidad: uno, 
-    }
-    tress={
-        rango: "8-12",
-        cantidad: tres,
+    /*  unoo = {
+         rango: "0-4",
+         cantidad: uno,
      }
-    
-     const rangoo =[unoo,doss,tress] */
-  
-   // const rta =[status,rangoo,datos]
-   const rta =[status]
-    console.log(rta)
+     doss={
+         rango: "4-8",
+         cantidad: uno, 
+     }
+     tress={
+         rango: "8-12",
+         cantidad: tres,
+      }
+     
+      const rangoo =[unoo,doss,tress] */
+
+    // const rta =[status,rangoo,datos]
+    const rta = [status]
+
     res.json(rta)
 
 
 })
 
- router.post('/deshabilitar', async (req, res) => {
-     const { cuil_cuit } = req.body
-    
-     newLink = {
-         habilitado: 'No'
-     }
-    
-     try {
-         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
- 
-     } catch (error) {
+router.post('/deshabilitar', async (req, res) => {
+    const { cuil_cuit } = req.body
+
+    newLink = {
+        habilitado: 'No'
+    }
+
+    try {
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+
+    } catch (error) {
         console.log(error)
 
     }
 
 
 
-     res.send('exito')
+    res.send('exito')
 
 
- })
+})
 ////////////inicio carga de legajos manual Total 11
 router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
     const { tipo, cuil_cuit } = req.body
@@ -278,7 +373,7 @@ router.post('/ventalotee', async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
 
 
-   
+
     switch (zona) {
         case 'PIT':
 
@@ -296,18 +391,18 @@ router.post('/ventalotee', async (req, res) => {
     venta = {
         cuil_cuit,
         estado
-       
+
     }
 
     try {
         if (zona = 'PIT') {
             // fraccion=?, manzana =?, parcela =?, lote=? 
 
-            
+
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
             console.log(existe)
             if (existe.length > 0) {
-                
+
                 console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
                 console.log('Lote asignado')
@@ -382,12 +477,12 @@ router.get('/cargar_todos_legales', async (req, res) => {
     for (const property in dataExcel) {
         a += 1
         aux = dataExcel[property]['Número']
-    
-       
+
+
 
         obs = dataExcel[property]['Observaciones']
-       
-     
+
+
 
         try {
             const newLink = {
@@ -396,24 +491,24 @@ router.get('/cargar_todos_legales', async (req, res) => {
                 L: dataExcel[property]['L.'],
                 Anio: dataExcel[property]['AÑO'],
 
-                Expediente: dataExcel[property]['EXP.']+'-'+ dataExcel[property]['L.']+ '-'+ dataExcel[property]['AÑO'],
+                Expediente: dataExcel[property]['EXP.'] + '-' + dataExcel[property]['L.'] + '-' + dataExcel[property]['AÑO'],
                 Iniciador: dataExcel[property]['INICIADOR'],
                 Extracto: dataExcel[property]['EXTRACTO'],
                 Cpos: dataExcel[property]['Cpos.'],
-               
+
                 Fjs: dataExcel[property]['Fjs.'],
                 Barrio: 'IB6',
                 Observacion: dataExcel[property]['OBSERVACION'],
                 Rev: dataExcel[property]['REV.'],
                 Resp: dataExcel[property]['RESP.'],
                 Caratula: dataExcel[property]['CARÁTULA'],
-                
+
             }
 
 
-           
-                    await pool.query('INSERT INTO expedientes set ?', [newLink]);
-         
+
+            await pool.query('INSERT INTO expedientes set ?', [newLink]);
+
 
 
 
