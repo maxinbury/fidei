@@ -39,6 +39,8 @@ router.post('/subirlegajo', s3Controller.subirlegajo);
 
 router.post('/subirlegajo1', s3Controller.subirlegajo1);
 //// REACT  
+router.post('/cargarcbu', s3Controller.cargarcbu)
+
 
 router.post('/pagarnivel1', s3Controller.pagarniv1);
 
