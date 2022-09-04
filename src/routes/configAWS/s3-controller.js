@@ -215,7 +215,47 @@ await pool.query('insert into constancias set?', datoss)
    console.log('NOOO  ')
   }
 }
+////cargarcbu
+async function cargarcbu (req, res) {
+    
+    formData = await leerformlegajo(req);
+ 
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit =myArray[0]
+    numero= myArray[1]
+    lazo = myArray[2]
+   
+    
 
+    const datoss = {
+     ubicacion: formData.file.originalFilename,
+     cuil_cuit:cuil_cuit,
+     numero:numero,
+     lazo:lazo,
+    estado:'Pendiente'}
+     
+try {
+await pool.query('insert into cbus set?', datoss)
+} catch (error) {
+
+}
+   
+
+
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
 //////////////pago
 async function pagarniv1 (req, res) {
     
