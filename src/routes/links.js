@@ -344,11 +344,26 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
 
 })
 
+router.get('/cbuspendientes', async (req, res) => {
+ 
+    //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
+
+
+    const cbus = await pool.query('select * from cbus where estado="P"', )
+
+    /*  legajos.map(img => {
+          fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
+  
+      })
+      const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
+    res.json(cbus)
+
+
+})
 
 
 
-
-//lista legajos de un cliente
+//lista legajos de un cliente 
 router.get('/legajos/:cuil_cuit', async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
