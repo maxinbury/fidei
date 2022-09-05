@@ -20,7 +20,6 @@ router.post('/rechazarcbu/', rechazarcbu)
 
 
 
-
 // LISTA DE CONSTANCIAS PENDIENTS
 
 router.get('/',pendientes)
