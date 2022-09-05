@@ -45,6 +45,36 @@ router.get('/borrarhistorial', async (req, res) => {
     }
 
 })
+
+
+router.post('/asignarclave', async (req, res) => {
+    const  { cuil_cuit, clave_alta  } = req.body;
+    console.log(cuil_cuit)
+    try {
+      
+       
+        const aux = '%'+cuil_cuit+'%'
+        const existe = await pool.query('select * from clientes WHERE cuil_cuit like  ?',[aux])
+        if (existe.length>0){
+            const asignar = {
+                clave_alta: clave_alta
+               }
+               await pool.query('UPDATE clientes set ? WHERE cuil_cuit like  ?', [asignar,aux])
+               res.send('Clave asignada')
+        }else {
+            res.send('Error cliente no existe')
+        }
+        
+
+      
+
+    } catch (error) {
+       
+        res.send('Error algo sucedió')
+    }
+
+})
+
 router.post('/asignarvalormetroc', async (req, res) => {
     const  { valor } = req.body;
     try {
