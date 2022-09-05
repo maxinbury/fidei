@@ -17,6 +17,10 @@ const pendientestodas = async (req, res) => {
    
 }
 
+
+
+
+
 const aprobar = async (req, res) => {
     const { id } = req.params
     try {
@@ -224,7 +228,36 @@ const rechazar2 = async (req, res) => {
   
 
 }
+const rechazarcbu = async (req, res) => {
+    const { id, detalle} = req.body;
+    console.log(id)
+    console.log(detalle)
 
+    try {
+        const cbu = await pool.query('select * from  cbus where id=?',[id])
+        const  cuil_cuit = cbu[0]['cuil_cuit']
+       await pool.query('UPDATE cbus set estado = ? WHERE id = ?', ["R", id])
+ 
+
+        leida = "No"
+        const noti = {
+            cuil_cuit,
+            descripcion:detalle,
+            asunto:'CBU Rechazado',
+            leida,
+            id_referencia:id,
+        }
+        await pool.query('INSERT INTO notificaciones set ?', [noti]) 
+    
+        res.send('rechazado')
+    } catch (error) {
+       res.send('Algo salio mal')
+  }
+   
+
+  
+
+}
 
 
 const rechazarcomp =  async (req, res) => {
@@ -265,10 +298,13 @@ const aprobacioncbu = async (req, res) => {
 
 const aprobarcbu = async (req, res) => {
     const { id } = req.params
-
+    let cuil_cuit = await pool.query('Select * from cbus where id=?', [id])
+     console.log(cuil_cuit)
+    cuil_cuit = cuil_cuit[0]['cuil_cuit']
+    console.log(cuil_cuit)
     await pool.query('UPDATE cbus set estado = ? WHERE id = ?', ["A", id])
     const descripcion = 'Solicitud CBU aprobada'
-    const cuil_cuit = (await pool.query('Select cuil_cuit from cbus where id=?', [id]))[0]['cuil_cuit']
+    
     leida = "No"
     const asunto = "Cbu aprobado"
     const noti = {
@@ -279,8 +315,8 @@ const aprobarcbu = async (req, res) => {
     }
 
     await pool.query('INSERT INTO notificaciones set ?', [noti])
-    req.flash('success', 'Aprobado')
-    res.redirect('/aprobaciones/cbu')
+    res.send('Aprobado')
+   
 }
 
 
@@ -325,6 +361,8 @@ module.exports = {
     postrechazocbu,
     pendientestodas,
     aprobar,
-    rechazar2
+    rechazar2,
+    rechazarcbu,
+    aprobarcbu
 
 }
