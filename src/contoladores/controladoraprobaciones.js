@@ -295,7 +295,7 @@ const aprobacioncbu = async (req, res) => {
     res.render('aprobaciones/aprobacionescbu', { pendientes })
 
 }
-
+   
 const aprobarcbu = async (req, res) => {
     const { id } = req.params
     let cuil_cuit = await pool.query('Select * from cbus where id=?', [id])

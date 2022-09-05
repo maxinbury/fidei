@@ -106,6 +106,20 @@ router.get('/cbus/:cuil_cuit', async (req, res, ) => {
    
 })
 
+router.get('/cbuscliente/:cuil_cuit', async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    try {
+       cbus = await pool.query('select * from cbus where cuil_cuit= ? and estado ="A"',[cuil_cuit])
+       console.log(cbus)
+       res.json(cbus)
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+   
+})
+
 ////pago react nivel 1
 router.post('/realizarr', async (req, res, done) => {
     let { monto, cuil_cuit, mes, anio, id } = req.body;
