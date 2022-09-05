@@ -96,7 +96,7 @@ router.post("/estadisticaslegajos", async (req, res) => {
     console.log(cuil_cuit)
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
     const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
-
+    
     a = "Dni "
     b = "Constancia de Afip "
     c = "Estatuto Social "
@@ -105,7 +105,7 @@ router.post("/estadisticaslegajos", async (req, res) => {
     f = "Ultimos balances "
     g = "Dj Iva "
     h = "Pagos Previsionales "
-    i = "Dj Datos personales "
+    aux = "Dj Datos personales "
     j = "Dj CalidadPerso "
     k = "Dj Origen de Fondos "
     aa = 0
@@ -116,10 +116,11 @@ router.post("/estadisticaslegajos", async (req, res) => {
     ff = 0
     gg = 0
     hh = 0
-    ii = 0
+    auxaux = 0
     jj = 0
     kk = 0
     for (var i = 0; i < legajosAprobados.length; i++) {
+       
 
         switch (legajosAprobados[i]['tipo']) {
             case "Dni":
@@ -157,8 +158,8 @@ router.post("/estadisticaslegajos", async (req, res) => {
                 hh = 1
                 break;
             case "Dj Datospers":
-                i = ""
-                ii = 1
+                aux = ""
+                auxaux = 1
                 break;
             case "Dj CalidadPerso":
                 j = ""
@@ -173,8 +174,9 @@ router.post("/estadisticaslegajos", async (req, res) => {
         }
 
     }
- Faltan ='Aun falta completar '+ a+b+c+d+e+f+g+h+i+j+k
-   
+    console.log(a+b+c+d+e+f+g+h+aux+j+k)
+ Faltan ='Aun falta completar '+ a+b+c+d+e+f+g+h+aux+j+k
+   console.log(Faltan)
 
     let pendientes = 0
     let aprobadas = 0
@@ -216,9 +218,9 @@ router.post("/estadisticaslegajos", async (req, res) => {
         porcA = 0
         porcR = 0
     }
-    porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + ii + jj+ kk) 
-
-    porccompleto= porccompleto/13
+    porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + auxaux + jj+ kk) 
+    console.log(porccompleto)
+    porccompleto= porccompleto/11
   
     porccompleto=( porccompleto*100).toFixed(2)
   
