@@ -1,4 +1,3 @@
-
 const formidable = require('formidable');
 const {uploadFileToS3, getBucketListFromS3, getPresignedURL} = require('./s3-service');
 const express = require('express')
@@ -16,7 +15,6 @@ async function s3Upload (req, res) {
      console.log(formData.ingreso)
      console.log(formData.ingresoo)
 
-     
       
    //  const etc =  req.formData
    
@@ -104,6 +102,7 @@ async function subirlegajo (req, res) {
     
          formData = await leerformlegajo(req);
       
+      // console.log(formData.file.originalFilename)
       
        console.log(formData.datos)
        const myArray = formData.datos.split(",");
@@ -111,28 +110,33 @@ async function subirlegajo (req, res) {
        tipo= myArray[1]
        descripcion = myArray[2]
       
+       
    
        const datoss = {
-
         ubicacion: formData.file.originalFilename,
         cuil_cuit:cuil_cuit,
         tipo:tipo,
         descripcion:descripcion,
         estado:'Aprobada'
+
     }
     console.log(datoss)
   try {
    await pool.query('insert into constancias set?', datoss)
   } catch (error) {
     
-  }    
+  }
+        
+
+    
            
        try{ 
       
          
       await uploadFileToS3(formData.file, "mypdfstorage");
           console.log(' Uploaded!!  ')
-           
+          
+         
           
        } catch(ex) {
         console.log('NOO')
