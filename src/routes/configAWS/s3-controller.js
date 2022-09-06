@@ -6,7 +6,6 @@ const pool = require('../../database')
 
 
 
-
 async function s3Upload (req, res) {
  let {ingreso, formData} = req.body
  
@@ -120,7 +119,7 @@ async function subirlegajo (req, res) {
         estado:'Aprobada'
 
     }
-    console.log(datoss)
+   
   try {
    await pool.query('insert into constancias set?', datoss)
   } catch (error) {
