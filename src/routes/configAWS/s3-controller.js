@@ -10,10 +10,10 @@ async function s3Upload (req, res) {
  let {ingreso, formData} = req.body
  
       formData = await readFormData(req);
-   
-     console.log(formData.ingreso)
-     console.log(formData.ingresoo)
+  
+      
 
+      
       
    //  const etc =  req.formData
    
@@ -104,7 +104,7 @@ async function subirlegajo (req, res) {
       // console.log(formData.file.originalFilename)
       
        console.log(formData.datos)
-       const myArray = formData.datos.split(",");
+       const myArray = formData.datos.split(",");          
        cuil_cuit =myArray[0]
        tipo= myArray[1]
        descripcion = myArray[2]
