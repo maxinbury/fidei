@@ -85,7 +85,7 @@ passport.use('local.signup', new LocalStrategy({
                 try {
 
                    rows = await pool.query('SELECT * FROM clientes WHERE clave_alta = ? and cuil_cuit like ?', [nro_cliente, aux])
-                    console.log('rw'+rows)
+                   
                     if (rows.length == 0) {
                         done(null, false, req.flash('message', 'error,algo sucedio '))
 
