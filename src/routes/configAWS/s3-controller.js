@@ -152,7 +152,7 @@ async function subirlegajo (req, res) {
         form.on('file', (name, file) => {
             dataObj.name = name;
             dataObj.file = file;
-            dataObj.file.originalFilename =  Date.now() +'-legajo-' + file.originalFilename
+            dataObj.file.originalFilename =  '-legajo-'+Date.now() 
         });
         ///
        
