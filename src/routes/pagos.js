@@ -198,10 +198,22 @@ console.log(id)
 })
 
 router.get("/cantidadpendientes", async (req, res) => { 
-
+try {
     const detalles = await pool.query('SELECT count(*) FROM pagos where estado="p" or estado="justificacionp" ')
    const rta = detalles[0]['count(*)']
-    res.json(rta)
+
+   const legajos = await pool.query('SELECT count(*) FROM constancias where estado= "Pendiente"  ')
+   const cantlegajos = legajos[0]['count(*)']
+
+   const cbus = await pool.query('SELECT count(*) FROM cbus where estado= "P"  ')
+   const cantcbus = cbus[0]['count(*)']
+
+console.log(cantcbus)
+    res.json([rta,cantlegajos,cantcbus])
+} catch (error) {
+    
+}
+    
   
 })
 
