@@ -140,8 +140,74 @@ async function getSignedUrl(req, res) {
        } catch(ex) {
         console.log('NOO')
        }
-   } */
+
+   } 
+
+   } 
+
    async function subirlegajo (req, res) {
+    
+    formData = await leerformlegajo(req);
+ 
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit =myArray[0]
+    tipo= myArray[1]
+    descripcion = myArray[2]
+   
+    
+
+    const datoss = {
+     ubicacion: formData.file.originalFilename,
+     cuil_cuit:cuil_cuit,
+     tipo:tipo,
+     descripcion:descripcion,
+    estado:'Aprobada'}
+     console.log(datoss)
+try {
+await pool.query('insert into constancias set?', datoss)
+CONSOLE.LOG(SUBIDO)
+} catch (error) {
+
+}
+   
+
+
+
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
+
+
+
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
+*/
+
+
+
+async function subirlegajo (req, res) {
     
     formData = await leerformlegajo(req);
  
@@ -182,8 +248,6 @@ CONSOLE.LOG(SUBIDO)
    console.log('NOOO  ')
   }
 }
-
-
    async function leerformlegajo(req) {
     return new Promise(resolve => {
         const dataObj = {};
