@@ -140,7 +140,11 @@ async function getSignedUrl(req, res) {
        } catch(ex) {
         console.log('NOO')
        }
+
    } 
+
+   } 
+
    async function subirlegajo (req, res) {
     
     formData = await leerformlegajo(req);
@@ -169,6 +173,23 @@ CONSOLE.LOG(SUBIDO)
    
 
 
+
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
+
+
+
       
   try{ 
  
@@ -183,6 +204,9 @@ CONSOLE.LOG(SUBIDO)
   }
 }
 */
+
+
+
 async function subirlegajo (req, res) {
     
     formData = await leerformlegajo(req);

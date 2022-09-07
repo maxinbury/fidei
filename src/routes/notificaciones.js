@@ -22,7 +22,23 @@ router.get('/leer/:id', async (req, res) => {
 
 })
 
+router.get('/cantidad/:cuil_cuit', async (req, res) => {
+    cuil_cuit = req.params.cuil_cuit
+const aux = '%'+cuil_cuit+'%'
+    try {
+        const noti = await pool.query('select count(*) from notificaciones where leida="No" and cuil_cuit like ?', [aux]);
+        console.log(noti[0]["count(*)"])
 
+      
+   
+        res.json(noti[0]["count(*)"])
+
+    } catch (error) {
+        res.json(error)
+    }
+  
+
+})
 
 
 module.exports = router
