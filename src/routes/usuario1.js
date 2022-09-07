@@ -105,7 +105,19 @@ router.get('/cbus/:cuil_cuit', async (req, res, ) => {
 
    
 })
+router.get('/constancias/:cuil_cuit', async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
 
+    try {
+       constancias = await pool.query('select * from constancias where cuil_cuit= ? ',[cuil_cuit])
+  
+       res.json(constancias)
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+   
+})
 router.get('/cbuscliente/:cuil_cuit', async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 

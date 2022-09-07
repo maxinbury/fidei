@@ -149,6 +149,14 @@ router.post("/borrardatoszona", async (req, res) => {
 })
 
 
+router.get('/zonas', async (req, res) => {
 
+    const zonass = await pool.query(" Select DISTINCT Zona from relevamiento ")
+  console.log(zonass)
+
+res.json(zonas)
+}  
+
+)
 
 module.exports = router
