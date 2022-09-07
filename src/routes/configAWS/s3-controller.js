@@ -140,11 +140,7 @@ async function getSignedUrl(req, res) {
        } catch(ex) {
         console.log('NOO')
        }
-
    } 
-
-   } 
-
    async function subirlegajo (req, res) {
     
     formData = await leerformlegajo(req);
@@ -173,23 +169,6 @@ CONSOLE.LOG(SUBIDO)
    
 
 
-
-      
-  try{ 
- 
-    
-      await uploadFileToS3(formData.file, "mypdfstorage");
-     console.log(' Uploaded!!  ')
-     
-    
-     
-  } catch(ex) {
-   console.log('NOOO  ')
-  }
-}
-
-
-
       
   try{ 
  
@@ -204,9 +183,6 @@ CONSOLE.LOG(SUBIDO)
   }
 }
 */
-
-
-
 async function subirlegajo (req, res) {
     
     formData = await leerformlegajo(req);
@@ -257,7 +233,7 @@ CONSOLE.LOG(SUBIDO)
         form.on('file', (name, file) => {
             dataObj.name = name;
             dataObj.file = file;
-            dataObj.file.originalFilename =  '-legajo-'+Date.now() 
+            dataObj.file.originalFilename =   Date.now() +'-legajo-' + file.originalFilename
         });
         ///
        
