@@ -216,14 +216,15 @@ async function subirlegajo (req, res) {
     cuil_cuit =myArray[0]
     tipo= myArray[1]
     descripcion = myArray[2]
-   
-    
+  
 
     const datoss = {
      ubicacion: formData.file.originalFilename,
      cuil_cuit:cuil_cuit,
      tipo:tipo,
      descripcion:descripcion,
+     fecha:(new Date(Date.now())).toLocaleDateString(),
+    
     estado:'Aprobada'}
      console.log(datoss)
 try {
@@ -257,7 +258,7 @@ CONSOLE.LOG(SUBIDO)
         form.on('file', (name, file) => {
             dataObj.name = name;
             dataObj.file = file;
-            dataObj.file.originalFilename =  '-legajo-'+Date.now() 
+            dataObj.file.originalFilename =  '-legajo-'+(new Date(Date.now())).toUTCString()+((file.originalFilename).substring((file.originalFilename.length-4),(file.originalFilename.length)))
         });
         ///
        
@@ -296,7 +297,8 @@ async function subirlegajo1 (req, res) {
      cuil_cuit:cuil_cuit,
      tipo:tipo,
      descripcion:descripcion,
-    estado:'Pendiente'}
+    estado:'Pendiente',
+    fecha:(new Date(Date.now())).toLocaleDateString()}
      console.log(datoss)
 try {
 await pool.query('insert into constancias set?', datoss)
