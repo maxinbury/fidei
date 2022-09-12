@@ -73,19 +73,29 @@ router.post('/asignarclave', async (req, res) => {
 
 })
 
+
+
 router.post('/asignarvalormetroc', async (req, res) => {
-    const  { valor } = req.body;
+    const  { valor,zona } = req.body;
     try {
-        val ={valormetrocuadrado:valor,
-        nivel3col: 'Valor metro cuadrado'}
+    
+     
+            val ={valormetrocuadrado:valor,
+                valormetroparque:zona } 
+          
+       
         await pool.query('insert into nivel3 set ?', val)
         res.send('Borrados correctamente')
+
     } catch (error) {
         console.log(error)
         res.send('Error algo sucedió')
     }
 
 })
+
+
+
 router.post('/consultaricc', async (req, res,) => {
     let { ICC, mes, anio } = req.body;
     let rta={} 
@@ -235,8 +245,17 @@ const nuevo={
 
 })
 
+////////lista de usuarios
+router.get('/traerusuarios', async (req, res) => {
 
+    const usuarios = await pool.query(" Select * from users  ")
+    console.log(usuarios)
 
+res.json(usuarios)
+    
+    }
+
+)
 
 //PAGINA  AGREGAR ICC GENERAL
 router.get("/agregariccgral", isLoggedIn,isLevel3, async (req, res) => {
