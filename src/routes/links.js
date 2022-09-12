@@ -96,7 +96,10 @@ router.post("/estadisticaslegajos", async (req, res) => {
     console.log(cuil_cuit)
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
     const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
-    
+   const cui =  '%'+cuil_cuit+'%'
+    const client = await pool.query('select * from clientes where cuil_cuit like ? ',[cui])
+    razon = client[0]['razon']
+
     a = "Dni "
     b = "Constancia de Afip "
     c = "Estatuto Social "
@@ -108,6 +111,9 @@ router.post("/estadisticaslegajos", async (req, res) => {
     aux = "Dj Datos personales "
     j = "Dj CalidadPerso "
     k = "Dj Origen de Fondos "
+    l = "Acreditacion de ingresos "
+    m = "Referencias comerciales"
+
     aa = 0
     bb = 0
     cc = 0
@@ -119,9 +125,14 @@ router.post("/estadisticaslegajos", async (req, res) => {
     auxaux = 0
     jj = 0
     kk = 0
+    ll = 0
+    mm = 0
+
+
+
     for (var i = 0; i < legajosAprobados.length; i++) {
        
-
+    if (razon == 'Empresa'){
         switch (legajosAprobados[i]['tipo']) {
             case "Dni":
                 a = ""
@@ -169,14 +180,72 @@ router.post("/estadisticaslegajos", async (req, res) => {
                 k = ""
                 kk = 1
                 break;
+                case "Referencias comerciales":
+                    m = ""
+                    mm = 1
+                    break;
+            default:
+                break;
+        }
+    }else{
+        switch (legajosAprobados[i]['tipo']) {
+            case "Dni":
+                a = ""
+                aa = 1
+                break;
+            case "Constancia de Afip":
+                b = ""
+                bb = 1
+                break;
+          
+            case "Acreditacion Domicilio":
+                e = ""
+                ee = 1
+                break;
+            
+            case "Dj Datospers":
+                aux = ""
+                auxaux = 1
+                break;
+            case "Dj CalidadPerso":
+                j = ""
+                jj = 1
+                break;
+            case "Dj OrigenFondos":
+                k = ""
+                kk = 1
+                break;
+                case "Acreditacion de ingresos":
+                    l = ""
+                    ll = 1
+                    break;
             default:
                 break;
         }
 
+
     }
-    console.log(a+b+c+d+e+f+g+h+aux+j+k)
- Faltan ='Aun falta completar '+ a+b+c+d+e+f+g+h+aux+j+k
-   console.log(Faltan)
+
+    }
+   
+ 
+ if (razon == 'Empresa'){
+    Faltan ='Aun falta completar '+ a+b+c+d+e+f+g+h+aux+j+k+m
+    porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + auxaux + jj+ kk+mm) 
+
+    porccompleto= porccompleto/12
+  
+    porccompleto=( porccompleto*100).toFixed(2)
+ }else {
+    console.log('Persona')
+    Faltan ='Aun falta completar '+ a+b+e+aux+j+k+l
+    porccompleto = (aa + bb +  ee +  auxaux + jj+ kk+ll) 
+
+    porccompleto= porccompleto/7
+  
+    porccompleto=( porccompleto*100).toFixed(2)
+ }
+   console.log(ll)
 
     let pendientes = 0
     let aprobadas = 0
@@ -218,11 +287,7 @@ router.post("/estadisticaslegajos", async (req, res) => {
         porcA = 0
         porcR = 0
     }
-    porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + auxaux + jj+ kk) 
-    console.log(porccompleto)
-    porccompleto= porccompleto/11
-  
-    porccompleto=( porccompleto*100).toFixed(2)
+ 
   
 
     const status = {
