@@ -261,7 +261,144 @@ router.post('/justificacion',  async (req, res) => {
 
 })
 
+//////////////////////checklegajos
+router.post("/completolegajos", async (req, res) => {
+    const { cuil_cuit } = req.body
+    console.log(cuil_cuit)
 
+    const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
+   const cui =  '%'+cuil_cuit+'%'
+    const client = await pool.query('select * from clientes where cuil_cuit like ? ',[cui])
+    razon = client[0]['razon']
+
+    aa = false
+    bb = false
+    cc = false
+    dd =false
+    ee = false
+    ff =false
+    gg = false
+    hh = false
+    auxaux = false
+    jj = false
+    kk = false
+    ll =false
+    mm = false
+
+    for (var i = 0; i < legajosAprobados.length; i++) {
+       
+    if (razon == 'Empresa'){
+        switch (legajosAprobados[i]['tipo']) {
+            case "Dni":
+               
+                aa = true
+                break;
+            case "Constancia de Afip":
+              
+                bb = true
+                break;
+            case "Estatuto Social":
+              
+                cc = true
+
+                break;
+            case "Acta del organo decisorio":
+             
+                dd = true
+                break;
+            case "Acreditacion Domicilio":
+              
+                ee = true
+                break;
+            case "Ultimos balances":
+             
+                ff = true
+                break;
+            case "DjIva":
+               
+                gg = true
+
+                break;
+            case "Pagos Previsionales":
+               
+                hh = true
+                break;
+            case "Dj Datospers":
+                
+                auxaux = true
+                break;
+            case "Dj CalidadPerso":
+              
+                jj = true
+                break;
+            case "Dj OrigenFondos":
+              
+                kk = true
+                break;
+                case "Referencias comerciales":
+                  
+                    mm = true
+                    break;
+            default:
+                break;
+        }
+    }else{
+        switch (legajosAprobados[i]['tipo']) {
+            case "Dni":
+               
+                aa = true
+                break;
+            case "Constancia de Afip":
+               
+                bb = true
+                break;
+          
+            case "Acreditacion Domicilio":
+             
+                ee = true
+                break;
+            
+            case "Dj Datospers":
+               
+                auxaux = true
+                break;
+            case "Dj CalidadPerso":
+              
+                jj = true
+                break;
+            case "Dj OrigenFondos":
+               
+                kk =true
+                break;
+                case "Acreditacion de ingresos":
+                   
+                    ll = true
+                    break;
+            default:
+                break;
+        }
+
+
+    }
+
+    }
+   
+ 
+ if (razon == 'Empresa'){
+    respuesta = [aa , bb , ee , auxaux , jj , kk , ff,  gg , hh , cc,dd, mm]
+
+
+ }else {
+  
+    respuesta = [aa, bb ,  ee ,  auxaux , jj, kk,ll]
+
+
+ }
+   
+    res.json(respuesta)
+
+
+})
 ///lotes del cliente
 router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
