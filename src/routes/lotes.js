@@ -58,30 +58,41 @@ router.get('/lotescliente/:cuil_cuit', async (req, res) => {
 })
 
 router.post('/calcularvalor', async (req, res) => {
-    const { zona, manzana, parcela, cuil_cuit } = req.body
+    const { zona, manzana, parcela, cuil_cuit,lote } = req.body
     console.log(cuil_cuit)
-    valormetro= await pool.query('select * from nivel3 where nivel3col = "Valor metro cuadrado" order by id')
-   let valor
-   console.log(valor)
+
+    if (zona==='PIT'){
+        valormetro= await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+         lotee = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
+    }else{
+        valormetro= await pool.query('select * from nivel3 where valormetroparque != "PIT" order by id')
+         lotee = await pool.query('select * from lotes where zona = ? and manzana =? and  lote =? ', [zona, manzana, lote])
+    }
+
+   
+
+
     try {
-        valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']
+        valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']  
+      
     } catch (error) {
         
     }
-    console.log(valor)
+ 
    if  (valor != undefined){
-    console.log(valor)
+   
     try {
        const  aux= '%'+cuil_cuit+'%'
    const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
    const ingresos = cliente[0]['ingresos']
    const max = ingresos*0.3
-    const lote = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
-        
-    let final = lote[0]['superficie'] * valor
-    const estado = lote[0]['estado']
+   console.log(lotee) 
+ 
+    let final = lotee[0]['superficie'] * valor
+    console.log(final)
+    const estado = lotee[0]['estado']
 
-    const nombre = 'Zona: '+ lote[0]['zona'] +' Manzana: '+lote[0]['manzana']  +' Parcela: '+lote[0]['parcela']
+    const nombre = 'Zona: '+ lotee[0]['zona'] +' Manzana: '+lotee[0]['manzana']  +' Parcela: '+lotee[0]['parcela']
     finalSant= final*0.8
     const cuotas60 = finalSant/60
    
@@ -100,7 +111,7 @@ router.post('/calcularvalor', async (req, res) => {
 
     const detalle = {
         precio: final.toFixed(2),
-        superficie: lote[0]['superficie'],
+        superficie: lotee[0]['superficie'],
         nombre: nombre,
         cuotas60: cuotas60.toFixed(2),
         ingresos: ingresos,
