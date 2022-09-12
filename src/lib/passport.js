@@ -47,22 +47,12 @@ passport.use('local.signup', new LocalStrategy({
     const { nombre, mail, telefono, nro_cliente } = req.body
   
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
-    const razon = 'Empresa'
+    
     const nivel = 1 
     console.log('cuil_cuit')
     const habilitado = 'NO'
    
-    const newUser = {
-        password,
-        cuil_cuit,
-        nombre,
-        nivel,
-        razon,
-        telefono,
-        mail,
-        habilitado,
-        nro_cliente
-    }
+    
  
     // transformar 
 
@@ -82,6 +72,18 @@ passport.use('local.signup', new LocalStrategy({
             if (rows.length == 0) { // so hay  un cliente con ese dni 
                 { done(null, false, req.send('message', 'error,algo sucedio ')) }
             } else { 
+                const razon = rows[0]['razon']
+                const newUser = {
+                    password,
+                    cuil_cuit,
+                    nombre,
+                    nivel,
+                    razon,
+                    telefono,
+                    mail,
+                    habilitado,
+                    nro_cliente
+                }
                 try {
 
                    rows = await pool.query('SELECT * FROM clientes WHERE id = ?  and cuil_cuit like ?', [nro_cliente, aux])

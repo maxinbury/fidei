@@ -5,17 +5,15 @@ const ponerguion = require('../public/apps/transformarcuit')
 const { isLevel3 } = require('../lib/authnivel3')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
+const passport= require('passport')
 
 
+router.post('/signupp', passport.authenticate('local.signupnivel3', {
+    successRedirect: '/exitosignup',
+    failureRedirect:'/noexito',
+    failureFlash:true
 
-/*
-//PERFIL USUARIO NIVEL 3
-router.get('/profile', isLoggedIn, isLevel2, (req, res) => {
-
-    res.render('links/add')
-
-})
-*/
+}))
 
 //REACT GET HISTORIAL
 router.get('/historialicc', async (req, res) => {
