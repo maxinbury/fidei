@@ -36,6 +36,9 @@ router.get('/get-object-url/:key', s3Controller.getSignedUrl);
 //////PDFSS
 router.post('/subirlegajo', s3Controller.subirlegajo);
 
+/// determinar pdf
+router.post('/determinarPep', s3Controller.determinarPep);
+
 
 router.post('/subirlegajo1', s3Controller.subirlegajo1);
 //// REACT  

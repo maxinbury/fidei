@@ -258,6 +258,55 @@ CONSOLE.LOG(SUBIDO)
     });
 }
 
+
+async function determinarPep (req, res) {
+    
+    formData = await leerformlegajo(req);
+ 
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit =myArray[0]
+    expuesta= myArray[1]
+  
+   
+    
+
+    const datoss = {
+     ubicacion: formData.file.originalFilename,
+     cuil_cuit:cuil_cuit,
+     tipo:'Documentacion PEP',
+     descripcion:'Cuil administrador',
+ 
+    fecha:(new Date(Date.now())).toLocaleDateString()}
+     console.log(datoss)
+try {
+await pool.query('insert into constancias set?', datoss)
+const datosss = {
+    expuesta,
+}
+await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datosss, cuil_cuit])
+CONSOLE.LOG(SUBIDO)
+} catch (error) {
+
+}
+   
+
+
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
+
+
 async function subirlegajo1 (req, res) {
     
     formData = await leerformlegajo(req);
@@ -470,5 +519,6 @@ module.exports = {
     subirlegajo,
     subirlegajo1,
     pagarniv1,
-    cargarcbu
+    cargarcbu,
+    determinarPep
 }
