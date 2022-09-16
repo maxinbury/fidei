@@ -2,7 +2,7 @@ const express = require ('express')
 const res = require('express/lib/response')
 const router = express.Router()
 const passport= require('passport')
-const {isLoggedIn, isNotLoggedIn} = require('../lib/auth') //proteger profile
+const {isLoggedIn,isLoggedInn,isLoggedInn2, isNotLoggedIn} = require('../lib/auth') //proteger profile
 //const isClient = require('../lib/authusuario') ----->>>>  Para Rol 
 const pool = require('../database')
 const {isLevel2} = require('../lib/authnivel2') 
@@ -60,6 +60,7 @@ router.post('/signinn', passport.authenticate('local.signin', { failureRedirect:
     const userFoRToken ={
         id :req.user.id,
         cuil_cuit: req.user.cuil_cuit,
+        nivel:req.user.nivel,
      
     }
  
@@ -147,7 +148,7 @@ res.json(rows)
 
 })
 
-router.get('/prueba',async(req,res)  =>{
+router.get('/prueba',isLoggedInn2,async(req,res)  =>{
     /*const { cuil_cuit, algo, token } = req.body;*/
     console.log('hola')
    

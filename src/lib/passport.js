@@ -13,18 +13,21 @@ passport.use('local.signin', new LocalStrategy({
 }, async (req, cuil_cuit, password, done) => {  // que es lo que va a hacer 
     
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
+    
     if (rows.length > 0) {
         const user = rows[0]
-
+       
         const validPassword = await helpers.matchPassword(password, user.password)
+        console.log(user)
         if (validPassword) {
            
-          /*  const userFoRToken = {
-                id: req.user.id,
-                cuil_cuit: req.user.cuil_cuit
+         /*  const userFoRToken = {
+                id: user.id,
+                cuil_cuit: user.cuil_cuit,
+                nivel: user.nivel
             }
             const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
-            res.send({ id: req.user.id,cuil_cuit: req.user.cuil_cuit,token})*/
+            res.send({ id: req.user.id,cuil_cuit: req.user.cuil_cuit,token, nivel: req.user.nivel}) */
             done(null, user, req.flash('success', 'Welcome' + user.nombrecompleto)) // done termina, null el error, user lo pasa para serializar
           
         } else {

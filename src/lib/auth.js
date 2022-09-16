@@ -17,19 +17,47 @@ module.exports = {
         
         try{
              decodedToken = jwt.verify(token, 'fideicomisocs121')
-            
+           
         }catch{}
       
         if (!token || !decodedToken.id){
+            console.log('error token')
             return res.send('error login')
         }
       
-        res.send(decodedToken.cuil_cuit)
+       // res.send(decodedToken.cuil_cuit)
         
-        //next()
+        next()
     },
 
-   
+    isLoggedInn2(req,res, next){
+        console.log('entra1')
+        //
+        const authorization = req.get('authorization')
+        let token =null
+        console.log(authorization)
+        if (authorization && authorization.startsWith('Bearer')){
+            console.log('entraa')
+            token = authorization.substring(7) 
+        }
+        let decodedToken = {}
+        
+        try{
+             decodedToken = jwt.verify(token, 'fideicomisocs121')
+             console.log(decodedToken)
+           
+        }catch{}
+      
+        if (!token || !decodedToken.id || (decodedToken.nivel !=2) ){
+            console.log('error token')
+            return res.send('error login')
+        }
+      
+       // res.send(decodedToken.cuil_cuit)
+        
+        next()
+    },
+
 
 
     isLoggedIn(req,res, next){
