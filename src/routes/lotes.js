@@ -59,7 +59,7 @@ router.get('/lotescliente/:cuil_cuit', async (req, res) => {
 
 router.post('/calcularvalor', async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit,lote } = req.body
-    console.log(cuil_cuit)
+   
 
     if (zona==='PIT'){
         valormetro= await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
@@ -84,8 +84,12 @@ router.post('/calcularvalor', async (req, res) => {
     try {
        const  aux= '%'+cuil_cuit+'%'
    const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
+   
    const ingresos = cliente[0]['ingresos']
-   const max = ingresos*0.3
+   if (cliente[0]['expuesta']==='SI' ){
+    max = ingresos*0.2
+   }else{  max = ingresos*0.3}
+  
    console.log(lotee) 
  
     let final = lotee[0]['superficie'] * valor
@@ -99,7 +103,12 @@ router.post('/calcularvalor', async (req, res) => {
         let puede=true
     let cuotamuygrande =""
     if (max <= cuotas60){
-        cuotamuygrande='La cuota es mas grande que  el 30%'
+        if (cliente[0]['expuesta']==='SI' ){
+            cuotamuygrande='La cuota es mas grande que  el 20% (PEP)'
+        }else{
+            cuotamuygrande='La cuota es mas grande que  el 30%'
+        }
+        
         puede=false
     }
    
