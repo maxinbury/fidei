@@ -108,6 +108,19 @@ router.get('/cbus/:cuil_cuit', async (req, res, ) => {
 
    
 })
+
+router.get('/borrarunlegajo/:id', async (req, res, ) => {
+    id = req.params.id
+
+    try {
+      await pool.query('DELETE FROM constancias WHERE id=?;',[id])
+     res.send('borrado')
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+   
+})
 router.get('/constancias/:cuil_cuit', async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
