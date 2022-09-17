@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const { isLoggedIn, isLoggedInn2} = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
 const XLSX = require('xlsx')
 const fs = require('fs')
@@ -70,15 +70,23 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 
 })
-router.post('/habilitar', async (req, res) => {
-    const { cuil_cuit } = req.body
+router.post('/habilitar',isLoggedInn2, async (req, res) => {
+    const { cuil_cuit, cuil_cuit_admin } = req.body
     console.log(cuil_cuit)
     newLink = {
         habilitado: 'Si'
     }
-
+    newLink2 = {
+        cuil_cuit: cuil_cuit_admin,
+        tabla_referencia:'clientes',
+        cuil_cuit_referencia:cuil_cuit,
+        fecha:(new Date(Date.now())).toLocaleDateString(),
+        adicional:'Habilitado'
+    }
     try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+        await pool.query('insert registro_operaciones  set ?', newLink2)
+
 
     } catch (error) {
         console.log(error)
@@ -91,7 +99,7 @@ router.post('/habilitar', async (req, res) => {
 
 
 })
-router.post("/estadisticaslegajos", async (req, res) => {
+router.post("/estadisticaslegajos", isLoggedInn2,async (req, res) => {
     const { cuil_cuit } = req.body
     console.log(cuil_cuit)
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
@@ -330,16 +338,22 @@ router.post("/estadisticaslegajos", async (req, res) => {
 
 })
 
-router.post('/deshabilitar', async (req, res) => {
-    const { cuil_cuit } = req.body
+router.post('/deshabilitar',isLoggedInn2, async (req, res) => {
+    const { cuil_cuit,cuil_cuit_admin} = req.body
 
     newLink = {
         habilitado: 'No'
     }
-
+    newLink2 = {
+        cuil_cuit: cuil_cuit_admin,
+        tabla_referencia:'clientes',
+        cuil_cuit_referencia:cuil_cuit,
+        fecha:(new Date(Date.now())).toLocaleDateString(),
+        adicional:'Deshabilitado'
+    }
     try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
-
+        await pool.query('insert registro_operaciones  set ?', newLink2)
     } catch (error) {
         console.log(error)
 
@@ -411,7 +425,7 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
 
 })
 
-router.get('/cbuspendientes', async (req, res) => {
+router.get('/cbuspendientes', isLoggedInn2, async (req, res) => {
  
     //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
 
@@ -431,7 +445,7 @@ router.get('/cbuspendientes', async (req, res) => {
 
 
 //lista legajos de un cliente 
-router.get('/legajos/:cuil_cuit', async (req, res) => {
+router.get('/legajos/:cuil_cuit',isLoggedInn2, async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
 
@@ -451,7 +465,7 @@ router.get('/legajos/:cuil_cuit', async (req, res) => {
 
 
 //Asignar lote a usuario 
-router.post('/ventalotee', async (req, res) => {
+router.post('/ventalotee',isLoggedInn2, async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
 
 
@@ -514,7 +528,7 @@ router.post('/ventalotee', async (req, res) => {
 })
 
 ////react 
-router.post('/add2', async (req, res) => {
+router.post('/add2',isLoggedInn2, async (req, res) => {
     const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
     const newLink = {
         Nombre,
@@ -1097,7 +1111,7 @@ router.post('/agregaringreso', isLevel2, async (req, res) => {
 
 
 })
-router.post('/agregaringreso2', async (req, res) => {
+router.post('/agregaringreso2',isLoggedInn2, async (req, res) => {
     const { ingresos, cuil_cuit } = req.body
     console.log(cuil_cuit)
     console.log(ingresos)
@@ -1186,25 +1200,37 @@ router.get('/clientesconcuotas', isLoggedIn, async (req, res) => {
 
 })
 
-router.get('/detalle/:cuil_cuit', async (req, res) => {
+router.get('/detalle/:cuil_cuit', isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
-
+ 
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
 
     res.json(links)
 
 })
 
+
+router.get('/clientehabilitado/:cuil_cuit', isLoggedInn2, async (req, res) => {
+    const { cuil_cuit } = req.params
+ 
+    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
+    const habilitado = await pool.query('SELECT * FROM registro_operaciones WHERE cuil_cuit_referencia = ? and (adicional = "Habilitado" or adicional = "deshabilitado")', [cuil_cuit])
+   console.log(habilitado.length)
+    if (habilitado.length>0){
+    reg= habilitado[(habilitado.length)-1]
+        }else{
+            reg= {cuil_cuit:'Sistema',
+            fecha: '20/05/2022'}
+
+        }
+    
+    res.json([links,reg])
+
+})
 // MODIDICACION CLIENTES
-router.post('/modificarcli', async (req, res) => {
+router.post('/modificarcli',isLoggedInn2, async (req, res) => {
     const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
-    console.log(cuil_cuit)
-    console.log(email)
-    console.log(telefono)
-    console.log(provincia)
-    console.log(ingresos)
-    console.log(domicilio)
-    console.log(razon_social)
+    
     try {
         aux = '%' + cuil_cuit + '%'
         const newLink = {
