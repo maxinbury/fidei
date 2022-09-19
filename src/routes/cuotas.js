@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const { isLoggedIn,isLoggedInn2  } = require('../lib/auth') //proteger profile
 
 const { isLevel3 } = require('../lib/authnivel3')
 const { lista, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
@@ -35,12 +35,12 @@ router.post('/add', isLevel2, postadd)
 
 // AGREGA VARIAS CUOTAS 
 router.post('/addaut', postaddaut)
-router.post('/addaut2', postaddaut2)
+router.post('/addaut2',isLoggedInn2, postaddaut2)
 
 
 
 /// cuotasdeunloteReact
-router.get("/cuotasdeunlote/:id", cuotasdeunlote)
+router.get("/cuotasdeunlote/:id",isLoggedInn2, cuotasdeunlote)
 
 
 
@@ -53,7 +53,7 @@ router.get("/quelote/:cuil_cuit", isLoggedIn, isLevel2, quelote)
 
 router.get("/lote/:id", lotefuncion)
 // auxililar react
-router.get("/lote2/:id", lotefuncion2)
+router.get("/lote2/:id",isLoggedInn2, lotefuncion2)
 
 
 //async (req, res) => {console.log(req.params.id)}
@@ -121,7 +121,7 @@ router.post('/editarr', async (req, res, ) => {
 
 
 //-----Borar Cuota
-router.get('/delete/:id', async (req, res) => {
+router.get('/delete/:id', isLoggedInn2, async (req, res) => {
     const { id } = req.params
     try {
 
@@ -142,7 +142,7 @@ router.get('/delete/:id', async (req, res) => {
 router.post('/cuotas', async (req, res, next) => {
     const { id } = req.body
     const rows = await pool.query('SELECT * FROM cuotas WHERE id_cliente = ?', [id])
-    c
+    cartodas
     if (rows.length > 0) {
         res.redirect(`../cuotas/${id}`)
 
@@ -153,7 +153,7 @@ router.post('/cuotas', async (req, res, next) => {
 
 
 //borrar cuotas
-router.get('/borrartodas/:id', async (req, res) => {
+router.get('/borrartodas/:id',isLoggedInn2, async (req, res) => {
     const { id } = req.params;
     try {
         await pool.query('DELETE FROM cuotas WHERE id_lote = ?', [id])
@@ -182,10 +182,10 @@ router.get('/borrartodas/:id', async (req, res) => {
 
 
 
-router.get('/ief/:id', async (req, res) => {
+router.get('/ief/:id', isLoggedInn2, async (req, res) => {
     const id = req.params
     idaux = id.id
-    console.log(idaux)
+   
 
     let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
     const cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
@@ -195,10 +195,10 @@ router.get('/ief/:id', async (req, res) => {
 
     const abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota  where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
     //console.log(abonado)
-    console.log(cantidad)
+   
     exigible = devengado - abonado
     if (cantidad == undefined) {
-        console.log('no entra')
+       
         const dato1 = {
             'datoa': 'Cantidad de cuotas liquidadas y vencidas',
             'datob': "No hay cuotas Calculadas"
@@ -235,7 +235,7 @@ router.get('/ief/:id', async (req, res) => {
 
         res.json(respuesta)
     } else {
-        console.log('entra')
+       
         //////SI HAY CUOTAS 
         const dato1 = {
             'datoa': 'Cantidad de cuotas liquidadas y vencidas',

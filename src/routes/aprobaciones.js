@@ -1,22 +1,22 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const { isLoggedIn,isLoggedInn2 } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
 const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, rechazo, aprobacioncbu, aprobarcbu,rechazarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
 
 
 // LISTA TODAS PENDIENTES PAra React
-router.get('/pendientestodas',pendientestodas)
+router.get('/pendientestodas',isLoggedInn2,pendientestodas)
 
-router.get('/aprobar/:id', aprobar)
-router.get('/aprobarcbu/:id', aprobarcbu)
+router.get('/aprobar/:id',isLoggedInn2, aprobar)
+router.get('/aprobarcbu/:id',isLoggedInn2, aprobarcbu)
 
 router.post('/rechazarr/', rechazar2)
 
 //
 
-router.post('/rechazarcbu/', rechazarcbu)
+router.post('/rechazarcbu/',isLoggedInn2, rechazarcbu)
 
 
 
@@ -51,7 +51,7 @@ router.get('/cbu', isLoggedIn, isLevel2, aprobacioncbu)
 
 // APROBACION DE CBU Y ACTUALIZACION DE LA MISMA PAGINA 
 
-router.get('/aprobarcbu/:id', isLoggedIn, aprobarcbu)
+
 
 
 
