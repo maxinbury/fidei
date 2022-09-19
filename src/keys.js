@@ -1,12 +1,10 @@
-
-
+require('dotenv').config()
 module.exports = {
     database:{
-        host: 'localhost',
-        user: 'root',
-        password: '11235',
-       
-        database: 'fideicomiso'
+        host: process.env.HOST,
+        user: process.env.USER,
+        password: process.env.PASSWORD,
+        database: process.env.DATABASE
     }
 
 }
