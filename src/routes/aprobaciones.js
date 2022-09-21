@@ -8,6 +8,7 @@ const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, 
 
 
 
+
 // LISTA TODAS PENDIENTES PAra React
 router.get('/pendientestodas',isLoggedInn2,pendientestodas)
 
