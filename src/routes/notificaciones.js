@@ -7,7 +7,7 @@ router.get('/leer/:id', async (req, res) => {
 
     try {
         const noti = await pool.query('select * from notificaciones where id = ?', [id]);
-        console.log(noti)
+        console.log(id)
 
         const update={
             leida:'Si'

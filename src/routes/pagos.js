@@ -279,9 +279,7 @@ router.post("/mensualesinusuales", async (req, res) => {
 ////////rechazar 
 router.post("/rechazarr", async (req, res) => {
     const { id, detalle, accion } = req.body
-    console.log(id)
-    console.log(detalle)
-    console.log(accion)
+  
     auxi = await pool.query('select *  from pagos where id=?', [id]);
     cuil_cuit= auxi[0]['cuil_cuit']
 
@@ -303,7 +301,8 @@ router.post("/rechazarr", async (req, res) => {
             leida:"No",
             cuil_cuit: cuil_cuit,
             id_referencia: id,
-            descripcion: detalle
+            descripcion: detalle,
+            asunto:'Solicitud de documentacion'
         }
             await pool.query('INSERT INTO notificaciones set ?', [update2]);
           break
