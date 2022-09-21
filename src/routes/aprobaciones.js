@@ -6,6 +6,8 @@ const { isLevel2 } = require('../lib/authnivel2')
 const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, rechazo, aprobacioncbu, aprobarcbu,rechazarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
 
 
+
+
 // LISTA TODAS PENDIENTES PAra React
 router.get('/pendientestodas',isLoggedInn2,pendientestodas)
 
