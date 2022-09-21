@@ -62,6 +62,9 @@ passport.use('local.signup', new LocalStrategy({
 
 
 
+    
+
+
     //fin transformar 
     try {
         var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente

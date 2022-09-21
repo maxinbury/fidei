@@ -424,6 +424,64 @@ aux = '%' + cuil_cuit + '%'
 }
 
 
+async function justificar (req, res) {
+    
+    formData = await leerformlegajo(req);
+ 
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    id =myArray[0]  // id
+    cuil_cuit= myArray[1] //// cuil
+    descripcion = myArray[2] /// descripcion
+    const noti =  await pool.query('Select * from notificaciones where id = ? ', [id])
+
+       
+
+        
+  
+
+    try {
+        const constancia = {
+            tipo:'justificacion',
+            cuil_cuit:cuil_cuit,
+            descripcion,
+            ubicacion:  formData.file.originalFilename,
+            fecha:(new Date(Date.now())).toLocaleDateString(),
+            otros:noti[0]['id_referencia']
+        }
+        await pool.query('INSERT INTO constancias SET ?', [constancia]);
+
+        const act = {
+          
+            estado:'justificacionp'
+        }
+      
+           await pool.query('UPDATE pagos SET ?  where id = ?', [act,noti[0]['id_referencia']])
+           res.send('Enviado con exito')
+    
+       } catch (error) {
+        res.send('Error algo sucedio')
+       }
+      
+      
+  try{ 
+ 
+    
+      await uploadFileToS3(formData.file, "mypdfstorage");
+     console.log(' Uploaded!!  ')
+     
+    
+     
+  } catch(ex) {
+   console.log('NOOO  ')
+  }
+}
+
+
+
+
+
+
 module.exports = {
     s3Upload,
     s3Get,
@@ -432,5 +490,6 @@ module.exports = {
     subirlegajo1,
     pagarniv1,
     cargarcbu,
-    determinarPep
+    determinarPep,
+    justificar
 }

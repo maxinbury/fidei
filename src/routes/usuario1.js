@@ -14,6 +14,8 @@ const s3Controller = require('./configAWS/s3-controller');
 
 
 
+
+
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../../pdfs'),
     filename: (req, file, cb) => {
@@ -46,6 +48,9 @@ router.post('/cargarcbu', s3Controller.cargarcbu)
 
 
 router.post('/pagarnivel1', s3Controller.pagarniv1);
+
+router.post('/justificacion', s3Controller.justificar);
+
 
 router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
     const {formdata, file} = req.body
@@ -92,7 +97,30 @@ router.get('/leerimagen ', async (req, res, done) => {
     res.json(imagedir)
 })
 
-////////
+////////constancias de un pago 
+
+router.get('/constanciasdelpago/:id', async (req, res, ) => {
+    id = req.params.id
+    const pago = await pool.query('select * from pagos where id =?',[id])
+    const constancias = await pool.query('select * from constancias where otros =?',[id])
+    const todas = pago.concat(constancias);
+    console.log(todas) 
+    try {
+       
+     
+        res.json(todas)
+    } catch (error) {
+        
+    }
+
+
+
+})
+
+
+
+
+
 
 
 router.get('/cbus/:cuil_cuit', async (req, res, ) => {
@@ -255,27 +283,7 @@ router.post('/realizarr', async (req, res, done) => {
 
 })
 
-router.post('/justificacion',  async (req, res) => {
-    const { observaciones, cuil_cuit,id} = req.body;
 
-   try {
-
-    const noti =  await pool.query('Select * from notificaciones where id = ? ', [id])
-    console.log(noti)
-    const act = {
-        observaciones,
-        estado:'justificacionp'
-    }
-  
-       await pool.query('UPDATE pagos SET ?  where id = ?', [act,noti[0]['id_referencia']])
-       res.send('Enviado con exito')
-
-   } catch (error) {
-    res.send('Error algo sucedio')
-   }
-  
-
-})
 
 //////////////////////checklegajos
 router.post("/completolegajos", async (req, res) => {
@@ -545,7 +553,7 @@ const respuesta = [deuda_exigible,cuotas_pendientes]
 router.get("/noticliente/:cuil_cuit", async (req, res) => {
     const { cuil_cuit } = req.params
     try {
-        const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE cuil_cuit = ?', [cuil_cuit])
+        const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE cuil_cuit = ? order by id DESC', [cuil_cuit])
 
         res.json(notificaciones)
     } catch (error) {
@@ -1300,6 +1308,8 @@ router.post('/edit_comp_djdatospers', async (req, res) => {
 
 
 })
+
+
 
 // GUARDADO DJ  CALIDAD PERSONA
 router.post('/edit_comp_djcalidadpers', async (req, res) => {
