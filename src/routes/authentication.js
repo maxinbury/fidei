@@ -164,6 +164,9 @@ router.get('/prueba',isLoggedInn2,async(req,res)  =>{
 res.json(rows)
 
 
+
+
+
 })
 
 module.exports= router

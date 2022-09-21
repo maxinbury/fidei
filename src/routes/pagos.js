@@ -16,6 +16,9 @@ console.log(cuil_cuit)
     //
 
 
+
+    
+
     const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
    
     let saldo_realc = cuota[0]["Saldo_real"]

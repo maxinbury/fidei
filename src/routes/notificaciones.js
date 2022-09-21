@@ -18,7 +18,7 @@ router.get('/leer/:id', async (req, res) => {
     } catch (error) {
         res.json(error)
     }
-  
+    
 
 })
 
