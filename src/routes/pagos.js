@@ -8,7 +8,7 @@ const { isLoggedIn } = require('../lib/auth') //proteger profile
 
 router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
     let { id, tipo, cuil_cuit, monto  } = req.body 
-console.log(cuil_cuit)
+
     ///// cuil_cuit es del usuario que esta ene l sistema
 
     //var pagot = await pool.query('select * from pagos where id = ?', [id]) PAGO QUE HAY QUE CREAR
@@ -106,16 +106,17 @@ console.log(cuil_cuit)
 
 })
 /// aprobar pago nivel 2
-router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
-    const { id } = req.params
-
-    var pagot = await pool.query('select * from pagos where id = ?', [id])
+router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
+    const { id,montonuevo,cambiarmonto } = req.body 
+        // pagot es el objeto pago
+    let pagot = await pool.query('select * from pagos where id = ?', [id])
 
     let id_cuota = pagot[0]["id_cuota"]
     let monto = pagot[0]["monto"]
-
-    
-
+    if(cambiarmonto){////// toma el valor del checkbox si se modifica el monto 
+        monto=montonuevo
+    }
+   
 
     const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
    
@@ -129,7 +130,7 @@ router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
         
          Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
          
-        let pago = cuota[0]["pago"] + pagot[0]["monto"]
+        let pago = cuota[0]["pago"] + parseFloat(monto)
       
 
         // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
@@ -142,10 +143,6 @@ router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
 
 
         }
-///////
-
-
-////  
 
         await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
        
@@ -154,21 +151,15 @@ router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
        
         if (nro_cuota < cant_finales.length ) {
 ///
-
-
-
         for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
         
             try {//
                 aux =  await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
                 saldo_realc = parseFloat( aux[0]["Saldo_real"])
                  idaux =  aux[0]["id"] 
-                 Saldo_real = saldo_realc - pago
+                 Saldo_real = saldo_realc - monto
                  const update = {
-                    Saldo_real,
-           
-        
-        
+                    Saldo_real,  
                 }
                  await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
             } catch (error) {//
@@ -181,14 +172,14 @@ router.get('/aprobarr/:id', async (req, res) => { // pagot es el objeto pago
         await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
         res.send('Guardado correctamente')
 
-
-
         res.send('Exito')
     } catch (error) {
 
     }
 
 })
+
+
 ///// Detalles del pago 
 router.get("/detallespago/:id", async (req, res) => {
     const { id } = req.body 
@@ -233,7 +224,6 @@ const pagos =  await pool.query('SELECT * FROM pagos where id_cuota = ? and esta
  
  res.json(pagos)
 })
-
 
 
 ///////// Cantidad inusuales 
