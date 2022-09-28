@@ -104,7 +104,7 @@ router.get('/constanciasdelpago/:id', async (req, res, ) => {
     const pago = await pool.query('select * from pagos where id =?',[id])
     const constancias = await pool.query('select * from constancias where otros =?',[id])
     const todas = pago.concat(constancias);
-    console.log(todas) 
+    
     try {
        
      

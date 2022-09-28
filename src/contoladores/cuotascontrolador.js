@@ -213,7 +213,12 @@ const postaddaut2 = async (req, res) => {
     const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
     //llega
     try {
-        valormetro= await pool.query('select * from nivel3 where nivel3col = "Valor metro cuadrado" order by id')
+        if (zona=='PIT'){
+            valormetro= await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+        }else {
+            valormetro= await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+        }
+        
         valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']
         console.log(valor)
         
