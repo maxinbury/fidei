@@ -130,7 +130,7 @@ try {
 ///// REACT ii gral
 router.post('/agregariccgral2', async (req, res,) => {
     let { ICC, mes, anio } = req.body;
-   console.log(mes)
+   
     var datoss = {
         ICC,
         mes,
@@ -150,7 +150,7 @@ router.post('/agregariccgral2', async (req, res,) => {
     for (var i = 0; i < todas.length; i++) {
         nro_cuota = todas[i]["nro_cuota"]
         cuil_cuit = todas[i]["cuil_cuit"]
-       
+     
         if (nro_cuota == 1) {
             
             saldo_inicial = todas[i]["saldo_inicial"]
@@ -169,17 +169,17 @@ router.post('/agregariccgral2', async (req, res,) => {
             }
 
         } else {
-            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
-           
+            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ? and id_lote = ?', [nro_cuota - 1, cuil_cuit,todas[i]["id_lote"]])
+          console.log(anterior)
             var Saldo_real_anterior = anterior[0]["Saldo_real"]
             
             const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
             
             const Base_calculo = cuota_con_ajuste_anterior
             const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
-    
+            console.log(Base_calculo)
             const cuota_con_ajuste = cuota_con_ajuste_anterior + Ajuste_ICC
-            Saldo_real_anterior += cuota_con_ajuste
+            Saldo_real_anterior += Ajuste_ICC
             const Saldo_real = Saldo_real_anterior
 
             var cuota = {
@@ -188,14 +188,17 @@ router.post('/agregariccgral2', async (req, res,) => {
                 Base_calculo,
                 cuota_con_ajuste,
                 Saldo_real,
-                parcialidad
+                parcialidad,
+                Saldo_real
     
             }
+            console.log(todas[i]["id"])
         }
     
         try {
+  
             await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
-            
+            console.log('llega')
 
         } catch (error) {
             console.log(error)

@@ -7,7 +7,7 @@ const { isLoggedIn } = require('../lib/auth') //proteger profile
 ///////////////// REALIZAR PAGO MANUAL NIVEL 2 
 
 router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
-    let { id, tipo, cuil_cuit, monto  } = req.body 
+    let { id, tipo, cuil_cuit, monto } = req.body
 
     ///// cuil_cuit es del usuario que esta ene l sistema
 
@@ -17,26 +17,26 @@ router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
 
 
 
-    
+
 
     const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-   
+
     let saldo_realc = cuota[0]["Saldo_real"]
     console.log(saldo_realc)
     let nro_cuota = (cuota[0]["nro_cuota"])
     let id_lote = cuota[0]["id_lote"]
-//// hasta aca se trae la cuota
+    //// hasta aca se trae la cuota
 
     try {
 
 
         Saldo_real = parseFloat(saldo_realc) - monto
-    let pago =   parseFloat(monto) + parseFloat(cuota[0]["pago"])
+        let pago = parseFloat(monto) + parseFloat(cuota[0]["pago"])
 
 
 
         const nuevo = {
-          //  Saldo_real,
+            //  Saldo_real,
             monto,
             cuil_cuit_administrador: cuil_cuit,
             tipo,
@@ -47,52 +47,53 @@ router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
         }
 
         const update = {
-              Saldo_real,
-              pago,
-            
+            Saldo_real,
+            pago,
+
         }
-  console.log(update)
+        console.log(update)
         console.log(nuevo)
 
-        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update,id])
+        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
 
-      await pool.query('INSERT INTO pagos set ?', [nuevo]);
-
-   
-      console.log('idlote'+id_lote)
-        cant_finales= await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote ])
-     
-    
-        if (nro_cuota < cant_finales.length ) {/// aca esta el errror
-           
+        await pool.query('INSERT INTO pagos set ?', [nuevo]);
 
 
-        for (var i = (nro_cuota+1); i <=cant_finales.length; i++) {
-        
-            try {//
-                
-                aux =  await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
-                console.log(aux)
-                 saldo_realc = parseFloat( aux[0]["Saldo_real"])
-                 console.log('saldoreal '+saldo_realc) 
-                 idaux =  aux[0]["id"] 
-                 console.log( id) 
-               
-                 console.log('pagop'+pago) 
-                 Saldo_real = saldo_realc - monto
-                 console.log(Saldo_real) 
-                 const update = {
-                    Saldo_real,
-           
-        
-        
+        console.log('idlote' + id_lote)
+        cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote])
+
+
+        if (nro_cuota < cant_finales.length) {/// aca esta el errror
+
+
+
+            for (var i = (nro_cuota + 1); i <= cant_finales.length; i++) {
+
+                try {//
+
+                    aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
+                    console.log(aux)
+                    saldo_realc = parseFloat(aux[0]["Saldo_real"])
+                    console.log('saldoreal ' + saldo_realc)
+                    idaux = aux[0]["id"]
+                    console.log(id)
+
+                    console.log('pagop' + pago)
+                    Saldo_real = saldo_realc - monto
+                    console.log(Saldo_real)
+                    const update = {
+                        Saldo_real,
+
+
+
+                    }
+                    await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+                } catch (error) {//
+
                 }
-                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-            } catch (error) {//
-                
-            }
 
-         }}
+            }
+        }
 
 
         console.log(cuota[0]['cuil_cuit'])
@@ -107,74 +108,111 @@ router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
 })
 /// aprobar pago nivel 2
 router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
-    const { id,montonuevo,cambiarmonto } = req.body 
-        // pagot es el objeto pago
+    const { id, montonuevo, cambiarmonto } = req.body
+    // pagot es el objeto pago
     let pagot = await pool.query('select * from pagos where id = ?', [id])
 
     let id_cuota = pagot[0]["id_cuota"]
     let monto = pagot[0]["monto"]
-    if(cambiarmonto){////// toma el valor del checkbox si se modifica el monto 
-        monto=montonuevo
+    if (cambiarmonto) {////// toma el valor del checkbox si se modifica el monto 
+        monto = montonuevo
     }
-   
 
+    ///////////
     const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
-   
-    var saldo_realc = cuota[0]["Saldo_real"]
-    var nro_cuota = cuota[0]["nro_cuota"]
-    var id_lote = cuota[0]["id_lote"]
+     let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+    let saldo_realc = cuota[0]["Saldo_real"]
+    let nro_cuota = cuota[0]["nro_cuota"]
+    let id_lote = cuota[0]["id_lote"]
 
-   
+
 
     try {
-        
-         Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-         
+        /*
+        if (cuota_con_ajuste < cuota[0]["pago"] + parseFloat(monto)) {
+            Saldo_real = parseFloat(saldo_realc) - cuota_con_ajuste
+            diferencia = cuota[0]["pago"] + parseFloat(monto) - cuota_con_ajuste
+
+
+        } else {
+
+            Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
+            diferencia = 0
+
+        }
+ */
+
         let pago = cuota[0]["pago"] + parseFloat(monto)
-      
+
 
         // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
-       
 
 
-        const update = {
+
+      /*  const update = {
             Saldo_real,
             pago,
+            diferencia
 
 
         }
 
-        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])
-       
-        cant_finales= await pool.query('select *from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote, ])
-        console.log(cant_finales)
-       
-        if (nro_cuota < cant_finales.length ) {
-///
-        for (var i = nro_cuota+1; i <=cant_finales.length; i++) {
-        
-            try {//
-                aux =  await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
-                saldo_realc = parseFloat( aux[0]["Saldo_real"])
-                 idaux =  aux[0]["id"] 
-                 Saldo_real = saldo_realc - monto
-                 const update = {
-                    Saldo_real,  
-                }
-                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-            } catch (error) {//
-                
-            }
+        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])*/
+   
+        cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
+           
 
-         }}
+        diferencia =  0
+        ///
+      
+         for ( ii = (nro_cuota-1); ii < cant_finales.length; ii++) {
+            console.log( ii)
+          
+
+               // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
+                cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
+                saldo_realc = cant_finales[ii]["Saldo_real"]
+               if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + parseFloat(monto)+parseFloat(cant_finales[ii]["diferencia"])+ diferencia ){
+                    console.log('pasa')
+                       Saldo_real = parseFloat(saldo_realc) -cuota_con_ajuste
+                      diferencia= diferencia + parseFloat(cant_finales[ii]["pago"]) + parseFloat(monto) +parseFloat(cant_finales[ii]["diferencia"])-cuota_con_ajuste  
+                }else {
+                        Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)- diferencia-parseFloat(cant_finales[ii]["diferencia"])
+                          diferencia = 0
+                          console.log('no pasa')
+                }
+
+                idaux = cant_finales[ii]["id"]
+                a=ii
+              //  Saldo_real = saldo_realc - monto
+              if ((a+1)==nro_cuota){
+                console.log('entra')
+                 update = {
+                    Saldo_real,
+                    pago,
+                    diferencia
+                }
+
+              }else{
+                 update = {
+                    Saldo_real,
+                    diferencia
+                }
+                console.log(update)
+              }
+          
+                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+          
+
+        }
 
 
         await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
-        res.send('Guardado correctamente')
+        res.send('Guardado correctamente') 
 
-        res.send('Exito')
+   
     } catch (error) {
-
+        console.log(error)
     }
 
 })
@@ -182,47 +220,47 @@ router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
 
 ///// Detalles del pago 
 router.get("/detallespago/:id", async (req, res) => {
-    const { id } = req.body 
-console.log(id)
+    const { id } = req.body
+    console.log(id)
 
-    const detalles = await pool.query('SELECT * FROM pagos where id_cuota = ?',[id])
-   
+    const detalles = await pool.query('SELECT * FROM pagos where id_cuota = ?', [id])
+
     res.json(detalles)
-  //*  res.json(cantidad[0]["count(*)"])
+    //*  res.json(cantidad[0]["count(*)"])
 })
 
-router.get("/cantidadpendientes", async (req, res) => { 
-try {
-    const detalles = await pool.query('SELECT count(*) FROM pagos where estado="p" or estado="justificacionp" ')
-   const rta = detalles[0]['count(*)']
+router.get("/cantidadpendientes", async (req, res) => {
+    try {
+        const detalles = await pool.query('SELECT count(*) FROM pagos where estado="p" or estado="justificacionp" ')
+        const rta = detalles[0]['count(*)']
 
-   const legajos = await pool.query('SELECT count(*) FROM constancias where estado= "Pendiente"  ')
-   const cantlegajos = legajos[0]['count(*)']
+        const legajos = await pool.query('SELECT count(*) FROM constancias where estado= "Pendiente"  ')
+        const cantlegajos = legajos[0]['count(*)']
 
-   const cbus = await pool.query('SELECT count(*) FROM cbus where estado= "P"  ')
-   const cantcbus = cbus[0]['count(*)']
+        const cbus = await pool.query('SELECT count(*) FROM cbus where estado= "P"  ')
+        const cantcbus = cbus[0]['count(*)']
 
-console.log(cantcbus)
-    res.json([rta,cantlegajos,cantcbus])
-} catch (error) {
-    
-}
-    
-  
+        console.log(cantcbus)
+        res.json([rta, cantlegajos, cantcbus])
+    } catch (error) {
+
+    }
+
+
 })
 
 
 
 /////detalles de todos los pagos de una cuota
 router.post("/detallespagos", async (req, res) => {
-    const { id } = req.body 
+    const { id } = req.body
     console.log(id)
-const pagos =  await pool.query('SELECT * FROM pagos where id_cuota = ? and estado = "A"',[id])
-  
+    const pagos = await pool.query('SELECT * FROM pagos where id_cuota = ? and estado = "A"', [id])
 
 
- 
- res.json(pagos)
+
+
+    res.json(pagos)
 })
 
 
@@ -230,7 +268,7 @@ const pagos =  await pool.query('SELECT * FROM pagos where id_cuota = ? and esta
 router.get("/cantidadinusuales", async (req, res) => {
     const cantidad = await pool.query('SELECT count(*) FROM historial_pagosi where estado = "Pendiente"')
     res.json(cantidad)
-  //*  res.json(cantidad[0]["count(*)"])
+    //*  res.json(cantidad[0]["count(*)"])
 })
 
 ///////// reaxct
@@ -242,9 +280,9 @@ router.get("/listainusual", async (req, res) => {
 
 //react pendientes
 router.get('/pendientess', async (req, res) => {
-   // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
-   const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' or estado='justificacionp' ")
-  
+    // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
+    const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' or estado='justificacionp' ")
+
     res.json(pendientes)
 
 
@@ -272,51 +310,51 @@ router.post("/mensualesinusuales", async (req, res) => {
 ////////rechazar 
 router.post("/rechazarr", async (req, res) => {
     const { id, detalle, accion } = req.body
-  
-    auxi = await pool.query('select *  from pagos where id=?', [id]);
-    cuil_cuit= auxi[0]['cuil_cuit']
 
-    
+    auxi = await pool.query('select *  from pagos where id=?', [id]);
+    cuil_cuit = auxi[0]['cuil_cuit']
+
+
     switch (accion) {
         case 'rechazar':
             console.log('rechazar')
-            estado='averificarnivel3'
-          //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-       
+            estado = 'averificarnivel3'
+            //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 
 
-          break;
+
+            break;
         case 'solicitar_doc':
             console.log('solicitar_doc')
-            estado='ajustificar'
-          //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
-          const update2 ={
-            leida:"No",
-            cuil_cuit: cuil_cuit,
-            id_referencia: id,
-            descripcion: detalle,
-            asunto:'Solicitud de documentacion'
-        }
+            estado = 'ajustificar'
+            //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
+            const update2 = {
+                leida: "No",
+                cuil_cuit: cuil_cuit,
+                id_referencia: id,
+                descripcion: detalle,
+                asunto: 'Solicitud de documentacion'
+            }
             await pool.query('INSERT INTO notificaciones set ?', [update2]);
-          break
+            break
     }
 
 
-    const update ={
+    const update = {
         estado
 
     }
-   
+
     try {
         await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
-       const aux = await pool.query('select * from  pagos  WHERE id = ?', [id])
-       cuil_cuit = aux[0]['cuil_cuit']
-       
+        const aux = await pool.query('select * from  pagos  WHERE id = ?', [id])
+        cuil_cuit = aux[0]['cuil_cuit']
+
     } catch (error) {
         console.log(error)
         res.send('algo salio mal')
     }
-  
+
     res.send('Todo en orden')
 
 

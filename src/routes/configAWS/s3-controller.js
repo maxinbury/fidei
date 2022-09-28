@@ -318,6 +318,7 @@ async function pagarniv1 (req, res) {
     cuil_cuit =myArray[0]
     id= myArray[1]
     monto = myArray[2]
+    fecha=myArray[3]
    
     
 
@@ -338,8 +339,9 @@ aux = '%' + cuil_cuit + '%'
   
     
     id_cuota = existe[ultima]['id']
-    mes = existe[ultima]['mes']
-    anio = existe[ultima]['anio']
+    mes = parseInt(fecha.substring(5,7))
+    anio = parseInt(fecha.substring(0, 4))
+ 
     estado = existe[ultima]['estado']
   
     if (existe.length > 0) {
@@ -373,9 +375,9 @@ aux = '%' + cuil_cuit + '%'
              
     
             };
-            console.log(1)
+            
             await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
-            console.log(1)
+          
       
         const newLink = {
             id_cuota,
@@ -391,20 +393,20 @@ aux = '%' + cuil_cuit + '%'
             ubicacion: formData.file.originalFilename,///////////aca ver el problema
 
         };
-      
+        console.log(1)
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        
+        console.log('1')
         
 
     }   }else {
         res.send('Error la cuota no existe')
 
 
-    }
+    } 
 
 /////
 } catch (error) {
-
+    console.log(error)
 }
    
 
@@ -416,7 +418,7 @@ aux = '%' + cuil_cuit + '%'
    await uploadFileToS3(formData.file, "mypdfstorage");
      console.log(' Uploaded!!  ')
      
-    
+
      
   } catch(ex) {
    console.log('NOOO  ')
