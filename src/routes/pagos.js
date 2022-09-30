@@ -161,8 +161,8 @@ router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
    
         cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
            
-
-        diferencia =  0
+       
+        diferencia =  parseFloat(cant_finales[nro_cuota-1]["diferencia"])
         ///
       
          for ( ii = (nro_cuota-1); ii < cant_finales.length; ii++) {
@@ -172,16 +172,22 @@ router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
                // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
                 cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
                 saldo_realc = cant_finales[ii]["Saldo_real"]
-               if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + parseFloat(monto)+parseFloat(cant_finales[ii]["diferencia"])+ diferencia ){
-                    console.log('pasa')
+                console.log(saldo_realc)
+               if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + parseFloat(monto)+ diferencia ){
+         
+         
+                       console.log('pasa')
                        Saldo_real = parseFloat(saldo_realc) -cuota_con_ajuste
-                      diferencia= diferencia + parseFloat(cant_finales[ii]["pago"]) + parseFloat(monto) +parseFloat(cant_finales[ii]["diferencia"])-cuota_con_ajuste  
-                }else {
-                        Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)- diferencia-parseFloat(cant_finales[ii]["diferencia"])
+                        diferencia= diferencia  + parseFloat(monto) +parseFloat(cant_finales[ii]["pago"]) -cuota_con_ajuste  
+                       console.log(diferencia)
+                
+                    }else {
+                        console.log(diferencia)
+                        Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
                           diferencia = 0
                           console.log('no pasa')
                 }
-
+             
                 idaux = cant_finales[ii]["id"]
                 a=ii
               //  Saldo_real = saldo_realc - monto
@@ -192,7 +198,8 @@ router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
                     pago,
                     diferencia
                 }
-
+                
+                
               }else{
                  update = {
                     Saldo_real,
