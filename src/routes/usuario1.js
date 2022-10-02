@@ -49,6 +49,8 @@ router.post('/cargarcbu', s3Controller.cargarcbu)
 
 router.post('/pagarnivel1', s3Controller.pagarniv1);
 
+router.post('/pagonivel2', s3Controller.pagonivel2);
+
 router.post('/justificacion', s3Controller.justificar);
 
 
@@ -273,7 +275,7 @@ router.post('/realizarr', async (req, res, done) => {
       
         await pool.query('INSERT INTO pagos SET ?', [newLink]);
         
-        
+        res.send('Subido exitosamente')
 
     } else {
         res.send('Error la cuota no existe')
