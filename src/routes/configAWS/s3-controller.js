@@ -334,16 +334,20 @@ async function pagarniv1(req, res) {
         let monto_distinto = 'Si'
         let monto_inusual = 'No'
         aux = '%' + cuil_cuit + '%'
-
-        let existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final"  order by nro_cuota', [id])
+        mes = parseInt(fecha.substring(5, 7))
+        anio = parseInt(fecha.substring(0, 4))
+        let existe = await pool.query('Select * from cuotas where  id_lote=? and parcialidad = "Final" and mes =?and anio = ? order by nro_cuota', [id,mes, anio])
 
         ultima = ((existe.length) - 1)
 
 
 
         id_cuota = existe[ultima]['id']
-        mes = parseInt(fecha.substring(5, 7))
-        anio = parseInt(fecha.substring(0, 4))
+       
+
+
+
+
 
         estado = existe[ultima]['estado']
 
@@ -410,7 +414,7 @@ async function pagarniv1(req, res) {
 
         /////
     } catch (error) {
-        res.send('Error no se pudo enviar')
+        res.send('Error la cuota no existe, elegir una fecha valida')
     }
 
 
@@ -512,7 +516,7 @@ async function pagonivel2(req, res) {
                     monto,
                     cuil_cuit,
                     mes,
-                    estado: estadoo,
+                    estado: estado,
                     anio,
                     cuil_cuit_distinto,
                     monto_distinto,
