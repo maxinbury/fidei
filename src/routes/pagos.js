@@ -162,62 +162,82 @@ router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
         cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
            
        
-        diferencia =  parseFloat(cant_finales[nro_cuota-1]["diferencia"])
+        diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
         ///
-      
-         for ( ii = (nro_cuota-1); ii < cant_finales.length; ii++) {
-            console.log( ii)
-          
+          bandera =true
+          console.log(bandera)
+        for (ii = (nro_cuota - 1); ii < cant_finales.length; ii++) {
+            console.log(ii)
 
-               // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-                cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-                saldo_realc = cant_finales[ii]["Saldo_real"]
-                console.log(saldo_realc)
-               if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + parseFloat(monto)+ diferencia ){
-         
-         
-                       console.log('pasa')
-                       Saldo_real = parseFloat(saldo_realc) -cuota_con_ajuste
-                        diferencia= diferencia  + parseFloat(monto) +parseFloat(cant_finales[ii]["pago"]) -cuota_con_ajuste  
-                       console.log(diferencia)
+
+            // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
+            cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
+            saldo_realc = cant_finales[ii]["Saldo_real"]
+            console.log('saldo real')
+            console.log(saldo_realc)
+            console.log(cant_finales[ii]["nro_cuota"])
+            if (bandera){
+                auxx=parseFloat(monto)
+                bandera=false
+            }else {
+                auxx=0
+            }
+            console.log(auxx)
+            console.log(cuota_con_ajuste)
+            console.log(bandera)
+            if (cant_finales[ii]["nro_cuota"]>1){
+                anterior = await pool.query('select * from cuotas where  id_lote = ? and nro_cuota = ?',[id_lote,(cant_finales[ii]["nro_cuota"]-1)])
+                console.log(anterior)
+                auxx= auxx + anterior[0]['diferencia']
+            }
+            if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + auxx+ diferencia) {
+
+
+                console.log('pasa')
+                Saldo_real = parseFloat(cant_finales[ii]["saldo_cierre"])
                 
-                    }else {
-                        console.log(diferencia)
-                        Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                          diferencia = 0
-                          console.log('no pasa')
-                }
-             
-                idaux = cant_finales[ii]["id"]
-                a=ii
-              //  Saldo_real = saldo_realc - monto
-              if ((a+1)==nro_cuota){
+                diferencia =  auxx + parseFloat(cant_finales[ii]["pago"]) - cuota_con_ajuste
+                console.log(diferencia)
+               //////diferencia suma el doble el que ya estaba
+
+            } else {
+                console.log(diferencia)
+                Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
+                diferencia = 0
+                console.log('no pasa')
+                
+            }
+
+            idaux = cant_finales[ii]["id"]
+            a = ii
+            //  Saldo_real = saldo_realc - monto
+            if ((a + 1) == nro_cuota) {
                 console.log('entra')
-                 update = {
+                update = {
                     Saldo_real,
                     pago,
                     diferencia
                 }
-                
-                
-              }else{
-                 update = {
+
+
+            } else {
+                update = {
                     Saldo_real,
                     diferencia
                 }
                 console.log(update)
-              }
-          
-                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-          
+            }
+
+            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+
 
         }
 
 
-        await pool.query('UPDATE pagos set estado = ? WHERE id = ?', ["A", id])
-        res.send('Guardado correctamente') 
 
-   
+      
+
+
     } catch (error) {
         console.log(error)
     }
@@ -288,7 +308,7 @@ router.get("/listainusual", async (req, res) => {
 //react pendientes
 router.get('/pendientess', async (req, res) => {
     // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
-    const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' or estado='justificacionp' ")
+    const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P'  or estado='justificacionp' ")
 
     res.json(pendientes)
 

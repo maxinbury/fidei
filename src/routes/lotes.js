@@ -275,12 +275,20 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 
 //LISTA DE LOTES 
 router.get('/listadetodos', async (req, res) => {
-    console.log('si')
+ 
     const lotes = await pool.query('select * from lotes')
+    const disponibles = await pool.query('select * from lotes where estado = "DISPONIBLE" or estado = "disponible"')
+    const parque = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="PIT"')
+    const ic3 = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="IC3" ')
 
+    console.log(disponibles.length)
 
-    res.json(lotes)
+    res.json([lotes,disponibles.length,parque.length,ic3.length])
 })
+
+
+
+
 router.post('/prueba', async (req, res) => {
     let { zona, fraccion } = req.body
     console.log(fraccion)

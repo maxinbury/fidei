@@ -425,6 +425,23 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
 
 })
 
+///// Funcion devuelve cantidad de clientes /// agregar 
+router.get('/infocantidad',isLoggedInn2,  async (req, res) => {
+ 
+    
+    const clientes = await pool.query('select * from clientes' )
+    console.log(clientes)
+
+   
+
+
+    res.json(clientes.length)
+
+
+})
+
+
+
 router.get('/cbuspendientes', isLoggedInn2, async (req, res) => {
  
     //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
