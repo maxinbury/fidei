@@ -430,12 +430,12 @@ router.get('/infocantidad',isLoggedInn2,  async (req, res) => {
  
     
     const clientes = await pool.query('select * from clientes' )
-    console.log(clientes)
+ 
 
    
+console.log(clientes.length)
 
-
-    res.json(clientes.length)
+    res.json(clientes)
 
 
 })

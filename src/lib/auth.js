@@ -48,7 +48,7 @@ module.exports = {
            
         }catch{}
       
-        if (!token || !decodedToken.id || (decodedToken.nivel !=2) ){
+        if (!token || !decodedToken.id || (decodedToken.nivel <2) ){
             console.log('error token')
             return res.send('error login')
         }

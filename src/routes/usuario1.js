@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const { isLoggedIn, isLoggedInn2  } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
@@ -36,7 +36,7 @@ router.get('/get-object-url/:key', s3Controller.getSignedUrl);
 
 
 //////PDFSS
-router.post('/subirlegajo', s3Controller.subirlegajo);
+router.post('/subirlegajo', isLoggedInn2 ,s3Controller.subirlegajo);
 
 /// determinar pdf
 router.post('/determinarPep', s3Controller.determinarPep);
@@ -54,7 +54,7 @@ router.post('/pagonivel2', s3Controller.pagonivel2);
 router.post('/justificacion', s3Controller.justificar);
 
 
-router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
+router.post('/subirlegajoprueba',isLoggedIn, fileUpload, async (req, res, done) => {
     const {formdata, file} = req.body
   //  console.log(formdata)
     //console.log(file)
@@ -120,7 +120,19 @@ router.get('/constanciasdelpago/:id', async (req, res, ) => {
 })
 
 
+router.get('/cliente/:cuil_cuit', async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
 
+    try {
+       cliente = await pool.query('select * from clientes where cuil_cuit= ? ',[cuil_cuit])
+       
+       res.json(cliente)
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+   
+})
 
 
 
