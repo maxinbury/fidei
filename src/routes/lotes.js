@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const { isLoggedIn, isLoggedInn2} = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 
 ///////
@@ -45,7 +45,7 @@ router.get("/completar_cuil_cuit", isLoggedIn, isLevel2, async (req, res) => {
 })
 
 
-router.get('/lotescliente/:cuil_cuit', async (req, res) => {
+router.get('/lotescliente/:cuil_cuit', isLoggedInn2, async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
 
 
@@ -57,7 +57,7 @@ router.get('/lotescliente/:cuil_cuit', async (req, res) => {
 
 })
 
-router.post('/calcularvalor', async (req, res) => {
+router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit,lote } = req.body
    
 
@@ -142,7 +142,7 @@ router.post('/calcularvalor', async (req, res) => {
 
 ///////
 
-router.get('/lotescliente2/:cuil_cuit', async (req, res) => {
+router.get('/lotescliente2/:cuil_cuit',isLoggedInn2, async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
 
 
@@ -274,7 +274,7 @@ router.get('/cargar_todos', isLoggedIn, isLevel2, async (req, res) => {
 
 
 //LISTA DE LOTES 
-router.get('/listadetodos', async (req, res) => {
+router.get('/listadetodos',isLoggedInn2, async (req, res) => {
  
     const lotes = await pool.query('select * from lotes')
     const disponibles = await pool.query('select * from lotes where estado = "DISPONIBLE" or estado = "disponible"')
@@ -300,7 +300,7 @@ router.post('/prueba', async (req, res) => {
 
 })
 //filtro solo lotes
-router.get('/listadelotes', async (req, res) => {
+router.get('/listadelotes', isLoggedInn2, async (req, res) => {
 
     const zona = await pool.query('select zona from lotes group by=zona')
 
