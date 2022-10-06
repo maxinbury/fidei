@@ -42,7 +42,7 @@ router.post('/subirlegajo', isLoggedInn2 ,s3Controller.subirlegajo);
 router.post('/determinarPep', s3Controller.determinarPep);
 
 
-router.post('/subirlegajo1', s3Controller.subirlegajo1);
+router.post('/subirlegajo1', isLoggedIn,s3Controller.subirlegajo1);
 //// REACT  
 router.post('/cargarcbu', s3Controller.cargarcbu)
 
@@ -296,8 +296,28 @@ router.post('/realizarr', async (req, res, done) => {
     }
 
 })
+////////modificar daos
+router.post('/modificarcli', async (req, res) => {
+    const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
+    
+    try {
+        aux = '%' + cuil_cuit + '%'
+        const newLink = {
+            email,
+            provincia,
+            telefono,
+            ingresos,
+            domicilio,
+            razon_social
+        }
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
+        res.send('Cliente modificado')
+    } catch (error) {
+        res.send('Error algo sucedió' + error)
+    }
 
 
+})
 
 //////////////////////checklegajos
 router.post("/completolegajos", async (req, res) => {
