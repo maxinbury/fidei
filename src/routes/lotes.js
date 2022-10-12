@@ -50,6 +50,7 @@ router.get('/lotescliente/:cuil_cuit', isLoggedInn2, async (req, res) => {
 
 
     lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote, parcela from lotes where cuil_cuit =  ?', [cuil_cuit]);
+    console.log('lotes')
     console.log(lotes)
 
 

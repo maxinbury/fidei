@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn, isLoggedInn2  } = require('../lib/auth') //proteger profile
+const { isLoggedIn,isLoggedInn, isLoggedInn2  } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
@@ -32,29 +32,29 @@ const fileUpload = multer({
 
 router.post('/upload-to-s3', s3Controller.s3Upload);
 router.get('/all-files', s3Controller.s3Get);
-router.get('/get-object-url/:key', s3Controller.getSignedUrl);
+router.get('/get-object-url/:key', isLoggedInn, s3Controller.getSignedUrl);
 
 
 //////PDFSS
 router.post('/subirlegajo', isLoggedInn2 ,s3Controller.subirlegajo);
 
 /// determinar pdf
-router.post('/determinarPep', s3Controller.determinarPep);
+router.post('/determinarPep', isLoggedInn2, s3Controller.determinarPep);
 
 
-router.post('/subirlegajo1', isLoggedIn,s3Controller.subirlegajo1);
+router.post('/subirlegajo1', isLoggedInn,s3Controller.subirlegajo1);
 //// REACT  
-router.post('/cargarcbu', s3Controller.cargarcbu)
+router.post('/cargarcbu',isLoggedInn, s3Controller.cargarcbu)
 
 
-router.post('/pagarnivel1', s3Controller.pagarniv1);
+router.post('/pagarnivel1', isLoggedInn, s3Controller.pagarniv1);
 
-router.post('/pagonivel2', s3Controller.pagonivel2);
+router.post('/pagonivel2', isLoggedInn2, s3Controller.pagonivel2);
 
-router.post('/justificacion', s3Controller.justificar);
+router.post('/justificacion', isLoggedInn, s3Controller.justificar);
 
 
-router.post('/subirlegajoprueba',isLoggedIn, fileUpload, async (req, res, done) => {
+router.post('/subirlegajoprueba',isLoggedInn, fileUpload, async (req, res, done) => {
     const {formdata, file} = req.body
   //  console.log(formdata)
     //console.log(file)
@@ -101,7 +101,7 @@ router.get('/leerimagen ', async (req, res, done) => {
 
 ////////constancias de un pago 
 
-router.get('/constanciasdelpago/:id', async (req, res, ) => {
+router.get('/constanciasdelpago/:id', isLoggedInn2, async (req, res, ) => {
     id = req.params.id
     const pago = await pool.query('select * from pagos where id =?',[id])
     const constancias = await pool.query('select * from constancias where otros =?',[id])
@@ -120,7 +120,7 @@ router.get('/constanciasdelpago/:id', async (req, res, ) => {
 })
 
 
-router.get('/cliente/:cuil_cuit', async (req, res, ) => {
+router.get('/cliente/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
@@ -137,7 +137,7 @@ router.get('/cliente/:cuil_cuit', async (req, res, ) => {
 
 
 
-router.get('/cbus/:cuil_cuit', async (req, res, ) => {
+router.get('/cbus/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
@@ -163,7 +163,7 @@ router.get('/borrarunlegajo/:id', async (req, res, ) => {
 
    
 })
-router.get('/constancias/:cuil_cuit', async (req, res, ) => {
+router.get('/constancias/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
@@ -176,7 +176,7 @@ router.get('/constancias/:cuil_cuit', async (req, res, ) => {
 
    
 })
-router.get('/cbuscliente/:cuil_cuit', async (req, res, ) => {
+router.get('/cbuscliente/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
@@ -191,7 +191,7 @@ router.get('/cbuscliente/:cuil_cuit', async (req, res, ) => {
 })
 
 ////pago react nivel 1
-router.post('/realizarr', async (req, res, done) => {
+router.post('/realizarr', isLoggedInn, async (req, res, done) => {
     let { monto, cuil_cuit, mes, anio, id } = req.body;
 
     let estado = 'P'
@@ -297,7 +297,7 @@ router.post('/realizarr', async (req, res, done) => {
 
 })
 ////////modificar daos
-router.post('/modificarcli', async (req, res) => {
+router.post('/modificarcli',isLoggedInn, async (req, res) => {
     const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
     
     try {
@@ -320,7 +320,7 @@ router.post('/modificarcli', async (req, res) => {
 })
 
 //////////////////////checklegajos
-router.post("/completolegajos", async (req, res) => {
+router.post("/completolegajos", isLoggedInn, async (req, res) => {
     const { cuil_cuit } = req.body
     console.log(cuil_cuit)
 
@@ -458,7 +458,7 @@ router.post("/completolegajos", async (req, res) => {
 
 })
 ///lotes del cliente
-router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
+router.get('/lotescliente/:cuil_cuit', isLoggedInn,  async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
 
     
@@ -473,7 +473,7 @@ res.send([lotes,cuotas,cuotaapagar,cliente])
 })
 
 ///cuotasdeunlote
-router.get("/lote2/:id", async (req, res) => {
+router.get("/lote2/:id",  isLoggedInn, async (req, res) => {
     try {
         const id = req.params.id
         console.log('controladorloteduncion')
@@ -511,7 +511,7 @@ router.get('/', isLoggedIn, async (req, res) => {
 
 /////////////////////INFORME ESTADO FINANCIERO
 
-router.get('/ief/:id',async (req, res) => {
+router.get('/ief/:id', isLoggedInn, async (req, res) => {
     const id = req.params
     idaux = id.id
     console.log(idaux)
@@ -584,7 +584,7 @@ const respuesta = [deuda_exigible,cuotas_pendientes]
 
 
 ////notificaciones de un cliente, react
-router.get("/noticliente/:cuil_cuit", async (req, res) => {
+router.get("/noticliente/:cuil_cuit", isLoggedInn, async (req, res) => {
     const { cuil_cuit } = req.params
     try {
         const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE cuil_cuit = ? order by id DESC', [cuil_cuit])
@@ -597,8 +597,9 @@ router.get("/noticliente/:cuil_cuit", async (req, res) => {
 
 })
 ///una notificacion
-router.get("/notiid/:id", async (req, res) => {
-    const { id } = req.params
+router.get("/notiid/:id", isLoggedInn, async (req, res) => {
+    const { id, cuil_cuit} = req.params
+    console.log(cuil_cuit)
     try {
         const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE id = ?', [id])
      
