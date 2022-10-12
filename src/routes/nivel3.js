@@ -3,12 +3,12 @@ const router = express.Router()
 const pool = require('../database')
 const ponerguion = require('../public/apps/transformarcuit')
 const { isLevel3 } = require('../lib/authnivel3')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const passport= require('passport')
 
 
-router.post('/signupp', passport.authenticate('local.signupnivel3', {
+router.post('/signupp', isLoggedInn3, passport.authenticate('local.signupnivel3', {
     successRedirect: '/exitosignup',
     failureRedirect:'/noexito',
     failureFlash:true
@@ -16,7 +16,7 @@ router.post('/signupp', passport.authenticate('local.signupnivel3', {
 }))
 
 //REACT GET HISTORIAL
-router.get('/historialicc', async (req, res) => {
+router.get('/historialicc', isLoggedInn3, async (req, res) => {
 
     const historial = await pool.query('select * from icc_historial')
 
@@ -32,7 +32,7 @@ router.get('/pagosi', async (req, res) => {
 
 })
 
-router.get('/borrarhistorial', async (req, res) => {
+router.get('/borrarhistorial', isLoggedInn3, async (req, res) => {
 
     try {
         await pool.query('DELETE FROM icc_historial ')
@@ -45,7 +45,7 @@ router.get('/borrarhistorial', async (req, res) => {
 })
 
 
-router.post('/asignarclave', async (req, res) => {
+router.post('/asignarclave',isLoggedInn3, async (req, res) => {
     const  { cuil_cuit, clave_alta  } = req.body;
     console.log(cuil_cuit)
     try {
@@ -75,7 +75,7 @@ router.post('/asignarclave', async (req, res) => {
 
 
 
-router.post('/asignarvalormetroc', async (req, res) => {
+router.post('/asignarvalormetroc',isLoggedInn3, async (req, res) => {
     const  { valor,zona } = req.body;
     try {
     
@@ -96,7 +96,7 @@ router.post('/asignarvalormetroc', async (req, res) => {
 
 
 
-router.post('/consultaricc', async (req, res,) => {
+router.post('/consultaricc',isLoggedInn3, async (req, res,) => {
     let { ICC, mes, anio } = req.body;
     let rta={} 
 try {
@@ -128,7 +128,7 @@ try {
 })
 
 ///// REACT ii gral
-router.post('/agregariccgral2', async (req, res,) => {
+router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
     let { ICC, mes, anio } = req.body;
    
     var datoss = {
@@ -252,7 +252,7 @@ const nuevo={
 })
 
 ////////lista de usuarios
-router.get('/traerusuarios', async (req, res) => {
+router.get('/traerusuarios',isLoggedInn3, async (req, res) => {
 
     const usuarios = await pool.query(" Select * from users  ")
     console.log(usuarios)

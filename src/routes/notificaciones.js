@@ -1,10 +1,14 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
+const { isLoggedInn } = require('../lib/auth')
 
-router.get('/leer/:id', async (req, res) => {
+
+
+router.get('/leer/:id',isLoggedInn, async (req, res) => {
     id = req.params.id
-
+   const { config} = req.body
+    console.log(config)
     try {
         const noti = await pool.query('select * from notificaciones where id = ?', [id]);
         console.log(id)
@@ -22,7 +26,7 @@ router.get('/leer/:id', async (req, res) => {
 
 })
 
-router.get('/cantidad/:cuil_cuit', async (req, res) => {
+router.get('/cantidad/:cuil_cuit',isLoggedInn, async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
 const aux = '%'+cuil_cuit+'%'
     try {

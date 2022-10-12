@@ -2,11 +2,14 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
-const { isLoggedIn } = require('../lib/auth') //proteger profile
+const {isLoggedIn, isLoggedInn, isLoggedInn2, isLoggedInn3 } = require('../lib/auth') //proteger profile
+
+
+
 
 ///////////////// REALIZAR PAGO MANUAL NIVEL 2 
 
-router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
+router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
     let { id, tipo, cuil_cuit, monto } = req.body
 
     ///// cuil_cuit es del usuario que esta ene l sistema
@@ -14,9 +17,6 @@ router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
     //var pagot = await pool.query('select * from pagos where id = ?', [id]) PAGO QUE HAY QUE CREAR
 
     //
-
-
-
 
 
     const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
@@ -107,7 +107,7 @@ router.post('/pagonivel2', async (req, res) => { // pagot es el objeto pago
 
 })
 /// aprobar pago nivel 2
-router.post('/aprobarr/', async (req, res) => { // pagot es el objeto pago
+router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
     const { id, montonuevo, cambiarmonto } = req.body
     // pagot es el objeto pago
     let pagot = await pool.query('select * from pagos where id = ?', [id])
@@ -256,7 +256,7 @@ router.get("/detallespago/:id", async (req, res) => {
     //*  res.json(cantidad[0]["count(*)"])
 })
 
-router.get("/cantidadpendientes", async (req, res) => {
+router.get("/cantidadpendientes", isLoggedInn2, async (req, res) => {
     try {
         const detalles = await pool.query('SELECT count(*) FROM pagos where estado="p" or estado="justificacionp" ')
         const rta = detalles[0]['count(*)']
@@ -279,7 +279,7 @@ router.get("/cantidadpendientes", async (req, res) => {
 
 
 /////detalles de todos los pagos de una cuota
-router.post("/detallespagos", async (req, res) => {
+router.post("/detallespagos", isLoggedInn2, async (req, res) => {
     const { id } = req.body
     console.log(id)
     const pagos = await pool.query('SELECT * FROM pagos where id_cuota = ? and estado = "A"', [id])
@@ -292,21 +292,21 @@ router.post("/detallespagos", async (req, res) => {
 
 
 ///////// Cantidad inusuales 
-router.get("/cantidadinusuales", async (req, res) => {
+router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
     const cantidad = await pool.query('SELECT count(*) FROM historial_pagosi where estado = "Pendiente"')
     res.json(cantidad)
     //*  res.json(cantidad[0]["count(*)"])
 })
 
 ///////// reaxct
-router.get("/listainusual", async (req, res) => {
+router.get("/listainusual", isLoggedInn2, async (req, res) => {
     const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where estado="averificarnivel3"')
     console.log(pagos)
     res.json(pagos)
 })
 
 //react pendientes
-router.get('/pendientess', async (req, res) => {
+router.get('/pendientess', isLoggedInn2, async (req, res) => {
     // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
     const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P'  or estado='justificacionp' ")
 
@@ -321,7 +321,7 @@ router.get('/pendientess', async (req, res) => {
 
 
 ///// inusuales mensuales react
-router.post("/mensualesinusuales", async (req, res) => {
+router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
     const { mes, anio } = req.body
     console.log(mes)
     console.log(anio)
@@ -335,7 +335,7 @@ router.post("/mensualesinusuales", async (req, res) => {
 })
 
 ////////rechazar 
-router.post("/rechazarr", async (req, res) => {
+router.post("/rechazarr", isLoggedInn2, async (req, res) => {
     const { id, detalle, accion } = req.body
 
     auxi = await pool.query('select *  from pagos where id=?', [id]);
