@@ -178,7 +178,7 @@ router.post('/agregariccgral2', async (req, res,) => {
             const Base_calculo = cuota_con_ajuste_anterior
             const Ajuste_ICC = cuota_con_ajuste_anterior * ICC
             console.log(Base_calculo)
-            const cuota_con_ajuste = cuota_con_ajuste_anterior + Ajuste_ICC
+            const cuota_con_ajuste = (cuota_con_ajuste_anterior + Ajuste_ICC).toFixed(2)
             Saldo_real_anterior += Ajuste_ICC
             const Saldo_real = Saldo_real_anterior
 
