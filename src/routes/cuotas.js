@@ -157,8 +157,17 @@ router.get('/borrartodas/:id',isLoggedInn2, async (req, res) => {
     const { id } = req.params;
     try {
         await pool.query('DELETE FROM cuotas WHERE id_lote = ?', [id])
+        lote =  await pool.query('select * FROM lotes WHERE id = ?', [id])
+      
+        cuil_cuit = lote[0]['cuil_cuit']
+        link = {
+            toleranciadec:0
+        }
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [link, cuil_cuit])
+       
         res.send('Borradas correctamente')
     } catch (error) {
+        console.log(error)
         res.send('Error algo sucedió')
     }
 

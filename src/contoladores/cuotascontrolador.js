@@ -189,8 +189,7 @@ const postaddaut = async (req, res) => {
 const postaddaut2 = async (req, res) => {
     var { id, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote,parcela } = req.body;
     
-    console.log(cantidad_cuotas)
-    
+  
 
 
     if (cantidad_cuotas == undefined){
@@ -220,9 +219,9 @@ const postaddaut2 = async (req, res) => {
         }
         
         valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']
-        console.log(valor)
-        
-        monto_total = valor*superficie
+       
+       
+        monto_total = (valor*superficie).toFixed(2)
         anticipo = monto_total*0.2
         if (row[0]['ingresos'] == 0) {
             rtaa=[cuil_cuit,'Error, el cliente no tiene ingresos declarados ']
@@ -231,33 +230,37 @@ const postaddaut2 = async (req, res) => {
            
 
         } else {
-            monto_total -= anticipo
+            monto_total = monto_total*0.8
             anticipolote = {
                 anticipo
             }
-
+ console.log(monto_total)
             //llega
-            const Amortizacion = monto_total / cantidad_cuotas;
+            const Amortizacion = (monto_total / cantidad_cuotas).toFixed(2);
+           
             let toleranciadec = row[0]['toleranciadec'] + Amortizacion
             let tolerancia = row[0]['ingresos'] * 0.3
-
+           
             if (tolerancia < toleranciadec) {
              
 
                 
                 ///////[cuil_cuit,'Error, el cliente no tiene ingresos declarados ']
                 rtaa= [cuil_cuit,'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados']
-                res.send( )
+                res.send(rtaa)
 
 
             } else {
 
                 let nro_cuota = 1
+               
                 let saldo_inicial = monto_total
 
 
                 if (row.length > 0) {
-                    var saldo_cierre = saldo_inicial - Amortizacion
+                    console.log(saldo_inicial)
+                    var saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
+                  
                     if (nro_cuota ==1){
                          Saldo_real = monto_total
                     }else{
@@ -275,6 +278,7 @@ const postaddaut2 = async (req, res) => {
 
                         for (var i = 1; i <= cantidad_cuotas; i++) {
                             nro_cuota = i
+                            
                             const newLink = {
                                 //fecha,
                                 mes,
@@ -296,6 +300,7 @@ const postaddaut2 = async (req, res) => {
                                 pago:0
 
                             };
+                         
                             mes++
 
                             if (mes > 12) {
@@ -308,8 +313,8 @@ const postaddaut2 = async (req, res) => {
 
 
 
-                            saldo_inicial -= Amortizacion
-                            saldo_cierre = saldo_inicial - Amortizacion
+                            saldo_inicial = (saldo_inicial- Amortizacion).toFixed(2)
+                            saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
                         }
 
                     } catch (error) {

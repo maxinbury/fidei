@@ -464,11 +464,11 @@ router.get('/lotescliente/:cuil_cuit',  async (req, res) => {
     
     lotes = await pool.query('select  * from lotes where cuil_cuit =  ?', [cuil_cuit]);
     cuotas =  await pool.query('select  * from cuotas where cuil_cuit =  ? and parcialidad = "Final"', [cuil_cuit]);
-    
+    cliente =await pool.query('select  * from clientes where cuil_cuit =  ?', [cuil_cuit]);
     cuotaapagar= cuotas[(cuotas.length-1)]
     console.log(cuotaapagar)
 
-res.send([lotes,cuotas,cuotaapagar])
+res.send([lotes,cuotas,cuotaapagar,cliente])
 
 })
 
