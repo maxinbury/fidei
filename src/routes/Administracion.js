@@ -1,11 +1,56 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
+const XLSX = require('xlsx')
 const { isLoggedIn,isLoggedInn2 } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
 const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, rechazo, aprobacioncbu, aprobarcbu,rechazarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
 
 
+
+const diskstorage = multer.diskStorage({
+  destination: path.join(__dirname, '../Excel'),
+  filename: (req, file, cb) => {
+      cb(null, Date.now() + '-estracto-' + file.originalname)
+
+  }
+}) //para que almacene temporalmente la imagen
+const fileUpload = multer({
+  storage: diskstorage,
+
+}).single('image')
+
+
+
+
+router.post('/subirprueba', fileUpload, async (req, res, done) => {
+  const {formdata, file} = req.body
+//  console.log(formdata)
+  //console.log(file)
+console.log(req.file)
+  const type = req.file.mimetype
+  const name = req.file.originalname
+  const data = fs.readFileSync(path.join(__dirname, '../Excel' + req.file.filename))
+
+  const datos = {
+      descripcion: name
+
+      
+  }
+  try {
+      await pool.query('insert into constancias set?', datos)
+      res.send('Imagen guardada con exito')
+
+  } catch (error) {
+      res.send('algo salio mal')
+  }
+  
+
+
+})
 
 
 
@@ -18,8 +63,48 @@ router.get('/borrar/:cuil_cuit', isLoggedInn2,  async (req, res) => {
    res.send('borrado')
 
 })
+///cargar estracto
+router.get('/estracto',  async (req, res) => {
+   
+
+ 
+    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    //console.log(dataExcel)
+
+    let regex = /(\d+)/g;
+    let mandar =[]
+    for (const property in dataExcel) {
+    
+       /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+            estado = 'A'
+            // tipo de pago normal 
+        } */
+        descripcion = (dataExcel[property]['Descripción']).match(regex)
+        referencia =dataExcel[property]['Referencia']
+        debitos = dataExcel[property]['Débitos']
+        creditos = dataExcel[property]['Créditos']
+      nuevo={
+        descripcion,
+        referencia,
+        debitos,
+        creditos,
+
+      }
+
+      mandar.push(nuevo);
+    }
+
+    
 
 
+res.json(mandar)
+
+
+})
 
 
 module.exports = router
