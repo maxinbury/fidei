@@ -43,7 +43,7 @@ try {
 
       
   }
-  await pool.query('insert into estracto set?', datos)
+  await pool.query('insert into extracto set?', datos)
   res.send('Imagen guardada con exito')
 } catch (error) {
   console.log(error)
@@ -66,7 +66,7 @@ router.get('/borrar/:cuil_cuit', isLoggedInn2,  async (req, res) => {
 
 })
 ///cargar estracto
-router.get('/estracto',  async (req, res) => {
+router.get('/extracto',  async (req, res) => {
    
 
  
