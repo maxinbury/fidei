@@ -46,6 +46,7 @@ console.log(id)
         } */
       
         try { 
+            
              descripcion = (dataExcel[property]['Descripción']).match(regex)
             console.log(typeof(descripcion));
             descripcion= descripcion.toString();
