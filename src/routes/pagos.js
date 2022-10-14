@@ -47,6 +47,9 @@ console.log(id)
       
         try { 
             
+            try {
+                
+          
              descripcion = (dataExcel[property]['Descripción']).match(regex)
             console.log(typeof(descripcion));
             descripcion= descripcion.toString();
@@ -67,7 +70,10 @@ console.log(id)
     
           mandar.push(nuevo);
         } catch (error) {
-            console.log(error)
+                
+        }
+        } catch (error) {
+            
         }
     
     }
