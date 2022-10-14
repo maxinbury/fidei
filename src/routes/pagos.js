@@ -47,9 +47,11 @@ console.log(id)
       
         try { 
             
+
             try {
                 
           
+
              descripcion = (dataExcel[property]['Descripción']).match(regex)
             console.log(typeof(descripcion));
             descripcion= descripcion.toString();
@@ -615,6 +617,3 @@ router.post('/realizar', async (req, res) => {
 
 
 module.exports = router
-
-
-
