@@ -69,8 +69,12 @@ router.get('/borrar/:cuil_cuit', isLoggedInn2,  async (req, res) => {
 router.get('/extracto',  async (req, res) => {
    
 
- 
-    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada.xls')
+  try {
+      
+    etc = await pool.query('select * from extracto')
+    nombre = etc[(etc.length)-1]['ubicacion']
+    const workbook = XLSX.readFile('./src/Excel/'+nombre)
+
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
@@ -85,6 +89,7 @@ router.get('/extracto',  async (req, res) => {
             estado = 'A'
             // tipo de pago normal 
         } */
+        console.log((dataExcel[property]['Descripción']).match(regex))
         descripcion = (dataExcel[property]['Descripción']).match(regex)
         referencia =dataExcel[property]['Referencia']
         debitos = dataExcel[property]['Débitos']
@@ -98,12 +103,16 @@ router.get('/extracto',  async (req, res) => {
       }
 
       mandar.push(nuevo);
+
+    }
+    res.json(mandar)
+     }
+    catch (error) {
+      console.log(error)
     }
 
-    
+   
 
-
-res.json(mandar)
 
 
 })
