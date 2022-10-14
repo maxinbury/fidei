@@ -14,7 +14,7 @@ const fs = require('fs')
 const diskstorage = multer.diskStorage({
   destination: path.join(__dirname, '../Excel'),
   filename: (req, file, cb) => {
-      cb(null, Date.now() + '-estracto-' + file.originalname)
+      cb(null,  Date.now() + '-estr-' + file.originalname)
 
   }
 }) //para que almacene temporalmente la imagen
@@ -28,25 +28,27 @@ const fileUpload = multer({
 
 router.post('/subirprueba', fileUpload, async (req, res, done) => {
   const {formdata, file} = req.body
-//  console.log(formdata)
-  //console.log(file)
-console.log(req.file)
+
+try {
+  
+
   const type = req.file.mimetype
   const name = req.file.originalname
-  const data = fs.readFileSync(path.join(__dirname, '../Excel' + req.file.filename))
+ // const data = fs.readFileSync(path.join(__dirname, '../Excel' + req.file.filename))
+  fech = (new Date(Date.now())).toLocaleDateString()
 
   const datos = {
-      descripcion: name
+    fecha: fech,
+    ubicacion: req.file.filename/////ubicacion
 
       
   }
-  try {
-      await pool.query('insert into constancias set?', datos)
-      res.send('Imagen guardada con exito')
-
-  } catch (error) {
-      res.send('algo salio mal')
-  }
+  await pool.query('insert into estracto set?', datos)
+  res.send('Imagen guardada con exito')
+} catch (error) {
+  console.log(error)
+}
+  
   
 
 
