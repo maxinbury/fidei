@@ -44,8 +44,11 @@ console.log(id)
             estado = 'A'
             // tipo de pago normal 
         } */
-        descripcion = (dataExcel[property]['Descripción']).match(regex)
-        try {
+      
+        try { 
+            
+            
+             descripcion = (dataExcel[property]['Descripción']).match(regex)
             console.log(typeof(descripcion));
             descripcion= descripcion.toString();
             console.log(typeof(descripcion));
@@ -607,6 +610,3 @@ router.post('/realizar', async (req, res) => {
 
 
 module.exports = router
-
-
-
