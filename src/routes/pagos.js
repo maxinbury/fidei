@@ -3,9 +3,100 @@ const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
 const {isLoggedIn, isLoggedInn, isLoggedInn2, isLoggedInn3 } = require('../lib/auth') //proteger profile
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
+const XLSX = require('xlsx')
+const ponerguion = require('../public/apps/transformarcuit')
+
+const diskstorage = multer.diskStorage({
+  destination: path.join(__dirname, '../Excel'),
+  filename: (req, file, cb) => {
+      cb(null,  Date.now() + '-estr-' + file.originalname)
+
+  }
+}) //para que almacene temporalmente la imagen
+const fileUpload = multer({
+  storage: diskstorage,
+
+}).single('image')
+
+
+router.post('/estractoid', isLoggedInn2,  async (req, res) => {
+   const { id} = req.body
+console.log(id)
+    const estract = await pool.query('select * from estracto where id = ? ',[id])
+    const nombre = estract[0]['ubicacion']
+    console.log(nombre)
+    const workbook = XLSX.readFile(`./src/Excel/${nombre}`)
+ // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    //console.log(dataExcel)
+
+    let regex = /(\d+)/g;
+    let mandar =[]
+    for (const property in dataExcel) {
+    
+       /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+            estado = 'A'
+            // tipo de pago normal 
+        } */
+        descripcion = (dataExcel[property]['Descripción']).match(regex)
+        try {
+            console.log(typeof(descripcion));
+            descripcion= descripcion.toString();
+            console.log(typeof(descripcion));
+            if (descripcion.length>7){
+                descripcion = ponerguion.ponerguion(descripcion)
+            }
+            referencia =dataExcel[property]['Referencia']
+            debitos = dataExcel[property]['Débitos']
+            creditos = dataExcel[property]['Créditos']
+          nuevo={
+            descripcion,
+            referencia,
+            debitos,
+            creditos,
+    
+          }
+    
+          mandar.push(nuevo);
+        } catch (error) {
+            console.log(error)
+        }
+    
+    }
+
+    
+
+
+res.json(mandar)
+
+
+})
 
 
 
+
+////// traer todos los estractos cagados
+router.get('/todoslosestractos', isLoggedInn2, async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    try {
+       estr = await pool.query('select * from estracto ')
+       console.log(estr)
+       res.json(estr)
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+   
+})
+
+///
 
 ///////////////// REALIZAR PAGO MANUAL NIVEL 2 
 
