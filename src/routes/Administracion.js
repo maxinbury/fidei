@@ -89,6 +89,10 @@ router.get('/extracto',  async (req, res) => {
             estado = 'A'
             // tipo de pago normal 
         } */
+
+        try {
+          
+      
         console.log((dataExcel[property]['Descripción']).match(regex))
         descripcion = (dataExcel[property]['Descripción']).match(regex)
         referencia =dataExcel[property]['Referencia']
@@ -103,6 +107,9 @@ router.get('/extracto',  async (req, res) => {
       }
 
       mandar.push(nuevo);
+    } catch (error) {
+          console.log(error)
+    }
 
     }
     res.json(mandar)
