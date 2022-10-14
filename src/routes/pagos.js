@@ -22,10 +22,10 @@ const fileUpload = multer({
 }).single('image')
 
 
-router.post('/estractoid', isLoggedInn2,  async (req, res) => {
+router.post('/extractoid', isLoggedInn2,  async (req, res) => {
    const { id} = req.body
 console.log(id)
-    const estract = await pool.query('select * from estracto where id = ? ',[id])
+    const estract = await pool.query('select * from extracto where id = ? ',[id])
     const nombre = estract[0]['ubicacion']
     console.log(nombre)
     const workbook = XLSX.readFile(`./src/Excel/${nombre}`)
@@ -82,11 +82,11 @@ res.json(mandar)
 
 
 ////// traer todos los estractos cagados
-router.get('/todoslosestractos', isLoggedInn2, async (req, res, ) => {
+router.get('/todoslosextractos', isLoggedInn2, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
-       estr = await pool.query('select * from estracto ')
+       estr = await pool.query('select * from extracto ')
        console.log(estr)
        res.json(estr)
     } catch (error) {
