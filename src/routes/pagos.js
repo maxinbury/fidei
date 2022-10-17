@@ -14,6 +14,7 @@ const diskstorage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-estr-' + file.originalname)
 
+        
     }
 }) //para que almacene temporalmente la imagen
 const fileUpload = multer({

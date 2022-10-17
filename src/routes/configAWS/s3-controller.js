@@ -579,7 +579,6 @@ async function pagonivel2(req, res) {
                 for (ii = (nro_cuota ); ii < cant_finales.length; ii++) {
                     console.log(ii) 
 
-
                     
                     // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
                     //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
