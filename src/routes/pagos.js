@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
-const {isLoggedIn, isLoggedInn, isLoggedInn2, isLoggedInn3 } = require('../lib/auth') //proteger profile
+const { isLoggedIn, isLoggedInn, isLoggedInn2, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
@@ -10,26 +10,26 @@ const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
 
 const diskstorage = multer.diskStorage({
-  destination: path.join(__dirname, '../Excel'),
-  filename: (req, file, cb) => {
-      cb(null,  Date.now() + '-estr-' + file.originalname)
+    destination: path.join(__dirname, '../Excel'),
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-estr-' + file.originalname)
 
-  }
+    }
 }) //para que almacene temporalmente la imagen
 const fileUpload = multer({
-  storage: diskstorage,
+    storage: diskstorage,
 
 }).single('image')
 
 
-router.post('/extractoid', isLoggedInn2,  async (req, res) => {
-   const { id} = req.body
-console.log(id)
-    const estract = await pool.query('select * from extracto where id = ? ',[id])
-    const nombre = estract[0]['ubicacion']
-    console.log(nombre)
-    const workbook = XLSX.readFile(`./src/Excel/${nombre}`)
- // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
+router.post('/extractoid', isLoggedInn2, async (req, res) => {
+    const { id } = req.body
+    console.log(id)
+    const estract = await pool.query('select * from extracto where id = ? ', [id])
+    const nombree = estract[0]['ubicacion']
+    console.log(nombree)
+    const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
+    // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
@@ -37,51 +37,63 @@ console.log(id)
     //console.log(dataExcel)
 
     let regex = /(\d+)/g;
-    let mandar =[]
+    let mandar = []
     for (const property in dataExcel) {
-    
-       /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
-            estado = 'A'
-            // tipo de pago normal 
-        } */
-      
-        try { 
-            
+
+        /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+             estado = 'A'
+             // tipo de pago normal 
+         } */
+
+        try {
+
             try {
-                
-          
-             descripcion = (dataExcel[property]['Descripción']).match(regex)
-            console.log(typeof(descripcion));
-            descripcion= descripcion.toString();
-            console.log(typeof(descripcion));
-            if (descripcion.length>7){
-                descripcion = ponerguion.ponerguion(descripcion)
+
+
+
+                descripcion = (dataExcel[property]['Descripción']).match(regex)
+
+                descripcion = descripcion.toString();
+
+                if (descripcion.length > 7) {
+                    descripcion = ponerguion.ponerguion(descripcion)
+                    desc = (dataExcel[property]['Descripción'])
+                    let arr = desc.split('-');
+                    
+                    nombre = arr[3]
+                    referencia = dataExcel[property]['Referencia']
+                    debitos = dataExcel[property]['Débitos']
+                    creditos = dataExcel[property]['Créditos']
+                    nuevo = {
+                        descripcion,
+                        referencia,
+                        debitos,
+                        creditos,
+                        nombre
+
+                    }
+                    mandar.push(nuevo);
+                }
+
+
+
+
+
+            } catch (error) {
+                console.log('error 1')
+                console.log(error)
             }
-            referencia =dataExcel[property]['Referencia']
-            debitos = dataExcel[property]['Débitos']
-            creditos = dataExcel[property]['Créditos']
-          nuevo={
-            descripcion,
-            referencia,
-            debitos,
-            creditos,
-    
-          }
-    
-          mandar.push(nuevo);
         } catch (error) {
-                
+            console.log('error 2')
+            console.log(error)
         }
-        } catch (error) {
-            
-        }
-    
+
     }
 
-    
 
 
-res.json(mandar)
+
+    res.json(mandar)
 
 
 })
@@ -90,18 +102,18 @@ res.json(mandar)
 
 
 ////// traer todos los estractos cagados
-router.get('/todoslosextractos', isLoggedInn2, async (req, res, ) => {
+router.get('/todoslosextractos', isLoggedInn2, async (req, res,) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
-       estr = await pool.query('select * from extracto ')
-       console.log(estr)
-       res.json(estr)
+        estr = await pool.query('select * from extracto ')
+        console.log(estr)
+        res.json(estr)
     } catch (error) {
         res.send('algo salio mal')
     }
 
-   
+
 })
 
 ///
@@ -219,7 +231,7 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
     ///////////
     const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
-     let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+    let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
     let saldo_realc = cuota[0]["Saldo_real"]
     let nro_cuota = cuota[0]["nro_cuota"]
     let id_lote = cuota[0]["id_lote"]
@@ -227,120 +239,127 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
 
     try {
-        /*
-        if (cuota_con_ajuste < cuota[0]["pago"] + parseFloat(monto)) {
-            Saldo_real = parseFloat(saldo_realc) - cuota_con_ajuste
+        console.log(parseFloat(cuota[0]["pago"]))
+        console.log(monto)
+        console.log('pasa')
+        if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
+            console.log('antes')
+            Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - cuota_con_ajuste).toFixed(2)
+            console.log(Saldo_real)
             diferencia = cuota[0]["pago"] + parseFloat(monto) - cuota_con_ajuste
 
 
         } else {
-
+            console.log('no pasa')
             Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
             diferencia = 0
 
         }
- */
+
 
         let pago = cuota[0]["pago"] + parseFloat(monto)
 
-
+        update = {
+            Saldo_real,
+            pago,
+            diferencia
+        }
+        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
         // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
 
 
 
-      /*  const update = {
-            Saldo_real,
-            pago,
-            diferencia
+        /*  const update = {
+              Saldo_real,
+              pago,
+              diferencia
+  
+  
+          }
+  
+          await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])*/
 
-
-        }
-
-        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])*/
-   
         cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
-           
-       
+
+
         diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
         ///
-          bandera =true
-          console.log(bandera)
-        for (ii = (nro_cuota - 1); ii < cant_finales.length; ii++) {
-            console.log(ii)
+        bandera = true
+        console.log(bandera)
 
 
-            // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-            cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-            saldo_realc = cant_finales[ii]["Saldo_real"]
-            console.log('saldo real')
-            console.log(saldo_realc)
-            console.log(cant_finales[ii]["nro_cuota"])
-            if (bandera){
-                auxx=parseFloat(monto)
-                bandera=false
-            }else {
-                auxx=0
-            }
-            console.log(auxx)
-            console.log(cuota_con_ajuste)
-            console.log(bandera)
-            if (cant_finales[ii]["nro_cuota"]>1){
-                anterior = await pool.query('select * from cuotas where  id_lote = ? and nro_cuota = ?',[id_lote,(cant_finales[ii]["nro_cuota"]-1)])
-                console.log(anterior)
-                auxx= auxx + anterior[0]['diferencia']
-            }
-            if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + auxx+ diferencia) {
+        if (nro_cuota < cant_finales.length){
+            for (ii = (nro_cuota ); ii < cant_finales.length; ii++) {
+                console.log(ii) 
 
-
-                console.log('pasa')
-                Saldo_real = parseFloat(cant_finales[ii]["saldo_cierre"])
-                
-                diferencia =  auxx + parseFloat(cant_finales[ii]["pago"]) - cuota_con_ajuste
-                console.log(diferencia)
-               //////diferencia suma el doble el que ya estaba
-
-            } else {
-                console.log(diferencia)
-                Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                diferencia = 0
-                console.log('no pasa')
-                
-            }
-
-            idaux = cant_finales[ii]["id"]
-            a = ii
-            //  Saldo_real = saldo_realc - monto
-            if ((a + 1) == nro_cuota) {
-                console.log('entra')
-                update = {
-                    Saldo_real,
-                    pago,
-                    diferencia
+                // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
+                //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
+                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
+                /* console.log('saldo real')
+                console.log(saldo_realc)
+                console.log(cant_finales[ii]["nro_cuota"])
+                if (bandera){
+                    auxx=parseFloat(monto) ///monto es el pago del momento
+                    bandera=false
+                }else {
+                    auxx=0
                 }
+                console.log(auxx)
+                console.log(cuota_con_ajuste)
+                console.log(bandera) */
+                /*    if (cant_finales[ii]["nro_cuota"]>1){
+                       anterior = await pool.query('select * from cuotas where  id_lote = ? and nro_cuota = ?',[id_lote,(cant_finales[ii]["nro_cuota"]-1)])
+                       console.log(anterior)
+                       auxx= auxx + anterior[0]['diferencia']
+                   } */
+                /*       if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + auxx) {
 
 
-            } else {
+                          console.log('pasa')
+                          Saldo_real = parseFloat(cant_finales[ii]["saldo_cierre"])
+                          
+                          diferencia =  auxx + parseFloat(cant_finales[ii]["pago"]) - cuota_con_ajuste
+                          console.log(diferencia)
+                         //////diferencia suma el doble el que ya estaba
+
+                      } else {
+                          console.log(diferencia)
+                          Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
+                          diferencia = 0
+                          console.log('no pasa')
+                          
+                      } */
+
+                idaux = cant_finales[ii]["id"]
+                a = ii
+                //  Saldo_real = saldo_realc - monto
+
                 update = {
-                    Saldo_real,
-                    diferencia
+                    Saldo_real: saldo_realc,
+
                 }
                 console.log(update)
+
+
+                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+
+
             }
-
-            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-
-
+        }
+        updatepago = {
+            estado:"A"
         }
 
-
-
-      
-
+        await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
 
     } catch (error) {
         console.log(error)
+       
     }
 
+    res.send('Aprobado')
+
+    
 })
 
 
