@@ -575,7 +575,7 @@ async function pagonivel2(req, res) {
                 ///
                 bandera = true
                 console.log(bandera)
-                if (nro_cuota < cant_finales.length) {
+ if (nro_cuota < cant_finales.length) {
                     if (pago > monto - pago - diferencia) { // si el pago ya superó el total }
 
 
@@ -625,7 +625,6 @@ async function pagonivel2(req, res) {
 
 
             res.send('Enviado!')
-
 
 
 
