@@ -53,8 +53,14 @@ try {
 
 
 })
+///////////borrar todos lospagos
+router.get('/borrartodoslospagos', isLoggedInn2,  async (req, res) => {
+  
 
+  await pool.query('DELETE FROM pagos WHERE ', [cuil_cuit])
+ res.send('borrado')
 
+})
 
 // LISTA TODAS PENDIENTES PAra React
 //   ver***
