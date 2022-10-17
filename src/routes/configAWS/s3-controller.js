@@ -397,8 +397,6 @@ async function pagarniv1(req, res) {
                 await pool.query('INSERT INTO pagos SET ?', [newLink]);
                 res.send('Enviado!')
 
-
-
                 
          
         } else {
