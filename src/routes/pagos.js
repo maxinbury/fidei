@@ -345,6 +345,8 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
   
 
+                
+
             }
         }
         updatepago = {
