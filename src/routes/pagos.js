@@ -14,7 +14,7 @@ const diskstorage = multer.diskStorage({
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-estr-' + file.originalname)
 
-        
+
     }
 }) //para que almacene temporalmente la imagen
 const fileUpload = multer({
@@ -40,6 +40,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     let regex = /(\d+)/g;
     let mandar = []
     for (const property in dataExcel) {
+
 
         /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
              estado = 'A'
@@ -83,6 +84,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
             } catch (error) {
                 console.log('error 1')
                 console.log(error)
+
             }
         } catch (error) {
             console.log('error 2')
@@ -638,6 +640,3 @@ router.post('/realizar', async (req, res) => {
 
 
 module.exports = router
-
-
-
