@@ -344,6 +344,7 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
 
+                
             }
         }
         updatepago = {

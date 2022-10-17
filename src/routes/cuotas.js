@@ -172,6 +172,7 @@ router.get('/borrartodas/:id',isLoggedInn2, async (req, res) => {
     }
 
 
+    
 }
 
     /* const cuota = {

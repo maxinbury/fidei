@@ -398,6 +398,10 @@ async function pagarniv1(req, res) {
                 res.send('Enviado!')
 
 
+
+
+
+                
          
         } else {
             res.send('Error la cuota no existe')

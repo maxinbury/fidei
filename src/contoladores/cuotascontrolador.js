@@ -312,6 +312,7 @@ const postaddaut2 = async (req, res) => {
                             await pool.query('INSERT INTO cuotas SET ?', [newLink]);
 
 
+                            
 
                             saldo_inicial = (saldo_inicial- Amortizacion).toFixed(2)
                             saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
