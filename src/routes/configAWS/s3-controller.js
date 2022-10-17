@@ -401,7 +401,7 @@ async function pagarniv1(req, res) {
          
         } else {
             res.send('Error la cuota no existe')
-     
+
 
         }
 
@@ -576,47 +576,19 @@ async function pagonivel2(req, res) {
                 bandera = true
                 console.log(bandera)
                if (nro_cuota < cant_finales.length){
+               
                 for (ii = (nro_cuota ); ii < cant_finales.length; ii++) {
                     console.log(ii) 
-
+                    if (diferencia > 0  ){
+                        //saldo real seria Saldo
+                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto-diferencia).toFixed(2)
+    
+                    }else{
                     
                     // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
                     //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
                     saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                    /* console.log('saldo real')
-                    console.log(saldo_realc)
-                    console.log(cant_finales[ii]["nro_cuota"])
-                    if (bandera){
-                        auxx=parseFloat(monto) ///monto es el pago del momento
-                        bandera=false
-                    }else {
-                        auxx=0
                     }
-                    console.log(auxx)
-                    console.log(cuota_con_ajuste)
-                    console.log(bandera) */
-                    /*    if (cant_finales[ii]["nro_cuota"]>1){
-                           anterior = await pool.query('select * from cuotas where  id_lote = ? and nro_cuota = ?',[id_lote,(cant_finales[ii]["nro_cuota"]-1)])
-                           console.log(anterior)
-                           auxx= auxx + anterior[0]['diferencia']
-                       } */
-                    /*       if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + auxx) {
-  
-  
-                              console.log('pasa')
-                              Saldo_real = parseFloat(cant_finales[ii]["saldo_cierre"])
-                              
-                              diferencia =  auxx + parseFloat(cant_finales[ii]["pago"]) - cuota_con_ajuste
-                              console.log(diferencia)
-                             //////diferencia suma el doble el que ya estaba
-  
-                          } else {
-                              console.log(diferencia)
-                              Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                              diferencia = 0
-                              console.log('no pasa')
-                              
-                          } */
 
                     idaux = cant_finales[ii]["id"]
                     a = ii
@@ -632,7 +604,9 @@ async function pagonivel2(req, res) {
                     await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
 
-                }
+               
+            }
+
             }
 
 
