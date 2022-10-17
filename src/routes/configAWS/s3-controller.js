@@ -336,10 +336,10 @@ async function pagarniv1(req, res) {
         aux = '%' + cuil_cuit + '%'
         mes = parseInt(fecha.substring(5, 7))
         anio = parseInt(fecha.substring(0, 4))
-        console.log(mes+anio)
+        console.log(mes + anio)
         let existe = await pool.query('Select * from cuotas where  id_lote=?  and mes =? and anio = ? and parcialidad = "Final" order by nro_cuota', [id, mes, anio])
         estado = existe[0]
-       
+
 
 
 
@@ -365,40 +365,40 @@ async function pagarniv1(req, res) {
 
             const id_cuota = existe[0]["id"]
             console.log(id_cuota)
-                console.log(1)
-                const newInu = {
-                    id_cuota,
-                    cuil_cuit,
-                    estado,
-                    mes,
-                    anio,
+            console.log(1)
+            const newInu = {
+                id_cuota,
+                cuil_cuit,
+                estado,
+                mes,
+                anio,
 
 
-                };
+            };
 
-                await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
 
 
-                const newLink = {
-                    id_cuota,
-                    monto,
-                    cuil_cuit,
-                
-                    mes,
-                    estado: estadoo,
-                    anio,
-                    cuil_cuit_distinto,
-                    monto_distinto,
-                    monto_inusual,
-                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+            const newLink = {
+                id_cuota,
+                monto,
+                cuil_cuit,
 
-                };
-                console.log(1)
-                await pool.query('INSERT INTO pagos SET ?', [newLink]);
-                res.send('Enviado!')
+                mes,
+                estado: estadoo,
+                anio,
+                cuil_cuit_distinto,
+                monto_distinto,
+                monto_inusual,
+                ubicacion: formData.file.originalFilename,///////////aca ver el problema
 
-                
-         
+            };
+            console.log(1)
+            await pool.query('INSERT INTO pagos SET ?', [newLink]);
+            res.send('Enviado!')
+
+
+
         } else {
             res.send('Error la cuota no existe')
 
@@ -575,39 +575,45 @@ async function pagonivel2(req, res) {
                 ///
                 bandera = true
                 console.log(bandera)
-               if (nro_cuota < cant_finales.length){
-                if (diferencia > 0  ){
-                    //saldo real seria Saldo
-                    saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto-diferencia).toFixed(2)
+                if (nro_cuota < cant_finales.length) {
+                    if (pago > monto - pago - diferencia) { // si el pago ya superó el total }
 
-                }{
-                for (ii = (nro_cuota ); ii < cant_finales.length; ii++) {
-                    console.log(ii) 
 
-                    
-                    // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-                    //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-                    saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                   
+                        for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
+                            console.log(ii)
+                            if (diferencia > 0) {
+                                //saldo real seria Saldo
 
-                    idaux = cant_finales[ii]["id"]
-                    a = ii
-                    //  Saldo_real = saldo_realc - monto
+                                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto - diferencia).toFixed(2)
 
-                    update = {
-                        Saldo_real: saldo_realc,
 
+
+                            } else {
+
+                                // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
+                                //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
+                                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
+                            }
+
+                            idaux = cant_finales[ii]["id"]
+                            a = ii
+                            //  Saldo_real = saldo_realc - monto
+
+                            update = {
+                                Saldo_real: saldo_realc,
+
+                            }
+                            console.log(update)
+
+
+                            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+
+
+
+                        }
                     }
-                    console.log(update)
-
-
-                    await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-
 
                 }
-            }
-
-            }
 
 
 
