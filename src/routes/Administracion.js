@@ -79,7 +79,7 @@ router.get('/extracto',  async (req, res) => {
       
     etc = await pool.query('select * from extracto')
     nombre = etc[(etc.length)-1]['ubicacion']
-    const workbook = XLSX.readFile('./src/Excel/'+nombre)
+    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada')
 
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]

@@ -29,6 +29,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     const estract = await pool.query('select * from extracto where id = ? ', [id])
     const nombree = estract[0]['ubicacion']
     console.log(nombree)
+    let mandar = []
     const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
     // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
     const workbooksheets = workbook.SheetNames
@@ -38,7 +39,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     //console.log(dataExcel)
 
     let regex = /(\d+)/g;
-    let mandar = []
+   
     for (const property in dataExcel) {
 
 
@@ -100,7 +101,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
 
     }
-   
+   console.log(mandar)
     res.json(mandar)
 
 
