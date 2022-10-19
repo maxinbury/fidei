@@ -4,7 +4,8 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../../database')
 const XLSX = require('xlsx')
-
+const path = require('path')
+const fs = require('fs')
 
 async function s3Upload(req, res) {
     let { ingreso, formData } = req.body
@@ -568,6 +569,7 @@ async function pagonivel2(req, res) {
                     diferencia = 0
 
                 }
+
 
 
               pago = cuota[0]["pago"] + parseFloat(monto)

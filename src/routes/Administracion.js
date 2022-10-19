@@ -75,12 +75,13 @@ router.get('/borrar/:cuil_cuit', isLoggedInn2,  async (req, res) => {
 router.get('/extracto',  async (req, res) => {
    
 
+
   try {
       
     etc = await pool.query('select * from extracto')
     nombre = etc[(etc.length)-1]['ubicacion']
-    const workbook = XLSX.readFile('./src/Excel/cuentas_PosicionConsolidada')
-
+   // const workbook = XLSX.readFile('./src/Excel/'+nombre)
+   const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombre))
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 

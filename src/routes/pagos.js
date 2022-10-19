@@ -30,7 +30,8 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     const nombree = estract[0]['ubicacion']
     console.log(nombree)
     let mandar = []
-    const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
+   // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
+   const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
     // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
