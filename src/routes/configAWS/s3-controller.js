@@ -488,6 +488,7 @@ async function pagonivel2(req, res) {
         let saldo_realc = cuota[0]["Saldo_real"]
         let nro_cuota = cuota[0]["nro_cuota"]
         let id_lote = cuota[0]["id_lote"]
+        let Amortizacion = cuota[0]["Amortizacion"]
 
 
 
@@ -563,7 +564,7 @@ async function pagonivel2(req, res) {
                 console.log('pasa')
                 if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
                     console.log('antes')
-                    Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - cuota_con_ajuste).toFixed(2)
+                    Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - Amortizacion).toFixed(2)
                     console.log(Saldo_real)
                     diferencia = cuota[0]["pago"] + parseFloat(monto) - cuota_con_ajuste
 
@@ -617,27 +618,27 @@ async function pagonivel2(req, res) {
 
                                 saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto + diferencia).toFixed(2)
 
+                                idaux = cant_finales[ii]["id"]
+                                a = ii
+                                //  Saldo_real = saldo_realc - monto
+    
+                                update = {
+                                    Saldo_real: saldo_realc,
+    
+                                }
+                                console.log(update)
+    
+    
+                                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
-
-                            } else {
+                            } /*else  {
 
                                 // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
                                 //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
                                 saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                            }
+                            } */
 
-                            idaux = cant_finales[ii]["id"]
-                            a = ii
-                            //  Saldo_real = saldo_realc - monto
-
-                            update = {
-                                Saldo_real: saldo_realc,
-
-                            }
-                            console.log(update)
-
-
-                            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
+                      
 
 
 
