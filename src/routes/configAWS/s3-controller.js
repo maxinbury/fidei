@@ -3,7 +3,7 @@ const { uploadFileToS3, getBucketListFromS3, getPresignedURL } = require('./s3-s
 const express = require('express')
 const router = express.Router()
 const pool = require('../../database')
-
+const XLSX = require('xlsx')
 
 
 async function s3Upload(req, res) {
@@ -322,7 +322,12 @@ async function pagarniv1(req, res) {
     id = myArray[1]
     monto = myArray[2]
     fecha = myArray[3]
-
+    fechapago= myArray[4]
+    console.log(fechapago)
+    auxiliarfecha =  fechapago.split(",");
+    asd= auxiliarfecha[2]+"-"+auxiliarfecha[1]+"-"+auxiliarfecha[0]
+    fechapago = asd
+    console.log(fechapago)
 
 
     try {
@@ -336,7 +341,7 @@ async function pagarniv1(req, res) {
         aux = '%' + cuil_cuit + '%'
         mes = parseInt(fecha.substring(5, 7))
         anio = parseInt(fecha.substring(0, 4))
-        console.log(mes + anio)
+   
         let existe = await pool.query('Select * from cuotas where  id_lote=?  and mes =? and anio = ? and parcialidad = "Final" order by nro_cuota', [id, mes, anio])
         estado = existe[0]
 
@@ -362,7 +367,26 @@ async function pagarniv1(req, res) {
                 monto_inusual = 'Si'
             }
 
+            let extracto = await pool.query('Select * from extracto where fecha = ? ', [fechapago])
+            //////// COMPARACION CON EL EXTRACTO
 
+            const workbook = XLSX.readFile('./src/Excel/'+extracto[0]['ubicacion'])
+            const workbooksheets = workbook.SheetNames
+            const sheet = workbooksheets[0]
+        
+            const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+            //console.log(dataExcel)
+        
+       
+        
+            for (const property in dataExcel) {
+                console.log(dataExcel[property]['Descripción'])
+                if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+                    estado = 'A'
+                    // tipo de pago normal 
+                }
+            }
+            //////////////////////////////
             const id_cuota = existe[0]["id"]
             console.log(id_cuota)
             console.log(1)

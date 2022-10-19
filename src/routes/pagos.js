@@ -47,22 +47,28 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
              // tipo de pago normal 
          } */
 
-        try {
 
+
+
+
+
+
+        descripcion = (dataExcel[property]['Descripción']).match(regex)
+
+        if (descripcion !=  null) {
+            
             try {
-
-
-
-                descripcion = (dataExcel[property]['Descripción']).match(regex)
-
-              descripcion = descripcion.toString();
-
+                
+                descripcion = descripcion.toString();
+                
                 if (descripcion.length > 7) {
                     descripcion = ponerguion.ponerguion(descripcion)
+                   console.log('descripcion')
                     desc = (dataExcel[property]['Descripción'])
                     let arr = desc.split('-');
                     
-                    nombre = arr[3]
+                    nombre = arr[3] 
+                    
                     referencia = dataExcel[property]['Referencia']
                     debitos = dataExcel[property]['Débitos']
                     creditos = dataExcel[property]['Créditos']
@@ -74,25 +80,27 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                         nombre
 
                     }
+                   
+                   
                     mandar.push(nuevo);
                 }
-
-
-
-
 
             } catch (error) {
                 console.log('error 1')
                 console.log(error)
 
             }
-        } catch (error) {
-            console.log('error 2')
-            console.log(error)
-        }
+        } else { console.log('null') }
+
+
+
+
+
+
+
 
     }
-
+   
     res.json(mandar)
 
 
@@ -288,9 +296,9 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
         console.log(bandera)
 
 
-        if (nro_cuota < cant_finales.length){
-            for (ii = (nro_cuota ); ii < cant_finales.length; ii++) {
-                console.log(ii) 
+        if (nro_cuota < cant_finales.length) {
+            for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
+                console.log(ii)
 
                 // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
                 //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
@@ -343,26 +351,26 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
-  
 
-                
+
+
 
             }
         }
         updatepago = {
-            estado:"A"
+            estado: "A"
         }
 
         await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
 
     } catch (error) {
         console.log(error)
-       
+
     }
 
     res.send('Aprobado')
 
-    
+
 })
 
 
