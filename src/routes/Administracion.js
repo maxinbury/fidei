@@ -36,14 +36,14 @@ try {
   const name = req.file.originalname
  // const data = fs.readFileSync(path.join(__dirname, '../Excel' + req.file.filename))
   fech = (new Date(Date.now())).toLocaleDateString()
-
-  const datos = {
+ 
+  const datoss = {
     fecha: fech,
     ubicacion: req.file.filename/////ubicacion
 
       
   }
-  await pool.query('insert into extracto set?', datos)
+  await pool.query('insert into extracto set?', datoss)
   res.send('Imagen guardada con exito')
 } catch (error) {
   console.log(error)
