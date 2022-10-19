@@ -55,7 +55,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
                 descripcion = (dataExcel[property]['Descripción']).match(regex)
 
-                descripcion = descripcion.toString();
+              descripcion = descripcion.toString();
 
                 if (descripcion.length > 7) {
                     descripcion = ponerguion.ponerguion(descripcion)
@@ -92,9 +92,6 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
         }
 
     }
-
-
-
 
     res.json(mandar)
 
