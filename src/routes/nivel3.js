@@ -144,6 +144,7 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
     } catch (error) {
         
     }
+
     
     const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
     const parcialidad = "Final"
@@ -185,6 +186,7 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
             console.log(typeof Saldo_real_anterior )
             const Saldo_real = parseFloat(Saldo_real_anterior)
 
+            
             var cuota = {
                 ICC,
                 Ajuste_ICC,

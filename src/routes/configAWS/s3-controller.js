@@ -324,10 +324,9 @@ async function pagarniv1(req, res) {
     monto = myArray[2]
     fecha = myArray[3]
     fechapago = myArray[4]
-    console.log(fechapago)
-    auxiliarfecha = fechapago.split(",");
-    asd = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
-    fechapago = asd
+    auxiliarfecha = fechapago.split("-");
+    fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
+
     console.log(fechapago)
 
 
@@ -370,7 +369,9 @@ async function pagarniv1(req, res) {
 
             let extracto = await pool.query('Select * from extracto where fecha = ? ', [fechapago])
             //////// COMPARACION CON EL EXTRACTO
-
+            try {
+                
+          
             const workbook = XLSX.readFile('./src/Excel/' + extracto[0]['ubicacion'])
             const workbooksheets = workbook.SheetNames
             const sheet = workbooksheets[0]
@@ -387,6 +388,10 @@ async function pagarniv1(req, res) {
                     // tipo de pago normal 
                 }
             }
+
+        } catch (error) {
+                console.log('no se encontro en extracto')
+        }
             //////////////////////////////
             const id_cuota = existe[0]["id"]
             console.log(id_cuota)
