@@ -366,6 +366,9 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 })
 
 
+
+
+
 ///// Detalles del pago 
 router.get("/detallespago/:id", async (req, res) => {
     const { id } = req.body
