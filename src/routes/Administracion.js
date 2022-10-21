@@ -91,7 +91,7 @@ router.get('/extracto',  async (req, res) => {
     let regex = /(\d+)/g;
     let mandar =[]
     for (const property in dataExcel) {
-    
+    console.log(dataExcel[property])
        /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
             estado = 'A'
             // tipo de pago normal 
@@ -100,16 +100,19 @@ router.get('/extracto',  async (req, res) => {
         try {
           
       
-        console.log((dataExcel[property]['Descripción']).match(regex))
+        
         descripcion = (dataExcel[property]['Descripción']).match(regex)
+        fecha =dataExcel[property]['']
         referencia =dataExcel[property]['Referencia']
         debitos = dataExcel[property]['Débitos']
         creditos = dataExcel[property]['Créditos']
       nuevo={
+        fecha,
         descripcion,
         referencia,
         debitos,
         creditos,
+        
 
       }
 

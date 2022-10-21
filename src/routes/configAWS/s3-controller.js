@@ -6,6 +6,9 @@ const pool = require('../../database')
 const XLSX = require('xlsx')
 const path = require('path')
 const fs = require('fs')
+const ponerguion = require('../../public/apps/transformarcuit')
+const sacarguion = require('../../public/apps/transformarcuit')
+
 
 async function s3Upload(req, res) {
     let { ingreso, formData } = req.body
@@ -276,8 +279,8 @@ async function cargarcbu(req, res) {
     cuil_cuit = myArray[0]
     numero = myArray[1]
     lazo = myArray[2]
-
-
+    cuil_cuit_lazo = myArray[3]
+    cuil_cuit_lazo = ponerguion.ponerguion(cuil_cuit_lazo)
 
     const datoss = {
         ubicacion: formData.file.originalFilename,
@@ -285,6 +288,7 @@ async function cargarcbu(req, res) {
         numero,
         lazo,
         estado: "P",
+        cuil_cuit_lazo
 
     }
     console.log(datoss)
@@ -324,6 +328,7 @@ async function pagarniv1(req, res) {
     monto = myArray[2]
     fecha = myArray[3]
     fechapago = myArray[4]
+    id_cbu = myArray[4]
     auxiliarfecha = fechapago.split("-");
     fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
 
@@ -371,7 +376,8 @@ async function pagarniv1(req, res) {
             //////// COMPARACION CON EL EXTRACTO
             try {
                 
-          
+             aux_cbu =  await pool.query('Select * from cbus where id = ? ', [id_cbu])
+
             const workbook = XLSX.readFile('./src/Excel/' + extracto[0]['ubicacion'])
             const workbooksheets = workbook.SheetNames
             const sheet = workbooksheets[0]
@@ -396,24 +402,13 @@ async function pagarniv1(req, res) {
             const id_cuota = existe[0]["id"]
             console.log(id_cuota)
             console.log(1)
-            const newInu = {
-                id_cuota,
-                cuil_cuit,
-                estado,
-                mes,
-                anio,
-
-
-            };
-
-            await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
+           ////////se borro la carga directa en apgos inusuales 
 
 
             const newLink = {
                 id_cuota,
                 monto,
                 cuil_cuit,
-
                 mes,
                 estado: estadoo,
                 anio,
@@ -421,6 +416,7 @@ async function pagarniv1(req, res) {
                 monto_distinto,
                 monto_inusual,
                 ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                id_cbu
 
             };
             console.log(1)
