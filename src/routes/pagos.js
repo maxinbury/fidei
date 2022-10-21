@@ -65,16 +65,17 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                 
                 if (descripcion.length > 7) {
                     descripcion = ponerguion.ponerguion(descripcion)
-                   console.log('descripcion')
+                  
                     desc = (dataExcel[property]['Descripción'])
                     let arr = desc.split('-');
                     
                     nombre = arr[3] 
-                    
+                    fecha = dataExcel[property]['']
                     referencia = dataExcel[property]['Referencia']
                     debitos = dataExcel[property]['Débitos']
                     creditos = dataExcel[property]['Créditos']
                     nuevo = {
+                        fecha,
                         descripcion,
                         referencia,
                         debitos,
