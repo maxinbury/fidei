@@ -61,6 +61,21 @@ router.get('/borrartodoslospagos', isLoggedInn2,  async (req, res) => {
  res.send('borrado')
 
 })
+/////traer todos los pagos
+router.get('/pagos', isLoggedInn2,  async (req, res) => {
+
+ pagos =  await pool.query('select  * from pagos ')
+
+ res.json(pagos)
+
+})
+//// borrar un pago
+router.get('/borrarpago/:id', isLoggedInn2,  async (req, res) => {
+  const id = req.params.id
+  await pool.query('DELETE FROM pagos WHERE id= ?', [id])
+  res.send('enviado')
+ 
+})
 
 // LISTA TODAS PENDIENTES PAra React
 //   ver***
