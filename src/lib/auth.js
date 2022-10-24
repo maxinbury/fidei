@@ -4,7 +4,7 @@ module.exports = {
 
 
     isLoggedInn(req,res, next){
-        console.log('entra1')
+        
         //
         const authorization = req.get('authorization')
         let token =null

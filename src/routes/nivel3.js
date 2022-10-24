@@ -180,11 +180,13 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
             const Ajuste_ICC =  (cuota_con_ajuste_anterior * ICC).toFixed(2)
             console.log(Base_calculo)
             const cuota_con_ajuste = (parseFloat(cuota_con_ajuste_anterior) + parseFloat(Ajuste_ICC)).toFixed(2)
+            console.log('Saldoreal')
+            Saldo_real_anterior = (parseFloat(Saldo_real_anterior) +  parseFloat(Ajuste_ICC))
             console.log(typeof Saldo_real_anterior )
-            console.log(typeof Ajuste_ICC )
-            Saldo_real_anterior = Saldo_real_anterior +  parseFloat(Ajuste_ICC)
-            console.log(typeof Saldo_real_anterior )
-            const Saldo_real = parseFloat(Saldo_real_anterior)
+            console.log(Ajuste_ICC )
+            console.log(Saldo_real_anterior )
+            const Saldo_real = parseFloat(Saldo_real_anterior).toFixed(2)
+            console.log('Saldoreal')
 
             
             var cuota = {
@@ -194,16 +196,16 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
                 cuota_con_ajuste,
                 Saldo_real,
                 parcialidad,
-                Saldo_real
+                
     
             }
-            console.log(todas[i]["id"])
+            console.log(cuota)
         }
     
         try {
   
             await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
-            console.log('llega')
+      
 
         } catch (error) {
             console.log(error)
