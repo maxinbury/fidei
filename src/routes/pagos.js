@@ -8,7 +8,8 @@ const path = require('path')
 const fs = require('fs')
 const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
-const sacarguion = require('../../public/apps/transformarcuit')
+const sacarguion = require('../public/apps/transformarcuit')
+const { Console } = require('console')
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../Excel'),
     filename: (req, file, cb) => {
@@ -30,8 +31,8 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     const nombree = estract[0]['ubicacion']
     console.log(nombree)
     let mandar = []
-   // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
-   const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
+    // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
+    const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
     // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
@@ -40,7 +41,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     //console.log(dataExcel)
 
     let regex = /(\d+)/g;
-   
+
     for (const property in dataExcel) {
 
 
@@ -57,19 +58,19 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
         descripcion = (dataExcel[property]['Descripción']).match(regex)
 
-        if (descripcion !=  null) {
-            
+        if (descripcion != null) {
+
             try {
-                
+
                 descripcion = descripcion.toString();
-                
+
                 if (descripcion.length > 7) {
                     descripcion = ponerguion.ponerguion(descripcion)
-                  
+
                     desc = (dataExcel[property]['Descripción'])
                     let arr = desc.split('-');
-                    
-                    nombre = arr[3] 
+
+                    nombre = arr[3]
                     fecha = dataExcel[property]['']
                     referencia = dataExcel[property]['Referencia']
                     debitos = dataExcel[property]['Débitos']
@@ -83,8 +84,8 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                         nombre
 
                     }
-                   
-                   
+
+
                     mandar.push(nuevo);
                 }
 
@@ -103,7 +104,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
 
     }
-   console.log(mandar)
+    console.log(mandar)
     res.json(mandar)
 
 
@@ -129,22 +130,29 @@ router.get('/todoslosextractos', isLoggedInn2, async (req, res,) => {
 
 /// VER COINCIDENCIAS
 router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
-    id_lote = req.params.id
+    id = req.params.id
 
     try {
-        pago = await pool.query('select * from pagos where id = ? ',[id])
-        cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
-        let extracto = await pool.query('Select * from extracto ')
-        cantidad= extracto.length
 
+        pago = await pool.query('select * from pagos  join cbus on pagos.id_cbu = cbus.id where pagos.id = ? ', [id])
+
+        cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
+        monto = Math.trunc(parseFloat(pago[0]['monto']))
+
+        let regex = /(\d+)/g;
+        let extracto = await pool.query('Select * from extracto ')
+        cantidad = extracto.length
+        let mandar = []
         //////// COMPARACION CON EL EXTRACTO
-   
+
         try {
-            let  i = 0
-         
-            cuil_cuit_lazo= sacarguion.sacarguion(cuil_cuit_lazo)
-            while ((i<(cantidad-1))  ) {
-               
+            let i = 0
+
+            cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
+            console.log(cuil_cuit_lazo)
+
+            while ((i < (cantidad - 1))) {
+
                 ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
 
 
@@ -156,75 +164,96 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                 const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
 
                 try {
-                    console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo ))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
-                for (const property in dataExcel) {////////////recorrido del extracto
-                  
-               
-                        
-                   
-                    if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
-                        
-                        // tipo de pago normal 
-                        cuil_cuit_distinto = 'No'
-                        credito = (dataExcel[property]['Créditos'])
-                        credito= credito.split(",");
+                    console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
+                    for (const property in dataExcel) {////////////recorrido del extracto
 
-                        entero = credito[0].match(regex)
-                        enteroo = entero[0]+entero[1]
-                      //////////////ver el tema de que si son mas digitos
-                      
-                      //  entero= entero[0]+entero[1]
-                       // entero=entero.replace(',','')
-                         decimal = credito[1].match(regex)
-                         credito = enteroo+'.'+decimal
-                    
-                         console.log(monto)
-                        console.log(credito)
 
-                        if (monto === credito) {
-                          
+
+
+
+                        if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
+
                             // tipo de pago normal 
-                            monto_distinto = 'No'
-                            estadoo='A'
+                            descripcion = (dataExcel[property]['Descripción']).match(regex)
+                            descripcion = ponerguion.ponerguion(descripcion)
+                            desc = (dataExcel[property]['Descripción'])
+                            let arr = desc.split('-');
+                            nombre = arr[3]
+                            fecha = dataExcel[property]['']
+                            referencia = dataExcel[property]['Referencia']
+                            debitos = dataExcel[property]['Débitos']
+                            creditos = dataExcel[property]['Créditos']
+                            console.log('encuentra')
+                            ///////agregar detaññes
+                            nuevo = {
+                                fecha,
+                                descripcion,
+                                referencia,
+                                debitos,
+                                creditos,
+                                nombre
+
+                            }
+
+
+                            mandar.push(nuevo);
+
+                        } else {
+                            try {
+                                (dataExcel[property]['Créditos']).includes(cuil_cuit_lazo)
+
+                                if ((dataExcel[property]['Créditos']).includes(cuil_cuit_lazo)) {
+                                    descripcion = (dataExcel[property]['Descripción']).match(regex)
+                                    descripcion = ponerguion.ponerguion(descripcion)
+                                    desc = (dataExcel[property]['Descripción'])
+                                    let arr = desc.split('-');
+                                    nombre = arr[3]
+                                    fecha = dataExcel[property]['']
+                                    referencia = dataExcel[property]['Referencia']
+                                    debitos = dataExcel[property]['Débitos']
+                                    creditos = dataExcel[property]['Créditos']
+                                    console.log('encuentra')
+                                    ///////agregar detaññes
+                                    nuevo = {
+                                        fecha,
+                                        descripcion,
+                                        referencia,
+                                        debitos,
+                                        creditos,
+                                        nombre
+
+                                    }
+
+
+                                    mandar.push(nuevo);
+                                }
+                            } catch (error) {
+
+                            }
                         }
 
-                            ///////agregar detaññes
-                        nuevo = {
-                            fecha,
-                            descripcion,
-                            referencia,
-                            debitos,
-                            creditos,
-                            nombre
-    
-                        }
-                       
-                       
-                        mandar.push(nuevo);
+
 
                     }
-                    
-               
-
+                } catch (error) {
+                    console.log(error)
                 }
-            } catch (error) {
-                console.log(error)   
-           }
-                i+= 1
+                i += 1
             } //// fin comparacion de estractos
-        
-           
+
+            res.json(mandar)
         } catch (error) {
-            console.log(error)
+
         }
-        
-        
-        
+
+
+
 
 
 
 
     } catch (error) {
+        console.log(error)
         res.send('algo salio mal')
     }
 
