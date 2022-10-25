@@ -8,7 +8,7 @@ const path = require('path')
 const fs = require('fs')
 const XLSX = require('xlsx')
 const ponerguion = require('../public/apps/transformarcuit')
-
+const sacarguion = require('../../public/apps/transformarcuit')
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../Excel'),
     filename: (req, file, cb) => {
@@ -127,7 +127,109 @@ router.get('/todoslosextractos', isLoggedInn2, async (req, res,) => {
 
 })
 
-///
+/// VER COINCIDENCIAS
+router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
+    id_lote = req.params.id
+
+    try {
+        pago = await pool.query('select * from pagos where id = ? ',[id])
+        cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
+        let extracto = await pool.query('Select * from extracto ')
+        cantidad= extracto.length
+
+        //////// COMPARACION CON EL EXTRACTO
+   
+        try {
+            let  i = 0
+         
+            cuil_cuit_lazo= sacarguion.sacarguion(cuil_cuit_lazo)
+            while ((i<(cantidad-1))  ) {
+               
+                ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
+
+
+
+                const workbook = XLSX.readFile('./src/Excel/' + extracto[i]['ubicacion'])
+                const workbooksheets = workbook.SheetNames
+                const sheet = workbooksheets[0]
+
+                const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+
+                try {
+                    console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo ))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
+                for (const property in dataExcel) {////////////recorrido del extracto
+                  
+               
+                        
+                   
+                    if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
+                        
+                        // tipo de pago normal 
+                        cuil_cuit_distinto = 'No'
+                        credito = (dataExcel[property]['Créditos'])
+                        credito= credito.split(",");
+
+                        entero = credito[0].match(regex)
+                        enteroo = entero[0]+entero[1]
+                      //////////////ver el tema de que si son mas digitos
+                      
+                      //  entero= entero[0]+entero[1]
+                       // entero=entero.replace(',','')
+                         decimal = credito[1].match(regex)
+                         credito = enteroo+'.'+decimal
+                    
+                         console.log(monto)
+                        console.log(credito)
+
+                        if (monto === credito) {
+                          
+                            // tipo de pago normal 
+                            monto_distinto = 'No'
+                            estadoo='A'
+                        }
+
+                            ///////agregar detaññes
+                        nuevo = {
+                            fecha,
+                            descripcion,
+                            referencia,
+                            debitos,
+                            creditos,
+                            nombre
+    
+                        }
+                       
+                       
+                        mandar.push(nuevo);
+
+                    }
+                    
+               
+
+                }
+            } catch (error) {
+                console.log(error)   
+           }
+                i+= 1
+            } //// fin comparacion de estractos
+        
+           
+        } catch (error) {
+            console.log(error)
+        }
+        
+        
+        
+
+
+
+
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+
+})
 
 ///////////////// REALIZAR PAGO MANUAL NIVEL 2 
 

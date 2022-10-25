@@ -368,7 +368,7 @@ async function pagarniv1(req, res) {
             cantidad= extracto.length
 
             //////// COMPARACION CON EL EXTRACTO
-            console.log(id_cbu)
+       
             aux_cbu = await pool.query('Select * from cbus where id = ? ', [id_cbu])
            
             cuil_cuit_lazo = aux_cbu[0]['cuil_cuit_lazo']
@@ -420,6 +420,7 @@ async function pagarniv1(req, res) {
                               
                                 // tipo de pago normal 
                                 monto_distinto = 'No'
+                                estadoo='A'
                             }
 
                         }
