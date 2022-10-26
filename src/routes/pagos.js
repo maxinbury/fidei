@@ -135,10 +135,11 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
     try {
 
         pago = await pool.query('select * from pagos  join cbus on pagos.id_cbu = cbus.id where pagos.id = ? ', [id])
-
+        
         cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
         monto = Math.trunc(parseFloat(pago[0]['monto']))
-
+        monto = String(monto)
+        console.log(monto)
         let regex = /(\d+)/g;
         let extracto = await pool.query('Select * from extracto ')
         cantidad = extracto.length
@@ -146,16 +147,14 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
         //////// COMPARACION CON EL EXTRACTO
 
         try {
-            let i = 0
+         
 
             cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
             console.log(cuil_cuit_lazo)
 
-            while ((i < (cantidad - 1))) {
+            for (var i = 0; i < extracto.length; i++) {
 
                 ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
-
-
 
                 const workbook = XLSX.readFile('./src/Excel/' + extracto[i]['ubicacion'])
                 const workbooksheets = workbook.SheetNames
@@ -200,9 +199,9 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
                         } else {
                             try {
-                                (dataExcel[property]['Créditos']).includes(cuil_cuit_lazo)
-
-                                if ((dataExcel[property]['Créditos']).includes(cuil_cuit_lazo)) {
+                               cred =  (dataExcel[property]['Créditos']).match(regex)
+                              
+                                if (cred.includes(monto)) {
                                     descripcion = (dataExcel[property]['Descripción']).match(regex)
                                     descripcion = ponerguion.ponerguion(descripcion)
                                     desc = (dataExcel[property]['Descripción'])
@@ -238,7 +237,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                 } catch (error) {
                     console.log(error)
                 }
-                i += 1
+             
             } //// fin comparacion de estractos
 
             res.json(mandar)
@@ -431,65 +430,43 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
 
         if (nro_cuota < cant_finales.length) {
-            for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
-                console.log(ii)
+            if (pago < monto + pago - diferencia) { // si el pago ya superó el total }
 
-                // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-                //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                /* console.log('saldo real')
-                console.log(saldo_realc)
-                console.log(cant_finales[ii]["nro_cuota"])
-                if (bandera){
-                    auxx=parseFloat(monto) ///monto es el pago del momento
-                    bandera=false
-                }else {
-                    auxx=0
-                }
-                console.log(auxx)
-                console.log(cuota_con_ajuste)
-                console.log(bandera) */
-                /*    if (cant_finales[ii]["nro_cuota"]>1){
-                       anterior = await pool.query('select * from cuotas where  id_lote = ? and nro_cuota = ?',[id_lote,(cant_finales[ii]["nro_cuota"]-1)])
-                       console.log(anterior)
-                       auxx= auxx + anterior[0]['diferencia']
-                   } */
-                /*       if (cuota_con_ajuste < parseFloat(cant_finales[ii]["pago"]) + auxx) {
+             
+                for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
+                    console.log(ii)
+                    if (diferencia > 0) {
+                        //saldo real seria Saldo
+
+                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto -pago + diferencia).toFixed(2)
+
+                        idaux = cant_finales[ii]["id"]
+                        a = ii
+                        //  Saldo_real = saldo_realc - monto
+
+                        update = {
+                            Saldo_real: saldo_realc,
+
+                        }
+                        console.log(update)
 
 
-                          console.log('pasa')
-                          Saldo_real = parseFloat(cant_finales[ii]["saldo_cierre"])
-                          
-                          diferencia =  auxx + parseFloat(cant_finales[ii]["pago"]) - cuota_con_ajuste
-                          console.log(diferencia)
-                         //////diferencia suma el doble el que ya estaba
+                        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
-                      } else {
-                          console.log(diferencia)
-                          Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                          diferencia = 0
-                          console.log('no pasa')
-                          
-                      } */
+                    } /*else  {
 
-                idaux = cant_finales[ii]["id"]
-                a = ii
-                //  Saldo_real = saldo_realc - monto
+                        // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
+                        //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
+                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
+                    } */
 
-                update = {
-                    Saldo_real: saldo_realc,
+
+
+
 
                 }
-                console.log(update)
-
-
-                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-
-
-
-
-
             }
+
         }
         updatepago = {
             estado: "A"
