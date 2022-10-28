@@ -200,13 +200,14 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
     let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
     const cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
     // console.log(cantidad)    cantidad de liquidadas y vencidas
-    const devengado = (await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)']
+    const devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'].toFixed(2))
     // console.log(devengado)
 
-    const abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota  where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
-    //console.log(abonado)
+    const abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
+    console.log('abonado')
+    console.log(abonado)
    
-    exigible = devengado - abonado
+    exigible = (devengado - abonado).toFixed(2)
     if (cantidad == undefined) {
        
         const dato1 = {

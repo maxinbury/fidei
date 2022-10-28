@@ -26,10 +26,10 @@ const fileUpload = multer({
 
 router.post('/extractoid', isLoggedInn2, async (req, res) => {
     const { id } = req.body
-    console.log(id)
+   
     const estract = await pool.query('select * from extracto where id = ? ', [id])
     const nombree = estract[0]['ubicacion']
-    console.log(nombree)
+    
     let mandar = []
     // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
     const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
@@ -90,8 +90,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                 }
 
             } catch (error) {
-                console.log('error 1')
-                console.log(error)
+               
 
             }
         } else { console.log('null') }
@@ -104,7 +103,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
 
     }
-    console.log(mandar)
+  
     res.json(mandar)
 
 
@@ -135,7 +134,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
     try {
 
         pago = await pool.query('select * from pagos  join cbus on pagos.id_cbu = cbus.id where pagos.id = ? ', [id])
-        
+        cuil_cuit= pago[0]['cuil_cuit']
         cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
         monto = Math.trunc(parseFloat(pago[0]['monto']))
         monto = String(monto)
@@ -148,12 +147,12 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
         try {
          
-
+            
             cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
-            console.log(cuil_cuit_lazo)
+            console.log(cuil_cuit)
 
             for (var i = 0; i < extracto.length; i++) {
-
+                console.log(i)
                 ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
 
                 const workbook = XLSX.readFile('./src/Excel/' + extracto[i]['ubicacion'])
@@ -168,10 +167,10 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
 
 
+                        
 
-
-                        if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
-
+                        if ( ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) || ((dataExcel[property]['Descripción']).includes(cuil_cuit)) ) {
+                          
                             // tipo de pago normal 
                             descripcion = (dataExcel[property]['Descripción']).match(regex)
                             descripcion = ponerguion.ponerguion(descripcion)
@@ -199,9 +198,9 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
                         } else {
                             try {
-                               cred =  (dataExcel[property]['Créditos']).match(regex)
-                              
-                                if (cred.includes(monto)) {
+                                creditoString = String(dataExcel[property]['Créditos'])
+                               if (creditoString.includes(monto)) {
+                                console.log('si')
                                     descripcion = (dataExcel[property]['Descripción']).match(regex)
                                     descripcion = ponerguion.ponerguion(descripcion)
                                     desc = (dataExcel[property]['Descripción'])
@@ -223,11 +222,10 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
                                     }
 
-
                                     mandar.push(nuevo);
                                 }
                             } catch (error) {
-
+                                    
                             }
                         }
 
