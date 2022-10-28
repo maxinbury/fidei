@@ -341,6 +341,8 @@ async function pagarniv1(req, res) {
 
 
     try {
+        
+        
         //// realizar el pago
         let estadoo = 'P'
         let cuil_cuit_distinto = 'Si'
@@ -406,7 +408,7 @@ async function pagarniv1(req, res) {
 
 
 
-                                credito = (dataExcel[property]['Créditos'])
+                                credito = String(dataExcel[property]['Créditos'])
                                 
 
                                 try {
@@ -415,9 +417,9 @@ async function pagarniv1(req, res) {
                                     console.log(credito)
                                     console.log('monto')
                                     console.log(monto)
-                                    monto= parseInt(monto)
+                                  
                                     
-                                if (credito.includes(monto)) {
+                                if (credito === monto) {
                                      console.log('entra')
                                      monto_distinto = 'No'
                                      estadoo = 'A'}
@@ -509,7 +511,7 @@ async function pagarniv1(req, res) {
 
 
                     } else {
-                        console.log('no pasa')
+                        
                         Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
                         diferencia = 0
 
@@ -637,7 +639,7 @@ async function pagonivel2(req, res) {
 
     const myArray = formData.datos.split(",");
     console.log(myArray)
-    cuil_cuit = myArray[0] /// del administrador
+    cuil_cuit_administrador = myArray[0] /// del administrador
     id = myArray[1]
     monto = myArray[2]
 
@@ -646,7 +648,8 @@ async function pagonivel2(req, res) {
 
     try {
         //// realizar el pago
-        let estadoo = 'P'
+   
+        
 
 
         let cuil_cuit_distinto = 'No'
@@ -656,7 +659,7 @@ async function pagonivel2(req, res) {
 
         const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
         aux = '%' + cuota[0]["cuil_cuit"] + '%'
-        cuil_cuit_admin = cuil_cuit
+        
         cuil_cuit = cuota[0]["cuil_cuit"]
         let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
         let saldo_realc = cuota[0]["Saldo_real"]
@@ -692,17 +695,8 @@ async function pagonivel2(req, res) {
 
             const id_cuota = id
 
-            const newInu = {
-                id_cuota,
-                cuil_cuit,
-                estado,
-                mes,
-                anio,
-
-
-            };
-
-            await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
+            
+            
 
 
             const newLink = {
@@ -712,6 +706,7 @@ async function pagonivel2(req, res) {
                 mes,
                 estado: estado,
                 anio,
+                cuil_cuit_administrador,
                 cuil_cuit_distinto,
                 monto_distinto,
                 monto_inusual,
@@ -740,7 +735,7 @@ async function pagonivel2(req, res) {
                 } else {
                     console.log('no pasa')
                     Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                    diferencia = 0
+                    diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
 
                 }
 
@@ -840,6 +835,7 @@ async function pagonivel2(req, res) {
 
         /////
     } catch (error) {
+        console.log(error)
         res.send('Error no se pudo enviar')
     }
 
