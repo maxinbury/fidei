@@ -78,8 +78,8 @@ router.get("/edit/:id", isLoggedIn, isLevel2, edit_c)
 router.get("/agregar_icc/:id", isLoggedIn, isLevel2, agregar_icc)
 
 
-// ACCION DE  AGREGAR ICC
-router.post('/agregaricc', isLevel2, post_agregaricc)
+// ACCION DE  AGREGAR ICC  REACT
+router.post('/agregaricc', isLoggedInn2, post_agregaricc)
 
 
 
@@ -200,16 +200,16 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
     let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
     const cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
     // console.log(cantidad)    cantidad de liquidadas y vencidas
-    const devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'].toFixed(2))
+    const devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'])
     // console.log(devengado)
 
     const abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
-    console.log('abonado')
-    console.log(abonado)
+    console.log('cantidad')
+    console.log(cantidad)
    
     exigible = (devengado - abonado).toFixed(2)
-    if (cantidad == undefined) {
-       
+    if (cantidad === 0) {
+       console.log('undefined')
         const dato1 = {
             'datoa': 'Cantidad de cuotas liquidadas y vencidas',
             'datob': "No hay cuotas Calculadas"
@@ -229,15 +229,15 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
         const deuda_exigible = [dato1, dato2, dato3, dato4]
         const dato5 = {
             'datoa': 'Cantidad de cuotas a Vencer',
-            'datob': cantidad2
+            'datob': 'no calculado'
         }
         const dato6 = {
             'datoa': 'Monto cuota pura',
-            'datob': Amortizacion
+            'datob': 'no calculado'
         }
         const dato7 = {
             'datoa': 'Saldo de capital a vencer',
-            'datob': capital
+            'datob': 'no calculado'
         }
 
         const cuotas_pendientes = [dato5, dato6, dato7]
@@ -246,7 +246,8 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
 
         res.json(respuesta)
     } else {
-       
+           console.log('defined')
+        devengado.toFixed(2)
         //////SI HAY CUOTAS 
         const dato1 = {
             'datoa': 'Cantidad de cuotas liquidadas y vencidas',
