@@ -78,6 +78,8 @@ app.use('/expedientes', require('./routes/expedientes'))
 app.use('/relevamiento', require('./routes/relevamiento'))
 app.use('/notificaciones', require('./routes/notificaciones'))
 app.use('/administracion', require('./routes/Administracion'))
+app.use('/esme', require('./routes/esme'))
+
 
 app.use(express.static(path.join(__dirname,'../pdfs')))
 app.use(express.static(path.join(__dirname,'pdfs')))
