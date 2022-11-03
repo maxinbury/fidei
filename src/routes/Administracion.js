@@ -79,10 +79,10 @@ router.get('/borrarpago/:id', isLoggedInn2,  async (req, res) => {
 
 // LISTA TODAS PENDIENTES PAra React
 //   ver***
-router.get('/borrar/:cuil_cuit', isLoggedInn2,  async (req, res) => {
+router.get('/borrarusuario/:cuil_cuit', isLoggedInn2,  async (req, res) => {
     const { cuil_cuit } = req.params
 
-    await pool.query('DELETE FROM clientes WHERE cuil_cuit = ?', [cuil_cuit])
+    await pool.query('DELETE FROM users WHERE cuil_cuit = ?', [cuil_cuit])
    res.send('borrado')
 
 })
