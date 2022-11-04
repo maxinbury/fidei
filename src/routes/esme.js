@@ -11,6 +11,15 @@ router.get('/listacursos', async (req, res) => {
 
 })
 
+router.get('/alumnos', async (req, res) => {
+
+    const lista = await pool.query('select * from esmealumnos')
+
+    res.json(lista)
+
+})
+
+
 router.get('/clases/:id', async (req, res) => {
     const id = req.params.id
     const lista = await pool.query('select * from esmeclases where id_curso = ?',[id])
@@ -35,14 +44,14 @@ router.post('/nuevocurso', async (req, res) => {
         profesor,
         otro
     }
-    
+    console.log(newLink)
     await pool.query('insert esmecursos  set ?', newLink)
 
         
     
         res.send('todo ok ')
    } catch (error) {
-    res.send(error)
+    console.log(error)
    }
    
    
@@ -51,21 +60,26 @@ router.post('/nuevocurso', async (req, res) => {
 
 
     router.post('/nuevaclase', async (req, res) => {
-        const {tema, fecha,otro }= req.body
+        let {tema, fecha,otro }= req.body
        try {
+        arr = fecha.split('-')
+        fecha= arr[2]+'/'+arr[1]+'/'+arr[0]
+       
+        console.log(fecha)
+        
         const newLink = {
-            nombre,
+            tema,
             fecha,
             otro
         }
         console.log(newLink)
-       await pool.query('insert esmeclases  set ?', newLink)
+      // await pool.query('insert esmeclases  set ?', newLink)
     
             
         
             res.send('todo ok ')
        } catch (error) {
-        res.send(error)
+        console.log(error)
        }
        
        
