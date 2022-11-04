@@ -27,7 +27,13 @@ router.get('/clases/:id', async (req, res) => {
     res.json([lista,curso])
 
 })
+router.get('/alumno/:id', async (req, res) => {
+    const id = req.params.id
+    const al = await pool.query('select * from esmealumnos where id = ?',[id])
+  
+    res.json(al)
 
+})
 
 router.get('/expediente/:id', async (req, res) => {
 const id = req.params.id
@@ -60,7 +66,7 @@ router.post('/nuevocurso', async (req, res) => {
 
 
     router.post('/nuevaclase', async (req, res) => {
-        let {tema, fecha,otro }= req.body
+        let {id,tema, fecha,otro }= req.body
        try {
         arr = fecha.split('-')
         fecha= arr[2]+'/'+arr[1]+'/'+arr[0]
@@ -70,10 +76,11 @@ router.post('/nuevocurso', async (req, res) => {
         const newLink = {
             tema,
             fecha,
-            otro
+            otro,
+            id_curso:id
         }
         console.log(newLink)
-      // await pool.query('insert esmeclases  set ?', newLink)
+      await pool.query('insert esmeclases  set ?', newLink)
     
             
         
@@ -87,6 +94,30 @@ router.post('/nuevocurso', async (req, res) => {
         })
     
 
-
+        router.post('/nuevoalumno', async (req, res) => {
+            let {nombre, apellido,dni,mail, tel }= req.body
+           try {
+       
+            
+            const newLink = {
+                nombre,
+                apellido,
+                dni,
+                mail,
+                tel
+            }
+            console.log(newLink)
+          await pool.query('insert esmealumnos set ?', newLink)
+        
+                
+            
+                res.send('todo ok ')
+           } catch (error) {
+            console.log(error)
+           }
+           
+           
+            
+            })
 
 module.exports = router
