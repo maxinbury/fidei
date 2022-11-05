@@ -42,6 +42,35 @@ const id = req.params.id
     res.json(exp)
 
 })
+
+router.get('/alumnosdelcurso/:id', async (req, res) => {
+    const id = req.params.id
+        
+        const exp = await pool.query('select * from esmecursado join esmealumnos on esmecursado.id_alumno = esmealumnos.id  where esmecursado.id_clase= ?',[id])
+        console.log(exp)
+        res.json(exp)
+    
+    })
+    router.get('/alumnosdelcursoclase/:id', async (req, res) => {
+        const id = req.params.id
+
+        ///id es la clase 
+        clase = await pool.query('select * from esmeclases where id = ?',[id])
+
+        curso = await pool.query('select * from esmecursos where id = ?',[clase[0]['id_curso']])
+
+        cursado = await pool.query('select * from esmecursado where id_clase = ?',[curso[0]['id_curso']])
+
+       // const exp = await pool.query('select * from esmecursado join esmealumnos on esmecursado.id_alumno = esmealumnos.id  where esmecursado.id_clase= ?',[id])
+       const exp = await pool.query('select *  from ((esmeclases inner join esmecursado on esmeclases.id_curso = esmecursado.id_clase)   join  esmealumnos on  esmecursado.id_alumno =  esmealumnos.id) left join  esmeasistencia on esmecursado.id_alumno =  esmeasistencia.id_alumnoo  where esmeclases.id= ?',[id])
+            console.log(exp)
+            console.log(exp.id_alumno)
+            res.json(exp)
+        
+        })
+
+    
+
 router.post('/nuevocurso', async (req, res) => {
     const {nombre, profesor,otro }= req.body
    try {
@@ -63,8 +92,29 @@ router.post('/nuevocurso', async (req, res) => {
    
     
     })
-
-
+    router.post('/asignarcurso', async (req, res) => {
+        let {id,curso}= req.body
+       try {
+   
+        
+        const newLink = {
+            id_alumno:id,
+            id_clase:curso
+        }
+        console.log(newLink)
+      await pool.query('insert esmecursado set ?', newLink)
+    
+            
+        
+            res.send('todo ok ')
+       } catch (error) {
+        console.log(error)
+       }
+       
+       
+        
+        })
+    
     router.post('/nuevaclase', async (req, res) => {
         let {id,tema, fecha,otro }= req.body
        try {
@@ -119,5 +169,76 @@ router.post('/nuevocurso', async (req, res) => {
            
             
             })
+
+
+            router.post('/ponerpresente', async (req, res) => {
+                let {id_alumno,id_clase }= req.body
+               try {
+           
+                existe = await pool.query('select * from esmeasistencia where id_alumnoo = ? and id_clasee = ?',[id_alumno,id_clase])
+                if (existe.length >0){
+                    const newLink = {
+                        otroo:'Presente'
+                       
+                    }
+
+                    await pool.query('UPDATE esmeasistencia set ? WHERE id_alumnoo = ? and id_clasee = ?', [newLink, id_alumno,id_clase])
+                }else{
+                const newLink = {
+                    id_alumnoo:id_alumno,
+                    id_clasee:id_clase,
+                    otroo:'Presente'
+                   
+                }
+               
+              await pool.query('insert esmeasistencia set ?', newLink)
+            }
+            
+                    
+                
+                    res.send('todo ok ')
+               } catch (error) {
+                console.log(error)
+               }
+               
+               
+                
+                })
+                router.post('/ponerausente', async (req, res) => {
+                    let {id_alumno,id_clase }= req.body
+                   try {
+               
+                    existe = await pool.query('select * from esmeasistencia where id_alumnoo = ? and id_clasee = ?',[id_alumno,id_clase])
+                    if (existe.length >0){
+                        const newLink = {
+                            otroo:'Ausente'
+                           
+                        }
+
+                        await pool.query('UPDATE esmeasistencia set ? WHERE id_alumnoo = ? and id_clasee = ?', [newLink, id_alumno,id_clase])
+                    }else{
+                    const newLink = {
+                        id_alumnoo:id_alumno,
+                        id_clasee:id_clase,
+                        otroo:'Ausente'
+                       
+                    }
+                   
+                  await pool.query('insert esmeasistencia set ?', newLink)
+                }
+                
+                        
+                    
+                        res.send('todo ok ')
+                   } catch (error) {
+                    console.log(error)
+                   }
+                   
+                   
+                    
+                    })
+
+
+            
 
 module.exports = router
