@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn,isLoggedInn2 } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
-const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, rechazo, aprobacioncbu, aprobarcbu,rechazarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
+const {pendientes,aprobar, rechazar2, rechazarcomp,pendientestodas, rechazo, aprobacioncbu, aprobarcbu,rechazarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
 
 
 
@@ -27,10 +27,7 @@ router.post('/rechazarcbu/',isLoggedInn2, rechazarcbu)
 
 router.get('/',pendientes)
 
-// APROBACION DE CONSTANCIA
-
-router.get('/aprobarcomp/:id', isLoggedIn, aprobarcomp)
-
+/
 
 ////RECHAZO DE COMPROBANTE PAGINA DE RELLENO
 router.get('/rechazarcomp/:id', isLoggedIn, rechazarcomp

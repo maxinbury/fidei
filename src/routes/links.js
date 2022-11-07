@@ -9,6 +9,8 @@ const multer = require('multer')
 const path = require('path')
 const sacarguion = require('../public/apps/transformarcuit')
 const nodemailer = require("nodemailer");
+const enviodemail = require('./Emails/Enviodemail')
+
 /* const aws = require ('aws-sdk')
 /////////aws
 aws.config.update({
@@ -33,48 +35,57 @@ const upload = multer({
 }) */
 
 
-//Prueba demandar  mail
 
-router.get('/enviarmailprueba/',isLoggedInn2, async (req, res) => {
-   // const cuil_cuit = req.params.cuil_cuit
-    //  fs.writeFileSync(path.join(__dirname,'../dbimages/'))
+router.post('/enviarmailprueba/',isLoggedInn2, async (req, res) => {
+    const {cuil_cuit} = req.body
+console.log(cuil_cuit)
+  cli = await pool.query ('select * from clientes where cuil_cuit = ?',[cuil_cuit])
+    
+mensaje= 'Hola como estas '
+console.log(cli)
+console.log(mensaje)
+email = cli[0]['email']
+asunto = 'etc'
+encabezado= 'este mail es muy importante'
+enviodemail.enviarmail(email,asunto,encabezado,mensaje)
 
-    let transporter = nodemailer.createTransport({
-        host: "smtp-mail.outlook.com", // hostname
-        port: 587, // port for secure SMTP
-        secureConnection: false,
-        tls: {
-           ciphers:'SSLv3'
-        },
-        auth: {
-            user: 'fideicomisoSCatalina@outlook.com',
-            pass: '1385Fideicomiso'
-        }
-    });
-    
-      // send mail with defined transport object
-      let info = await transporter.sendMail({
-        from: '"Fred Foo 👻" <fideicomisoSCatalina@outlook.com>', // sender address
-        to: "pipao.pipo@gmail.com", // list of receivers
-        subject: "Hellozzzz ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
-      });
-    
-      console.log("Message sent: %s", info.messageId);
-      // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-    
-      // Preview only available when sending through an Ethereal account
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+   // main.main(mail,)
+
+
+/* 
+   let transporter = nodemailer.createTransport({
+    host: "smtp-mail.outlook.com", // hostname
+    port: 587, // port for secure SMTP
+    secureConnection: false,
+    tls: {
+       ciphers:'SSLv3'
+    },
+    auth: {
+        user: 'fideicomisoSCatalina@outlook.com',
+        pass: '1385Fideicomiso'
+    }
+});
+
+  // send mail with defined transport object
+  let info = await transporter.sendMail({
+    from: '"Administracion Santa Catalina " <fideicomisoSCatalina@outlook.com>', // sender address
+    to: ["elotroyo005@gmail.com", email], // list of receivers
+    subject: "Asunto lisa?", // Subject line
+    text: mensaje, // plain text body
+    html: "<b>Hello world?</b>", // html body
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+
+  // Preview only available when sending through an Ethereal account
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+
+ */
+
+
    
-
-    /*  legajos.map(img => {
-          fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
-  
-      })
-      const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
-   // res.json(legajos)
-
 
 })
 /////////aws
