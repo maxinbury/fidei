@@ -2,7 +2,7 @@ const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const pool = require('../database')
 const helpers = require('../lib/helpers')
-
+const jwt = require('jsonwebtoken')
 
 
 passport.use('local.signin', new LocalStrategy({

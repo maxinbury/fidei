@@ -1,5 +1,5 @@
 const pool = require('../database')
-
+const enviodemail = require('../routes/Emails/Enviodemail')
 
 
 //react
@@ -26,68 +26,20 @@ const aprobar = async (req, res) => {
     try {
 
 
-        await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["Aprobada", id])
+       await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["Aprobada", id])
 
 
-        let aux = await pool.query('select * from constancias  WHERE id = ?', [id])
-        const cuil_cuit = aux[0]['cuil_cuit']
-        aux = await pool.query('select * from constancias where cuil_cuit = ?', [cuil_cuit])
+        const  aux = await pool.query('select * from constancias  WHERE id = ?', [id])
+        const cli =  await pool.query('select * from clientes  WHERE cuil_cuit = ?', aux[0]['cuil_cuit'])
+        
+        mensaje= 'Notificamos la constancia ha sido aprobada '
 
-
-
-
-        aux = await pool.query('select * from constancias  WHERE tipo = "Dni" and estado ="A" and cuil_cuit = ?', [cuil_cuit])
-       /*  if (aux.length > 0) {
-            
-            aux = await pool.query('select * from constancias  WHERE tipo ="djorigen" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-            if (aux.length > 0) {
-                aux = await pool.query('select * from constancias  WHERE tipo ="djdatospers" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                if (aux.length > 0) {
-                    aux = await pool.query('select * from constancias  WHERE tipo ="djcalidadpers" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                    if (aux.length > 0) {
-                        aux = await pool.query('select * from constancias  WHERE tipo ="Domicilio" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                        if (aux.length > 0) {
-                            aux = await pool.query('select * from constancias  WHERE tipo ="Balance" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                            if (aux.length > 0) {
-                                aux = await pool.query('select * from constancias  WHERE tipo ="DjIVA" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                if (aux.length > 0) {
-                                    aux = await pool.query('select * from constancias  WHERE tipo ="Djprovision" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                    if (aux.length > 0) {
-                                         aux = await pool.query('select * from users  WHERE cuil_cuit = ?', [cuil_cuit])
-                                         console.log(aux)
-                                        if (aux[0]['razon'] > 'Empresa') { // si es empresa
-
-                                            aux = await pool.query('select * from constancias  WHERE tipo ="Estatuto" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                            if (aux.length > 0) {
-                                                aux = await pool.query('select * from constancias  WHERE tipo ="Actaorgano" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                                if (aux.length > 0) {
-                                                    console.log("entra")
-                                                    aux = await pool.query('select * from constancias  WHERE tipo ="ConstAFIP" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                                    if (aux.length > 0) {
-                                                        await pool.query("UPDATE users set habilitado = ? WHERE cuil_cuit = ?", ["SI", cuil_cuit])
-                                                    }
-                                                }
-
-                                            }
-
-
-                                        } else { // si es persona
-
-                                            aux = await pool.query('select * from constancias  WHERE tipo ="const_cuil" ="A" and cuil_cuit = ?', [cuil_cuit])
-                                            if (aux.length > 0) {
-                                               await pool.query("UPDATE users set habilitado = ? WHERE cuil_cuit = ?", ["SI", cuil_cuit])
-                                            }
-
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } */
+        email = cli[0]['email']
+        asunto = 'Constancia Aprobada'
+        encabezado= 'Importante'
+        
+        enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+       
     } catch (error) {
         console.log(error)
     }
@@ -121,81 +73,6 @@ const aprobar = async (req, res) => {
 }
 
 
-const aprobarcomp = async (req, res) => {
-    const { id } = req.params
-    try {
-
-
-        await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["A", id])
-
-
-        let aux = await pool.query('select * from constancias  WHERE id = ?', [id])
-        const cuil_cuit = aux[0]['cuil_cuit']
-        aux = await pool.query('select * from constancias where cuil_cuit = ?', [cuil_cuit])
-
-
-
-
-        aux = await pool.query('select * from constancias  WHERE tipo = "Dni" and estado ="A" and cuil_cuit = ?', [cuil_cuit])
-        if (aux.length > 0) {
-            
-            aux = await pool.query('select * from constancias  WHERE tipo ="djorigen" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-            if (aux.length > 0) {
-                aux = await pool.query('select * from constancias  WHERE tipo ="djdatospers" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                if (aux.length > 0) {
-                    aux = await pool.query('select * from constancias  WHERE tipo ="djcalidadpers" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                    if (aux.length > 0) {
-                        aux = await pool.query('select * from constancias  WHERE tipo ="Domicilio" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                        if (aux.length > 0) {
-                            aux = await pool.query('select * from constancias  WHERE tipo ="Balance" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                            if (aux.length > 0) {
-                                aux = await pool.query('select * from constancias  WHERE tipo ="DjIVA" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                if (aux.length > 0) {
-                                    aux = await pool.query('select * from constancias  WHERE tipo ="Djprovision" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                    if (aux.length > 0) {
-                                         aux = await pool.query('select * from users  WHERE cuil_cuit = ?', [cuil_cuit])
-                                         console.log(aux)
-                                        if (aux[0]['razon'] > 'Empresa') { // si es empresa
-
-                                            aux = await pool.query('select * from constancias  WHERE tipo ="Estatuto" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                            if (aux.length > 0) {
-                                                aux = await pool.query('select * from constancias  WHERE tipo ="Actaorgano" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                                if (aux.length > 0) {
-                                                    console.log("entra")
-                                                    aux = await pool.query('select * from constancias  WHERE tipo ="ConstAFIP" and estado="A" and cuil_cuit = ?', [cuil_cuit])
-                                                    if (aux.length > 0) {
-                                                        await pool.query("UPDATE users set habilitado = ? WHERE cuil_cuit = ?", ["SI", cuil_cuit])
-                                                    }
-                                                }
-
-                                            }
-
-
-                                        } else { // si es persona
-
-                                            aux = await pool.query('select * from constancias  WHERE tipo ="const_cuil" ="A" and cuil_cuit = ?', [cuil_cuit])
-                                            if (aux.length > 0) {
-                                               await pool.query("UPDATE users set habilitado = ? WHERE cuil_cuit = ?", ["SI", cuil_cuit])
-                                            }
-
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } catch (error) {
-        console.log(error)
-    }
-
-    //
-    req.flash('success', 'Aprobado')
-    res.redirect('/aprobaciones/')
-}
 
 
 const rechazar2 = async (req, res) => {
@@ -218,7 +95,15 @@ const rechazar2 = async (req, res) => {
             id_referencia:id,
         }
         await pool.query('INSERT INTO notificaciones set ?', [noti]) 
+        cli = await pool.query ('select * from clientes where cuil_cuit = ?',[cuil_cuit])
     
+        mensaje= 'Su constancia ha sido rechazada, motivo:'+detalle
+        console.log(cli)
+        console.log(mensaje)
+        email = cli[0]['email']
+        asunto = 'Constancia rechazada'
+        encabezado= 'este mail es muy importante'
+        enviodemail.enviarmail(email,asunto,encabezado,mensaje)
         res.send('rechazado')
     } catch (error) {
         res.send('Algo salio mal')
@@ -352,7 +237,7 @@ const postrechazocbu = async (req, res) => {
 }
 module.exports = {
     pendientes,
-    aprobarcomp,
+   
     rechazarcomp,
     rechazo,
     aprobacioncbu,
