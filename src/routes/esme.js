@@ -62,9 +62,11 @@ router.get('/alumnosdelcurso/:id', async (req, res) => {
         cursado = await pool.query('select * from esmecursado where id_clase = ?',[curso[0]['id_curso']])
 
        // const exp = await pool.query('select * from esmecursado join esmealumnos on esmecursado.id_alumno = esmealumnos.id  where esmecursado.id_clase= ?',[id])
-       const exp = await pool.query('select *  from ((esmeclases inner join esmecursado on esmeclases.id_curso = esmecursado.id_clase)   join  esmealumnos on  esmecursado.id_alumno =  esmealumnos.id) left join  esmeasistencia on esmecursado.id_alumno =  esmeasistencia.id_alumnoo  where esmeclases.id= ?',[id])
-            console.log(exp)
-            console.log(exp.id_alumno)
+      
+       const exp = await pool.query('select *  from ((esmeclases  join esmecursado on esmeclases.id_curso = esmecursado.id_clase)   join  esmealumnos on  esmecursado.id_alumno =  esmealumnos.id) join  esmeasistencia on esmeclases.id =  esmeasistencia.id_clasee  where esmeclases.id= ? and esmecursado.id_alumno = esmeasistencia.id_alumnoo',[id])
+      
+      // anteiro const exp = await pool.query('select *  from ((esmeclases  join esmecursado on esmeclases.id_curso = esmecursado.id_clase)   join  esmealumnos on  esmecursado.id_alumno =  esmealumnos.id) left join  esmeasistencia on esmecursado.id_alumno =  esmeasistencia.id_alumnoo  where esmeclases.id= ?',[id])
+          
             res.json(exp)
         
         })
@@ -172,21 +174,23 @@ router.post('/nuevocurso', async (req, res) => {
 
 
             router.post('/ponerpresente', async (req, res) => {
-                let {id_alumno,id_clase }= req.body
+                let {id_alumnoo,id_clasee }= req.body
                try {
-           
-                existe = await pool.query('select * from esmeasistencia where id_alumnoo = ? and id_clasee = ?',[id_alumno,id_clase])
+             console.log(id_alumnoo)
+             console.log(id_clasee)
+                existe = await pool.query('select * from esmeasistencia where id_alumnoo = ? and id_clasee = ?',[id_alumnoo,id_clasee])
+                console.log(existe)
                 if (existe.length >0){
                     const newLink = {
                         otroo:'Presente'
                        
                     }
 
-                    await pool.query('UPDATE esmeasistencia set ? WHERE id_alumnoo = ? and id_clasee = ?', [newLink, id_alumno,id_clase])
+                    await pool.query('UPDATE esmeasistencia set ? WHERE id_alumnoo = ? and id_clasee = ?', [newLink, id_alumnoo,id_clasee])
                 }else{
                 const newLink = {
-                    id_alumnoo:id_alumno,
-                    id_clasee:id_clase,
+                    id_alumnoo:id_alumnoo,
+                    id_clasee:id_clasee,
                     otroo:'Presente'
                    
                 }
@@ -205,17 +209,18 @@ router.post('/nuevocurso', async (req, res) => {
                 
                 })
                 router.post('/ponerausente', async (req, res) => {
-                    let {id_alumno,id_clase }= req.body
+                    let {id_alumnoo,id_clasee }= req.body
                    try {
                
-                    existe = await pool.query('select * from esmeasistencia where id_alumnoo = ? and id_clasee = ?',[id_alumno,id_clase])
+                    existe = await pool.query('select * from esmeasistencia where id_alumnoo = ? and id_clasee = ?',[id_alumnoo,id_clasee])
+                    console.log(existe)
                     if (existe.length >0){
                         const newLink = {
                             otroo:'Ausente'
                            
                         }
 
-                        await pool.query('UPDATE esmeasistencia set ? WHERE id_alumnoo = ? and id_clasee = ?', [newLink, id_alumno,id_clase])
+                        await pool.query('UPDATE esmeasistencia set ? WHERE id_alumnoo = ? and id_clasee = ?', [newLink, id_alumnoo,id_clasee])
                     }else{
                     const newLink = {
                         id_alumnoo:id_alumno,
