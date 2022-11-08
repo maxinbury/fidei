@@ -542,7 +542,7 @@ router.get('/legajos/:cuil_cuit',isLoggedInn2, async (req, res) => {
 router.post('/ventalotee',isLoggedInn2, async (req, res) => {
     let { zona, manzana, fraccion, parcela, cuil_cuit, lote, estado } = req.body
 
-
+console.log('es aca')
 
     switch (zona) {
         case 'PIT':
@@ -570,27 +570,31 @@ router.post('/ventalotee',isLoggedInn2, async (req, res) => {
 
 
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
-            console.log(existe)
+            console.log('existe')
             if (existe.length > 0) {
-
+                console.log('existe')
                 console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-                console.log('Lote asignado')
-                res.send('Lote asignado')
-            } else { res.send('No existe el lote') }
+                mensaje='Lote asignado'
+                res.json([mensaje,cuil_cuit])
+            } else {  mensaje='Lote no existe'
+            res.json([mensaje,cuil_cuit]) }
 
 
-            // res.render('links/ventalote', { cliente })
+
+   
         }else{
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and  lote =?', [zona, fraccion, manzana, parcela, lote])
-            console.log(existe)
+            console.log('existe')
+        
             if (existe.length > 0) {
-
+                console.log('existe')
                 console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-                console.log('Lote asignado')
-                res.send('Lote asignado')
-            } else { res.send('No existe el lote') }
+                mensaje='Lote asignado'
+            res.json([mensaje,cuil_cuit])
+            } else {  mensaje='Lote no existe'
+            res.json([mensaje,cuil_cuit]) }
 
 
         }

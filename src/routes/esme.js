@@ -20,6 +20,29 @@ router.get('/alumnos', async (req, res) => {
 })
 
 
+
+router.get('/borrarcurso/:id', async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    await pool.query('DELETE FROM esmecursos WHERE id = ?', [id])
+    await pool.query('DELETE FROM esmecursado WHERE id_clase = ?', [id])
+    ////obtener el id de la clase para borrar la asistencia 
+  //  await pool.query('DELETE FROM esmeasistencia WHERE id_clase = ?', [id])
+    res.send('borrado')
+
+})
+router.get('/borrarclase/:id', async (req, res) => {
+    const id = req.params.id
+    await pool.query('DELETE FROM esmeclases WHERE id = ?', [id])
+
+
+  //  await pool.query('DELETE FROM esmeasistencia WHERE id_clase = ?', [id])
+    res.send('borrado')
+
+})
+
+
+
 router.get('/clases/:id', async (req, res) => {
     const id = req.params.id
     const lista = await pool.query('select * from esmeclases where id_curso = ?',[id])
@@ -47,7 +70,7 @@ router.get('/alumnosdelcurso/:id', async (req, res) => {
     const id = req.params.id
         
         const exp = await pool.query('select * from esmecursado join esmealumnos on esmecursado.id_alumno = esmealumnos.id  where esmecursado.id_clase= ?',[id])
-        console.log(exp)
+     
         res.json(exp)
     
     })

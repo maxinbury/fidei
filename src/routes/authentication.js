@@ -37,13 +37,12 @@ router.get('/traerusuario/:cuil_cuit', async(req,res)=>{
 })
 
 router.get('/exitosignup',(req,res)=>{
-
+    console.log('Registrado')
     res.send('Registrado exitosamente!')
 })
 
 router.get('/noexito',(req,res)=>{
-    console.log(req.algo)
-    console.log(req.rtaa)
+   
     res.send('Sin Exito')
 })
 

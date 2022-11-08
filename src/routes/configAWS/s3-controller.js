@@ -280,6 +280,8 @@ async function cargarcbu(req, res) {
     numero = myArray[1]
     lazo = myArray[2]
     cuil_cuit_lazo = myArray[3]
+    alias = myArray[4]
+    console.log(alias)
     cuil_cuit_lazo = ponerguion.ponerguion(cuil_cuit_lazo)
 
     const datoss = {
@@ -288,7 +290,8 @@ async function cargarcbu(req, res) {
         numero,
         lazo,
         estado: "P",
-        cuil_cuit_lazo
+        cuil_cuit_lazo,
+        alias
 
     }
     console.log(datoss)
@@ -678,7 +681,7 @@ async function pagonivel2(req, res) {
 
         estado = 'A'
 
-        if (cuota.length >= 0) {
+        if (cuota[0]['parcialidad'] === 'Final') {
             /// traer la ultima
 
             ///
@@ -818,8 +821,8 @@ async function pagonivel2(req, res) {
             }
 
 
-
-            res.send('Enviado!')
+            const mensaje = 'Enviado!'
+            res.json([mensaje,cuil_cuit])
 
 
 
@@ -828,7 +831,8 @@ async function pagonivel2(req, res) {
 
 
         } else {
-            res.send('Error la cuota no existe o no esta calculada')
+            const mensaje = 'Error la cuota no existe o no esta calculada'
+            res.json([mensaje,cuil_cuit])
 
 
         }
