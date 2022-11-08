@@ -94,7 +94,7 @@ router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
    console.log(lotee) 
  
     let final = lotee[0]['superficie'] * valor
-    console.log(final)
+    const anticipo = final*0.2
     const estado = lotee[0]['estado']
 
     const nombre = 'Zona: '+ lotee[0]['zona'] +' Manzana: '+lotee[0]['manzana']  +' Parcela: '+lotee[0]['parcela']
@@ -121,6 +121,8 @@ router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
 
     const detalle = {
         precio: final.toFixed(2),
+        anticipo,
+        finalSant,
         superficie: lotee[0]['superficie'],
         nombre: nombre,
         cuotas60: cuotas60.toFixed(2),

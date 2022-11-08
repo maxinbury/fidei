@@ -31,13 +31,17 @@ router.get('/cantidad/:cuil_cuit',isLoggedInn, async (req, res) => {
 const aux = '%'+cuil_cuit+'%'
     try {
         const noti = await pool.query('select count(*) from notificaciones where leida="No" and cuil_cuit like ?', [aux]);
-        console.log(noti[0]["count(*)"])
+       const nom = await pool.query('select * from clientes where cuil_cuit like ?',aux)
+       console.log(nom)
+        const arr = nom[0]['Nombre'].split(' ')
+        console.log(arr)
 
-      
+     
    
-        res.json(noti[0]["count(*)"])
+        res.json([noti[0]["count(*)"],arr[0]])
 
     } catch (error) {
+        console.log(error)
         res.json(error)
     }
   

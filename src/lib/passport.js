@@ -68,15 +68,15 @@ passport.use('local.signup', new LocalStrategy({
     //fin transformar 
     try {
         var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
-        console.log('rows')
+      
          let aux = cuil_cuit
 
         aux = '%' + cuil_cuit + '%' 
         if (rows.length == 0) { // si ya hay un USER con ese dni 
-            console.log('rw'+rows)
+            
            rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
             if (rows.length == 0) { // so hay  un cliente con ese dni 
-                { done(null, false, req.send('message', 'error,algo sucedio ')) }
+                { done(null, false, 'error,algo sucedio ') }
             } else { 
                 const razon = rows[0]['razon']
                 const newUser = {
@@ -104,7 +104,7 @@ passport.use('local.signup', new LocalStrategy({
                         try {
                             const result = await pool.query('INSERT INTO users  set ?', [newUser])
                             newUser.id = result.insertId// porque newuser no tiene el id
-                          //  return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
+                            return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                         } catch (error) {
                             console.log(error)
