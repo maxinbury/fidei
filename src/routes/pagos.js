@@ -155,7 +155,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                 console.log(i)
                 ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
 
-                const workbook = XLSX.readFile('./src/Excel/' + extracto[i]['ubicacion'])
+                const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + extracto[i]['ubicacion']))
                 const workbooksheets = workbook.SheetNames
                 const sheet = workbooksheets[0]
 
