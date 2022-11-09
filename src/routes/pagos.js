@@ -358,15 +358,13 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
 })
 /// aprobar pago nivel 2
 router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
-    const { id, montonuevo, cambiarmonto } = req.body
+    const { id,  cambiarmonto } = req.body
     // pagot es el objeto pago
     let pagot = await pool.query('select * from pagos where id = ?', [id])
-
+console.log(id)
     let id_cuota = pagot[0]["id_cuota"]
     let monto = pagot[0]["monto"]
-    if (cambiarmonto) {////// toma el valor del checkbox si se modifica el monto 
-        monto = montonuevo
-    }
+   
 
     ///////////
     const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
@@ -374,69 +372,65 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
     let saldo_realc = cuota[0]["Saldo_real"]
     let nro_cuota = cuota[0]["nro_cuota"]
     let id_lote = cuota[0]["id_lote"]
+    let Amortizacion = cuota[0]["Amortizacion"]
 
+    /////////////////////comparacion 
+   
 
+ console.log('antes')
 
-    try {
-        console.log(parseFloat(cuota[0]["pago"]))
-        console.log(monto)
-        console.log('pasa')
+        try {
+////compara si ya supero el 
+
         if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
-            console.log('antes')
-            Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - cuota_con_ajuste).toFixed(2)
-            console.log(Saldo_real)
-            diferencia = cuota[0]["pago"] + parseFloat(monto) - cuota_con_ajuste
+            console.log('antes0')
+            Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - parseFloat(Amortizacion)).toFixed(2)
 
+            diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
+            console.log('antes1')
 
         } else {
             console.log('no pasa')
             Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-            diferencia = 0
+            diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
 
         }
 
 
-        let pago = cuota[0]["pago"] + parseFloat(monto)
+
+        pago = cuota[0]["pago"] + parseFloat(monto)
 
         update = {
             Saldo_real,
             pago,
             diferencia
         }
-        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
+        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id_cuota])
         // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
 
 
 
-        /*  const update = {
-              Saldo_real,
-              pago,
-              diferencia
-  
-  
-          }
+        /*  
   
           await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])*/
 
         cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
 
-
-        diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
+        pago = pago - monto
+        //  diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
         ///
         bandera = true
         console.log(bandera)
-
-
         if (nro_cuota < cant_finales.length) {
             if (pago < monto + pago - diferencia) { // si el pago ya superó el total }
 
-             
+
                 for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
                     console.log(ii)
                     if (diferencia > 0) {
                         //saldo real seria Saldo
 
-                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto -pago + diferencia).toFixed(2)
+                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto - pago + diferencia).toFixed(2)
 
                         idaux = cant_finales[ii]["id"]
                         a = ii
@@ -466,17 +460,17 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
             }
 
         }
+
         updatepago = {
             estado: "A"
         }
 
         await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
 
+
     } catch (error) {
         console.log(error)
-
     }
-
     res.send('Aprobado')
 
 
