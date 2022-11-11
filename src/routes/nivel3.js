@@ -6,7 +6,7 @@ const { isLevel3 } = require('../lib/authnivel3')
 const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const passport= require('passport')
-
+const agregaricc = require('./funciones/agregaricc')
 
 router.post('/signupp', isLoggedInn3, passport.authenticate('local.signupnivel3', {
     successRedirect: '/exitosignup',
@@ -131,7 +131,9 @@ try {
 router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
     let { ICC, mes, anio } = req.body;
    
-    var datoss = {
+
+
+    let datoss = {
         ICC,
         mes,
         anio
@@ -139,85 +141,30 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
     }
     ICC= ICC/100
     //////////////try
+    
+
     try {
-        await pool.query('insert into icc_historial set?', datoss)
+
+        exis =  await pool.query("select * from icc_historial where mes =? and anio =?", [mes, anio])
+        if (exis.length>0){
+            await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
+        }else{
+
+        await pool.query('insert into icc_historial set?', datoss)}
     } catch (error) {
-        
+        console.log(error)
     }
 
-    
+
+
     const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
-    const parcialidad = "Final"
-    for (var i = 0; i < todas.length; i++) {
-        nro_cuota = todas[i]["nro_cuota"]
-        cuil_cuit = todas[i]["cuil_cuit"]
-     
-        if (nro_cuota == 1) {
-            
-            saldo_inicial = todas[i]["saldo_inicial"]
-            const Ajuste_ICC = 0
-            const Base_calculo = todas[i]["Amortizacion"]
-            const cuota_con_ajuste = todas[i]["Amortizacion"]
-           
-            var cuota = {
-                ICC,
-                Ajuste_ICC,
-                Base_calculo,
-                cuota_con_ajuste,
-               
-                parcialidad
-    
-            }
 
-        } else {
-            const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ? and id_lote = ?', [nro_cuota - 1, cuil_cuit,todas[i]["id_lote"]])
-          console.log(anterior)
-            var Saldo_real_anterior = parseFloat(anterior[0]["Saldo_real"])
-            
-            const cuota_con_ajuste_anterior = parseFloat(anterior[0]["cuota_con_ajuste"])
-            
-            const Base_calculo = cuota_con_ajuste_anterior
-            const Ajuste_ICC =  (cuota_con_ajuste_anterior * ICC).toFixed(2)
-            console.log(Base_calculo)
-            const cuota_con_ajuste = (parseFloat(cuota_con_ajuste_anterior) + parseFloat(Ajuste_ICC)).toFixed(2)
-     
-            Saldo_real_anterior = (parseFloat(Saldo_real_anterior) +  parseFloat(Ajuste_ICC))
-            console.log(typeof Saldo_real_anterior )
-            console.log(Ajuste_ICC )
-            console.log(Saldo_real_anterior )
-            const Saldo_real = parseFloat(Saldo_real_anterior).toFixed(2)
-         
+    for (var i = 0; i < todas.length; i++) {  
 
-            
-            var cuota = {
-                ICC,
-                Ajuste_ICC,
-                Base_calculo,
-                cuota_con_ajuste,
-                Saldo_real,
-                parcialidad,
-                
-    
-            }
-            console.log(cuota)
-        }
-    
-        try {
-  
-            await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
-      
+    agregaricc.calcularicc(todas[i],ICC)
+}
 
-        } catch (error) {
-            console.log(error)
-            res.send('Error');
-
-        }
-
-
-
-    }
-
-    res.send('Icc asignado con éxito');
+res.send('Icc asignado con éxito');
 })
 
 //ACCESO A MENU DE USUARIO NIVEL 2
@@ -267,12 +214,6 @@ res.json(usuarios)
 
 )
 
-//PAGINA  AGREGAR ICC GENERAL
-router.get("/agregariccgral", isLoggedIn,isLevel3, async (req, res) => {
-
-
-    res.render('cuotas/agregariccgral')
-})
 //Habilitar usuario para pagar
 router.get("/habilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, res) => {
     let { cuil_cuit } = req.params

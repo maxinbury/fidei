@@ -163,6 +163,7 @@ router.get('/borrartodas/:id',isLoggedInn2, async (req, res) => {
         link = {
             toleranciadec:0
         }
+        
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [link, cuil_cuit])
        
         res.send('Borradas correctamente')
