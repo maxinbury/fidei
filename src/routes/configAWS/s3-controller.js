@@ -652,7 +652,7 @@ async function pagonivel2(req, res) {
         let nro_cuota = cuota[0]["nro_cuota"]
         let id_lote = cuota[0]["id_lote"]
         let Amortizacion = cuota[0]["Amortizacion"]
-
+        let diferencia = cuota[0]["diferencia"]
 
 
 
@@ -711,21 +711,32 @@ async function pagonivel2(req, res) {
             try {
 
                 ////compara si ya supero el 
+                actualizacion = diferencia
                 if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
-                    console.log('antes')
+             
                     Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - parseFloat(Amortizacion)).toFixed(2)
-
-                    diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
+                    saldo_inicial = Saldo_real
+                    diferencia =diferencia+ parseFloat(monto) 
 
 
                 } else {
-                    console.log('no pasa')
+                 
                     Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                    diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
+                    diferencia =diferencia+ parseFloat(monto) 
+                    saldo_inicial= Saldo_real
 
                 }
+                if (actualizacion<0){
 
+                    if ((actualizacion+monto) <0  ){
+                        actualizacion =  monto
+                    }
+                    
 
+                }else{
+                    actualizacion =0
+                }
+                
 
                 pago = cuota[0]["pago"] + parseFloat(monto)
 
@@ -735,6 +746,9 @@ async function pagonivel2(req, res) {
                     diferencia
                 }
                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
+
+
+
                 // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
 
 
@@ -761,32 +775,26 @@ async function pagonivel2(req, res) {
 
 
                         for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
-                            console.log(ii)
-                            if (diferencia > 0) {
+                            
+                            if (diferencia > 0) {////////////// si el pago ya excedio el monto   
                                 //saldo real seria Saldo
-
+                                
                                 saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto - pago + diferencia).toFixed(2)
-
+                                saldo_inicial = (parseFloat(cant_finales[ii]["saldo_inicial"]) +actualizacion).toFixed(2)
                                 idaux = cant_finales[ii]["id"]
                                 a = ii
                                 //  Saldo_real = saldo_realc - monto
 
                                 update = {
                                     Saldo_real: saldo_realc,
-
+                                    saldo_inicial
                                 }
                                 console.log(update)
 
 
                                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
-                            } /*else  {
-
-                                // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-                                //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-                                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                            } */
-
+                            } 
 
 
 
