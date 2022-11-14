@@ -1,5 +1,5 @@
 const pool = require('../database')
-
+const agregaricc = require('../routes/funciones/agregaricc')
 
 
 
@@ -187,9 +187,9 @@ const postaddaut = async (req, res) => {
 }
 
 const postaddaut2 = async (req, res) => {
-    var { id, cantidad_cuotas, lote, mes, anio, zona, manzana, fraccion, lote, parcela } = req.body;
+    let { id, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela } = req.body;
 
-
+console.log(mes+'/'+anio)
 
 
     if (cantidad_cuotas == undefined) {
@@ -258,7 +258,7 @@ const postaddaut2 = async (req, res) => {
 
 
                 if (row.length > 0) {
-                    console.log(saldo_inicial)
+                   
                     var saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
 
                     if (nro_cuota == 1) {
@@ -276,9 +276,9 @@ const postaddaut2 = async (req, res) => {
                         }
                         await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [actualizar, aux])
 
-                        for (var i = 1; i <= cantidad_cuotas; i++) {
+                        for (let i = 1; i <= cantidad_cuotas; i++) {
                             nro_cuota = i
-
+                            
                             const newLink = {
                                 //fecha,
                                 mes,
@@ -314,16 +314,32 @@ const postaddaut2 = async (req, res) => {
 
 
 
-                            saldo_inicial = (saldo_inicial - Amortizacion).toFixed(2)
+                           
                             saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
                         }
 
                     } catch (error) {
+                        console.log(error)
                         res.send([cuil_cuit, 'Error, algo sucedio'])
                     }
 
 
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
+
+/////////////////////////////   inicio pruebas
+                  /*  todass = await pool.query ('select * from cuotas where id_lote =? ',[id])
+                    for ( i = 0; i < todass.length; i++) {
+                        mess = todass[i]['mes']
+                        anioo = todass[i]['anio']
+                        exisste =  await pool.query ('select * from icc_historial where mes = ? and anio = ? ',[mess,anioo])
+                    if (exisste.length>0){
+                        ICC = exisste[0]['ICC']
+                        agregaricc.calcularicc(todass[i],ICC)
+                    }
+                       
+                    }*/
+//////////////////////////
+
 
                     res.send([cuil_cuit, 'Cuotas agregadas con exito'])
 
@@ -331,6 +347,7 @@ const postaddaut2 = async (req, res) => {
 
 
                 else {
+                    console.log(error)
                     res.send([cuil_cuit, 'Error, algo sucedio'])
 
                 }

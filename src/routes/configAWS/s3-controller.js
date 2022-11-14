@@ -706,38 +706,57 @@ async function pagonivel2(req, res) {
 
             let pago = cuota[0]["pago"] + parseFloat(monto)
 
-
+            ////////fin guardado del pago
 
             try {
 
                 ////compara si ya supero el 
                 actualizacion = diferencia
                 if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
+                    /////////compara si con este nuevo pago se supera el monto(o con el anteroir)
+             /////////ver que (si pasa se reste la diferencia
+                    if (diferencia<0){ //si aun  no habia pasado la amortizacion y con este pago pasa
+
+                        Saldo_real = Saldo_real + diferencia
+                        saldo_inicial = Saldo_real
+                        auxiliar = -diferencia
+                        diferencia =(diferencia+ parseFloat(monto)).toFixed(2)
+                    }else{/// si ya paso la amortizacion y no hay que actualizar 
+                        diferencia =(diferencia+ parseFloat(monto)).toFixed(2)
+
+                    }
              
                     Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - parseFloat(Amortizacion)).toFixed(2)
-                    saldo_inicial = Saldo_real
-                    diferencia =diferencia+ parseFloat(monto) 
+                    //
+                  //  Saldo_real = Saldo_real + diferencia
+            
+                    
 
 
                 } else {
                  
                     Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                    diferencia =diferencia+ parseFloat(monto) 
+                    diferencia =(diferencia+ parseFloat(monto)).toFixed(2)
                     saldo_inicial= Saldo_real
 
                 }
-                if (actualizacion<0){
-
-                    if ((actualizacion+monto) <0  ){
+               
+                if (actualizacion<0){/// hay que actualizar el resto 
+                 
+                  
+                    if ((actualizacion+parseFloat(monto)) <0  ){// si no pasa junto con el monto
+                       
+                        console.log(monto)
                         actualizacion =  monto
+                    }else {
+                        actualizacion = auxiliar
                     }
                     
 
                 }else{
                     actualizacion =0
                 }
-                
-
+             
                 pago = cuota[0]["pago"] + parseFloat(monto)
 
                 update = {
@@ -765,28 +784,34 @@ async function pagonivel2(req, res) {
 
                 cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
 
-                pago = pago - monto
+                pago = (pago - monto).toFixed(2)
                 //  diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
                 ///
                 bandera = true
-                console.log(bandera)
+           
+                console.log(cant_finales.length)
+                console.log(nro_cuota)
                 if (nro_cuota < cant_finales.length) {
-                    if (pago < monto + pago - diferencia) { // si el pago ya superó el total }
-
-
-                        for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
-                            
-                            if (diferencia > 0) {////////////// si el pago ya excedio el monto   
+                 
+                    console.log(actualizacion)
+                    if (actualizacion >= 0) { // si el pago ya superó el total }
+                        console.log('dentro if')
+                     
+                        for (ii = (nro_cuota); ii <= (cant_finales.length-1); ii++) {
+                            saldo_inicial = Saldo_real
+                            console.log('dentro for')
+                           ////////////// si el pago ya excedio el monto   
                                 //saldo real seria Saldo
-                                
-                                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto - pago + diferencia).toFixed(2)
-                                saldo_inicial = (parseFloat(cant_finales[ii]["saldo_inicial"]) +actualizacion).toFixed(2)
+                            
+                                Saldo_real = (parseFloat(cant_finales[ii]["Saldo_real"]) -actualizacion).toFixed(2)
+                             
+                               // saldo_inicial = (parseFloat(cant_finales[ii]["saldo_inicial"]) +parseFloat(actualizacion)).toFixed(2)
                                 idaux = cant_finales[ii]["id"]
                                 a = ii
                                 //  Saldo_real = saldo_realc - monto
-
+                                console.log(123)
                                 update = {
-                                    Saldo_real: saldo_realc,
+                                    Saldo_real,
                                     saldo_inicial
                                 }
                                 console.log(update)
@@ -794,7 +819,7 @@ async function pagonivel2(req, res) {
 
                                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
 
-                            } 
+                            
 
 
 
@@ -840,7 +865,7 @@ async function pagonivel2(req, res) {
     try {
 
 
-        await uploadFileToS3(formData.file, "mypdfstorage");
+       // await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
 
 
