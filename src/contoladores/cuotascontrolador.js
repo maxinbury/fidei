@@ -327,17 +327,20 @@ console.log(mes+'/'+anio)
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
 /////////////////////////////   inicio pruebas
-                  /*  todass = await pool.query ('select * from cuotas where id_lote =? ',[id])
+                 todass = await pool.query ('select * from cuotas where id_lote =? ',[id])
                     for ( i = 0; i < todass.length; i++) {
                         mess = todass[i]['mes']
                         anioo = todass[i]['anio']
                         exisste =  await pool.query ('select * from icc_historial where mes = ? and anio = ? ',[mess,anioo])
                     if (exisste.length>0){
                         ICC = exisste[0]['ICC']
-                        agregaricc.calcularicc(todass[i],ICC)
+
+                       
+                            await agregaricc.calcularicc(todass[i],ICC)
+                      
                     }
                        
-                    }*/
+                    }
 //////////////////////////
 
 

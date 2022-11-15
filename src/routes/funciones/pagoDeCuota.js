@@ -17,16 +17,14 @@ async function pagodecuota (id,monto) {
 
     //id es de cuotacuota
 
-
-    
+console.log(id)
+console.log(monto) 
     try {
         //// realizar el pago
 
 
 
 
-        let cuil_cuit_distinto = 'No'
-        let monto_distinto = 'No'
         let monto_inusual = 'No'
         let mensaje =''
 
@@ -73,22 +71,6 @@ async function pagodecuota (id,monto) {
 
 
 
-            const newLink = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                estado: estado,
-                anio,
-                cuil_cuit_administrador,
-                cuil_cuit_distinto,
-                monto_distinto,
-                monto_inusual,
-                ubicacion: formData.file.originalFilename,///////////aca ver el problema
-
-            };
-
-            await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
 
 

@@ -311,9 +311,20 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
 
 })
 
-
-
-
+///trae las cuotas finales de un lote//objetivo: mostrar para pagar varias en una 
+router.get('/traercuotasfinales/:id',isLoggedInn2, async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        cuota = await pool.query('select * from cuotas where id = ?',[id])
+        
+        todas = await pool.query('select * from cuotas where id_lote = ? and parcialidad = "final"',[cuota[0]['id_lote']])
+      console.log(todas.length)
+        res.json(todas)
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 module.exports = router
 

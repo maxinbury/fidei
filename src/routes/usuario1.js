@@ -51,6 +51,10 @@ router.post('/pagarnivel1', isLoggedInn, s3Controller.pagarniv1);
 
 router.post('/pagonivel2', isLoggedInn2, s3Controller.pagonivel2);
 
+router.post('/pagarnivel2varios', isLoggedInn2, s3Controller.pagarnivel2varios);
+
+
+
 router.post('/justificacion', isLoggedInn, s3Controller.justificar);
 
 
