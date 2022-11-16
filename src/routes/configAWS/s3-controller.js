@@ -85,7 +85,7 @@ async function readFormData(req) {
 }
 
 async function getSignedUrl(req, res) {
-    console.log("url1")
+   
     try {
         console.log("url2")
 
@@ -628,21 +628,90 @@ async function pagonivel2(req, res) {
     cuil_cuit_administrador = myArray[0] /// del administrador
     id = myArray[1]
     monto = myArray[2]
+///
+///INICIO GUARDADO DE PAGO
 
 
+let cuil_cuit_distinto = 'No'
+let monto_distinto = 'No'
+let monto_inusual = 'No'
+let mensaje =''
+
+const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+aux = '%' + cuota[0]["cuil_cuit"] + '%'
+
+cuil_cuit = cuota[0]["cuil_cuit"]
+let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+let saldo_realc = cuota[0]["Saldo_real"]
+Saldo_real = parseFloat(cuota[0]["Saldo_real"])
+let nro_cuota = cuota[0]["nro_cuota"]
+let id_lote = cuota[0]["id_lote"]
+let Amortizacion = cuota[0]["Amortizacion"]
+let diferencia = cuota[0]["diferencia"]
+
+
+
+
+
+
+mes = cuota[0]["mes"]
+anio = cuota[0]["anio"]
+
+estado = 'A'
+
+if (cuota[0]['parcialidad'] === 'Final') {
+    /// traer la ultima
+
+    ///
+    console.log(aux)
+    let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+    ///////////////////CONSIDERAR PEP
+
+    montomax = cliente[0]['ingresos'] * 0.3
+    console.log(montomax)
+    if (montomax < monto) {
+
+        monto_inusual = 'Si'
+    }
+
+    const id_cuota = id
+
+
+const newLink = {
+    id_cuota,
+    monto,
+    cuil_cuit,
+    mes,
+    estado: estado,
+    anio,
+    cuil_cuit_administrador,
+    cuil_cuit_distinto,
+    monto_distinto,
+    monto_inusual,
+    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+
+};
+
+await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+/////////FIN  GUARDADO DE PAGO
+    ///INICIO IMPACTO EN LA CUOTA
    pagodecuota.pagodecuota(id, monto)
-
+   ///FIN IMPACTO EN LA CUOTA
    const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
    aux = cuota[0]["cuil_cuit"] 
-
+   mensaje = 'Pago realizado'
+}else { 
+    mensaje = 'cuota no calculada'
+}
 
 
     try {
 
 
-       // await uploadFileToS3(formData.file, "mypdfstorage");
+        await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
-        res.json(['mensaje', aux])
+        res.json([mensaje, aux])
 
 
     } catch (ex) {
@@ -650,6 +719,140 @@ async function pagonivel2(req, res) {
     }
 }
 
+
+async function pagarnivel2varios(req, res) {
+
+    formData = await leerformlegajo(req);
+
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    console.log(myArray.length)
+    cuil_cuit_administrador = myArray[0] /// del administrador
+   
+    fecha = myArray[1]
+    id = myArray[2]
+
+
+///INICIO GUARDADO DE PAGO
+
+
+let cuil_cuit_distinto = 'No'
+let monto_distinto = 'No'
+let monto_inusual = 'No'
+let mensaje =''
+
+const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+aux = '%' + cuota[0]["cuil_cuit"] + '%'
+
+cuil_cuit = cuota[0]["cuil_cuit"]
+let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+let saldo_realc = cuota[0]["Saldo_real"]
+Saldo_real = parseFloat(cuota[0]["Saldo_real"])
+let nro_cuota = cuota[0]["nro_cuota"]
+let id_lote = cuota[0]["id_lote"]
+let Amortizacion = cuota[0]["Amortizacion"]
+let diferencia = cuota[0]["diferencia"]
+
+
+
+
+
+
+mes = cuota[0]["mes"]
+anio = cuota[0]["anio"]
+
+estado = 'A'
+
+if (cuota[0]['parcialidad'] === 'Final') {
+    /// traer la ultima
+
+    ///
+    console.log(aux)
+   
+/////////FIN  GUARDADO DE PAGO
+
+
+    
+   let regex = /(\d+)/g;
+   console.log(myArray.length)
+   monto = 0
+   for (iii = 3; iii < (myArray.length); iii++) {
+    console.log('inicio del for pagos varios ')
+   
+ 
+    auxxx   =  myArray[iii].split(":")
+   
+    idd= auxxx[0].match(regex)
+    mont = auxxx[1].match(regex)
+   
+    if (mont.length>1){
+        mont = [mont[0]+"."+mont[1]]
+    }
+ 
+    idd = parseInt(idd[0])
+    mont = parseFloat(mont[0])
+    console.log('fin conversaion')
+    console.log(idd)
+    console.log(mont)
+    monto = monto+mont
+
+  await pagodecuota.pagodecuota(idd, mont)
+   
+   }
+   console.log('sale')
+
+   //pagodecuota.pagodecuota(id, monto)
+
+   const cuota = await pool.query('select * from cuotas where id = ?', [idd]) //objeto cuota
+   aux = cuota[0]["cuil_cuit"] 
+   mensaje = 'Pagos realizados'
+
+
+   let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+
+
+   montomax = cliente[0]['ingresos'] * 0.3
+   console.log(montomax)
+   if (montomax < monto) {
+
+       monto_inusual = 'Si'
+   }
+
+   const id_cuota = id
+
+
+const newLink = {
+   id_cuota,
+   monto,
+   cuil_cuit,
+   mes,
+   estado: estado,
+   anio,
+   cuil_cuit_administrador,
+   cuil_cuit_distinto,
+   monto_distinto,
+   monto_inusual,
+   ubicacion: formData.file.originalFilename,///////////aca ver el problema
+
+};
+
+await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+
+}else {mensaje = 'una de las cuotas no estaba calculada'}
+    try {
+
+
+        await uploadFileToS3(formData.file, "mypdfstorage");
+        console.log(' Uploaded!!  ')
+        res.json(['mensaje', aux])
+
+
+    } catch (ex) {
+        console.log(ex)
+        console.log('NOOO  ')
+    }
+}
 
 //////
 async function justificar(req, res) {
@@ -691,6 +894,7 @@ async function justificar(req, res) {
         res.send('Error algo sucedio')
     }
 
+    
 
     try {
 
@@ -720,5 +924,6 @@ module.exports = {
     cargarcbu,
     determinarPep,
     justificar,
-    pagonivel2
+    pagonivel2,
+    pagarnivel2varios
 }

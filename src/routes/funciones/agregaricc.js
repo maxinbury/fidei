@@ -15,7 +15,7 @@ const pool = require('../../database')
 
 
 async function calcularicc (todas,ICC) {
-
+   
 let cuota  ={}
    
 try {
@@ -113,11 +113,13 @@ try {
 
         }
 
+ 
 
 
   
 
 }
+
 
 
 
