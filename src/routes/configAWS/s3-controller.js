@@ -344,7 +344,7 @@ async function pagarniv1(req, res) {
 
 
     try {
-
+console.log(1)
 
         //// realizar el pago
         let estadoo = 'P'
@@ -355,14 +355,15 @@ async function pagarniv1(req, res) {
         mes = parseInt(fecha.substring(5, 7))
         anio = parseInt(fecha.substring(0, 4))
         let regex = /(\d+)/g;
-        console.log(1)
+        console.log(2)
         ///busca la cuota
         let existe = await pool.query('Select * from cuotas where  id_lote=?  and mes =? and anio = ? and parcialidad = "Final" order by nro_cuota', [id, mes, anio])
         // estado = existe[0]
+        idcuotas = existe[0]['id']
         if (existe.length > 0) {////////si existe la cuota
 
 
-
+            console.log(3)
             /// inicia verificacion de ingresos
             let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
             montomax = cliente[0]['ingresos'] * 0.3
@@ -371,7 +372,7 @@ async function pagarniv1(req, res) {
                 monto_inusual = 'Si'
             }
             ////// final verificacion de ingresos
-
+            console.log(4)
             let extracto = await pool.query('Select * from extracto ')
             cantidad = extracto.length
 
@@ -387,13 +388,13 @@ async function pagarniv1(req, res) {
                 while ((cuil_cuit_distinto === 'Si') && (i < (cantidad))) {
 
                     ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
-
+                    console.log(5)
                     const workbook = XLSX.readFile('./src/Excel/' + extracto[i]['ubicacion'])
                     const workbooksheets = workbook.SheetNames
                     const sheet = workbooksheets[0]
 
                     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-
+                    console.log(6)
                     try {
                         console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
@@ -405,7 +406,7 @@ async function pagarniv1(req, res) {
 
                                 // tipo de pago normal 
 
-
+                                console.log(7)
 
                                 cuil_cuit_distinto = 'No'
 
@@ -413,16 +414,24 @@ async function pagarniv1(req, res) {
 
                                 credito = String(dataExcel[property]['Créditos'])
 
-
+                                console.log(8)
                                 try {
 
                                     console.log('credito')
                                     console.log(credito)
+                                    credito = credito.replace("$","")
+                                    console.log(credito)
+                                    credito = credito.replace(" ","")
+                                    console.log(credito)
+                                    credito = credito.replace(".","")
+                                    console.log(credito)
+                                    credito = credito.replace(",",".")
+                                    console.log(credito)
                                     console.log('monto')
                                     console.log(monto)
-
-
+                                    console.log(9)
                                     if (credito === monto) {
+                                        console.log(10)
                                         console.log('entra')
                                         monto_distinto = 'No'
                                         estadoo = 'A'
@@ -474,115 +483,19 @@ async function pagarniv1(req, res) {
             await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
             //////////   regisTro aprobacion de pago
-            let cuota_con_ajuste = existe[0]["cuota_con_ajuste"]
-            let saldo_realc = existe[0]["Saldo_real"]
-            let nro_cuota = existe[0]["nro_cuota"]
-            let id_lote = existe[0]["id_lote"]
-            let Amortizacion = existe[0]["Amortizacion"]
+        
 
             /////////////////////comparacion 
             if (estadoo === 'A') {
-                let pago = existe[0]["pago"] + parseFloat(monto)
+               
+                pagodecuota.pagodecuota(idcuotas, monto)
 
 
-
-                try {
- ////compara si ya supero el 
-                if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
-                    console.log('antes')
-                    Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - parseFloat(Amortizacion)).toFixed(2)
-
-                    diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
-
-
-                } else {
-                    console.log('no pasa')
-                    Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-                    diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
-
-                }
-
-
-
-                pago = cuota[0]["pago"] + parseFloat(monto)
-
-                update = {
-                    Saldo_real,
-                    pago,
-                    diferencia
-                }
-                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
-                // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
-
-
-
-                /*  const update = {
-                      Saldo_real,
-                      pago,
-                      diferencia
-          
-          
-                  }
-          
-                  await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])*/
-
-                cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
-
-                pago = pago - monto
-                //  diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
-                ///
-                bandera = true
-                console.log(bandera)
-                if (nro_cuota < cant_finales.length) {
-                    if (pago < monto + pago - diferencia) { // si el pago ya superó el total }
-
-
-                        for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
-                            console.log(ii)
-                            if (diferencia > 0) {
-                                //saldo real seria Saldo
-
-                                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto - pago + diferencia).toFixed(2)
-
-                                idaux = cant_finales[ii]["id"]
-                                a = ii
-                                //  Saldo_real = saldo_realc - monto
-
-                                update = {
-                                    Saldo_real: saldo_realc,
-
-                                }
-                                console.log(update)
-
-
-                                await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-
-                            } /*else  {
-
-                                // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-                                //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-                                saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                            } */
-
-
-
-
-
-                        }
-                    }
-
-                }
-
-
-
-
-            } catch (error) {
-                console.log(error)
-            }
 
             }
             console.log(estadoo)
             /////////FIN ETC PAGO 
+
             res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
 
 
@@ -894,7 +807,7 @@ async function justificar(req, res) {
         res.send('Error algo sucedio')
     }
 
-    
+
 
     try {
 
