@@ -71,9 +71,6 @@ console.log(monto)
 
 
 
-
-
-
             let pago = cuota[0]["pago"] + parseFloat(monto)
 
             ////////fin guardado del pago

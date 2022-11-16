@@ -327,6 +327,7 @@ console.log(mes+'/'+anio)
                     await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
 
 /////////////////////////////   inicio pruebas
+
                  todass = await pool.query ('select * from cuotas where id_lote =? ',[id])
                     for ( i = 0; i < todass.length; i++) {
                         mess = todass[i]['mes']
@@ -341,6 +342,7 @@ console.log(mes+'/'+anio)
                     }
                        
                     }
+                    
 //////////////////////////
 
 

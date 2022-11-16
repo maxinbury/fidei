@@ -32,13 +32,23 @@ const aprobar = async (req, res) => {
         const  aux = await pool.query('select * from constancias  WHERE id = ?', [id])
         const cli =  await pool.query('select * from clientes  WHERE cuil_cuit = ?', aux[0]['cuil_cuit'])
         
+        leida = "No"
+        const noti = {
+            cuil_cuit:aux[0]['cuil_cuit'],
+            descripcion:'La constancia'+ aux[0]['tipo'] +'ha sido aprobada ',
+            asunto:'Constancia aprobada',
+            leida,
+            id_referencia:id,
+        }
+        await pool.query('INSERT INTO notificaciones set ?', [noti]) 
+
         mensaje= 'Notificamos la constancia ha sido aprobada '
 
         email = cli[0]['email']
         asunto = 'Constancia Aprobada'
         encabezado= 'Importante'
         
-        enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+       await enviodemail.enviarmail(email,asunto,encabezado,mensaje)
        
     } catch (error) {
         console.log(error)
