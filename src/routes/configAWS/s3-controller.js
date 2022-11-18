@@ -569,6 +569,7 @@ let monto_inusual = 'No'
 let mensaje =''
 
 const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+console.log(cuota)
 aux = '%' + cuota[0]["cuil_cuit"] + '%'
 
 cuil_cuit = cuota[0]["cuil_cuit"]
@@ -627,11 +628,12 @@ await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
 /////////FIN  GUARDADO DE PAGO
     ///INICIO IMPACTO EN LA CUOTA
-   pagodecuota.pagodecuota(id, monto)
-   ///FIN IMPACTO EN LA CUOTA
+ await  pagodecuota.pagodecuota(id, monto)
+   ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
    const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
    aux = cuota[0]["cuil_cuit"] 
    mensaje = 'Pago realizado'
+   console.log('Realizado')
 }else { 
     mensaje = 'cuota no calculada'
 }
@@ -642,7 +644,7 @@ await pool.query('INSERT INTO pagos SET ?', [newLink]);
 
         await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
-        res.json([mensaje, aux])
+        res.json([mensaje, cuota[0]['cuil_cuit']])
 
 
     } catch (ex) {
