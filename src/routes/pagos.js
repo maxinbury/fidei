@@ -384,85 +384,8 @@ console.log(id)
         try {
 ////compara si ya supero el 
 
-        if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
-            console.log('antes0')
-            Saldo_real = (parseFloat(cuota[0]["saldo_inicial"]) - parseFloat(Amortizacion)).toFixed(2)
 
-            diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
-            console.log('antes1')
-
-        } else {
-            console.log('no pasa')
-            Saldo_real = parseFloat(saldo_realc) - parseFloat(monto)
-            diferencia = parseFloat(cuota[0]["pago"]) + parseFloat(monto) - cuota_con_ajuste
-
-        }
-
-
-
-        pago = cuota[0]["pago"] + parseFloat(monto)
-
-        update = {
-            Saldo_real,
-            pago,
-            diferencia
-        }
-        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id_cuota])
-        // Saldo_real = cuota[0]["saldo_inicial"] -saldo_realc  - pago 
-
-
-
-        /*  
-  
-          await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]["id"]])*/
-
-        cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final" order by nro_cuota', [id_lote])
-
-        pago = pago - monto
-        //  diferencia = parseFloat(cant_finales[nro_cuota - 1]["diferencia"])
-        ///
-        bandera = true
-        console.log(bandera)
-        if (nro_cuota < cant_finales.length) {
-            if (pago < monto + pago - diferencia) { // si el pago ya superó el total }
-
-
-                for (ii = (nro_cuota); ii < cant_finales.length; ii++) {
-                    console.log(ii)
-                    if (diferencia > 0) {
-                        //saldo real seria Saldo
-
-                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto - pago + diferencia).toFixed(2)
-
-                        idaux = cant_finales[ii]["id"]
-                        a = ii
-                        //  Saldo_real = saldo_realc - monto
-
-                        update = {
-                            Saldo_real: saldo_realc,
-
-                        }
-                        console.log(update)
-
-
-                        await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
-
-                    } /*else  {
-
-                        // aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i]) //cuota concurrente
-                        //  cuota_con_ajuste = cant_finales[ii]["cuota_con_ajuste"]
-                        saldo_realc = (parseFloat(cant_finales[ii]["Saldo_real"]) - monto).toFixed(2)
-                    } */
-
-
-
-
-
-                }
-            }
-
-        }
-
+    await pagodecuota.pagodecuota(id_cuota, monto)
         updatepago = {
             estado: "A"
         }
@@ -653,14 +576,20 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
                 descripcion: 'El pago ha sido rechzado',
                 asunto: 'Pago'
             }
+            try {
+                await pool.query('INSERT INTO notificaciones set ?', [update2]);
+            } catch (error) {
+                
+            }
+          
             email= 'pipao.pipo@gmail.com'
             asunto = 'Pago Sospechoso'
             encabezado = 'Pago Sospechoso al fideicomiso'
-            mensaje= "Recibimos un pado del cuil: "+cuil_cuit+ 'de un monto de '+auxi+' Detalle: '+detalle
+            mensaje= "Recibimos un pado del cuil: "+cuil_cuit+ 'de un monto de '+auxi[0]['monto']+' Detalle: '+detalle
         //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
             enviodemail.enviarmail.enviarmailsospechoso(email,asunto,encabezado,mensaje)
           
-           // await pool.query('INSERT INTO notificaciones set ?', [update2]);
+          
             break
     }
 
@@ -671,7 +600,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     }
 
     try {
-       // await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
+        await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
   
     } catch (error) {
         console.log(error)
@@ -702,7 +631,7 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) => { // pagot 
     const cuota = await pool.query('select * from cuotas where id = ?', [auxiliar]) //objeto cuota
     console.log(cuota)// aca ver error
 
-
+  
     try {
         if (cuota[0]["nro_cuota"] === 1) {
             var saldo_realc = cuota[0]["Saldo_real"]
