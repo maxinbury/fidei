@@ -187,7 +187,7 @@ const postaddaut = async (req, res) => {
 }
 
 const postaddaut2 = async (req, res) => {
-    let { id, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela } = req.body;
+    let { id, porcentaje,cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela } = req.body;
 
 console.log(mes+'/'+anio)
 
@@ -197,6 +197,7 @@ console.log(mes+'/'+anio)
     }
     console.log(cantidad_cuotas)
     id_lote = id
+    
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
     cuil_cuit = lot[0]['cuil_cuit']
     lote = lot[0]['lote']
@@ -222,19 +223,19 @@ console.log(mes+'/'+anio)
 
 
         monto_total = (valor * superficie).toFixed(2)
-        anticipo = monto_total * 0.2
-        if (row[0]['ingresos'] == 0) {
-            rtaa = [cuil_cuit, 'Error, el cliente no tiene ingresos declarados ']
-
-
-
-
-        } else {
-            monto_total = monto_total * 0.8
+        if (porcentaje === undefined ){
+            porcentaje = 20
+        }
+        porcentaje = porcentaje/100
+        anticipo = monto_total * porcentaje
+        console.log('monto total')
+        console.log(monto_total)
+            monto_total = monto_total * (1-porcentaje)
             anticipolote = {
                 anticipo
             }
-            console.log(monto_total)
+       
+        
             //llega
             const Amortizacion = (monto_total / cantidad_cuotas).toFixed(2);
 
@@ -360,7 +361,7 @@ console.log(mes+'/'+anio)
             }
 
 
-        }
+        
 
 
     } catch (error) {
@@ -372,6 +373,201 @@ console.log(mes+'/'+anio)
 
 
 }
+
+
+///Agregar varias
+
+
+const addautvarias = async (req, res) => {
+    let { id, porcentaje,cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,seleccion } = req.body;
+
+    console.log(seleccion)
+    console.log(seleccion[0])
+
+    
+
+/* 
+    if (cantidad_cuotas == undefined) {
+        cantidad_cuotas = 60
+    }
+    console.log(cantidad_cuotas)
+    id_lote = id
+    const lot = await pool.query('SELECT * from lotes where id= ?', [id])
+    cuil_cuit = lot[0]['cuil_cuit']
+    lote = lot[0]['lote']
+    zona = lot[0]['zona']
+    manzana = lot[0]['manzana']
+    fraccion = lot[0]['fraccion']
+    parcela = lot[0]['parcela']
+    superficie = lot[0]['superficie']
+
+
+    let aux = '%' + cuil_cuit + '%'
+
+    const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
+    //llega
+    try {
+        if (zona == 'PIT') {
+            valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+        } else {
+            valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+        }
+
+        valor = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+
+
+        monto_total = (valor * superficie).toFixed(2)
+        if (porcentaje === undefined ){
+            porcentaje = 20
+        }
+        porcentaje = porcentaje/100
+        anticipo = monto_total * porcentaje
+        console.log('monto total')
+        console.log(monto_total)
+            monto_total = monto_total * (1-porcentaje)
+            anticipolote = {
+                anticipo
+            }
+       
+        
+            //llega
+            const Amortizacion = (monto_total / cantidad_cuotas).toFixed(2);
+
+            let toleranciadec = row[0]['toleranciadec'] + Amortizacion
+            let tolerancia = row[0]['ingresos'] * 0.3
+
+            if (tolerancia < toleranciadec) {
+
+
+
+                ///////[cuil_cuit,'Error, el cliente no tiene ingresos declarados ']
+                rtaa = [cuil_cuit, 'Error, la amortizacion del valor de la cuota  es mayor al 30% de los ingresos declarados']
+                res.send(rtaa)
+
+
+            } else {
+
+                let nro_cuota = 1
+
+                let saldo_inicial = monto_total
+
+
+                if (row.length > 0) {
+                   
+                    var saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
+
+                    if (nro_cuota == 1) {
+                        Saldo_real = monto_total
+                    } else {
+                        Saldo_real = saldo_inicial
+                    }
+
+                    const id_cliente = row[0].id
+
+                    try {
+
+                        let actualizar = {
+                            toleranciadec
+                        }
+                        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [actualizar, aux])
+
+                        for (let i = 1; i <= cantidad_cuotas; i++) {
+                            nro_cuota = i
+                            
+                            const newLink = {
+                                //fecha,
+                                mes,
+                                anio,
+                                nro_cuota,
+                                Amortizacion,
+                                saldo_inicial,
+                                saldo_cierre,
+                                cuil_cuit,
+                                id_cliente,
+                                zona,
+                                manzana,
+                                fraccion,
+                                lote,
+                                Saldo_real,
+                                parcela,
+                                anticipo,
+                                id_lote,
+                                pago: 0
+
+                            };
+
+                            mes++
+
+                            if (mes > 12) {
+
+                                anio++
+                                mes -= 12
+                            }
+
+                            await pool.query('INSERT INTO cuotas SET ?', [newLink]);
+
+
+
+
+                           
+                            saldo_cierre = (saldo_inicial - Amortizacion).toFixed(2)
+                        }
+
+                    } catch (error) {
+                        console.log(error)
+                        res.send([cuil_cuit, 'Error, algo sucedio'])
+                    }
+
+
+                    await pool.query('UPDATE lotes set ? WHERE id = ?', [anticipolote, id])
+
+/////////////////////////////   inicio pruebas
+
+                 todass = await pool.query ('select * from cuotas where id_lote =? ',[id])
+                    for ( i = 0; i < todass.length; i++) {
+                        mess = todass[i]['mes']
+                        anioo = todass[i]['anio']
+                        exisste =  await pool.query ('select * from icc_historial where mes = ? and anio = ? ',[mess,anioo])
+                    if (exisste.length>0){
+                        ICC = exisste[0]['ICC']
+
+                       
+                            await agregaricc.calcularicc(todass[i],ICC)
+                      
+                    }
+                       
+                    }
+                    
+//////////////////////////
+
+
+                    res.send([cuil_cuit, 'Cuotas agregadas con exito'])
+
+                }
+
+
+                else {
+                    console.log(error)
+                    res.send([cuil_cuit, 'Error, algo sucedio'])
+
+                }
+
+            }
+
+
+        
+
+
+    } catch (error) {
+        console.log(error)
+        res.send([cuil_cuit, 'Erro, algo sucedio'])
+
+    } */
+
+
+
+}
+
 const quelote = async (req, res) => {
     const cuil_cuit = req.params.cuil_cuit
     let aux = '%' + cuil_cuit + '%'
@@ -581,6 +777,7 @@ module.exports = {
     post_agregaricc,
     lotes,
     lotefuncion2,
-    cuotasdeunlote
+    cuotasdeunlote,
+    addautvarias
 
 }

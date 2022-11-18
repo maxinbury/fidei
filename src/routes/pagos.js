@@ -536,7 +536,7 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where estado="averificarnivel3"')
+    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where estado="averificarnivel3" ')
     console.log(pagos)
     res.json(pagos)
 })
@@ -561,7 +561,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
     const { mes, anio } = req.body
     console.log(mes)
     console.log(anio)
-    const pagos = await pool.query('select * from historial_pagosi join clientes on historial_pagosi.cuil_cuit= clientes.cuil_cuit where historial_pagosi.mes =? and historial_pagosi.anio=?', [mes, anio])
+    const pagos = await pool.query('select * from pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where mes =? and anio=?', [mes, anio])
     console.log(pagos)
     if (pagos.length > 0) {
         res.json(pagos)

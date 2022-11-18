@@ -5,7 +5,7 @@ const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn,isLoggedInn2  } = require('../lib/auth') //proteger profile
 
 const { isLevel3 } = require('../lib/authnivel3')
-const { lista, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
+const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
 
 require('../contoladores/cuotascontrolador')
 
@@ -36,7 +36,7 @@ router.post('/add', isLevel2, postadd)
 // AGREGA VARIAS CUOTAS 
 router.post('/addaut', postaddaut)
 router.post('/addaut2',isLoggedInn2, postaddaut2)
-
+router.post('/addautvarias',isLoggedInn2, addautvarias)
 
 
 /// cuotasdeunloteReact
@@ -121,6 +121,36 @@ router.post('/editarr', async (req, res, ) => {
 
 
 //-----Borar Cuota
+
+
+
+router.get('/listavarios/:cuil_cuit', isLoggedInn2, async (req, res) => {
+    const { cuil_cuit } = req.params
+    try {
+        console.log(cuil_cuit)
+        lotess = await pool.query('select * from lotes where cuil_cuit = ? ',[cuil_cuit])
+        console.log(lotess)
+        valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+        valorparque = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+        valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+        valorotro =valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+
+        valor = {
+            valorparque,
+            valorotro
+        }
+
+        res.json([lotess,valor])
+    } catch (error) {
+        res.send('Error algo sucedio')
+    }
+
+
+
+
+})
+
+
 router.get('/delete/:id', isLoggedInn2, async (req, res) => {
     const { id } = req.params
     try {

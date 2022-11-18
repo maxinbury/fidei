@@ -58,6 +58,7 @@ router.get('/lotescliente/:cuil_cuit', isLoggedInn2, async (req, res) => {
 
 })
 
+
 router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit,lote } = req.body
    

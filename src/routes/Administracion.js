@@ -26,6 +26,7 @@ const fileUpload = multer({
 
 
 
+
 router.post('/subirprueba', fileUpload, async (req, res, done) => {
   const {formdata, file} = req.body
 
@@ -48,8 +49,22 @@ try {
 } catch (error) {
   console.log(error)
 }
-  
-  
+
+
+
+router.post('/cambiarestado',isLoggedInn2,  async (req, res) => {
+  const {id,estado } = req.body
+  try {
+    const cuota = {
+      estado
+    }
+    await pool.query('UPDATE lotes set ? WHERE id = ?', [cuota, id])
+    res.json('todo ok')
+  } catch (error) {
+    console.log(error)
+  }
+ 
+})
 
 
 })

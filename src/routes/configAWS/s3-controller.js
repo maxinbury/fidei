@@ -465,34 +465,52 @@ console.log(1)
 
 
 
-            const newLink = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                estado: estadoo,
-                anio,
-                cuil_cuit_distinto,
-                monto_distinto,
-                monto_inusual,
-                ubicacion: formData.file.originalFilename,///////////aca ver el problema
-                id_cbu
-
-            };
-
-            await pool.query('INSERT INTO pagos SET ?', [newLink]);
+           
 
             //////////   regisTro aprobacion de pago
         
 
             /////////////////////comparacion 
             if (estadoo === 'A') {
-               
+                 newLink = {
+                    id_cuota,
+                    monto,
+                    cuil_cuit,
+                    mes,
+                    estado: estadoo,
+                    anio,
+                    cuil_cuit_distinto,
+                    monto_distinto,
+                    monto_inusual,
+                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    id_cbu
+    
+                };
                 pagodecuota.pagodecuota(idcuotas, monto)
 
 
 
+            }else{
+                 newLink = {
+                    id_cuota,
+                    monto,
+                    cuil_cuit,
+                    mes,
+                    estado: estadoo,
+                    anio,
+                    cuil_cuit_distinto,
+                    monto_distinto,
+                    monto_inusual,
+                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    id_cbu,
+                    observaciones:'Inusual'
+    
+                };
+                
             }
+          
+
+            await pool.query('INSERT INTO pagos SET ?', [newLink]);
             console.log(estadoo)
             /////////FIN ETC PAGO 
 
