@@ -1,4 +1,5 @@
 const express = require('express')
+const pagodecuota = require('./funciones/pagoDeCuota')
 const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
