@@ -312,11 +312,13 @@ async function cargarcbu(req, res) {
 
         await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
+        res.json('Subido con exito')
 
 
 
     } catch (ex) {
         console.log('NOOO  ')
+        res.json('nos e ha podido subir')
     }
 }
 

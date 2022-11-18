@@ -485,15 +485,18 @@ router.get("/lote2/:id",  isLoggedInn, async (req, res) => {
        
     
         const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ? and parcialidad="final"', [id])
-        console.log(cuotas)
+       
         if (cuotas.length > 0) {
-    
-            /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
-               cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
-            res.json(cuotas)
+            const cuil_cuit = cuotas[0]['cuil_cuit']
+       
+            
+               console.log(cuil_cuit)
+               let pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit =  ? and estado="A"', [cuil_cuit])
+              
+             
+            res.json([cuotas,pagos])
             //res.render('cuotas/listavacia', { auxiliar })
-    
-        } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
+        } else {/* res.render('cuotas/lista', { cuotas })*/ res.json([[],[]]) }
         
     } catch (error) {
         
