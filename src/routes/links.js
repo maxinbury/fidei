@@ -47,7 +47,7 @@ console.log(mensaje)
 email = cli[0]['email']
 asunto = 'etc'
 encabezado= 'este mail es muy importante'
-enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
 
    // main.main(mail,)
 
