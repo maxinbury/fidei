@@ -19,7 +19,7 @@ async function calcularicc (todas,ICC) {
 let cuota  ={}
    
 try {
-  
+  ICC= ICC/100
         const parcialidad = "Final"
         nro_cuota = todas["nro_cuota"]
         cuil_cuit = todas["cuil_cuit"]
