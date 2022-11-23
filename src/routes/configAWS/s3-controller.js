@@ -260,12 +260,14 @@ async function subirlegajo1(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
+        res.json( 'Subido con exito')
         console.log(' Uploaded!!  ')
 
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+        res.json( 'Error algo sucedió ')
+        console.log(ex)
     }
 }
 ////cargarcbu
@@ -311,14 +313,14 @@ async function cargarcbu(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
+       
         res.json('Subido con exito')
 
 
 
     } catch (ex) {
         console.log('NOOO  ')
-        res.json('nos e ha podido subir')
+        res.json('no se ha podido subir')
     }
 }
 
