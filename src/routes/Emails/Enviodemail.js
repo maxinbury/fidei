@@ -1,6 +1,6 @@
 
 const nodemailer = require("nodemailer");
-
+const s3Controller = require('../configAWS/s3-controller');
 
 
 
@@ -39,8 +39,14 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
   }
 
 
-  async function enviarmailsospechoso (email,asunto,encabezado,mensaje) {
-    console.log(email)
+
+
+
+
+
+  async function enviarmailsospechoso (email,asunto,encabezado,mensaje, ubicacion) {
+    console.log(ubicacion)
+     link = await s3Controller.traerImagen(ubicacion)
       let transporter = nodemailer.createTransport({
           host: "smtp-mail.outlook.com", // hostname
           port: 587, // port for secure SMTP
@@ -60,7 +66,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
           to: [email], // list of receivers
           subject: asunto, // Subject line
           text: encabezado, // plain text body
-          html: "<b>  "+ mensaje+" </b>", // html body
+          html: "<b>  "+ mensaje+" </b>"+link, // html body
         });
       
         console.log("Message sent: %s", info.messageId);

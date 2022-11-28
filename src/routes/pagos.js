@@ -362,6 +362,9 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
 /// aprobar pago nivel 2
 router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
     const { id,  cambiarmonto } = req.body
+    try {
+        
+   
     // pagot es el objeto pago
     let pagot = await pool.query('select * from pagos where id = ?', [id])
 console.log(id)
@@ -398,7 +401,9 @@ console.log(id)
         console.log(error)
     }
     res.send('Aprobado')
-
+} catch (error) {
+        res.send(error)
+}
 
 })
 
@@ -588,7 +593,11 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             encabezado = 'Pago Sospechoso al fideicomiso'
             mensaje= "Recibimos un pado del cuil: "+cuil_cuit+ 'de un monto de '+auxi[0]['monto']+' Detalle: '+detalle
         //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
-            enviodemail.enviarmail.enviarmailsospechoso(email,asunto,encabezado,mensaje)
+
+            pagoaux = await pool.query('select * from pagos where id = ?',[id])
+            ubicacion = pagoaux[0]['ubicacion']
+
+            enviodemail.enviarmail.enviarmailsospechoso(email,asunto,encabezado,mensaje,ubicacion)
           
           
             break

@@ -98,6 +98,24 @@ async function getSignedUrl(req, res) {
     }
 }
 
+async function traerImagen(ubicacion) {
+   
+    try {
+        console.log('ubicacion')
+        console.log(ubicacion)
+        const {key} = {ubicacion};
+        console.log('key')
+        console.log(key)
+        const url = await getPresignedURL("mypdfstorage", key);
+        console.log(url)
+        return(url)
+    
+
+    } catch (ex) {
+        console.log(ex)
+        return('No se encontro imagen');
+    }
+}
 
 async function subirlegajo(req, res) {
 
@@ -862,5 +880,6 @@ module.exports = {
     determinarPep,
     justificar,
     pagonivel2,
-    pagarnivel2varios
+    pagarnivel2varios,
+    traerImagen
 }
