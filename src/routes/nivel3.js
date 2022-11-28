@@ -166,6 +166,36 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
 
 res.send('Icc asignado con éxito');
 })
+//////
+
+///// REACT ii gral menos los que estan
+router.post('/agregariccgral22', isLoggedInn3, async (req, res,) => {
+    let { ICC, mes, anio } = req.body;
+   
+
+
+    let datoss = {
+        ICC,
+        mes,
+        anio
+
+    }
+    ICC= ICC/100
+    //////////////try
+    
+
+
+
+
+    const todas = await pool.query("select * from cuotas where mes =? and anio =? and parcialidad = ?  ", [mes, anio,"Original"])
+
+    for (let i = 0; i < todas.length; i++) {  
+
+    agregaricc.calcularicc(todas[i],ICC)
+}
+
+res.send('Icc asignado con éxito');
+})
 
 //ACCESO A MENU DE USUARIO NIVEL 2
 router.get('/perfilnivel2', isLoggedIn, isLevel3, async (req, res) => {
