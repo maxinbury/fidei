@@ -456,6 +456,17 @@ router.post("/detallespagos", isLoggedInn2, async (req, res) => {
     res.json(pagos)
 })
 
+router.get("/todoslospagos", isLoggedInn2, async (req, res) => {
+    
+
+    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit = clientes.cuil_cuit ')
+
+
+
+
+    res.json(pagos)
+})
+
 
 ///////// Cantidad inusuales 
 router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
@@ -491,7 +502,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
     const { mes, anio } = req.body
     console.log(mes)
     console.log(anio)
-    const pagos = await pool.query('select * from pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where mes =? and anio=?', [mes, anio])
+    const pagos = await pool.query('select * from pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where mes =? and anio=? and observaciones = "Inusual"', [mes, anio])
     console.log(pagos)
     if (pagos.length > 0) {
         res.json(pagos)
@@ -560,7 +571,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     auxi = await pool.query('select *  from pagos where id=?', [id]);//pagos
     cuil_cuit = auxi[0]['cuil_cuit']
   
-    estado = 'Inusual'
+
     switch (tipo) {
         case 'Inusual':
             console.log('Inusual')
@@ -573,7 +584,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
         case 'Sospechoso':
             console.log('Sospechoso')
             estado = 'declaradosospechoso'
-            console.log(estado)
+            
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
             const update2 = {
                 leida: "No",
@@ -605,7 +616,8 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
 
     const update = {
-        estado
+        estado,
+       
 
     }
 

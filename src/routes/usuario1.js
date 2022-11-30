@@ -480,7 +480,7 @@ res.send([lotes,cuotas,cuotaapagar,cliente])
 router.get("/lote2/:id",  isLoggedInn, async (req, res) => {
     try {
         const id = req.params.id
-        console.log('controladorloteduncion')
+        
         console.log(id)
        
     
@@ -491,7 +491,7 @@ router.get("/lote2/:id",  isLoggedInn, async (req, res) => {
        
             
                console.log(cuil_cuit)
-               let pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit =  ? and estado="A"', [cuil_cuit])
+               let pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit =  ?', [cuil_cuit])
               
              
             res.json([cuotas,pagos])
