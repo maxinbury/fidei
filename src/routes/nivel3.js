@@ -131,7 +131,7 @@ try {
 router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
     let { ICC, mes, anio } = req.body;
    
-
+console.log('iccgral2')
 
     let datoss = {
         ICC,
@@ -139,7 +139,7 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
         anio
 
     }
-    ICC= ICC/100
+
     //////////////try
     
 
@@ -161,7 +161,7 @@ router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
 
     for (var i = 0; i < todas.length; i++) {  
 
-    agregaricc.calcularicc(todas[i],ICC)
+    await agregaricc.calcularicc(todas[i],ICC)
 }
 
 res.send('Icc asignado con éxito');

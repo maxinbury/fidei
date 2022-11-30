@@ -381,16 +381,61 @@ console.log(mes+'/'+anio)
 const addautvarias = async (req, res) => {
     let { id, porcentaje,cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,seleccion } = req.body;
 
+    monto_total = 0
     console.log(seleccion)
     console.log(seleccion[0])
+   
+    
+    const lot = await pool.query('SELECT * from lotes where id= ?', [seleccion[0][0]])
+    console.log(lot)
+    cuil_cuit = lot[0]['cuil_cuit']
+    lote = lot[0]['lote']
+    zona = lot[0]['zona']
+    manzana = lot[0]['manzana']
+    fraccion = lot[0]['fraccion']
+    parcela = lot[0]['parcela']
+    superficie = lot[0]['superficie']
 
+    let aux = '%' + cuil_cuit + '%'
+    const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
+
+
+    for ( i = 0; i < seleccion[0].length; i++) {
+       console.log('entra')
+        const lot = await pool.query('SELECT * from lotes where id= ?', [seleccion[0][i]])
+        console.log(lot)
+        superficie = lot[0]['superficie']
+        zona = lot[0]['zona']
+
+            if (zona == 'PIT') {
+                valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+            } else {
+                valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+            }
+    
+            valor = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+    
+    
+            monto_total =(monto_total+ parseFloat((valor * superficie))).toFixed(2)
+    
     
 
-/* 
+
+
+
+
+
+
+
+    }
+
     if (cantidad_cuotas == undefined) {
         cantidad_cuotas = 60
     }
-    console.log(cantidad_cuotas)
+    console.log(monto_total)
+
+/* 
+
     id_lote = id
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
     cuil_cuit = lot[0]['cuil_cuit']
@@ -417,6 +462,10 @@ const addautvarias = async (req, res) => {
 
 
         monto_total = (valor * superficie).toFixed(2)
+
+
+
+
         if (porcentaje === undefined ){
             porcentaje = 20
         }
@@ -680,72 +729,18 @@ const agregar_icc = async (req, res) => {
 ////  agregar icc de un lote 
 const post_agregaricc = async (req, res,) => {
     let { ICC, id } = req.body;
-    ICC = ICC / 100
-    console.log(id)
 
-    const todas = await pool.query("select * from cuotas where id =  ? ", [id])
-    const parcialidad = "Final"
-    console.log(todas)
-    nro_cuota = todas[0]["nro_cuota"]
-    cuil_cuit = todas[0]["cuil_cuit"]
+    const todas = await pool.query("select * from cuotas where id = ?", [id])
 
-    if (nro_cuota == 1) {
-
-        saldo_inicial = todas[0]["saldo_inicial"]
-        const Ajuste_ICC = 0
-        const Base_calculo = todas[0]["Amortizacion"]
-        const cuota_con_ajuste = todas[0]["Amortizacion"]
-
-        var cuota = {
-            ICC,
-            Ajuste_ICC,
-            Base_calculo,
-            cuota_con_ajuste,
-
-            parcialidad
-
-        }
-
-    } else {
-        const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ? and id_lote = ?', [nro_cuota - 1, cuil_cuit, todas[0]["id_lote"]])
-
-        var Saldo_real_anterior = parseFloat(anterior[0]["Saldo_real"])
-
-        const cuota_con_ajuste_anterior = parseFloat(anterior[0]["cuota_con_ajuste"])
-
-        const Base_calculo = cuota_con_ajuste_anterior
-        const Ajuste_ICC = (cuota_con_ajuste_anterior * ICC).toFixed(2)
-
-        const cuota_con_ajuste = (parseFloat(cuota_con_ajuste_anterior) + parseFloat(Ajuste_ICC)).toFixed(2)
-
-        Saldo_real_anterior = (parseFloat(Saldo_real_anterior) + parseFloat(Ajuste_ICC))
-
-        const Saldo_real = parseFloat(Saldo_real_anterior).toFixed(2)
+ 
 
 
-        var cuota = {
-            ICC,
-            Ajuste_ICC,
-            Base_calculo,
-            cuota_con_ajuste,
-            Saldo_real,
-            parcialidad,
 
 
-        }
-        console.log(cuota)
-    }
+  await  agregaricc.calcularicc(todas[0],ICC)
 
-    try {
 
-        await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[0]["id"]])
-
-        res.send('Icc asignado con éxito');
-    } catch (error) {
-        console.log(error)
-        res.send('Error');
-
-    }
+res.send('Icc asignado con éxito');
 
 
 
