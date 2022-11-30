@@ -115,7 +115,7 @@ console.log(monto)
                 if (actualizacion<0){/// hay que actualizar el resto 
                  
                   
-                    if ((actualizacion+parseFloat(monto)) <0  ){// si no pasa junto con el monto
+                    if ((actualizacion+parseFloat(monto)) <=0  ){// si no pasa junto con el monto
                        
                         console.log(monto)
                         actualizacion =  monto
