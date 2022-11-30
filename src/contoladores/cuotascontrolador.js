@@ -379,7 +379,7 @@ console.log(mes+'/'+anio)
 
 
 const addautvarias = async (req, res) => {
-    let { id, porcentaje,cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,seleccion } = req.body;
+    let { cant, porcentaje,cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,seleccion } = req.body;
 
     monto_total = 0
     console.log(seleccion)
@@ -400,7 +400,7 @@ const addautvarias = async (req, res) => {
     const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
 
 
-    for ( i = 0; i < seleccion[0].length; i++) {
+    for ( i = 0; i < cant; i++) {
        console.log('entra')
         const lot = await pool.query('SELECT * from lotes where id= ?', [seleccion[0][i]])
         console.log(lot)
