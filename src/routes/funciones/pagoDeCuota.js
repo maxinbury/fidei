@@ -16,7 +16,7 @@ const sacarguion = require('../../public/apps/transformarcuit')
 async function pagodecuota (id,monto) {
 
     //id es de cuotacuota
-
+console.log('calculo de cuota' )
 console.log(id)
 console.log(monto) 
     try {
