@@ -8,7 +8,7 @@ const {pendientes,aprobar, aprobarcomp,rechazar2, rechazarcomp,pendientestodas, 
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
-
+const pagodecuota = require('./funciones/pagoDeCuota')
 
 
 const diskstorage = multer.diskStorage({
@@ -87,10 +87,25 @@ router.get('/pagos', isLoggedInn2,  async (req, res) => {
 //// borrar un pago
 router.get('/borrarpago/:id', isLoggedInn2,  async (req, res) => {
   const id = req.params.id
-  await pool.query('DELETE FROM pagos WHERE id= ?', [id])
+  pago = await pool.query('select * from pagos where id=?',[id])
+  monto = parseFloat(-pago[0]['monto'])
+  console.log(monto)
+
+idcuotas =  pago[0]['id_cuota']
+console.log('monto')
+console.log(idcuotas)
+if (pago[0]['estado'] === 'A'){
+ 
+  await pagodecuota.pagodecuota(idcuotas, monto)
+}
+
+
+await pool.query('DELETE FROM pagos WHERE id= ?', [id])
   res.send('enviado')
  
 })
+
+
 
 // LISTA TODAS PENDIENTES PAra React
 //   ver***
