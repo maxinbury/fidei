@@ -28,7 +28,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         attachments: [
           {   // use URL as an attachment
             filename: 'bannerSC.png',
-            path: 'src\public\img\bannerSC.png'
+            path: 'src/public/img/bannerSC.png'
           }
         ],
         text: encabezado, // plain text body
