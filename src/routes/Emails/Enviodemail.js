@@ -1,7 +1,7 @@
 
 const nodemailer = require("nodemailer");
 const s3Controller = require('../configAWS/s3-controller');
-
+const path = require('path')
 
 
 
@@ -28,7 +28,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         attachments: [
           {   // use URL as an attachment
             filename: 'bannerSC.png',
-        path: aux,
+            path: (path.join(__dirname, aux)),
         cid: "logo"          }
         ],
         text: encabezado, // plain text body
