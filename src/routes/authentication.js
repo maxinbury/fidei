@@ -14,7 +14,7 @@ const enviodemail = require('./Emails/Enviodemail')
 
 router.post('/recuperoo', passport.authenticate('local.recupero', {
     successRedirect: '/signin',
-    failureRedirect: '/signup',
+    failureRedirect: '/signuppp',
     failureFlash: true
 
 }))
@@ -42,7 +42,7 @@ console.log(cuil_cuit)
         }
 
         mensaje = 'El codigo es '+recupero
-        console.log(mensaje)
+    
        msj = await enviodemail.enviarmail.enviarmailRecupero(cliente[0]['email'],'asunto','encabezado',mensaje)
 
         await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [actualizar, cuil_cuit])
