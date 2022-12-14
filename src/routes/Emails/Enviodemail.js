@@ -32,7 +32,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
           }
         ],
         text: encabezado, // plain text body
-        html: '<h1>Hola!</h1><p>Este es el contenido del correo electrónico <img>.</p><img src="cid:banner.png">' // html body
+        html: '<h1>Hola!</h1><p>Este es el contenido del correo electrónico <img>.</p><img src="cid:bannerSC.png">' // html body
       });
     
       console.log("Message sent: %s", info.messageId);
