@@ -19,7 +19,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
             pass: '1385Fideicomiso'
         }
     });
-    
+    const aux = "../routes/Emails/img/bannerSC.png"
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Administracion Fideicomiso Santa Catalina" <fideicomisoSCatalina@outlook.com>', // direccion de envio 
@@ -28,7 +28,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         attachments: [
           {   // use URL as an attachment
             filename: 'bannerSC.png',
-        path: 'src/routes/Emails/img/bannerSC.png',
+        path: aux,
         cid: "logo"          }
         ],
         text: encabezado, // plain text body
