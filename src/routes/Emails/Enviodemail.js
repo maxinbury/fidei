@@ -28,11 +28,12 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         attachments: [
           {   // use URL as an attachment
             filename: 'bannerSC.png',
-            content: fs.createReadStream('/src/public/img/bannerSC.png')
-          }
+        path: __dirname + '/src/public/img/bannerSC.png',
+        cid: "logo"          }
         ],
         text: encabezado, // plain text body
-        html: '<h1>Hola!</h1><p>Este es el contenido del correo electrónico <img>.</p><img src="cid:bannerSC.png">' // html body
+        html: `<b>Thanks for reading this important mail.</b>
+           <p><img src = 'cid:logo'></img></p>` // html body
       });
     
       console.log("Message sent: %s", info.messageId);
