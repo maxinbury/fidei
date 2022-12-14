@@ -205,16 +205,16 @@ passport.use('local.signupnivel3', new LocalStrategy({
 /// Recupero de contraseña 
 
 passport.use('local.recupero', new LocalStrategy({
-    usernameField: 'cuil_cuit',
+     usernameField: 'cuil_cuit',
     passwordField: 'password',
     passReqToCallback: 'true'
-}, async (req, cuil_cuit, password, done) => {
-
-    const { nombre, mail, nivel } = req.body
+}, async (req, cuil_cuit, done) => {
+  
+    const {  codigo } = req.body
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
 
+    console.log('llega')
 
-    const habilitado = 'NO'
     const newUser = {
         password,
         cuil_cuit,
@@ -225,11 +225,9 @@ passport.use('local.recupero', new LocalStrategy({
 
     }
 
-
-    //fin transformar 
     try {
-        var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
-        if (rows.length == 0) { // si ya hay un USER con ese dni 
+        let rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
+           if (rows[0]['codigo'] === codigo) { // si ya hay un USER con ese dni 
 
             newUser.password = await helpers.encryptPassword(password)
             try {
@@ -244,7 +242,7 @@ passport.use('local.recupero', new LocalStrategy({
         }
 
         else {
-            console.log('error, ese cuit ya tiene un usuairo existente')
+            console.log('error, codigo mal')
             done(null, false, req.flash('message', 'error, ese cuit ya tiene un usuairo existente  ')) // false para no avanzar
 
         }
