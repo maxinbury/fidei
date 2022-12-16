@@ -408,10 +408,17 @@ console.log(1)
 
                 cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
                 while ((cuil_cuit_distinto === 'Si') && (i < (cantidad))) {
-
+                    //////////
+                    /*
+                    const workbook = XLSX.readFile(path.join(__dirname, './src/Excel/' + extracto[i]['ubicacion']))
+                    const workbooksheets = workbook.SheetNames
+                    const sheet = workbooksheets[0]
+                
+                    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+                     */
+                    ///////
                     ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
-                    console.log(5)
-                    const workbook = XLSX.readFile('./src/Excel/' + extracto[i]['ubicacion'])
+                    const workbook = XLSX.readFile(path.join(__dirname, './src/Excel/' + extracto[i]['ubicacion']))
                     const workbooksheets = workbook.SheetNames
                     const sheet = workbooksheets[0]
 
