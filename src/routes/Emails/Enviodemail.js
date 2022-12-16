@@ -23,7 +23,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Administracion Fideicomiso Santa Catalina" <fideicomisoSCatalina@outlook.com>', // direccion de envio 
-        to: "elotroyo005@gmail.com", // list of receivers
+        to: ["elotroyo005@gmail.com","pipao.pipo@gmail.com"], // list of receivers
         subject: asunto, // Subject line
         attachments: [
           {   // use URL as an attachment
@@ -33,6 +33,9 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         ],
         text: encabezado, // plain text body
         html: `<b>Thanks for reading this important mail.</b>
+        <br/>
+        <h2>Esto es un titulo</h2>  <br/>
+        <p>Parrafo abajo </p>
            <p><img src = 'cid:logo'></img></p>` // html body
       });
     
