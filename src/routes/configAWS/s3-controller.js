@@ -409,22 +409,16 @@ console.log(1)
                 cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
                 while ((cuil_cuit_distinto === 'Si') && (i < (cantidad))) {
                     //////////
-                    /*
-                    const workbook = XLSX.readFile(path.join(__dirname, './src/Excel/' + extracto[i]['ubicacion']))
-                    const workbooksheets = workbook.SheetNames
-                    const sheet = workbooksheets[0]
-                
-                    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-                     */
-                    ///////
                     ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
-                    const workbook = XLSX.readFile(path.join(__dirname, './src/Excel/' + extracto[i]['ubicacion']))
+                     try {
+
+                    const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + extracto[i]['ubicacion']))
                     const workbooksheets = workbook.SheetNames
                     const sheet = workbooksheets[0]
 
                     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
                     console.log(6)
-                    try {
+                  
                         console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
 
@@ -466,13 +460,8 @@ console.log(1)
                                         estadoo = 'A'
                                     }
                                 } catch (error) {
-
-                                }
-                               
-
+                                }                               
                             }
-
-
 
                         }
                     } catch (error) {
@@ -490,14 +479,8 @@ console.log(1)
             //////////////////////////////
             const id_cuota = existe[0]["id"]
             console.log(id_cuota)
-
-
-
-
-           
-
-            //////////   regisTro aprobacion de pago
-        
+  
+            //////////   regisTro aprobacion de pago  
 
             /////////////////////comparacion 
             if (estadoo === 'A') {
@@ -542,43 +525,27 @@ console.log(1)
             await pool.query('INSERT INTO pagos SET ?', [newLink]);
             console.log(estadoo)
             /////////FIN ETC PAGO 
-
             res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
-
-
 
         } else {
             res.send('Error la cuota no existe')
-
-
         }
-
         /////
     } catch (error) {
         console.log(error)
         res.send('Error la cuota no existe, elegir una fecha valida')
     }
-
-
-
-
     try {
-
         ///guardado de 
           await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
-
 
 
     } catch (ex) {
         console.log('NOOO  ')
     }
 }
-
-
-
 /////////////////////pagar nivel 2 directamente aprobado 
-
 async function pagonivel2(req, res) {
 
     formData = await leerformlegajo(req);
@@ -609,11 +576,6 @@ let nro_cuota = cuota[0]["nro_cuota"]
 let id_lote = cuota[0]["id_lote"]
 let Amortizacion = cuota[0]["Amortizacion"]
 let diferencia = cuota[0]["diferencia"]
-
-
-
-
-
 
 mes = cuota[0]["mes"]
 anio = cuota[0]["anio"]
@@ -666,7 +628,6 @@ await pool.query('INSERT INTO pagos SET ?', [newLink]);
 }else { 
     mensaje = 'cuota no calculada'
 }
-
 
     try {
 
