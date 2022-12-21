@@ -79,11 +79,13 @@ router.post('/asignarvalormetroc',isLoggedInn3, async (req, res) => {
     const  { valor,zona } = req.body;
     try {
     
-     
+        fecha = (new Date(Date.now())).toLocaleDateString()
+        
             val ={valormetrocuadrado:valor,
-                valormetroparque:zona } 
+                valormetroparque:zona,
+                fecha } 
           
-       
+                
         await pool.query('insert into nivel3 set ?', val)
         res.send('Borrados correctamente')
 
@@ -239,6 +241,17 @@ router.get('/traerusuarios',isLoggedInn3, async (req, res) => {
     console.log(usuarios)
 
 res.json(usuarios)
+    
+    }
+
+)
+///historial valor metro cuadrado 
+router.get('/historialvalormetro',isLoggedInn3, async (req, res) => {
+
+    const valores = await pool.query(" Select * from nivel3  ")
+    console.log(valores)
+
+res.json(valores)
     
     }
 

@@ -502,7 +502,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
     const { mes, anio } = req.body
     console.log(mes)
     console.log(anio)
-    const pagos = await pool.query('select * from pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where mes =? and anio=? and observaciones = "Inusual"', [mes, anio])
+    const pagos = await pool.query('select * from pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where mes =? and anio=? and pagos.observaciones = "Inusual" or tipo = "declaradosospechoso"', [mes, anio])
     console.log(pagos)
     if (pagos.length > 0) {
         res.json(pagos)
@@ -539,8 +539,28 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
                 descripcion: detalle,
                 asunto: 'Solicitud de documentacion'
             }
+
+
+
             await pool.query('INSERT INTO notificaciones set ?', [update2]);
             break
+
+            case 'rechazardefinitivo':
+               
+                estado = 'Rechazado'
+                //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
+                const update3 = {
+                    leida: "No",
+                    cuil_cuit: cuil_cuit,
+                    id_referencia: id,
+                    descripcion: detalle,
+                    asunto: 'Pago Rechazado'
+                }
+    
+    
+                
+                await pool.query('INSERT INTO notificaciones set ?', [update3]);
+                break
     }
 
 

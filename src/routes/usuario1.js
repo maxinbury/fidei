@@ -46,6 +46,9 @@ router.post('/subirlegajo1', isLoggedInn,s3Controller.subirlegajo1);
 //// REACT  
 router.post('/cargarcbu',isLoggedInn, s3Controller.cargarcbu)
 
+/// DETERMINAR INGRESO, LIMITAR A NIVEL 2
+router.post('/determinaringreso', isLoggedInn,s3Controller.determinaringreso);
+
 
 router.post('/pagarnivel1', isLoggedInn, s3Controller.pagarniv1);
 
@@ -105,18 +108,19 @@ router.get('/leerimagen ', async (req, res, done) => {
 
 ////////constancias de un pago 
 
-router.get('/constanciasdelpago/:id', isLoggedInn2, async (req, res, ) => {
+router.get('/constanciasdelpago/:id',  async (req, res, ) => {
     id = req.params.id
+    console.log(id)
     const pago = await pool.query('select * from pagos where id =?',[id])
     const constancias = await pool.query('select * from constancias where otros =?',[id])
     const todas = pago.concat(constancias);
-    
+    console.log(todas)
     try {
        
      
         res.json(todas)
     } catch (error) {
-        
+        console.log(error)
     }
 
 
