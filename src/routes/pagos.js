@@ -539,8 +539,28 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
                 descripcion: detalle,
                 asunto: 'Solicitud de documentacion'
             }
+
+
+
             await pool.query('INSERT INTO notificaciones set ?', [update2]);
             break
+
+            case 'rechazardefinitivo':
+               
+                estado = 'Rechazado'
+                //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
+                const update3 = {
+                    leida: "No",
+                    cuil_cuit: cuil_cuit,
+                    id_referencia: id,
+                    descripcion: detalle,
+                    asunto: 'Pago Rechazado'
+                }
+    
+    
+                
+                await pool.query('INSERT INTO notificaciones set ?', [update3]);
+                break
     }
 
 
