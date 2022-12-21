@@ -117,6 +117,52 @@ async function traerImagen(ubicacion) {
     }
 }
 
+
+async function determinaringreso(req, res) {
+
+    formData = await leerformlegajo(req);
+
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit = myArray[0]
+    descripcion = myArray[1]
+console.log(descripcion)
+
+    const datoss = {
+       ingresos:descripcion
+    }
+    console.log(datoss)
+    try {
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datoss, cuil_cuit])
+        const constancianueva = {
+            ubicacion: formData.file.originalFilename,
+            cuil_cuit: cuil_cuit,
+            descripcion: descripcion,
+            tipo:"Ingresos Declarados",
+            fecha: (new Date(Date.now())).toLocaleDateString(),
+            estado: 'Aprobada'
+        }
+
+        await pool.query('insert into constancias set?', constancianueva)
+    } catch (error) {
+        console.log(error)
+    }
+
+
+
+
+    try {
+
+
+        await uploadFileToS3(formData.file, "mypdfstorage");
+        console.log(' Uploaded!!  ')
+
+
+
+    } catch (ex) {
+        console.log('NOOO  ')
+    }
+}
 async function subirlegajo(req, res) {
 
     formData = await leerformlegajo(req);
@@ -849,5 +895,6 @@ module.exports = {
     justificar,
     pagonivel2,
     pagarnivel2varios,
-    traerImagen
+    traerImagen,
+    determinaringreso
 }
