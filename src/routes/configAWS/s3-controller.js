@@ -127,7 +127,7 @@ async function determinaringreso(req, res) {
     cuil_cuit = myArray[0]
     descripcion = myArray[1]
 console.log(descripcion)
-
+let rta= ''
     const datoss = {
        ingresos:descripcion
     }
@@ -144,8 +144,10 @@ console.log(descripcion)
         }
 
         await pool.query('insert into constancias set?', constancianueva)
+        rta = 'Ingresos actualizados'
     } catch (error) {
         console.log(error)
+        rta = 'Error algo sucedio'
     }
 
 
@@ -161,8 +163,13 @@ console.log(descripcion)
 
     } catch (ex) {
         console.log('NOOO  ')
+        rta = 'Error algo sucedio'
     }
+    console.log(rta)
+    res.json(rta)
 }
+
+
 async function subirlegajo(req, res) {
 
     formData = await leerformlegajo(req);
@@ -412,7 +419,7 @@ async function pagarniv1(req, res) {
 
 
     try {
-console.log(1)
+console.log(fechapago)
 
         //// realizar el pago
         let estadoo = 'P'
@@ -428,6 +435,7 @@ console.log(1)
         let existe = await pool.query('Select * from cuotas where  id_lote=?  and mes =? and anio = ? and parcialidad = "Final" order by nro_cuota', [id, mes, anio])
         // estado = existe[0]
         idcuotas = existe[0]['id']
+        yarealizado='NO'
         if (existe.length > 0) {////////si existe la cuota
 
 
@@ -503,7 +511,31 @@ console.log(1)
                                         console.log(10)
                                         console.log('entra')
                                         monto_distinto = 'No'
-                                        estadoo = 'A'
+                                        fecha = dataExcel[property]['']
+                                        console.log(fecha)
+                                        console.log(fechapago)
+                                        if (fecha === fechapago) {
+
+
+                                            verificacion = await pool.query('select * from pagos where monto=? and fecha=? ',[monto,fechapago])
+                                            if (verificacion.length > 0) {
+                                                yarealizado='SI'
+
+                                            }else {
+                                                estadoo = 'A'
+
+                                            }
+
+                                           
+
+
+                                            
+                                           
+
+                                        }
+                                      
+                                       
+                                      
                                     }
                                 } catch (error) {
                                 }                               
@@ -535,16 +567,18 @@ console.log(1)
                     monto,
                     cuil_cuit,
                     mes,
+                    fecha:fechapago,
                     estado: estadoo,
                     anio,
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
                     ubicacion: formData.file.originalFilename,///////////aca ver el problema
-                    id_cbu
+                    id_cbu,
+                    yarealizado
     
                 };
-                pagodecuota.pagodecuota(idcuotas, monto)
+               await pagodecuota.pagodecuota(idcuotas, monto)
 
 
 
@@ -556,19 +590,21 @@ console.log(1)
                     mes,
                     estado: estadoo,
                     anio,
+                    fecha:fechapago,
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
                     ubicacion: formData.file.originalFilename,///////////aca ver el problema
                     id_cbu,
-                    observaciones:'Inusual'
+                    observaciones:'Inusual',
+                    yarealizado
     
                 };
                 
             }
+            
           
-
-            await pool.query('INSERT INTO pagos SET ?', [newLink]);
+          await pool.query('INSERT INTO pagos SET ?', [newLink]);
             console.log(estadoo)
             /////////FIN ETC PAGO 
             res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
@@ -583,6 +619,7 @@ console.log(1)
     }
     try {
         ///guardado de 
+        console.log('se guardaria')
           await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
 

@@ -34,8 +34,11 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
     
     let mandar = []
     // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
-    const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
+  
     // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
+
+    try {
+        const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
@@ -57,6 +60,8 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
 
 
+try {
+    
 
         descripcion = (dataExcel[property]['Descripción']).match(regex)
 
@@ -92,20 +97,35 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                 }
 
             } catch (error) {
-               
+                nuevo = {
+                    fecha:'no se encontro archivo',
+                    descripcion:'no se encontro archivo',
+                    referencia:'no se encontro archivo',
+                    debitos:'no se encontro archivo',
+                    creditos:'no se encontro archivo',
+                    nombre:'no se encontro archivo',
+
+                }
+                mandar= [nuevo]
 
             }
         } else { console.log('null') }
 
 
-
+    } catch (error) {
+    
+    }
 
 
 
 
 
     }
-  
+         
+} catch (error) {
+        
+}
+
     res.json(mandar)
 
 
