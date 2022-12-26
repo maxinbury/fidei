@@ -231,10 +231,10 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
     let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
     const cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
     // console.log(cantidad)    cantidad de liquidadas y vencidas
-    const devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'])
+    let devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'])
     // console.log(devengado)
 
-    const abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
+    let abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
     console.log('cantidad')
     console.log(cantidad)
    
@@ -280,6 +280,18 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
            console.log('defined')
         devengado.toFixed(2)
         //////SI HAY CUOTAS 
+
+        try {
+           devengado= devengado.toFixed(2)
+        } catch (error) {
+            console.log(error)
+        }
+        try {
+           abonado= abonado.toFixed(2)
+        } catch (error) {
+            console.log(error)
+        } 
+
         const dato1 = {
             'datoa': 'Cantidad de cuotas liquidadas y vencidas',
             'datob': cantidad
@@ -302,10 +314,17 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
 
             const Amortizacion = (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
 
-            const capital = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
+            let capital = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
             console.log(cantidad2)
             console.log(Amortizacion)
-            console.log(capital)
+           
+
+            try {
+                capital = capital.toFixed(2)
+            } catch (error) {
+                
+            }
+
             const dato5 = {
                 'datoa': 'Cantidad de cuotas a Vencer',
                 'datob': cantidad2
