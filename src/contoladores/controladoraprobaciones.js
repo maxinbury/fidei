@@ -48,7 +48,7 @@ const aprobar = async (req, res) => {
         asunto = 'Constancia Aprobada'
         encabezado= 'Importante'
         
-       await enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+       await enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
        
     } catch (error) {
         console.log(error)
@@ -113,7 +113,7 @@ const rechazar2 = async (req, res) => {
         email = cli[0]['email']
         asunto = 'Constancia rechazada'
         encabezado= 'este mail es muy importante'
-        enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+        enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
         res.send('rechazado')
     } catch (error) {
         res.send('Algo salio mal')

@@ -9,6 +9,7 @@ const fs = require('fs')
 const ponerguion = require('../../public/apps/transformarcuit')
 const sacarguion = require('../../public/apps/transformarcuit')
 const pagodecuota = require('../funciones/pagoDeCuota')
+const enviodemail = require('../Emails/Enviodemail')
 
 async function s3Upload(req, res) {
     let { ingreso, formData } = req.body
@@ -85,7 +86,7 @@ async function readFormData(req) {
 }
 
 async function getSignedUrl(req, res) {
-   
+
     try {
         console.log("url2")
 
@@ -99,21 +100,21 @@ async function getSignedUrl(req, res) {
 }
 
 async function traerImagen(ubicacion) {
-   
+
     try {
         console.log('ubicacion')
         console.log(ubicacion)
-        const {key} = {ubicacion};
+        const { key } = { ubicacion };
         console.log('key')
         console.log(key)
         const url = await getPresignedURL("mypdfstorage", key);
         console.log(url)
-        return(url)
-    
+        return (url)
+
 
     } catch (ex) {
         console.log(ex)
-        return('No se encontro imagen');
+        return ('No se encontro imagen');
     }
 }
 
@@ -126,10 +127,10 @@ async function determinaringreso(req, res) {
     console.log(myArray)
     cuil_cuit = myArray[0]
     descripcion = myArray[1]
-console.log(descripcion)
-let rta= ''
+    console.log(descripcion)
+    let rta = ''
     const datoss = {
-       ingresos:descripcion
+        ingresos: descripcion
     }
     console.log(datoss)
     try {
@@ -138,7 +139,7 @@ let rta= ''
             ubicacion: formData.file.originalFilename,
             cuil_cuit: cuil_cuit,
             descripcion: descripcion,
-            tipo:"Ingresos Declarados",
+            tipo: "Ingresos Declarados",
             fecha: (new Date(Date.now())).toLocaleDateString(),
             estado: 'Aprobada'
         }
@@ -331,13 +332,13 @@ async function subirlegajo1(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        res.json( 'Subido con exito')
+        res.json('Subido con exito')
         console.log(' Uploaded!!  ')
 
 
 
     } catch (ex) {
-        res.json( 'Error algo sucedió ')
+        res.json('Error algo sucedió ')
         console.log(ex)
     }
 }
@@ -384,7 +385,7 @@ async function cargarcbu(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-       
+
         res.json('Subido con exito')
 
 
@@ -419,7 +420,7 @@ async function pagarniv1(req, res) {
 
 
     try {
-console.log(fechapago)
+        console.log(fechapago)
 
         //// realizar el pago
         let estadoo = 'P'
@@ -435,15 +436,28 @@ console.log(fechapago)
         let existe = await pool.query('Select * from cuotas where  id_lote=?  and mes =? and anio = ? and parcialidad = "Final" order by nro_cuota', [id, mes, anio])
         // estado = existe[0]
         idcuotas = existe[0]['id']
-        yarealizado='NO'
+        yarealizado = 'NO'
         if (existe.length > 0) {////////si existe la cuota
 
 
             console.log(3)
             /// inicia verificacion de ingresos
             let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
-            montomax = cliente[0]['ingresos'] * 0.3
+            let montomax = 0
+            try {
+                if (cliente[0]['expuesta'] === 'SI') {
+                    montomax = cliente[0]['ingresos'] * 0.2
+                } else {
+                    montomax = cliente[0]['ingresos'] * 0.3
+                }
+            } catch (error) {
+                console.log(error)
+                montomax = cliente[0]['ingresos'] * 0.3
+            }
+            console.log(cliente[0]['ingresos'])
+            console.log('montomax')
 
+            console.log(montomax)
             if (montomax < monto) {
                 monto_inusual = 'Si'
             }
@@ -464,15 +478,15 @@ console.log(fechapago)
                 while ((cuil_cuit_distinto === 'Si') && (i < (cantidad))) {
                     //////////
                     ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
-                     try {
+                    try {
 
-                    const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + extracto[i]['ubicacion']))
-                    const workbooksheets = workbook.SheetNames
-                    const sheet = workbooksheets[0]
+                        const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + extracto[i]['ubicacion']))
+                        const workbooksheets = workbook.SheetNames
+                        const sheet = workbooksheets[0]
 
-                    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-                    console.log(6)
-                  
+                        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+                        console.log(6)
+
                         console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
 
@@ -495,14 +509,17 @@ console.log(fechapago)
                                 try {
 
                                     console.log('credito')
+
+
                                     console.log(credito)
-                                    credito = credito.replace("$","")
+                                    if (credito.includes("$")){
+                                    credito = credito.replace("$", "")
                                     console.log(credito)
-                                    credito = credito.replace(" ","")
+                                    credito = credito.replace(" ", "")
                                     console.log(credito)
-                                    credito = credito.replace(".","")
+                                    credito = credito.replace(".", "")
                                     console.log(credito)
-                                    credito = credito.replace(",",".")
+                                    credito = credito.replace(",", ".")
                                     console.log(credito)
                                     console.log('monto')
                                     console.log(monto)
@@ -517,28 +534,102 @@ console.log(fechapago)
                                         if (fecha === fechapago) {
 
 
-                                            verificacion = await pool.query('select * from pagos where monto=? and fecha=? ',[monto,fechapago])
+                                            verificacion = await pool.query('select * from pagos where monto=? and fecha=? ', [monto, fechapago])
                                             if (verificacion.length > 0) {
-                                                yarealizado='SI'
+                                                yarealizado = 'SI'
 
-                                            }else {
+                                            } else {
                                                 estadoo = 'A'
+                                                try {
+                                                    
+                                                } catch (error) {
+                                                    
+                                                }
+                                                mensaje = 'Su pago ha sido aprobado' 
+                                               
+                                                email = cliente[0]['email']
+                                                asunto = 'Pago aprobado'
+                                                encabezado = 'este mail es muy importante'
+                                                enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+                                              
 
                                             }
 
-                                           
 
 
-                                            
-                                           
+
+
+
 
                                         }
-                                      
-                                       
-                                      
+
+
+
                                     }
+
+                                }else {
+                                   
+                                    console.log(credito)
+                                    credito = credito.replace(" ", "")
+                                    console.log(credito)
+                                  //  credito = credito.replace(".", "")
+                                    console.log(credito)
+                                    credito = credito.replace(",", ".")
+                                    console.log(credito)
+                                    console.log('monto')
+                                    console.log(monto)
+                                    console.log(9)
+                                    if (credito === monto) {
+                                        console.log(10)
+                                        console.log('entra')
+                                        monto_distinto = 'No'
+                                        fecha = dataExcel[property]['']
+                                        console.log(fecha)
+                                        console.log(fechapago)
+                                        if (fecha === fechapago) {
+                                            console.log('fechaigual')
+
+                                            verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
+                                            console.log('fechaigual')
+                                            console.log(verificacion)
+                                            if (verificacion.length > 0) {
+                                                yarealizado = 'SI'
+
+                                            } else {
+                                                estadoo = 'A'
+                                                try {
+                                                    mensaje = 'Su pago ha sido aprobado' 
+                                               
+                                                    email = cliente[0]['email']
+                                                    asunto = 'Pago aprobado'
+                                                    encabezado = 'este mail es muy importante'
+                                                  await  enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+                                                  
+    
+                                                } catch (error) {
+                                                    console.log(error)
+                                                }
+                                               
+                                            }
+
+
+
+
+
+
+
+                                        }
+
+
+
+                                    }
+
+
+                                }
+
                                 } catch (error) {
-                                }                               
+                                }
+                            
                             }
 
                         }
@@ -557,17 +648,17 @@ console.log(fechapago)
             //////////////////////////////
             const id_cuota = existe[0]["id"]
             console.log(id_cuota)
-  
+
             //////////   regisTro aprobacion de pago  
 
             /////////////////////comparacion 
             if (estadoo === 'A') {
-                 newLink = {
+                newLink = {
                     id_cuota,
                     monto,
                     cuil_cuit,
                     mes,
-                    fecha:fechapago,
+                    fecha: fechapago,
                     estado: estadoo,
                     anio,
                     cuil_cuit_distinto,
@@ -576,35 +667,35 @@ console.log(fechapago)
                     ubicacion: formData.file.originalFilename,///////////aca ver el problema
                     id_cbu,
                     yarealizado
-    
+
                 };
-               await pagodecuota.pagodecuota(idcuotas, monto)
+                await pagodecuota.pagodecuota(idcuotas, monto)
 
 
 
-            }else{
-                 newLink = {
+            } else {
+                newLink = {
                     id_cuota,
                     monto,
                     cuil_cuit,
                     mes,
                     estado: estadoo,
                     anio,
-                    fecha:fechapago,
+                    fecha: fechapago,
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
                     ubicacion: formData.file.originalFilename,///////////aca ver el problema
                     id_cbu,
-                    observaciones:'Inusual',
+                    observaciones: 'Inusual',
                     yarealizado
-    
+
                 };
-                
+
             }
-            
-          
-          await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+
+            await pool.query('INSERT INTO pagos SET ?', [newLink]);
             console.log(estadoo)
             /////////FIN ETC PAGO 
             res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
@@ -620,7 +711,7 @@ console.log(fechapago)
     try {
         ///guardado de 
         console.log('se guardaria')
-          await uploadFileToS3(formData.file, "mypdfstorage");
+        await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
 
 
@@ -638,79 +729,79 @@ async function pagonivel2(req, res) {
     cuil_cuit_administrador = myArray[0] /// del administrador
     id = myArray[1]
     monto = myArray[2]
-///
-///INICIO GUARDADO DE PAGO
-
-
-let cuil_cuit_distinto = 'No'
-let monto_distinto = 'No'
-let monto_inusual = 'No'
-let mensaje =''
-
-const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-console.log(cuota)
-aux = '%' + cuota[0]["cuil_cuit"] + '%'
-
-cuil_cuit = cuota[0]["cuil_cuit"]
-let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
-let saldo_realc = cuota[0]["Saldo_real"]
-Saldo_real = parseFloat(cuota[0]["Saldo_real"])
-let nro_cuota = cuota[0]["nro_cuota"]
-let id_lote = cuota[0]["id_lote"]
-let Amortizacion = cuota[0]["Amortizacion"]
-let diferencia = cuota[0]["diferencia"]
-
-mes = cuota[0]["mes"]
-anio = cuota[0]["anio"]
-
-estado = 'A'
-
-if (cuota[0]['parcialidad'] === 'Final') {
-    /// traer la ultima
-
     ///
-    console.log(aux)
-    let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
-    ///////////////////CONSIDERAR PEP
+    ///INICIO GUARDADO DE PAGO
 
-    montomax = cliente[0]['ingresos'] * 0.3
-    console.log(montomax)
-    if (montomax < monto) {
 
-        monto_inusual = 'Si'
+    let cuil_cuit_distinto = 'No'
+    let monto_distinto = 'No'
+    let monto_inusual = 'No'
+    let mensaje = ''
+
+    const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+    console.log(cuota)
+    aux = '%' + cuota[0]["cuil_cuit"] + '%'
+
+    cuil_cuit = cuota[0]["cuil_cuit"]
+    let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+    let saldo_realc = cuota[0]["Saldo_real"]
+    Saldo_real = parseFloat(cuota[0]["Saldo_real"])
+    let nro_cuota = cuota[0]["nro_cuota"]
+    let id_lote = cuota[0]["id_lote"]
+    let Amortizacion = cuota[0]["Amortizacion"]
+    let diferencia = cuota[0]["diferencia"]
+
+    mes = cuota[0]["mes"]
+    anio = cuota[0]["anio"]
+
+    estado = 'A'
+
+    if (cuota[0]['parcialidad'] === 'Final') {
+        /// traer la ultima
+
+        ///
+        console.log(aux)
+        let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+        ///////////////////CONSIDERAR PEP
+
+        montomax = cliente[0]['ingresos'] * 0.3
+        console.log(montomax)
+        if (montomax < monto) {
+
+            monto_inusual = 'Si'
+        }
+
+        const id_cuota = id
+
+
+        const newLink = {
+            id_cuota,
+            monto,
+            cuil_cuit,
+            mes,
+            estado: estado,
+            anio,
+            cuil_cuit_administrador,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+            ubicacion: formData.file.originalFilename,///////////aca ver el problema
+
+        };
+
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+        /////////FIN  GUARDADO DE PAGO
+        ///INICIO IMPACTO EN LA CUOTA
+        await pagodecuota.pagodecuota(id, monto)
+        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+        const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+        aux = cuota[0]["cuil_cuit"]
+        mensaje = 'Pago realizado'
+        console.log('Realizado')
+    } else {
+        mensaje = 'cuota no calculada'
     }
-
-    const id_cuota = id
-
-
-const newLink = {
-    id_cuota,
-    monto,
-    cuil_cuit,
-    mes,
-    estado: estado,
-    anio,
-    cuil_cuit_administrador,
-    cuil_cuit_distinto,
-    monto_distinto,
-    monto_inusual,
-    ubicacion: formData.file.originalFilename,///////////aca ver el problema
-
-};
-
-await pool.query('INSERT INTO pagos SET ?', [newLink]);
-
-/////////FIN  GUARDADO DE PAGO
-    ///INICIO IMPACTO EN LA CUOTA
- await  pagodecuota.pagodecuota(id, monto)
-   ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
-   const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-   aux = cuota[0]["cuil_cuit"] 
-   mensaje = 'Pago realizado'
-   console.log('Realizado')
-}else { 
-    mensaje = 'cuota no calculada'
-}
 
     try {
 
@@ -734,118 +825,118 @@ async function pagarnivel2varios(req, res) {
     console.log(myArray)
     console.log(myArray.length)
     cuil_cuit_administrador = myArray[0] /// del administrador
-   
+
     fecha = myArray[1]
     id = myArray[2]
 
 
-///INICIO GUARDADO DE PAGO
+    ///INICIO GUARDADO DE PAGO
 
 
-let cuil_cuit_distinto = 'No'
-let monto_distinto = 'No'
-let monto_inusual = 'No'
-let mensaje =''
+    let cuil_cuit_distinto = 'No'
+    let monto_distinto = 'No'
+    let monto_inusual = 'No'
+    let mensaje = ''
 
-const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-aux = '%' + cuota[0]["cuil_cuit"] + '%'
+    const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+    aux = '%' + cuota[0]["cuil_cuit"] + '%'
 
-cuil_cuit = cuota[0]["cuil_cuit"]
-let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
-let saldo_realc = cuota[0]["Saldo_real"]
-Saldo_real = parseFloat(cuota[0]["Saldo_real"])
-let nro_cuota = cuota[0]["nro_cuota"]
-let id_lote = cuota[0]["id_lote"]
-let Amortizacion = cuota[0]["Amortizacion"]
-let diferencia = cuota[0]["diferencia"]
-
-
-
+    cuil_cuit = cuota[0]["cuil_cuit"]
+    let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+    let saldo_realc = cuota[0]["Saldo_real"]
+    Saldo_real = parseFloat(cuota[0]["Saldo_real"])
+    let nro_cuota = cuota[0]["nro_cuota"]
+    let id_lote = cuota[0]["id_lote"]
+    let Amortizacion = cuota[0]["Amortizacion"]
+    let diferencia = cuota[0]["diferencia"]
 
 
 
-mes = cuota[0]["mes"]
-anio = cuota[0]["anio"]
-
-estado = 'A'
-
-if (cuota[0]['parcialidad'] === 'Final') {
-    /// traer la ultima
-
-    ///
-    console.log(aux)
-   
-/////////FIN  GUARDADO DE PAGO
 
 
-    
-   let regex = /(\d+)/g;
-   console.log(myArray.length)
-   monto = 0
-   for (iii = 3; iii < (myArray.length); iii++) {
-    console.log('inicio del for pagos varios ')
-   
- 
-    auxxx   =  myArray[iii].split(":")
-   
-    idd= auxxx[0].match(regex)
-    mont = auxxx[1].match(regex)
-   
-    if (mont.length>1){
-        mont = [mont[0]+"."+mont[1]]
-    }
- 
-    idd = parseInt(idd[0])
-    mont = parseFloat(mont[0])
-    console.log('fin conversaion')
-    console.log(idd)
-    console.log(mont)
-    monto = monto+mont
 
-  await pagodecuota.pagodecuota(idd, mont)
-   
-   }
-   console.log('sale')
+    mes = cuota[0]["mes"]
+    anio = cuota[0]["anio"]
 
-   //pagodecuota.pagodecuota(id, monto)
+    estado = 'A'
 
-   const cuota = await pool.query('select * from cuotas where id = ?', [idd]) //objeto cuota
-   aux = cuota[0]["cuil_cuit"] 
-   mensaje = 'Pagos realizados'
+    if (cuota[0]['parcialidad'] === 'Final') {
+        /// traer la ultima
+
+        ///
+        console.log(aux)
+
+        /////////FIN  GUARDADO DE PAGO
 
 
-   let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+
+        let regex = /(\d+)/g;
+        console.log(myArray.length)
+        monto = 0
+        for (iii = 3; iii < (myArray.length); iii++) {
+            console.log('inicio del for pagos varios ')
 
 
-   montomax = cliente[0]['ingresos'] * 0.3
-   console.log(montomax)
-   if (montomax < monto) {
+            auxxx = myArray[iii].split(":")
 
-       monto_inusual = 'Si'
-   }
+            idd = auxxx[0].match(regex)
+            mont = auxxx[1].match(regex)
 
-   const id_cuota = id
+            if (mont.length > 1) {
+                mont = [mont[0] + "." + mont[1]]
+            }
+
+            idd = parseInt(idd[0])
+            mont = parseFloat(mont[0])
+            console.log('fin conversaion')
+            console.log(idd)
+            console.log(mont)
+            monto = monto + mont
+
+            await pagodecuota.pagodecuota(idd, mont)
+
+        }
+        console.log('sale')
+
+        //pagodecuota.pagodecuota(id, monto)
+
+        const cuota = await pool.query('select * from cuotas where id = ?', [idd]) //objeto cuota
+        aux = cuota[0]["cuil_cuit"]
+        mensaje = 'Pagos realizados'
 
 
-const newLink = {
-   id_cuota,
-   monto,
-   cuil_cuit,
-   mes,
-   estado: estado,
-   anio,
-   cuil_cuit_administrador,
-   cuil_cuit_distinto,
-   monto_distinto,
-   monto_inusual,
-   ubicacion: formData.file.originalFilename,///////////aca ver el problema
-
-};
-
-await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
 
 
-}else {mensaje = 'una de las cuotas no estaba calculada'}
+        montomax = cliente[0]['ingresos'] * 0.3
+        console.log(montomax)
+        if (montomax < monto) {
+
+            monto_inusual = 'Si'
+        }
+
+        const id_cuota = id
+
+
+        const newLink = {
+            id_cuota,
+            monto,
+            cuil_cuit,
+            mes,
+            estado: estado,
+            anio,
+            cuil_cuit_administrador,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+            ubicacion: formData.file.originalFilename,///////////aca ver el problema
+
+        };
+
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+
+    } else { mensaje = 'una de las cuotas no estaba calculada' }
     try {
 
 
