@@ -11,25 +11,25 @@ passport.use('local.signin', new LocalStrategy({
     passReqToCallback: 'true' // para recibir mas datos 
 
 }, async (req, cuil_cuit, password, done) => {  // que es lo que va a hacer 
-    
+
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
-    
+
     if (rows.length > 0) {
         const user = rows[0]
-       
+
         const validPassword = await helpers.matchPassword(password, user.password)
         console.log(user)
         if (validPassword) {
-           
-         /*  const userFoRToken = {
-                id: user.id,
-                cuil_cuit: user.cuil_cuit,
-                nivel: user.nivel
-            }
-            const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
-            res.send({ id: req.user.id,cuil_cuit: req.user.cuil_cuit,token, nivel: req.user.nivel}) */
+
+            /*  const userFoRToken = {
+                   id: user.id,
+                   cuil_cuit: user.cuil_cuit,
+                   nivel: user.nivel
+               }
+               const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
+               res.send({ id: req.user.id,cuil_cuit: req.user.cuil_cuit,token, nivel: req.user.nivel}) */
             done(null, user, req.flash('success', 'Welcome' + user.nombrecompleto)) // done termina, null el error, user lo pasa para serializar
-          
+
         } else {
             done(null, false, req.flash('message', 'Pass incorrecta')) // false para no avanzar
         }
@@ -44,40 +44,40 @@ passport.use('local.signup', new LocalStrategy({
     usernameField: 'cuil_cuit',
     passwordField: 'password',
     passReqToCallback: 'true'
-    
+
 }, async (req, cuil_cuit, password, done) => {
-   
-    const { nombre, mail, telefono, nro_cliente } = req.body
-  
+
+    const { nombre, email, telefono, nro_cliente } = req.body
+
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
-    
-    const nivel = 1 
+
+    const nivel = 1
     console.log('cuil_cuit')
     const habilitado = 'NO'
-   
-    
- 
+
+
+
     // transformar 
 
 
 
 
-    
+
 
 
     //fin transformar 
     try {
         var rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
-      
-         let aux = cuil_cuit
 
-        aux = '%' + cuil_cuit + '%' 
+        let aux = cuil_cuit
+
+        aux = '%' + cuil_cuit + '%'
         if (rows.length == 0) { // si ya hay un USER con ese dni 
-            
-           rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
+
+            rows = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ?', [aux])
             if (rows.length == 0) { // so hay  un cliente con ese dni 
                 { done(null, false, 'error,algo sucedio ') }
-            } else { 
+            } else {
                 const razon = rows[0]['razon']
                 const newUser = {
                     password,
@@ -86,21 +86,30 @@ passport.use('local.signup', new LocalStrategy({
                     nivel,
                     razon,
                     telefono,
-                    mail,
+                    mail:email,
                     habilitado,
                     nro_cliente
                 }
                 try {
 
-                   rows = await pool.query('SELECT * FROM clientes WHERE id = ?  and cuil_cuit like ?', [nro_cliente, aux])
-                   
+                    rows = await pool.query('SELECT * FROM clientes WHERE id = ?  and cuil_cuit like ?', [nro_cliente, aux])
+
                     if (rows.length == 0) {
                         done(null, false, req.flash('message', 'error,algo sucedio '))
 
-                    } else { 
-                   
+                    } else {
+
                         newUser.password = await helpers.encryptPassword(password)
-                       
+                        try {
+                            
+                            actumail = {
+                                email
+                            }
+                            await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [actumail, cuil_cuit])
+                        } catch (error) {
+                            console.log(error)
+                        }
+
                         try {
                             const result = await pool.query('INSERT INTO users  set ?', [newUser])
                             newUser.id = result.insertId// porque newuser no tiene el id
@@ -109,16 +118,17 @@ passport.use('local.signup', new LocalStrategy({
                         } catch (error) {
                             console.log(error)
                         }
-                  }
+                    }
                 } catch (error) {
                     console.log(error)
                     req.flash('message', 'error,algo sucedio ')
-                   // req.flash('message', 'error,algo sucedio ')
+                    // req.flash('message', 'error,algo sucedio ')
 
-                }  }
+                }
+            }
 
 
-         
+
         } else {
             done(null) // false para no avanzar
 
@@ -205,12 +215,12 @@ passport.use('local.signupnivel3', new LocalStrategy({
 /// Recupero de contraseña 
 
 passport.use('local.recupero', new LocalStrategy({
-     usernameField: 'cuil_cuit',
+    usernameField: 'cuil_cuit',
     passwordField: 'password',
     passReqToCallback: 'true'
 }, async (req, cuil_cuit, done) => {
-  
-    const {  codigo } = req.body
+
+    const { codigo } = req.body
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
 
     console.log('llega')
@@ -227,7 +237,7 @@ passport.use('local.recupero', new LocalStrategy({
 
     try {
         let rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
-           if (rows[0]['codigo'] === codigo) { // si ya hay un USER con ese dni 
+        if (rows[0]['codigo'] === codigo) { // si ya hay un USER con ese dni 
 
             newUser.password = await helpers.encryptPassword(password)
             try {

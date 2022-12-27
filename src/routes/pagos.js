@@ -28,103 +28,103 @@ const fileUpload = multer({
 
 router.post('/extractoid', isLoggedInn2, async (req, res) => {
     const { id } = req.body
-   
+
     const estract = await pool.query('select * from extracto where id = ? ', [id])
     const nombree = estract[0]['ubicacion']
-    
+
     let mandar = []
     // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
-  
+
     // const workbook = XLSX.readFile('./src/Excel/1665706467397-estr-cuentas_PosicionConsolidada.xls')
 
     try {
         const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + nombree))
-    const workbooksheets = workbook.SheetNames
-    const sheet = workbooksheets[0]
+        const workbooksheets = workbook.SheetNames
+        const sheet = workbooksheets[0]
 
-    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-    //console.log(dataExcel)
+        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+        //console.log(dataExcel)
 
-    let regex = /(\d+)/g;
+        let regex = /(\d+)/g;
 
-    for (const property in dataExcel) {
-
-
-        /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
-             estado = 'A'
-             // tipo de pago normal 
-         } */
+        for (const property in dataExcel) {
 
 
+            /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+                 estado = 'A'
+                 // tipo de pago normal 
+             } */
 
 
 
 
-try {
-    
 
-        descripcion = (dataExcel[property]['Descripción']).match(regex)
-
-        if (descripcion != null) {
 
             try {
 
-                descripcion = descripcion.toString();
 
-                if (descripcion.length > 7) {
-                    descripcion = ponerguion.ponerguion(descripcion)
+                descripcion = (dataExcel[property]['Descripción']).match(regex)
 
-                    desc = (dataExcel[property]['Descripción'])
-                    let arr = desc.split('-');
+                if (descripcion != null) {
 
-                    nombre = arr[3]
-                    fecha = dataExcel[property]['']
-                    referencia = dataExcel[property]['Referencia']
-                    debitos = dataExcel[property]['Débitos']
-                    creditos = dataExcel[property]['Créditos']
-                    nuevo = {
-                        fecha,
-                        descripcion,
-                        referencia,
-                        debitos,
-                        creditos,
-                        nombre
+                    try {
+
+                        descripcion = descripcion.toString();
+
+                        if (descripcion.length > 7) {
+                            descripcion = ponerguion.ponerguion(descripcion)
+
+                            desc = (dataExcel[property]['Descripción'])
+                            let arr = desc.split('-');
+
+                            nombre = arr[3]
+                            fecha = dataExcel[property]['']
+                            referencia = dataExcel[property]['Referencia']
+                            debitos = dataExcel[property]['Débitos']
+                            creditos = dataExcel[property]['Créditos']
+                            nuevo = {
+                                fecha,
+                                descripcion,
+                                referencia,
+                                debitos,
+                                creditos,
+                                nombre
+
+                            }
+
+
+                            mandar.push(nuevo);
+                        }
+
+                    } catch (error) {
+                        nuevo = {
+                            fecha: 'no se encontro archivo',
+                            descripcion: 'no se encontro archivo',
+                            referencia: 'no se encontro archivo',
+                            debitos: 'no se encontro archivo',
+                            creditos: 'no se encontro archivo',
+                            nombre: 'no se encontro archivo',
+
+                        }
+                        mandar = [nuevo]
 
                     }
+                } else { console.log('null') }
 
-
-                    mandar.push(nuevo);
-                }
 
             } catch (error) {
-                nuevo = {
-                    fecha:'no se encontro archivo',
-                    descripcion:'no se encontro archivo',
-                    referencia:'no se encontro archivo',
-                    debitos:'no se encontro archivo',
-                    creditos:'no se encontro archivo',
-                    nombre:'no se encontro archivo',
-
-                }
-                mandar= [nuevo]
 
             }
-        } else { console.log('null') }
 
+
+
+
+
+        }
 
     } catch (error) {
-    
-    }
-
-
-
-
 
     }
-         
-} catch (error) {
-        
-}
 
     res.json(mandar)
 
@@ -156,7 +156,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
     try {
 
         pago = await pool.query('select * from pagos  join cbus on pagos.id_cbu = cbus.id where pagos.id = ? ', [id])
-        cuil_cuit= pago[0]['cuil_cuit']
+        cuil_cuit = pago[0]['cuil_cuit']
         cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
         monto = Math.trunc(parseFloat(pago[0]['monto']))
         monto = String(monto)
@@ -168,32 +168,34 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
         //////// COMPARACION CON EL EXTRACTO
 
         try {
-         
-            
+
+
             cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
             console.log(cuil_cuit)
 
-            for (var i = 0; i < extracto.length; i++) {
+            for (let i = 0; i < extracto.length; i++) {
                 console.log(i)
                 ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
-                const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + extracto[i]['ubicacion']))
-               
-                const workbooksheets = workbook.SheetNames
-                const sheet = workbooksheets[0]
-
-                
-                const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
 
                 try {
+                    const workbook = XLSX.readFile(path.join(__dirname, '../Excel/' + extracto[i]['ubicacion']))
+
+                    const workbooksheets = workbook.SheetNames
+                    const sheet = workbooksheets[0]
+
+
+                    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+
+
                     console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                     for (const property in dataExcel) {////////////recorrido del extracto
 
 
 
-                        
 
-                        if ( ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) || ((dataExcel[property]['Descripción']).includes(cuil_cuit)) ) {
-                          
+
+                        if (((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) || ((dataExcel[property]['Descripción']).includes(cuil_cuit))) {
+
                             // tipo de pago normal 
                             descripcion = (dataExcel[property]['Descripción']).match(regex)
                             descripcion = ponerguion.ponerguion(descripcion)
@@ -204,7 +206,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                             referencia = dataExcel[property]['Referencia']
                             debitos = dataExcel[property]['Débitos']
                             creditos = dataExcel[property]['Créditos']
-                            console.log('encuentra')
+                            console.log('encuentra cuil')
                             ///////agregar detaññes
                             nuevo = {
                                 fecha,
@@ -222,8 +224,8 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                         } else {
                             try {
                                 creditoString = String(dataExcel[property]['Créditos'])
-                               if (creditoString.includes(monto)) {
-                                console.log('si')
+                                if (creditoString.includes(monto)) {
+                                    console.log('si')
                                     descripcion = (dataExcel[property]['Descripción']).match(regex)
                                     descripcion = ponerguion.ponerguion(descripcion)
                                     desc = (dataExcel[property]['Descripción'])
@@ -233,7 +235,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                                     referencia = dataExcel[property]['Referencia']
                                     debitos = dataExcel[property]['Débitos']
                                     creditos = dataExcel[property]['Créditos']
-                                    console.log('encuentra')
+                                    console.log('encuentra monto')
                                     ///////agregar detaññes
                                     nuevo = {
                                         fecha,
@@ -248,7 +250,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                                     mandar.push(nuevo);
                                 }
                             } catch (error) {
-                                    
+
                             }
                         }
 
@@ -258,12 +260,13 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                 } catch (error) {
                     console.log(error)
                 }
-             
-            } //// fin comparacion de estractos
 
+            } //// fin comparacion de estractos
+            console.log(mandar)
             res.json(mandar)
         } catch (error) {
-
+            console.log('salta')
+            console.log(error)
         }
 
 
@@ -381,49 +384,49 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
 })
 /// aprobar pago nivel 2
 router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
-    const { id,  cambiarmonto } = req.body
+    const { id, cambiarmonto } = req.body
     try {
-        
-   
-    // pagot es el objeto pago
-    let pagot = await pool.query('select * from pagos where id = ?', [id])
-console.log(id)
-    let id_cuota = pagot[0]["id_cuota"]
-    let monto = pagot[0]["monto"]
-   
 
-    ///////////
-    const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
-    let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
-    let saldo_realc = cuota[0]["Saldo_real"]
-    let nro_cuota = cuota[0]["nro_cuota"]
-    let id_lote = cuota[0]["id_lote"]
-    let Amortizacion = cuota[0]["Amortizacion"]
 
-    /////////////////////comparacion 
-   
+        // pagot es el objeto pago
+        let pagot = await pool.query('select * from pagos where id = ?', [id])
+        console.log(id)
+        let id_cuota = pagot[0]["id_cuota"]
+        let monto = pagot[0]["monto"]
 
- console.log('antes')
+
+        ///////////
+        const cuota = await pool.query('select * from cuotas where id = ?', [id_cuota]) //objeto cuota
+        let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
+        let saldo_realc = cuota[0]["Saldo_real"]
+        let nro_cuota = cuota[0]["nro_cuota"]
+        let id_lote = cuota[0]["id_lote"]
+        let Amortizacion = cuota[0]["Amortizacion"]
+
+        /////////////////////comparacion 
+
+
+        console.log('antes')
 
         try {
-////compara si ya supero el 
+            ////compara si ya supero el 
 
 
-    await pagodecuota.pagodecuota(id_cuota, monto)
-        updatepago = {
-            estado: "A"
+            await pagodecuota.pagodecuota(id_cuota, monto)
+            updatepago = {
+                estado: "A"
+            }
+
+            await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
+
+
+        } catch (error) {
+            console.log(error)
         }
-
-        await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
-
-
+        res.send('Aprobado')
     } catch (error) {
-        console.log(error)
-    }
-    res.send('Aprobado')
-} catch (error) {
         res.send(error)
-}
+    }
 
 })
 
@@ -477,7 +480,7 @@ router.post("/detallespagos", isLoggedInn2, async (req, res) => {
 })
 
 router.get("/todoslospagos", isLoggedInn2, async (req, res) => {
-    
+
 
     const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit = clientes.cuil_cuit ')
 
@@ -498,7 +501,7 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
     const pagos = await pool.query('SELECT * FROM pagos where estado="averificarnivel3" ')
-  
+
     res.json(pagos)
 })
 
@@ -565,22 +568,22 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
             await pool.query('INSERT INTO notificaciones set ?', [update2]);
             break
 
-            case 'rechazardefinitivo':
-               
-                estado = 'Rechazado'
-                //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
-                const update3 = {
-                    leida: "No",
-                    cuil_cuit: cuil_cuit,
-                    id_referencia: id,
-                    descripcion: detalle,
-                    asunto: 'Pago Rechazado'
-                }
-    
-    
-                
-                await pool.query('INSERT INTO notificaciones set ?', [update3]);
-                break
+        case 'rechazardefinitivo':
+
+            estado = 'Rechazado'
+            //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
+            const update3 = {
+                leida: "No",
+                cuil_cuit: cuil_cuit,
+                id_referencia: id,
+                descripcion: detalle,
+                asunto: 'Pago Rechazado'
+            }
+
+
+
+            await pool.query('INSERT INTO notificaciones set ?', [update3]);
+            break
     }
 
 
@@ -607,10 +610,10 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
 ////Rechazar niv 3
 router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     const { id, detalle, tipo } = req.body
- 
+
     auxi = await pool.query('select *  from pagos where id=?', [id]);//pagos
     cuil_cuit = auxi[0]['cuil_cuit']
-  
+
 
     switch (tipo) {
         case 'Inusual':
@@ -624,7 +627,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
         case 'Sospechoso':
             console.log('Sospechoso')
             estado = 'declaradosospechoso'
-            
+
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
             const update2 = {
                 leida: "No",
@@ -636,34 +639,34 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             try {
                 await pool.query('INSERT INTO notificaciones set ?', [update2]);
             } catch (error) {
-                
+
             }
-          
-            email= 'pipao.pipo@gmail.com'
+
+            email = 'pipao.pipo@gmail.com'
             asunto = 'Pago Sospechoso'
             encabezado = 'Pago Sospechoso al fideicomiso'
-            mensaje= "Recibimos un pado del cuil: "+cuil_cuit+ 'de un monto de '+auxi[0]['monto']+' Detalle: '+detalle
-        //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+            mensaje = "Recibimos un pado del cuil: " + cuil_cuit + 'de un monto de ' + auxi[0]['monto'] + ' Detalle: ' + detalle
+            //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
 
-            pagoaux = await pool.query('select * from pagos where id = ?',[id])
+            pagoaux = await pool.query('select * from pagos where id = ?', [id])
             ubicacion = pagoaux[0]['ubicacion']
 
-            enviodemail.enviarmail.enviarmailsospechoso(email,asunto,encabezado,mensaje,ubicacion)
-          
-          
+            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, ubicacion)
+
+
             break
     }
 
 
     const update = {
         estado,
-       
+
 
     }
 
     try {
         await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
-  
+
     } catch (error) {
         console.log(error)
         res.send('algo salio mal')
@@ -693,7 +696,7 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) => { // pagot 
     const cuota = await pool.query('select * from cuotas where id = ?', [auxiliar]) //objeto cuota
     console.log(cuota)// aca ver error
 
-  
+
     try {
         if (cuota[0]["nro_cuota"] === 1) {
             var saldo_realc = cuota[0]["Saldo_real"]
