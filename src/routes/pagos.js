@@ -500,7 +500,7 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos = await pool.query('SELECT * FROM pagos where estado="averificarnivel3" ')
+    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where pagos.estado="averificarnivel3" ')
 
     res.json(pagos)
 })
@@ -509,6 +509,7 @@ router.get("/listainusual", isLoggedInn2, async (req, res) => {
 router.get('/pendientess', isLoggedInn2, async (req, res) => {
     // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
     const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P'  or estado='justificacionp' ")
+   
 
     res.json(pendientes)
 

@@ -218,7 +218,7 @@ passport.use('local.recupero', new LocalStrategy({
     usernameField: 'cuil_cuit',
     passwordField: 'password',
     passReqToCallback: 'true'
-}, async (req, cuil_cuit, done) => {
+}, async (req, cuil_cuit, password,done) => {
 
     const { codigo } = req.body
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
@@ -227,24 +227,25 @@ passport.use('local.recupero', new LocalStrategy({
 
     const newUser = {
         password,
-        cuil_cuit,
-        nombre,
-        nivel,
-        mail,
-
+      
+        
+        
 
     }
 
     try {
         let rows = await pool.query('SELECT * FROM users WHERE cuil_cuit like  ?', [cuil_cuit]) // falta restringir si un usuario se puede registrar sin ser cliente
-        if (rows[0]['codigo'] === codigo) { // si ya hay un USER con ese dni 
-
+        console.log(rows[0]['recupero'])
+        console.log(codigo)
+        if (rows[0]['recupero'] === codigo) { // si ya hay un USER con ese dni 
+            console.log('codigo validado')
             newUser.password = await helpers.encryptPassword(password)
             try {
-                const result = await pool.query('INSERT INTO users  set ?', [newUser])
-                newUser.id = result.insertId// porque newuser no tiene el id
-
-                return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
+               
+                await pool.query('UPDATE users set ? WHERE cuil_cuit like  ?', [newUser,cuil_cuit])
+               // newUser.id = result.insertId// porque newuser no tiene el id
+              
+                return ('actualizado')// para continuar, y devuelve el newUser para que almacene en una sesion
 
             } catch (error) {
                 console.log(error)
