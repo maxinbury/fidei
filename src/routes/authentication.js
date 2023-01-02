@@ -13,12 +13,16 @@ const enviodemail = require('./Emails/Enviodemail')
 
 
 router.post('/recuperoo', passport.authenticate('local.recupero', {
-    successRedirect: '/signin',
-    failureRedirect: '/signuppp',
+    successRedirect: '/exitorecupero',
+    failureRedirect: '/noexito',
     failureFlash: true
 
 }))
 
+router.get('/exitorecupero', (req, res) => {
+    console.log('Registrado')
+    res.send('Contraseña actualizada')
+})
 
 router.post('/recupero', async (req, res) => {
     let { cuil_cuit } = req.body
