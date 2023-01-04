@@ -107,23 +107,19 @@ const fileUpload = multer({
 
 
 
-router.post('/agregaringreso', isLevel2, async (req, res) => {
-    const { id, ingresos, cuil_cuit } = req.body
-    console.log(cuil_cuit)
+router.post('/determinarempresa', isLoggedInn2, async (req, res) => {
+    const { razon,cuil_cuit } = req.body
+    
     const newLink = {
-        ingresos
+        razon
     }
     try {
-        await pool.query('UPDATE clientes set ? WHERE id = ?', [newLink, id])
-
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+        res.send('Exito')
     } catch (error) {
         console.log(error)
-
+        res.send('Sin exito')
     }
-
-
-
-    res.redirect('/links/detallecliente/' + cuil_cuit)
 
 
 })

@@ -582,15 +582,15 @@ router.get('/ief/:id', isLoggedInn, async (req, res) => {
 
     const dato5 = {
         'datoa': 'Cantidad de cuotas a Vencer',
-        'datob': cantidad2
+        'datob': cantidad2.toFixed(2)
     }
     const dato6 = {
         'datoa':  'Monto cuota pura',
-        'datob': Amortizacion
+        'datob': Amortizacion.toFixed(2)
     }
     const dato7 = {
         'datoa':  'Saldo de capital a vencer',
-        'datob': capital
+        'datob': capital.toFixed(2)
     }
     const cuotas_pendientes = [dato5,dato6,dato7]
 
