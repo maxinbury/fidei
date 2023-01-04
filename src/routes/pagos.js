@@ -384,7 +384,7 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
 })
 /// aprobar pago nivel 2
 router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
-    const { id, cambiarmonto } = req.body
+    const { id, tipo } = req.body
     try {
 
 
@@ -416,6 +416,14 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
             updatepago = {
                 estado: "A"
             }
+            if ( tipo === "Sospechoso" ){
+
+                updatepago = {
+                    estado: "A",
+                    tipo
+                }
+            }
+          
 
             await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
 

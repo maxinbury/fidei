@@ -52,7 +52,7 @@ passport.use('local.signup', new LocalStrategy({
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
 
     const nivel = 1
-    console.log('cuil_cuit')
+   
     const habilitado = 'NO'
 
 

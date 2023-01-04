@@ -11,6 +11,7 @@ const fs = require('fs')
 ////
 const s3Controller = require('./configAWS/s3-controller');
 ////////
+const enviodemail = require('./Emails/Enviodemail')
 
 
 
@@ -59,6 +60,18 @@ router.post('/pagarnivel2varios', isLoggedInn2, s3Controller.pagarnivel2varios);
 
 
 router.post('/justificacion', isLoggedInn, s3Controller.justificar);
+
+router.post('/mandarconsulta',isLoggedInn, async (req, res, done) => {
+    const { nombre,apellido,asunto,consulta } = req.body;
+
+    console.log(nombre)
+     console.log(apellido)
+     console.log(asunto)
+      console.log(consulta)
+    await  enviodemail.enviarmail.enviarmail("pipao.pipo@gmail.com",asunto,"encabezado",consulta)
+})
+ 
+
 
 
 router.post('/subirlegajoprueba',isLoggedInn, fileUpload, async (req, res, done) => {
@@ -569,15 +582,15 @@ router.get('/ief/:id', isLoggedInn, async (req, res) => {
 
     const dato5 = {
         'datoa': 'Cantidad de cuotas a Vencer',
-        'datob': cantidad2
+        'datob': cantidad2.toFixed(2)
     }
     const dato6 = {
         'datoa':  'Monto cuota pura',
-        'datob': Amortizacion
+        'datob': Amortizacion.toFixed(2)
     }
     const dato7 = {
         'datoa':  'Saldo de capital a vencer',
-        'datob': capital
+        'datob': capital.toFixed(2)
     }
     const cuotas_pendientes = [dato5,dato6,dato7]
 
@@ -803,7 +816,6 @@ router.post('/subirprueba', async (req, res, done) => {
     const { id } = req.body;
     console.log(id)
 })
-
 
 
 
