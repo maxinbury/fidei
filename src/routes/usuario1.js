@@ -163,7 +163,7 @@ router.get('/cbus/:cuil_cuit', isLoggedInn, async (req, res, ) => {
 
     try {
        cbus = await pool.query('select * from cbus where cuil_cuit= ? ',[cuil_cuit])
-       console.log(cbus)
+     
        res.json(cbus)
     } catch (error) {
         res.send('algo salio mal')

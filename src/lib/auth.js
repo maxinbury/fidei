@@ -8,9 +8,9 @@ module.exports = {
         //
         const authorization = req.get('authorization')
         let token =null
-        console.log(authorization)
+   
         if (authorization && authorization.startsWith('Bearer')){
-            console.log('entraa')
+      
             token = authorization.substring(7) 
         }
         let decodedToken = {}
@@ -21,7 +21,7 @@ module.exports = {
         }catch{}
       
         if (!token || !decodedToken.id){
-            console.log('error token')
+            
             return res.send('error login')
         }
       
@@ -31,13 +31,13 @@ module.exports = {
     },
 
     isLoggedInn2(req,res, next){
-        console.log('entra1')
+      
         //
         const authorization = req.get('authorization')
         let token =null
         console.log(authorization)
         if (authorization && authorization.startsWith('Bearer')){
-            console.log('entraa')
+          
             token = authorization.substring(7) 
         }
         let decodedToken = {}
