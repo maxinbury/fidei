@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn, isLoggedInn2} = require('../lib/auth') //proteger profile
+const { isLoggedIn,isLoggedInn, isLoggedInn2} = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
 const XLSX = require('xlsx')
 const fs = require('fs')
@@ -478,6 +478,23 @@ router.post('/subirlegajoprueba', fileUpload, async (req, res, done) => {
 
 })
 
+/// borrar CBU, cualquier nivel
+
+router.get('/borrarcbu/:id',isLoggedInn,  async (req, res) => {
+    let { id } = req.params
+    
+try {
+    await pool.query('DELETE  FROM cbus WHERE id = ?', [id])
+    res.json('Borrado')
+
+} catch (error) {
+    console.log(error)
+    res.json('Error algo sucedio ')
+
+}
+    
+
+})
 ///// Funcion devuelve cantidad de clientes /// agregar 
 router.get('/infocantidad',isLoggedInn2,  async (req, res) => {
  

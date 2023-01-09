@@ -11,7 +11,7 @@ router.get('/leer/:id',isLoggedInn, async (req, res) => {
     console.log(config)
     try {
         const noti = await pool.query('select * from notificaciones where id = ?', [id]);
-        console.log(id)
+ 
 
         const update={
             leida:'Si'
@@ -32,10 +32,9 @@ const aux = '%'+cuil_cuit+'%'
     try {
         const noti = await pool.query('select count(*) from notificaciones where leida="No" and cuil_cuit like ?', [aux]);
        const nom = await pool.query('select * from clientes where cuil_cuit like ?',aux)
-       console.log(nom)
+      
         const arr = nom[0]['Nombre'].split(' ')
-        console.log(arr)
-
+   
      
    
         res.json([noti[0]["count(*)"],arr[0]])
