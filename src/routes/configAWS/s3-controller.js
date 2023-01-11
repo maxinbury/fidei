@@ -719,6 +719,327 @@ async function pagarniv1(req, res) {
         console.log('NOOO  ')
     }
 }
+
+
+////Pagar una cuota nivel 1
+
+async function pagarnivel1cuota(req, res) {
+
+    formData = await leerformlegajo(req);
+
+    const myArray = formData.datos.split(",");
+    console.log(myArray)
+    cuil_cuit = myArray[0]
+    id = myArray[1] ////id de la cuota
+    monto = myArray[2]
+    fechapago = myArray[3]
+    id_cbu = myArray[4]
+    auxiliarfecha = fechapago.split("-");
+    fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
+    fechapago = fechapago.replace('-', '/')
+    fechapago = fechapago.replace('-', '/')
+
+
+
+    try {
+
+
+        //// realizar el pago
+        let estadoo = 'P'
+        let cuil_cuit_distinto = 'Si'
+        let monto_distinto = 'Si'
+        let monto_inusual = 'No'
+        aux = '%' + cuil_cuit + '%'
+      
+        let regex = /(\d+)/g;
+       
+        ///busca la cuota
+        let existe = await pool.query('Select * from cuotas where  id=?   and parcialidad = "Final" order by nro_cuota', [id])
+        // estado = existe[0]
+        idcuotas = existe[0]['id']
+        yarealizado = 'NO'
+        if (existe.length > 0) {////////si existe la cuota
+            mes = existe[0]['mes']
+            anio = existe[0]['anio']
+            /// inicia verificacion de ingresos
+            let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+            let montomax = 0
+            try {
+                if (cliente[0]['expuesta'] === 'SI') {
+                    montomax = cliente[0]['ingresos'] * 0.2
+                } else {
+                    montomax = cliente[0]['ingresos'] * 0.3
+                }
+            } catch (error) {
+                console.log(error)
+                montomax = cliente[0]['ingresos'] * 0.3
+            }
+            console.log(cliente[0]['ingresos'])
+     
+
+            console.log(montomax)
+            if (montomax < monto) {
+                monto_inusual = 'Si'
+            }
+            ////// final verificacion de ingresos
+      
+            let extracto = await pool.query('Select * from extracto ')
+            cantidad = extracto.length
+
+            //////// COMPARACION CON EL EXTRACTO
+            aux_cbu = await pool.query('Select * from cbus where id = ? ', [id_cbu])
+
+            cuil_cuit_lazo = aux_cbu[0]['cuil_cuit_lazo']
+
+            try {
+                let i = 0
+
+                cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
+                while ((cuil_cuit_distinto === 'Si') && (i < (cantidad))) {
+                    //////////
+                    ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
+                    try {
+
+                        const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + extracto[i]['ubicacion']))
+                        const workbooksheets = workbook.SheetNames
+                        const sheet = workbooksheets[0]
+
+                        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+                      
+
+                        console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
+                        for (const property in dataExcel) {////////////recorrido del extracto
+
+
+
+
+                            if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
+
+                                // tipo de pago normal 
+
+                                console.log(7)
+
+                                cuil_cuit_distinto = 'No'
+
+
+
+                                credito = String(dataExcel[property]['Créditos'])
+
+                               
+                                try {
+
+                                    console.log('credito')
+
+
+                                 
+                                    if (credito.includes("$")){
+                                    credito = credito.replace("$", "")
+                                  
+                                    credito = credito.replace(" ", "")
+                              
+                                    credito = credito.replace(".", "")
+                           
+                                    credito = credito.replace(",", ".")
+                          
+                                    
+                                    console.log(9)
+                                    if (credito === monto) {
+                                
+                                     
+                                        monto_distinto = 'No'
+                                        fecha = dataExcel[property]['']
+                                        console.log(fecha)
+                                        console.log(fechapago)
+                                        if (fecha === fechapago) {
+
+
+                                            verificacion = await pool.query('select * from pagos where monto=? and fecha=? ', [monto, fechapago])
+                                            if (verificacion.length > 0) {
+                                                yarealizado = 'SI'
+
+                                            } else {
+                                                estadoo = 'A'
+                                                try {
+                                                    
+                                                } catch (error) {
+                                                    
+                                                }
+                                                mensaje = 'Su pago ha sido aprobado' 
+                                               
+                                                email = cliente[0]['email']
+                                                asunto = 'Pago aprobado'
+                                                encabezado = 'este mail es muy importante'
+                                                enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+                                              
+
+                                            }
+
+
+
+
+
+
+
+                                        }
+
+
+
+                                    }
+
+                                }else {
+                                   
+                                    console.log(credito)
+                                    credito = credito.replace(" ", "")
+                                    console.log(credito)
+                                  //  credito = credito.replace(".", "")
+                                    console.log(credito)
+                                    credito = credito.replace(",", ".")
+                                    console.log(credito)
+                                    console.log('monto')
+                                    console.log(monto)
+                                    console.log(9)
+                                    if (credito === monto) {
+                                        console.log(10)
+                                        console.log('entra')
+                                        monto_distinto = 'No'
+                                        fecha = dataExcel[property]['']
+                                        console.log(fecha)
+                                        console.log(fechapago)
+                                        if (fecha === fechapago) {
+                                            console.log('fechaigual')
+
+                                            verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
+                                            console.log('fechaigual')
+                                            console.log(verificacion)
+                                            if (verificacion.length > 0) {
+                                                yarealizado = 'SI'
+
+                                            } else {
+                                                estadoo = 'A'
+                                                try {
+                                                    mensaje = 'Su pago ha sido aprobado' 
+                                               
+                                                    email = cliente[0]['email']
+                                                    asunto = 'Pago aprobado'
+                                                    encabezado = 'este mail es muy importante'
+                                                  await  enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+                                                  
+    
+                                                } catch (error) {
+                                                    console.log(error)
+                                                }
+                                               
+                                            }
+
+
+
+
+
+
+
+                                        }
+
+
+
+                                    }
+
+
+                                }
+
+                                } catch (error) {
+                                }
+                            
+                            }
+
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                    i += 1
+                } //// fin comparacion de estractos
+
+
+            } catch (error) {
+                console.log(error)
+            }
+
+
+            //////////////////////////////
+            const id_cuota = existe[0]["id"]
+            console.log(id_cuota)
+
+            //////////   regisTro aprobacion de pago  
+
+            /////////////////////comparacion 
+            if (estadoo === 'A') {
+                newLink = {
+                    id_cuota,
+                    monto,
+                    cuil_cuit,
+                    mes,
+                    fecha: fechapago,
+                    estado: estadoo,
+                    anio,
+                    cuil_cuit_distinto,
+                    monto_distinto,
+                    monto_inusual,
+                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    id_cbu,
+                    yarealizado
+
+                };
+                await pagodecuota.pagodecuota(idcuotas, monto)
+
+
+
+            } else {
+                newLink = {
+                    id_cuota,
+                    monto,
+                    cuil_cuit,
+                    mes,
+                    estado: estadoo,
+                    anio,
+                    fecha: fechapago,
+                    cuil_cuit_distinto,
+                    monto_distinto,
+                    monto_inusual,
+                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    id_cbu,
+                    observaciones: 'Inusual',
+                    yarealizado
+
+                };
+
+            }
+
+
+            await pool.query('INSERT INTO pagos SET ?', [newLink]);
+            console.log(estadoo)
+            /////////FIN ETC PAGO 
+            res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
+
+        } else {
+            res.send('Error la cuota no existe')
+        }
+        /////
+    } catch (error) {
+        console.log(error)
+        res.send('Error la cuota no existe, elegir una fecha valida')
+    }
+    try {
+        ///guardado de 
+        console.log('se guardaria')
+        await uploadFileToS3(formData.file, "mypdfstorage");
+        console.log(' Uploaded!!  ')
+
+
+    } catch (ex) {
+        console.log('NOOO  ')
+    }
+}
+
+
 /////////////////////pagar nivel 2 directamente aprobado 
 async function pagonivel2(req, res) {
 
@@ -1024,5 +1345,6 @@ module.exports = {
     pagonivel2,
     pagarnivel2varios,
     traerImagen,
-    determinaringreso
+    determinaringreso,
+    pagarnivel1cuota
 }
