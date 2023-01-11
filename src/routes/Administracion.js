@@ -52,7 +52,11 @@ try {
 
 
 
-router.post('/cambiarestado',isLoggedInn2,  async (req, res) => {
+
+
+})
+
+router.post('/cambiarestado',isLoggedInn2, async (req, res) => {
   const {id,estado } = req.body
   try {
     const cuota = {
@@ -62,11 +66,8 @@ router.post('/cambiarestado',isLoggedInn2,  async (req, res) => {
     res.json('todo ok')
   } catch (error) {
     console.log(error)
+    res.json('Algo salio mal')
   }
- 
-})
-
-
 })
 ///////////borrar todos lospagos
 router.get('/borrartodoslospagos', isLoggedInn2,  async (req, res) => {
