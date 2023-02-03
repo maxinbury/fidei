@@ -190,11 +190,12 @@ router.get('/constancias/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
-       constancias = await pool.query('select * from constancias where cuil_cuit= ? ',[cuil_cuit])
+       constancias = await pool.query('select * from constancias where cuil_cuit= ? and tipo <> "Ingresos Declarados" and tipo <> "Documentacion PEP"',[cuil_cuit])
   
        res.json(constancias)
     } catch (error) {
-        res.send('algo salio mal')
+        console.log(error)
+        res.json('algo salio mal')
     }
 
    

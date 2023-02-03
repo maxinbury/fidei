@@ -115,6 +115,14 @@ router.post('/determinarempresa', isLoggedInn2, async (req, res) => {
     }
     try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+
+        try {
+            await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
+            console.log('usuario cambiado ')
+        } catch{
+            console.log(error)
+        }
+
         res.send('Exito')
     } catch (error) {
         console.log(error)
