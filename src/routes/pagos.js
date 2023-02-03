@@ -508,7 +508,7 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where pagos.estado="averificarnivel3" ')
+    const pagos = await pool.query('SELECT * FROM pagos where estado="averificarnivel3" ')
 
     res.json(pagos)
 })
@@ -621,6 +621,8 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     const { id, detalle, tipo } = req.body
 
     auxi = await pool.query('select *  from pagos where id=?', [id]);//pagos
+    console.log(auxi)
+    console.log(id)
     cuil_cuit = auxi[0]['cuil_cuit']
 
 
