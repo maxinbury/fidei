@@ -7,6 +7,7 @@ const path = require('path')
 
 async function enviarmail (email,asunto,encabezado,mensaje) {
   console.log(email)
+  try {
     let transporter = nodemailer.createTransport({
         host: "smtp-mail.outlook.com", // hostname
         port: 587, // port for secure SMTP
@@ -45,6 +46,8 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
       // Preview only available when sending through an Ethereal account
       console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
       // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    }
+    catch (error) { console.log(error)}
     
   }
 
@@ -56,6 +59,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
 
   async function enviarmailsospechoso (email,asunto,encabezado,mensaje, ubicacion) {
     console.log(ubicacion)
+    try { 
      link = await s3Controller.traerImagen(ubicacion)
       let transporter = nodemailer.createTransport({
           host: "smtp-mail.outlook.com", // hostname
@@ -85,7 +89,8 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         // Preview only available when sending through an Ethereal account
         console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-      
+      }
+      catch (error) {console.log(error) }
     }
   
 
