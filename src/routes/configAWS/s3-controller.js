@@ -206,7 +206,8 @@ async function subirlegajo(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
+        console.log(' Uploaded!!! ')
+        res.json(' Uploaded!!  ')
 
 
 
