@@ -8,7 +8,7 @@ const sacarguion = require('../public/apps/transformarcuit')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
-////
+const passport = require('passport')
 const s3Controller = require('./configAWS/s3-controller');
 ////////
 const enviodemail = require('./Emails/Enviodemail')
@@ -29,7 +29,17 @@ const fileUpload = multer({
 
 }).single('image')
 
-////////////////
+//////////////// MODIFICAR CONTRASENIA
+
+router.post('/modificarpass', passport.authenticate('local.modificarpass', {
+
+    successRedirect: '/exitorecupero',
+    failureRedirect: '/noexitorecupero',
+    failureFlash: true
+
+}))
+
+/////
 
 router.post('/upload-to-s3', s3Controller.s3Upload);
 router.get('/all-files', s3Controller.s3Get);
