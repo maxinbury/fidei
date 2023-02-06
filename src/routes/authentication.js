@@ -94,6 +94,10 @@ router.get('/noexito', (req, res) => {
     res.send('Sin Exito')
 })
 
+router.get('/noexitorecupero', (req, res) => {
+
+    res.send('Error contraseña invalida')
+})
 
 
 
