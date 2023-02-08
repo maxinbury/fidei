@@ -123,35 +123,29 @@ router.post('/editarr', async (req, res, ) => {
 //-----Borar Cuota
 
 
-router.get('/listavarios/:id', isLoggedInn2, async (req, res) => {
-    const { id } = req.params
-    try {
-        cuota = await pool.query('select * from cuotas where id = ?',[id])
-        console.log(cuota)
-        res.json(cuota)
-    } catch (error) {
-        console.log(error)
-
-        
-    }
-})
 
 
 router.get('/listavarios/:cuil_cuit', isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
     try {
-        console.log(cuil_cuit)
+        
         lotess = await pool.query('select * from lotes where cuil_cuit = ? ',[cuil_cuit])
         console.log(lotess)
-        valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
-        valorparque = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
-        valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
-        valorotro =valormetro[(valormetro.length - 1)]['valormetrocuadrado']
-
-        valor = {
-            valorparque,
-            valorotro
+        let valor = {}
+        try {
+            valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+            valorparque = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+            valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+            valorotro =valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+    
+            valor = {
+                valorparque,
+                valorotro
+            }
+        } catch (error) {
+            
         }
+      
 
         res.json([lotess,valor])
     } catch (error) {
@@ -260,7 +254,7 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
     // console.log(devengado)
 
     let abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
-    console.log('cantidad')
+ 
     console.log(cantidad)
    
     exigible = (devengado - abonado).toFixed(2)
