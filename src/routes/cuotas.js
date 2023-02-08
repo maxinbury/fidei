@@ -89,6 +89,20 @@ router.post('/agregaricc', isLoggedInn2, post_agregaricc)
 router.get("/lotes/:cuil_cuit", isLoggedIn, lotes)
 
 
+
+//////////asignar a lotes cuadro decuotasexistente
+router.post('/asignarloteacuotas', async (req, res, next) => {
+    const { id, id_origen } = req.body
+    
+    
+    console.log(id)
+    console.log(id_origen)
+
+    datos = {idcuotas:id}
+    await pool.query('UPDATE lotes set ? WHERE id = ?', [datos, id_origen])
+
+
+})
 //-------------------------------------------------------------------------FIN  AGREGAR ICC---------------------------------------
 
 
@@ -124,6 +138,18 @@ router.post('/editarr', async (req, res, ) => {
 
 
 
+router.get('/traercuotaselcliente/:id', isLoggedInn2, async (req, res) => {
+const { id } = req.params
+console.log(id)
+lote = await pool.query ('select * from lotes where id = ?',[id])
+console.log(lote[0]['cuil_cuit'])
+
+todos = await pool.query ('select DISTINCT id_lote, zona, manzana, parcela  from cuotas where cuil_cuit = ?',[lote[0]['cuil_cuit']])
+console.log(todos)
+res.json(todos)
+
+})
+    
 
 router.get('/listavarios/:cuil_cuit', isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
@@ -187,6 +213,10 @@ router.post('/cuotas', async (req, res, next) => {
     } else { res.redirect('clientes') }
 
 })
+
+
+
+
 /////Actualizar cuota 
 router.post('/actualizarcuota', async (req, res, next) => {
     const { saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC, id  } = req.body
@@ -247,9 +277,16 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
     idaux = id.id
    
 
-    let lote = await pool.query('select * from cuotas where id_lote = ? ', [idaux])
-    const cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+    let lote = await pool.query('select * from lotes where id = ? ', [idaux])
+    let cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
     // console.log(cantidad)    cantidad de liquidadas y vencidas
+    if (cantidad === 0) {
+        console.log(lote)
+        idaux = lote[0]['idcuotas']
+         cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+    }
+
+
     let devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'])
     // console.log(devengado)
 
