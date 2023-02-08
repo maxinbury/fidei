@@ -638,6 +638,7 @@ const lotefuncion = async (req, res) => {
 
 //// para react
 const lotefuncion2 = async (req, res) => {
+    console.log('lotefuncion2')
     try {
         const id = req.params.id
 
@@ -645,10 +646,24 @@ const lotefuncion2 = async (req, res) => {
         const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
 
         if (cuotas.length > 0) {
+           try {
+             
+             for (i = 0; i < cuotas.length; i++) {
+                diferencia = cuotas[i].pago-cuotas[i].cuota_con_ajuste
+                act = {diferencia}
+                
 
+                await pool.query('UPDATE cuotas set ? WHERE id = ?', [act, cuotas[i].id])
+            }
+           } catch (error) {
+            console.log(error)
+           }
+            
+
+           const cuotass = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
             /*      let aux = '%' + auxiliar[0]['cuil_cuit'] + '%'
                cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit like ? ', [aux]) */
-            res.json(cuotas)
+            res.json(cuotass)
             //res.render('cuotas/listavacia', { auxiliar })
 
         } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
