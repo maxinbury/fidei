@@ -52,9 +52,9 @@ try {
             const cuota_con_ajuste_anterior = parseFloat(anterior[0]["cuota_con_ajuste"])
             
             const Base_calculo = cuota_con_ajuste_anterior
-            const Ajuste_ICC =  (cuota_con_ajuste_anterior * ICC).toFixed(2)
+            const Ajuste_ICC =  (parseFloat(cuota_con_ajuste_anterior) * ICC).toFixed(2)
        
-            const cuota_con_ajuste = (parseFloat(cuota_con_ajuste_anterior) + parseFloat(Ajuste_ICC)).toFixed(3)
+            const cuota_con_ajuste = ((cuota_con_ajuste_anterior) + parseFloat(Ajuste_ICC)).toFixed(2)
      
             Saldo_real_anterior = (parseFloat(Saldo_real_anterior) +  parseFloat(Ajuste_ICC))
             console.log(typeof Saldo_real_anterior )
@@ -85,8 +85,7 @@ try {
            console.log(todass.length)
             if (todass.length> todas['nro_cuota'] ){
               
-                console.log(Saldo_real)
-                console.log(Saldo_real)
+                
                 if (todas['nro_cuota']>1 ){
                 cuotaa = {
                     saldo_inicial:cuota.Saldo_real,

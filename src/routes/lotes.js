@@ -72,13 +72,13 @@ router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
     }
 
    
-
+    console.log(valormetro)
 
     try {
         valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']  
       
     } catch (error) {
-        
+        console.log(error)
     }
  
    if  (valor != undefined){
@@ -86,13 +86,13 @@ router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
     try {
        const  aux= '%'+cuil_cuit+'%'
    const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
-   
+   console.log('cliente '+cliente )
    const ingresos = cliente[0]['ingresos']
    if (cliente[0]['expuesta']==='SI' ){
     max = ingresos*0.2
    }else{  max = ingresos*0.3}
   
-   console.log(lotee) 
+
  
     let final = lotee[0]['superficie'] * valor
     const anticipo = final*0.2
@@ -138,6 +138,7 @@ router.post('/calcularvalor',isLoggedInn2, async (req, res) => {
 
     res.json(detalle)
  } catch (error) {
+    console.log(error)
         res.send('Algo salio mal ')
     }}else {  res.send('Algo salio mal ') }
 
