@@ -123,6 +123,19 @@ router.post('/editarr', async (req, res, ) => {
 //-----Borar Cuota
 
 
+router.get('/listavarios/:id', isLoggedInn2, async (req, res) => {
+    const { id } = req.params
+    try {
+        cuota = await pool.query('select * from cuotas where id = ?',[id])
+        console.log(cuota)
+        res.json(cuota)
+    } catch (error) {
+        console.log(error)
+
+        
+    }
+})
+
 
 router.get('/listavarios/:cuil_cuit', isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
@@ -178,6 +191,18 @@ router.post('/cuotas', async (req, res, next) => {
 
 
     } else { res.redirect('clientes') }
+
+})
+/////Actualizar cuota 
+router.post('/actualizarcuota', async (req, res, next) => {
+    const { saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC, id  } = req.body
+
+
+const act = {
+    saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC 
+}
+await pool.query('UPDATE cuotas set ? WHERE id = ?', [act, id])
+
 
 })
 
@@ -359,6 +384,23 @@ router.get('/ief/:id', isLoggedInn2, async (req, res) => {
 
 
 })
+
+
+///trae una cuota 
+
+router.get('/traercuota/:id',isLoggedInn2, async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        cuota = await pool.query('select * from cuotas where id = ?',[id])
+        
+ 
+        res.json(cuota)
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 
 ///trae las cuotas finales de un lote//objetivo: mostrar para pagar varias en una 
 router.get('/traercuotasfinales/:id',isLoggedInn2, async (req, res) => {
