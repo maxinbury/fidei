@@ -221,10 +221,12 @@ router.post('/cuotas', async (req, res, next) => {
 router.post('/actualizarcuota', async (req, res, next) => {
     const { saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC, id  } = req.body
 
-
+console.log(id)
 const act = {
-    saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC 
+    cuota_con_ajuste,
+    Ajuste_ICC
 }
+console.log(act)
 await pool.query('UPDATE cuotas set ? WHERE id = ?', [act, id])
 
 

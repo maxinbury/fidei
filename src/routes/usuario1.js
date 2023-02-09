@@ -73,17 +73,34 @@ router.post('/pagarnivel2varios', isLoggedInn2, s3Controller.pagarnivel2varios);
 
 router.post('/justificacion', isLoggedInn, s3Controller.justificar);
 
-router.post('/mandarconsulta',isLoggedInn, async (req, res, done) => {
-    const { nombre,apellido,asunto,consulta } = req.body;
 
-    console.log(nombre)
-     console.log(apellido)
-     console.log(asunto)
-      console.log(consulta)
-    await  enviodemail.enviarmail.enviarmail("pipao.pipo@gmail.com",asunto,"encabezado",consulta)
+
+router.post('/enviarconsulta',isLoggedInn, async (req, res) => {
+    const { nombre,apellido,asunto,consulta,id } = req.body;
+try { 
+    clie = await pool.query ("select * from users where id = ?",[id] )
+    fecha= (new Date(Date.now())).toLocaleDateString(),
+     datos = {
+       mensaje_cliente:consulta,
+       asunto,
+       cuil_cuit:clie[0]['cuil_cuit'],
+       fecha:fecha
+
+     }
+   
+     await pool.query('insert into chats set ?', datos)
+     res.json('Consulta enviada')
+
+
+}
+catch (error){
+    console.log(error)
+    res.json('Error algo sucedio')
+}
+   
+    //await  enviodemail.enviarmail.enviarmail("pipao.pipo@gmail.com",asunto,"encabezado",consulta)
+
 })
- 
-
 
 
 router.post('/subirlegajoprueba',isLoggedInn, fileUpload, async (req, res, done) => {
