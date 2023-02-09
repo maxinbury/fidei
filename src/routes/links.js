@@ -1328,7 +1328,7 @@ router.get('/clientehabilitado/:cuil_cuit', isLoggedInn2, async (req, res) => {
 })
 // MODIDICACION CLIENTES
 router.post('/modificarcli',isLoggedInn2, async (req, res) => {
-    const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
+    const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social, observaciones } = req.body
     
     try {
         aux = '%' + cuil_cuit + '%'
@@ -1338,7 +1338,8 @@ router.post('/modificarcli',isLoggedInn2, async (req, res) => {
             telefono,
             ingresos,
             domicilio,
-            razon_social
+            razon_social,
+            observaciones
         }
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
         res.send('Cliente modificado')
