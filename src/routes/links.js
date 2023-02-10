@@ -666,8 +666,75 @@ router.post('/add2',isLoggedInn2, async (req, res) => {
 
 
 })
+///////modificar cuil
+router.post('/modificarcuil',isLoggedInn2, async (req, res) => {
+    const {cuil_cuit, id } = req.body;
+   
 
 
+
+    try {
+        const row = await pool.query('Select * from clientes where id = ?', [id]);
+        if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
+            cuil_cuit_ant = row[0]["cuil_cuit"]
+            console.log(cuil_cuit_ant)
+            nuevo= {cuil_cuit:cuil_cuit
+            }
+
+            try {
+                await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await pool.query('UPDATE cuotas set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await pool.query('UPDATE pagos set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await pool.query('UPDATE constancias set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await pool.query('UPDATE lotes set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+            try {
+                await pool.query('UPDATE notificaciones set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        else {
+           // await pool.query('INSERT INTO clientes set ?', [newLink]);
+            res.send('Guardado correctamente')
+
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.send('message', 'Error algo salio mal')
+
+
+    }
+
+
+
+
+
+})
 /////////
 
 router.get('/cargar_todos_legales', async (req, res) => {
