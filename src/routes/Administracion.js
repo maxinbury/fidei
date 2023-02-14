@@ -60,7 +60,8 @@ router.post('/cambiarestado',isLoggedInn2, async (req, res) => {
   const {id,estado } = req.body
   try {
     const cuota = {
-      estado
+      estado,
+      cuil_cuit:0
     }
     await pool.query('UPDATE lotes set ? WHERE id = ?', [cuota, id])
     res.json('todo ok')

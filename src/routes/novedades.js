@@ -25,6 +25,50 @@ router.get('/todas',isLoggedInn2, async (req, res) => {
 
 })
 
+
+
+
+router.get('/todosloschats',isLoggedInn2, async (req, res) => {
+
+    try {
+        const todas = await pool.query('select * from chats ');
+   
+   
+     
+   
+        res.json(todas)
+
+    } catch (error) {
+        console.log(error)
+        res.json(error)
+    }
+  
+
+    
+
+})
+
+router.get('/leerchat/:id',isLoggedInn2, async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const todas = await pool.query('select * from chats where id=?',[id]);
+   
+   
+     
+   
+        res.json(todas)
+
+    } catch (error) {
+        console.log(error)
+        res.json(error)
+    }
+  
+
+    
+
+})
+
 router.get('/leer/:id',isLoggedInn2, async (req, res) => {
 const id  =  req.params.id
     try {
