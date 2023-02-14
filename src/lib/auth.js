@@ -21,13 +21,13 @@ module.exports = {
         }catch{}
       
         if (!token || !decodedToken.id){
+            res.send('error login')
             
-            return res.send('error login')
-        }
+        }else{ next()}
       
        // res.send(decodedToken.cuil_cuit)
         
-        next()
+       
     },
 
     isLoggedInn2(req,res, next){

@@ -76,7 +76,7 @@ router.post('/signupp', passport.authenticate('local.signup', {
 
 }))
 
-router.get('/traerusuario/:cuil_cuit', async (req, res) => {
+router.get('/traerusuario/:cuil_cuit',isLoggedInn, async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
     const usuario = await pool.query('select * from users where cuil_cuit= ? ', [cuil_cuit])
     res.json(usuario)
@@ -122,6 +122,8 @@ router.post('/signinn', passport.authenticate('local.signin', { failureRedirect:
         }
 
         const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
+        //const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn:    1* 60})
+     
         console.log(token)
         res.send({
             id: req.user.id,
