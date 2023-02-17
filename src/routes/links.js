@@ -45,8 +45,8 @@ mensaje= 'Hola como estas '
 console.log(cli)
 console.log(mensaje)
 email = cli[0]['email']
-asunto = 'etc'
-encabezado= 'este mail es muy importante'
+asunto = 'Aprobacion de CBU'
+encabezado= 'Notificacion nueva'
 enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
 
    // main.main(mail,)

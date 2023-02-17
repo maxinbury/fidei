@@ -20,7 +20,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
             pass: '1385Fideicomiso'
         }
     });
-    const aux = "../Emails/img/bannerSC.png"
+    const aux = "../Emails/img/marcas.png"
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Administracion Fideicomiso Santa Catalina" <fideicomisoSCatalina@outlook.com>', // direccion de envio 
@@ -28,16 +28,17 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         subject: asunto, // Subject line
         attachments: [
           {   // use URL as an attachment
-            filename: 'bannerSC.png',
+            filename: 'marcas.png',
             path: (path.join(__dirname, aux)),
         cid: "logo"          }
         ],
         text: encabezado, // plain text body
-        html: `<b>Thanks for reading this important mail.</b>
-        <br/>
-        <h2>Esto es un titulo</h2>  <br/>
-        <p>Parrafo abajo </p>
-           <p><img src = 'cid:logo'></img></p>` // html body
+        html: `<p><img  style='position:absolute;height:10%;width:10%'src = 'cid:logo'></img></p>
+        <br>Gracias por leer este mensaje</b>
+      
+        <h2>  </h2>  <br/>
+        <p>${mensaje} </p>
+          ` // html body
       });
     
       console.log("Message sent: %s", info.messageId);
