@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy
 const pool = require('../database')
 const helpers = require('../lib/helpers')
 const jwt = require('jsonwebtoken')
-
+const enviodemail = require('../routes/Emails/Enviodemail')
 
 passport.use('local.signin', new LocalStrategy({
     usernameField: 'cuil_cuit', // usuario es el nombre que recibe del hbs
@@ -113,6 +113,8 @@ passport.use('local.signup', new LocalStrategy({
                         try {
                             const result = await pool.query('INSERT INTO users  set ?', [newUser])
                             newUser.id = result.insertId// porque newuser no tiene el id
+                            console.log('llega')
+                            await enviodemail.enviarmail.enviarmail("pitsantacatalina@cmpcorrientes.com.ar", "Nuevo usuario ", "Se ha registrado un nuevo usuario en el sistema", "Se ha registrado un nueco usuario se trata de "+rows[0]['nombre'])
                             return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                         } catch (error) {
