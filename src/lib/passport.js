@@ -47,7 +47,7 @@ passport.use('local.signup', new LocalStrategy({
 
 }, async (req, cuil_cuit, password, done) => {
 
-    const { nombre, email, telefono, nro_cliente } = req.body
+    const { nombre, email, telefono, nro_cliente, email2 } = req.body
 
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
 
@@ -100,15 +100,37 @@ passport.use('local.signup', new LocalStrategy({
                     } else {
 
                         newUser.password = await helpers.encryptPassword(password)
-                        try {
+
+                        if(email2 === undefined){
+                            try {
                             
-                            actumail = {
-                                email
+                                actumail = {
+                                    email
+                                }
+                                await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [actumail, cuil_cuit])
+    
+    
+    
+                            } catch (error) {
+                                console.log(error)
                             }
-                            await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [actumail, cuil_cuit])
-                        } catch (error) {
-                            console.log(error)
+                        }else{
+                            try {
+                            
+                                actumail = {
+                                    email,
+                                    email2
+                                }
+                                await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [actumail, cuil_cuit])
+    
+    
+    
+                            } catch (error) {
+                                console.log(error)
+                            }
+
                         }
+                      
 
                         try {
                             const result = await pool.query('INSERT INTO users  set ?', [newUser])

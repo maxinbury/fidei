@@ -105,7 +105,20 @@ router.post('/asignarloteacuotas', async (req, res, next) => {
 })
 //-------------------------------------------------------------------------FIN  AGREGAR ICC---------------------------------------
 
+router.post('/modificarmontotal', async (req, res, next) => {
+    const { montonuevo, id_lote } = req.body
+    console.log(montonuevo)
 
+  try {
+        await pool.query('UPDATE cuotas set saldo_inicial = ? WHERE id_lote = ? and nro_cuota= 1', [montonuevo, id_lote])
+res.json('realizado')
+  } catch (error) {
+    console.log(error)
+    res.json('No realizado')
+  }
+
+
+})
 
 
 
