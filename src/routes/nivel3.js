@@ -99,10 +99,10 @@ router.post('/asignarvalormetroc',isLoggedInn3, async (req, res) => {
 
 
 router.post('/consultaricc',isLoggedInn3, async (req, res,) => {
-    let { ICC, mes, anio } = req.body;
+    let { ICC, mes, anio, zona } = req.body;
     let rta={} 
 try {
-        const existe = await pool.query('select * from icc_historial where mes=? and anio=?',[mes,anio])
+        const existe = await pool.query('select * from icc_historial where mes=? and anio=? and zona =?',[mes,anio, zona])
         if (existe.length>0){
          
          const valor = existe[0]['ICC']
@@ -131,14 +131,15 @@ try {
 
 ///// REACT ii gral
 router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
-    let { ICC, mes, anio } = req.body;
+    let { ICC, mes, anio, zona } = req.body;
    
 console.log('iccgral2')
 
     let datoss = {
         ICC,
         mes,
-        anio
+        anio,
+        zona
 
     }
 
@@ -147,7 +148,7 @@ console.log('iccgral2')
 
     try {
 
-        exis =  await pool.query("select * from icc_historial where mes =? and anio =?", [mes, anio])
+        exis =  await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio,zona])
         if (exis.length>0){
             await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
         }else{
@@ -159,7 +160,7 @@ console.log('iccgral2')
 
 
 
-    const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
+    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona =?", [mes, anio,zona])
 
     for (var i = 0; i < todas.length; i++) {  
 
@@ -172,24 +173,25 @@ res.send('Icc asignado con éxito');
 
 ///// REACT ii gral menos los que estan
 router.post('/agregariccgral22', isLoggedInn3, async (req, res,) => {
-    let { ICC, mes, anio } = req.body;
+    let { ICC, mes, anio, zona } = req.body;
    
 
 
     let datoss = {
         ICC,
         mes,
-        anio
+        anio,
+        zona
 
     }
-    ICC= ICC/100
+
     //////////////try
     
 
 
 
 
-    const todas = await pool.query("select * from cuotas where mes =? and anio =? and parcialidad = ?  ", [mes, anio,"Original"])
+    const todas = await pool.query("select * from cuotas where mes =? and anio =? and parcialidad = ? and zona =? ", [mes, anio,"Original", zona])
 
     for (let i = 0; i < todas.length; i++) {  
 
@@ -284,9 +286,9 @@ router.get("/deshabilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, r
 
 //ACCION DE  AGREGAR ICC GENERAL
 router.post('/agregariccgral',isLevel3, async (req, res,) => {
-    const { ICC, mes, anio } = req.body;
+    const { ICC, mes, anio, zona } = req.body;
     console.log('icc gral')
-    const todas = await pool.query("select * from cuotas where mes =? and anio =?", [mes, anio])
+    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona = ?", [mes, anio,zona])
     const parcialidad = "Final"
     for (var i = 0; i < todas.length; i++) {
         nro_cuota = todas[i]["nro_cuota"]
