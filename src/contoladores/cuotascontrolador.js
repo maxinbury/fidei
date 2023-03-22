@@ -187,7 +187,7 @@ const postaddaut = async (req, res) => {
 }
 
 const postaddaut2 = async (req, res) => {
-    let { id, porcentaje, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,valordellote } = req.body;
+    let { id, porcentaje, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,valordellote ,anticipodefinido} = req.body;
 
 
 
@@ -231,8 +231,14 @@ const postaddaut2 = async (req, res) => {
         if (porcentaje === undefined) {
             porcentaje = 20
         }
+
+
+
         porcentaje = porcentaje / 100
         anticipo = monto_total * porcentaje
+
+        
+      
         console.log('monto total')
         console.log(monto_total)
         monto_total = monto_total * (1 - porcentaje)
@@ -240,9 +246,15 @@ const postaddaut2 = async (req, res) => {
             anticipo
         }
 
+        if (anticipodefinido != undefined) {
+            monto_total = parseFloat(anticipodefinido)
+        }
 
+        console.log('MONTO A FINANCIAR ')
+        console.log(monto_total)
+        console.log (monto_total / parseFloat(cantidad_cuotas))
         //llega
-        const Amortizacion = (monto_total / cantidad_cuotas).toFixed(2);
+        const Amortizacion = (monto_total / cantidad_cuotas);
 
         let toleranciadec = row[0]['toleranciadec'] + Amortizacion
         let tolerancia = row[0]['ingresos'] * 0.3
