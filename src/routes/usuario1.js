@@ -184,8 +184,36 @@ router.get('/cliente/:cuil_cuit', isLoggedInn, async (req, res, ) => {
    
 })
 
+router.get('/cantidadbalances/:cuil_cuit', isLoggedInn, async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
 
+    try {
+     
+       cantidad = await pool.query('select * from constancias  where tipo ="Ultimos balances" and cuil_cuit= ? ',[cuil_cuit])
 
+       res.json(cantidad.length)
+    } catch (error) {
+        console.log(error)
+        res.json('algo salio mal')
+    }
+
+   
+})
+router.get('/cantidaddjiva/:cuil_cuit', isLoggedInn, async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    try {
+     
+       cantidad = await pool.query('select * from constancias  where tipo ="DjIva" and cuil_cuit= ? ',[cuil_cuit])
+
+       res.json(cantidad.length)
+    } catch (error) {
+        console.log(error)
+        res.json('algo salio mal')
+    }
+
+   
+})
 
 router.get('/cbus/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
