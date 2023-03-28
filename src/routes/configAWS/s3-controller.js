@@ -1,5 +1,5 @@
 const formidable = require('formidable');
-const { uploadFileToS3, getBucketListFromS3, getPresignedURL } = require('./s3-service');
+const { uploadFileToS3, getBucketListFromS3, getPresignedURL,getPresignedURL2} = require('./s3-service');
 const express = require('express')
 const router = express.Router()
 const pool = require('../../database')
@@ -92,6 +92,23 @@ async function getSignedUrl(req, res) {
 
         const { key } = req.params;
         const url = await getPresignedURL("mypdfstorage", key);
+        res.send(url);
+
+    } catch (ex) {
+        res.send('');
+    }
+}
+
+
+
+
+async function getSignedUrl2(req, res) {
+
+    try {
+        console.log("url2")
+
+        const { key } = req.params;
+        const url = await getPresignedURL2("mypdfstorage", key);
         res.send(url);
 
     } catch (ex) {
@@ -1347,5 +1364,6 @@ module.exports = {
     pagarnivel2varios,
     traerImagen,
     determinaringreso,
-    pagarnivel1cuota
+    pagarnivel1cuota,
+    getSignedUrl2
 }

@@ -53,8 +53,34 @@ async function getPresignedURL(bucketName, key) {
     return preSignedURL;
 }
 
+
+
+async function getPresignedURL2(bucketName, key) {
+
+  
+    const objectKey = 'my-pdf.pdf';
+    const expirationTimeInSeconds = 3600;
+
+
+    const params = {
+        Bucket: bucketName,
+        Key: key,
+        Expires: expirationTimeInSeconds,
+        ResponseContentType: 'application/pdf',
+        ResponseContentDisposition: 'inline'
+      };
+
+
+    const s3 = createS3Instance();
+ 
+
+    const preSignedURL = await s3.getSignedUrl('getObject', params);
+    return preSignedURL;
+}
+
 module.exports = {
     uploadFileToS3,
     getBucketListFromS3,
-    getPresignedURL
+    getPresignedURL,
+    getPresignedURL2
 }

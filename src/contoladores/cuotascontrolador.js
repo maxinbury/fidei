@@ -757,7 +757,7 @@ const lotefuncion2 = async (req, res) => {
                     Saldo_real: Saldo_real, ////////realizado
                     saldo_cierre: saldo_cierre.toFixed(2),////////realizado
                     parcialidad:  cuotas[i]['parcialidad'],
-                    diferencia:dif ,/////realizado
+                    diferencia:dif.toFixed(2) ,/////realizado
                     
                   
                 }

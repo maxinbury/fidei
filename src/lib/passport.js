@@ -4,6 +4,9 @@ const pool = require('../database')
 const helpers = require('../lib/helpers')
 const jwt = require('jsonwebtoken')
 const enviodemail = require('../routes/Emails/Enviodemail')
+const sacarguion = require('../public/apps/transformarcuit')
+const ponerguion = require('../public/apps/transformarcuit')
+////    aux = ponerguion.ponerguion(aux)
 
 passport.use('local.signin', new LocalStrategy({
     usernameField: 'cuil_cuit', // usuario es el nombre que recibe del hbs
@@ -12,6 +15,16 @@ passport.use('local.signin', new LocalStrategy({
 
 }, async (req, cuil_cuit, password, done) => {  // que es lo que va a hacer 
 
+    const rowss = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
+
+    if (rowss.length === 0) {
+        console.log(cuil_cuit.split('-').length )
+        if (cuil_cuit.split('-').length === 1){
+            cuil_cuit = ponerguion.ponerguion(cuil_cuit)
+        
+        }
+    }else {console.log('sin guiones') }
+   
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
 
     if (rows.length > 0) {
@@ -58,11 +71,16 @@ passport.use('local.signup', new LocalStrategy({
 
 
     // transformar 
+console.log(cuil_cuit)
+console.log(cuil_cuit.split('-').length )
+if (cuil_cuit.split('-').length === 1){
+    cuil_cuit = ponerguion.ponerguion(cuil_cuit)
 
+}
 
+console.log(cuil_cuit)
 
-
-
+////    aux = ponerguion.ponerguion(aux)
 
 
     //fin transformar 
@@ -133,10 +151,10 @@ passport.use('local.signup', new LocalStrategy({
                       
 
                         try {
-                            const result = await pool.query('INSERT INTO users  set ?', [newUser])
+                          const result = await pool.query('INSERT INTO users  set ?', [newUser])
                             newUser.id = result.insertId// porque newuser no tiene el id
                             console.log('llega')
-                            await enviodemail.enviarmail.enviarmail("pitsantacatalina@cmpcorrientes.com.ar", "Nuevo usuario ", "Se ha registrado un nuevo usuario en el sistema", "Se ha registrado un nueco usuario se trata de "+rows[0]['nombre'])
+                           await enviodemail.enviarmail.enviarmail("pitsantacatalina@cmpcorrientes.com.ar", "Nuevo usuario ", "Se ha registrado un nuevo usuario en el sistema", "Se ha registrado un nueco usuario se trata de "+rows[0]['nombre'])
                             return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                         } catch (error) {
