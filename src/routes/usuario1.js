@@ -44,6 +44,7 @@ router.post('/modificarpass', passport.authenticate('local.modificarpass', {
 router.post('/upload-to-s3', s3Controller.s3Upload);
 router.get('/all-files', s3Controller.s3Get);
 router.get('/get-object-url/:key', isLoggedInn, s3Controller.getSignedUrl);
+router.get('/get-object-url2/:key', isLoggedInn, s3Controller.getSignedUrl2);
 
 
 //////PDFSS
@@ -189,7 +190,7 @@ router.get('/cantidadbalances/:cuil_cuit', isLoggedInn, async (req, res, ) => {
 
     try {
      
-       cantidad = await pool.query('select * from constancias  where tipo ="Ultimos balances" and cuil_cuit= ? ',[cuil_cuit])
+       cantidad = await pool.query('select * from constancias  where tipo ="Ultimos balances" and cuil_cuit= ? and estado="Aprobada" ',[cuil_cuit])
 
        res.json(cantidad.length)
     } catch (error) {
@@ -204,7 +205,25 @@ router.get('/cantidaddjiva/:cuil_cuit', isLoggedInn, async (req, res, ) => {
 
     try {
      
-       cantidad = await pool.query('select * from constancias  where tipo ="DjIva" and cuil_cuit= ? ',[cuil_cuit])
+       cantidad = await pool.query('select * from constancias  where tipo ="DjIva" and cuil_cuit= ?  and estado="Aprobada"',[cuil_cuit])
+
+       res.json(cantidad.length)
+    } catch (error) {
+        console.log(error)
+        res.json('algo salio mal')
+    }
+
+   
+})
+
+
+
+router.get('/cantidadiibb/:cuil_cuit', isLoggedInn, async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    try {
+     
+       cantidad = await pool.query('select * from constancias  where tipo ="DDJJ IIBB" and cuil_cuit= ? and estado="Aprobada" ',[cuil_cuit])
 
        res.json(cantidad.length)
     } catch (error) {

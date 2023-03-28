@@ -113,7 +113,7 @@ router.get('/signin', isNotLoggedIn, (req, res) => {
 /////////////jwt prueba
 router.post('/signinn', passport.authenticate('local.signin', { failureRedirect: '/login' }),
     function (req, res) {
-        console.log(req.user)
+     
         const userFoRToken = {
             id: req.user.id,
             cuil_cuit: req.user.cuil_cuit,
@@ -121,10 +121,9 @@ router.post('/signinn', passport.authenticate('local.signin', { failureRedirect:
 
         }
 
-        const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
-        //const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn:    1* 60})
-     
-        console.log(token)
+      const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn: 60 * 60 * 24 * 7 })
+       // const token = jwt.sign(userFoRToken, 'fideicomisocs121', { expiresIn:    1* 60})
+  
         res.send({
             id: req.user.id,
             cuil_cuit: req.user.cuil_cuit,
