@@ -185,6 +185,21 @@ router.get('/cliente/:cuil_cuit', isLoggedInn, async (req, res, ) => {
    
 })
 
+
+router.get('/usuario1acredingresos/:cuil_cuit', isLoggedInn, async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    try {
+       constancias  = await pool.query('select * from constancias  where (tipo ="Pago autonomo" or tipo ="Recibo de sueldo" or tipo ="Constancia de Afip" or tipo ="Pago Monotributo" or tipo ="DDJJ IIBB" ) and cuil_cuit= ? ',[cuil_cuit])
+       
+       res.json(constancias)
+    } catch (error) {
+        res.send('algo salio mal')
+    }
+
+   
+})
+
 router.get('/cantidadbalances/:cuil_cuit', isLoggedInn, async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
