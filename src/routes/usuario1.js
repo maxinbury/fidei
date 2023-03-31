@@ -222,7 +222,7 @@ router.get('/cantidaddjiva/:cuil_cuit', isLoggedInn, async (req, res, ) => {
      
        cantidad = await pool.query('select * from constancias  where tipo ="DjIva" and cuil_cuit= ?  and estado="Aprobada"',[cuil_cuit])
 
-       res.json(cantidad.length)
+       res.json(cantidad)
     } catch (error) {
         console.log(error)
         res.json('algo salio mal')
