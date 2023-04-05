@@ -114,6 +114,7 @@ router.post('/determinarempresa', isLoggedInn2, async (req, res) => {
         razon
     }
     try {
+      
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
 
         try {

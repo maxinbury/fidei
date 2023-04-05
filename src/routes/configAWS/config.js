@@ -5,3 +5,4 @@ module.exports = {
         accessKey: 'AKIAVMDPHXOO7ETOD76L',
     }
 }
+

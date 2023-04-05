@@ -10,10 +10,16 @@ const passport = require('passport')
 const cors = require("cors");
 const jwt = require('jsonwebtoken')
 const keys = require('./keys')
+
+const mercadopago = require('mercadopago')
 ////
 
 
 
+
+mercadopago.configure({
+    access_token:"APP_USR-6912288908238269-040415-5a368602ce75dc79949306b9fc9b4714-1345566063"
+})
 
 //inicializacion
 const app = express()
