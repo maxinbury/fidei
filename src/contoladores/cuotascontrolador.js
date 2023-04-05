@@ -187,7 +187,7 @@ const postaddaut = async (req, res) => {
 }
 
 const postaddaut2 = async (req, res) => {
-    let { id, porcentaje, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela,valordellote ,anticipodefinido} = req.body;
+    let { id, porcentaje, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela, valordellote, anticipodefinido } = req.body;
 
 
 
@@ -213,19 +213,20 @@ const postaddaut2 = async (req, res) => {
     const row = await pool.query('SELECT * from clientes where cuil_cuit like ?', [aux])
     //llega
     try {
-        monto_total=0
-       if  (valordellote === undefined){
+        monto_total = 0
+        if (valordellote === undefined) {
 
-        if (zona == 'PIT') {
-            valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+            if (zona == 'PIT') {
+                valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+            } else {
+                valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+            }
+
+            valor = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+
+
+            monto_total = (valor * superficie).toFixed(2)
         } else {
-            valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
-        }
-
-        valor = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
-
-
-        monto_total = (valor * superficie).toFixed(2)}else{
             monto_total = valordellote
         }
         if (porcentaje === undefined) {
@@ -237,8 +238,8 @@ const postaddaut2 = async (req, res) => {
         porcentaje = porcentaje / 100
         anticipo = monto_total * porcentaje
 
-        
-      
+
+
         console.log('monto total')
         console.log(monto_total)
         monto_total = monto_total * (1 - porcentaje)
@@ -252,7 +253,7 @@ const postaddaut2 = async (req, res) => {
 
         console.log('MONTO A FINANCIAR ')
         console.log(monto_total)
-        console.log (monto_total / parseFloat(cantidad_cuotas))
+        console.log(monto_total / parseFloat(cantidad_cuotas))
         //llega
         const Amortizacion = (monto_total / cantidad_cuotas);
 
@@ -350,7 +351,7 @@ const postaddaut2 = async (req, res) => {
                 for (i = 0; i < todass.length; i++) {
                     mess = todass[i]['mes']
                     anioo = todass[i]['anio']
-                    exisste = await pool.query('select * from icc_historial where mes = ? and anio = ? and zona =?', [mess, anioo,todass[i]['zona']])
+                    exisste = await pool.query('select * from icc_historial where mes = ? and anio = ? and zona =?', [mess, anioo, todass[i]['zona']])
                     if (exisste.length > 0) {
                         ICC = exisste[0]['ICC']
 
@@ -660,7 +661,7 @@ const lotefuncion2 = async (req, res) => {
         const id = req.params.id
         const lot = await pool.query('SELECT * FROM lotes WHERE id =  ?', [id])
 
-        
+
         let cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
 
         if (cuotas.length === 0) {
@@ -672,143 +673,148 @@ const lotefuncion2 = async (req, res) => {
 
         if (cuotas.length > 0) {
             /////////////////
-            cuotasss=[] 
-            Amortizacion=parseFloat(cuotas[0]['saldo_inicial'])/cuotas.length
-            AmortizacionReal=Amortizacion
-            pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?',[cuotas[0]['id']])
+            cuotasss = []
+            Amortizacion = parseFloat(cuotas[0]['saldo_inicial']) / cuotas.length
+            AmortizacionReal = Amortizacion
+            pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[0]['id']])
             try {
-                if (pago[0]['SUM(monto)'] === null){
+                if (pago[0]['SUM(monto)'] === null) {
                     console.log('entra al try')
-                    pag=0
-                }else{
-                pag=parseFloat(pago[0]['SUM(monto)'])}
-              
-                } catch (error) {
-                 console.log(error)
-                 console.log('NO entra al try')
-                 pag=0
+                    pag = 0
+                } else {
+                    pag = parseFloat(pago[0]['SUM(monto)'])
                 }
-               
-          
-            diferencia=parseFloat( - parseFloat(Amortizacion.toFixed(2)) +pag)
-           saldoinicial=  cuotas[0]['saldo_inicial']   
-          
-          pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?',[cuotas[0]['id']])
-          saldo_cierre= parseFloat(cuotas[0]['saldo_inicial']) - parseFloat((Amortizacion).toFixed(2))
-          Saldo_real= parseFloat(cuotas[0]['saldo_inicial']) - pag,
-        
-           cuota_con_ajuste=parseFloat(Amortizacion)
-           nuev={
-            id: cuotas[0]['id'],
-            saldo_inicial: cuotas[0]['saldo_inicial'],
-            mes: cuotas[0]['mes'],
-            anio: cuotas[0]['anio'],
-            Amortizacion: (Amortizacion).toFixed(2),
-            ICC: cuotas[0]['ICC'],
-            Ajuste_ICC: cuotas[0]['Ajuste_ICC'],
-            cuota_con_ajuste: (Amortizacion).toFixed(2),
-            pago: pago[0]['SUM(monto)'],
-            Saldo_real:Saldo_real,
-            saldo_cierre: saldo_cierre.toFixed(2),
-            parcialidad:  cuotas[0]['parcialidad'],
-            diferencia:-(Amortizacion).toFixed(2)+pag ,
-          
-        }
-           cuotasss.push(nuev)
+
+            } catch (error) {
+                console.log(error)
+                console.log('NO entra al try')
+                pag = 0
+            }
+
+
+            diferencia = parseFloat(- parseFloat(Amortizacion.toFixed(2)) + pag)
+            saldoinicial = cuotas[0]['saldo_inicial']
+
+            pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[0]['id']])
+            saldo_cierre = parseFloat(cuotas[0]['saldo_inicial']) - parseFloat((Amortizacion).toFixed(2))
+            Saldo_real = parseFloat(cuotas[0]['saldo_inicial']) - pag,
+
+                cuota_con_ajuste = parseFloat(Amortizacion)
+            nuev = {
+                id: cuotas[0]['id'],
+                saldo_inicial: cuotas[0]['saldo_inicial'],
+                mes: cuotas[0]['mes'],
+                anio: cuotas[0]['anio'],
+                Amortizacion: (Amortizacion).toFixed(2),
+                ICC: cuotas[0]['ICC'],
+                Ajuste_ICC: cuotas[0]['Ajuste_ICC'],
+                cuota_con_ajuste: (Amortizacion).toFixed(2),
+                pago: pago[0]['SUM(monto)'],
+                Saldo_real: Saldo_real,
+                saldo_cierre: saldo_cierre.toFixed(2),
+                parcialidad: cuotas[0]['parcialidad'],
+                diferencia: -(Amortizacion).toFixed(2) + pag,
+
+            }
+            cuotasss.push(nuev)
             for (i = 1; i < cuotas.length; i++) {
-           if(cuotas[i]['parcialidad'] === 'Final'){
-            Ajuste_ICC= (cuota_con_ajuste *parseFloat(cuotas[i]['ICC'])).toFixed(2)
-          
-                cuota_con_ajuste += parseFloat(Ajuste_ICC)
-                
-                pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?',[cuotas[i]['id']])
-                console.log(pago)
-                try {
-                    if (pago[0]['SUM(monto)'] === null){
-                        console.log('entra al try')
-                        pag=0
-                    }else{
-                    pag=parseFloat(pago[0]['SUM(monto)'])}
-                  
+                if (cuotas[i]['parcialidad'] === 'Final') {/////////////////////////////////recorrrido
+
+                    Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
+//////////////
+cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
+////////                    cuota_con_ajuste += parseFloat(Ajuste_ICC)
+
+                    pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[i]['id']])
+                    console.log(pago)
+                    try {
+                        if (pago[0]['SUM(monto)'] === null) {
+                            console.log('entra al try')
+                            pag = 0
+                        } else {
+                            pag = parseFloat(pago[0]['SUM(monto)'])
+                        }
+
                     } catch (error) {
-                     console.log(error)
-                     console.log('NO entra al try')
-                     pag=0
+                        console.log(error)
+                        console.log('NO entra al try')
+                        pag = 0
                     }
-                   
-                Saldo_real -=+pag-Ajuste_ICC,
 
-             
-                saldo_inicial= saldo_cierre.toFixed(2)
-                saldo_cierre-= AmortizacionReal
-             
-                dif = - parseFloat(cuota_con_ajuste) +parseFloat(pag)
-                
-                nuev={
-                    id: cuotas[i]['id'],
-                    saldo_inicial: saldo_inicial,
-                    mes: cuotas[i]['mes'],//////////realizado
-                    anio: cuotas[i]['anio'],//////////realizado
-                    Amortizacion: (Amortizacion).toFixed(2),
-                    ICC: cuotas[i]['ICC'],///////////realizado
-                    Ajuste_ICC: (Ajuste_ICC), ///////////realizado
-                    cuota_con_ajuste: cuota_con_ajuste.toFixed(2),///////////realizado
-                    pago: pago[0]['SUM(monto)'],//////////realizado
-                    Saldo_real: Saldo_real, ////////realizado
-                    saldo_cierre: saldo_cierre.toFixed(2),////////realizado
-                    parcialidad:  cuotas[i]['parcialidad'],
-                    diferencia:dif.toFixed(2) ,/////realizado
-                    
-                  
+                    Saldo_real -= +pag - Ajuste_ICC,
+
+
+                        saldo_inicial = saldo_cierre.toFixed(2)
+                    saldo_cierre -= AmortizacionReal
+
+                    dif = - parseFloat(cuota_con_ajuste) + parseFloat(pag)
+
+                    nuev = {
+                        id: cuotas[i]['id'],
+                        saldo_inicial: saldo_inicial,
+                        mes: cuotas[i]['mes'],//////////realizado
+                        anio: cuotas[i]['anio'],//////////realizado
+                        Amortizacion: (Amortizacion).toFixed(2),
+                        ICC: cuotas[i]['ICC'],///////////realizado
+                        Ajuste_ICC: (Ajuste_ICC), ///////////realizado
+                        cuota_con_ajuste: cuota_con_ajuste.toFixed(2),///////////realizado
+                        pago: pago[0]['SUM(monto)'],//////////realizado
+                        Saldo_real: Saldo_real, ////////realizado
+                        saldo_cierre: saldo_cierre.toFixed(2),////////realizado
+                        parcialidad: cuotas[i]['parcialidad'],
+                        diferencia: dif.toFixed(2),/////realizado
+
+
+                    }
+                } else {
+                    nuev = {
+                        id: cuotas[i]['id'],
+                        saldo_inicial: saldo_cierre,
+                        mes: cuotas[i]['mes'],//////////realizado
+                        anio: cuotas[i]['anio'],//////////realizado
+                        Amortizacion: Amortizacion,//////////realizado
+                        ICC: 0,///////////realizado
+                        Ajuste_ICC: 0, ///////////realizado
+                        cuota_con_ajuste: 0,///////////realizado
+                        pago: 0,
+                        Saldo_real: 0, ////////realizado
+                        saldo_cierre: saldo_cierre,////////realizado
+                        parcialidad: cuotas[i]['parcialidad'],
+                        diferencia: 0,/////realizado
+                    }
                 }
-            }else{
-                nuev={
-                    id: cuotas[i]['id'],
-                    saldo_inicial: saldo_cierre,
-                    mes: cuotas[i]['mes'],//////////realizado
-                    anio: cuotas[i]['anio'],//////////realizado
-                    Amortizacion:Amortizacion,//////////realizado
-                    ICC: 0,///////////realizado
-                    Ajuste_ICC: 0, ///////////realizado
-                    cuota_con_ajuste: 0,///////////realizado
-                    pago: 0,
-                    Saldo_real: 0, ////////realizado
-                    saldo_cierre: saldo_cierre,////////realizado
-                    parcialidad:  cuotas[i]['parcialidad'],
-                    diferencia:0 ,/////realizado
-            }}
 
-                
+
                 cuotasss.push(nuev)
             }
-           
+
             res.json(cuotasss)
 
 
             //////////////////
-           /*  try {
+            /*  try {
+ 
+ 
+                 for (i = 0; i < cuotas.length; i++) {
+                     diferencia = cuotas[i].pago - cuotas[i].cuota_con_ajuste
+                     act = { diferencia }
+ 
+ 
+                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [act, cuotas[i].id])
+                 }
+             } catch (error) {
+                 console.log(error)
+             }
+ 
+ 
+             let cuotass = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
+ 
+             if (cuotass.length === 0) {
+                 cuotass = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['idcuotas']])
+             }
+             res.json(cuotass) */
+            //////////////////
 
-
-                for (i = 0; i < cuotas.length; i++) {
-                    diferencia = cuotas[i].pago - cuotas[i].cuota_con_ajuste
-                    act = { diferencia }
-
-
-                    await pool.query('UPDATE cuotas set ? WHERE id = ?', [act, cuotas[i].id])
-                }
-            } catch (error) {
-                console.log(error)
-            }
-
-
-            let cuotass = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
-
-            if (cuotass.length === 0) {
-                cuotass = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['idcuotas']])
-            }
-            res.json(cuotass) */
-        //////////////////
-       
             //res.render('cuotas/listavacia', { auxiliar })
 
         } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
