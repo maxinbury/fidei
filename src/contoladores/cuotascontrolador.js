@@ -716,6 +716,27 @@ const lotefuncion2 = async (req, res) => {
                 diferencia: -(Amortizacion).toFixed(2) + pag,
 
             }
+
+            ///////ACTUALIZACION
+           let  nuevAct = {
+              
+                saldo_inicial: cuotas[0]['saldo_inicial'],
+                mes: cuotas[0]['mes'],
+                anio: cuotas[0]['anio'],
+                Amortizacion: (Amortizacion).toFixed(2),
+                ICC: cuotas[0]['ICC'],
+                Ajuste_ICC: cuotas[0]['Ajuste_ICC'],
+                cuota_con_ajuste: (Amortizacion).toFixed(2),
+                pago: pago[0]['SUM(monto)'],
+                Saldo_real: Saldo_real,
+                saldo_cierre: saldo_cierre.toFixed(2),
+                parcialidad: cuotas[0]['parcialidad'],
+                diferencia: -(Amortizacion).toFixed(2) + pag,
+
+            }
+           //// 
+           await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct,  cuotas[0]['id']])
+            ////
             cuotasss.push(nuev)
             for (i = 1; i < cuotas.length; i++) {
                 if (cuotas[i]['parcialidad'] === 'Final') {/////////////////////////////////recorrrido
@@ -766,6 +787,24 @@ cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
 
 
                     }
+                    nuevAct = {
+                      
+                 
+                   
+                        Amortizacion: (Amortizacion).toFixed(2),
+                        ICC: cuotas[i]['ICC'],///////////realizado
+                        Ajuste_ICC: (Ajuste_ICC), ///////////realizado
+                        cuota_con_ajuste: cuota_con_ajuste.toFixed(2),///////////realizado
+                        pago: pago[0]['SUM(monto)'],//////////realizado
+                        Saldo_real: Saldo_real, ////////realizado
+                        saldo_cierre: saldo_cierre.toFixed(2),////////realizado
+                        parcialidad: cuotas[i]['parcialidad'],
+                        diferencia: dif.toFixed(2),/////realizado
+
+
+                    }
+
+                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct,  cuotas[i]['id']])
                 } else {
                     nuev = {
                         id: cuotas[i]['id'],
