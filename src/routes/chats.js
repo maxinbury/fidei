@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require('../database')
 const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn } = require('../lib/auth')
-const {noleidos, conversacion, postenviar} =require('../contoladores/chatscontrolador')
+const {noleidos, conversacion, postenviar} =require('../controladores/chatsControlador')
 
 
 

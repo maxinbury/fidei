@@ -7,6 +7,7 @@ const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const passport= require('passport')
 const agregaricc = require('./funciones/agregaricc')
+const { historialIcc, pagoSi, borrarHistorial, asignarClave, asignarvalormetroc, consultarIcc, agregarIccGral2 } = require('../controladores/nivel3Controlador')
 
 router.post('/signupp', isLoggedInn3, passport.authenticate('local.signupnivel3', {
     successRedirect: '/exitosignup',
@@ -16,210 +17,37 @@ router.post('/signupp', isLoggedInn3, passport.authenticate('local.signupnivel3'
 }))
 
 //REACT GET HISTORIAL
-router.get('/historialicc', isLoggedInn3, async (req, res) => {
-
-    const historial = await pool.query('select * from icc_historial')
-
-    res.json(historial)
-
-})
-
-router.get('/pagosi', async (req, res) => {
-
-    const historial = await pool.query('select * from historial_pagosi')
-
-    res.json(historial)
-
-})
-
-router.get('/borrarhistorial', isLoggedInn3, async (req, res) => {
-
-    try {
-        await pool.query('DELETE FROM icc_historial ')
-        res.send('Borrados correctamente')
-    } catch (error) {
-        console.log(error)
-        res.send('Error algo sucedió')
-    }
-
-})
+router.get('/historialicc', isLoggedInn3, historialIcc)
 
 
-router.post('/asignarclave',isLoggedInn3, async (req, res) => {
-    const  { cuil_cuit, clave_alta  } = req.body;
-    console.log(cuil_cuit)
-    try {
-      
-       
-        const aux = '%'+cuil_cuit+'%'
-        const existe = await pool.query('select * from clientes WHERE cuil_cuit like  ?',[aux])
-        if (existe.length>0){
-            const asignar = {
-                clave_alta: clave_alta
-               }
-               await pool.query('UPDATE clientes set ? WHERE cuil_cuit like  ?', [asignar,aux])
-               res.send('Clave asignada')
-        }else {
-            res.send('Error cliente no existe')
-        }
-        
-
-      
-
-    } catch (error) {
-       
-        res.send('Error algo sucedió')
-    }
-
-})
+//// PAGOS INUSUALES
+router.get('/pagosi', pagoSi)
 
 
 
-router.post('/asignarvalormetroc',isLoggedInn3, async (req, res) => {
-    const  { valor,zona } = req.body;
-    try {
-    
-        fecha = (new Date(Date.now())).toLocaleDateString()
-        
-            val ={valormetrocuadrado:valor,
-                valormetroparque:zona,
-                fecha } 
-          
-                
-        await pool.query('insert into nivel3 set ?', val)
-        res.send('Borrados correctamente')
+router.get('/borrarhistorial', isLoggedInn3, borrarHistorial)
 
-    } catch (error) {
-        console.log(error)
-        res.send('Error algo sucedió')
-    }
-
-})
+/// ASIGNAR CLAVE PARA REGISTRO DE CLIENTES
+router.post('/asignarclave',isLoggedInn3,asignarClave )
 
 
 
-router.post('/consultaricc',isLoggedInn3, async (req, res,) => {
-    let { ICC, mes, anio, zona } = req.body;
-    let rta={} 
-try {
-        const existe = await pool.query('select * from icc_historial where mes=? and anio=? and zona =?',[mes,anio, zona])
-        if (existe.length>0){
-         
-         const valor = existe[0]['ICC']
-        
-            rta= {
-                resp:'El mes y año ya tiene un ICC asignado y es '+valor
-
-            }
-        }else{
-  
-            rta= {
-                resp:'El mes y año no tienen un ICC asignado'
-
-            }
-          
-
-        }
-   
-        res.json(rta)
-    } catch (error) {
-        
-   }
+router.post('/asignarvalormetroc',isLoggedInn3, asignarvalormetroc)
 
 
-})
+//// Controla si ya eciste un ICC asignado
+router.post('/consultaricc',isLoggedInn3, consultarIcc)
 
 ///// REACT ii gral
-router.post('/agregariccgral2', isLoggedInn3, async (req, res,) => {
-    let { ICC, mes, anio, zona } = req.body;
-   
-console.log('iccgral2')
-
-    let datoss = {
-        ICC,
-        mes,
-        anio,
-        zona
-
-    }
-
-    //////////////try
-    
-
-    try {
-
-        exis =  await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio,zona])
-        if (exis.length>0){
-            await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
-        }else{
-
-        await pool.query('insert into icc_historial set?', datoss)}
-    } catch (error) {
-        console.log(error)
-    }
-
-
-
-    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona =?", [mes, anio,zona])
-
-    for (var i = 0; i < todas.length; i++) {  
-
-    await agregaricc.calcularicc(todas[i],ICC)
-}
-
-res.send('Icc asignado con éxito');
-})
+router.post('/agregariccgral2', isLoggedInn3, )
 //////
 
-///// REACT ii gral menos los que estan
-router.post('/agregariccgral22', isLoggedInn3, async (req, res,) => {
-    let { ICC, mes, anio, zona } = req.body;
-   
-
-
-    let datoss = {
-        ICC,
-        mes,
-        anio,
-        zona
-
-    }
-
-    //////////////try
-    
-
-
-
-
-    const todas = await pool.query("select * from cuotas where mes =? and anio =? and parcialidad = ? and zona =? ", [mes, anio,"Original", zona])
-
-    for (let i = 0; i < todas.length; i++) {  
-
-    agregaricc.calcularicc(todas[i],ICC)
-}
-
-res.send('Icc asignado con éxito');
-})
+///// AGREGA a ICC al IC3
+router.post('/agregariccgral22', isLoggedInn3,agregarIccGral2)
 
 //ACCESO A MENU DE USUARIO NIVEL 2
-router.get('/perfilnivel2', isLoggedIn, isLevel3, async (req, res) => {
-
-    const pagos_p = await pool.query(" Select * from pagos where estado = 'P' ")
-    const constancias_p = await pool.query(" Select * from constancias where estado = 'P' ")
-    const cbus = await pool.query(" Select * from cbus where estado = 'P' ")
-    const chats = await pool.query(" Select * from chats where leido = 'NO' ")
-
-res.render('profile',{pagos_p, constancias_p, cbus, chats})}
-
-)
-
 // AGREGAR USUARIO 
 
-router.get('/agregarusuario', isLoggedIn, isLevel3, (req, res) => {
-
-    res.render('nivel3/agregarusuario')
-
-})
 
 router.post('/agregarunusuario', async (req, res,) => {
     const { cuil_cuit, nombre, mail, nivel } = req.body;

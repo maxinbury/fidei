@@ -5,9 +5,9 @@ const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn,isLoggedInn2  } = require('../lib/auth') //proteger profile
 
 const { isLevel3 } = require('../lib/authnivel3')
-const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../contoladores/cuotascontrolador')
+const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes } = require('../controladores/cuotasControlador')
 
-require('../contoladores/cuotascontrolador')
+
 
 //
 

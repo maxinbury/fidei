@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
-const { lista, aprobadas, solicitaraprobacion, pendientes, rechazadas }=require('../contoladores/constanciascontrolador')
+const { lista, aprobadas, solicitaraprobacion, pendientes, rechazadas }=require('../controladores/constanciasControlador')
 
 
 

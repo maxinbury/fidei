@@ -4,7 +4,7 @@ const pool = require('../database')
 const XLSX = require('xlsx')
 const { isLoggedIn, isLoggedInn2 } = require('../lib/auth') //proteger profile
 const { isLevel2 } = require('../lib/authnivel2')
-const { pendientes, aprobar, aprobarcomp, rechazar2, rechazarcomp, pendientestodas, rechazo, aprobacioncbu, aprobarcbu, rechazarcbu, rechazobu, postrechazocbu } = require('../contoladores/controladoraprobaciones')
+const { pendientes, aprobar, aprobarcomp, rechazar2, rechazarcomp, pendientestodas, rechazo, aprobacioncbu, aprobarcbu, rechazarcbu, rechazobu, postrechazocbu } = require('../controladores/aprobacionesControlador')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
@@ -35,9 +35,8 @@ const fileUpload = multer({
 ////////////prueba de mercadopago
 router.post('/noti/:id/:algo', async (req, res) => {
   const { query } = req
-  const{ id,algo } = req.params
-  console.log(id)
-  console.log(algo)
+  const{ id} = req.params
+
  const topic = query.topic || query.type
 
  switch(topic){

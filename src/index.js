@@ -30,7 +30,7 @@ app.set('key',keys.key)
 
 app.set('port', process.env.PORT || 4000)
 app.set('views', path.join(__dirname,'views')) // indica donde esta la carpeta views 
-app.engine('.hbs', exphbs.engine({  // define la localizacion de los laouts nav y footers
+app.engine('.hbs', exphbs.engine({  // define la localizacion de los laoyuts nav y footers
     defaultLayout:'main',
     layoutDir: path.join(app.get('views'), 'layouts'),
     partialsDir: path.join(app.get('views'), 'partials'),
@@ -86,7 +86,7 @@ app.use('/notificaciones', require('./routes/notificaciones'))
 app.use('/administracion', require('./routes/Administracion'))
 app.use('/novedades', require('./routes/novedades'))
 app.use('/home', require('./routes/home'))
-app.use('/esme', require('./routes/esme'))
+
 
 
 app.use(express.static(path.join(__dirname,'../pdfs')))

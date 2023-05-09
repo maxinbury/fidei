@@ -161,7 +161,7 @@ async function determinaringreso(req, res) {
             estado: 'Aprobada'
         }
 
-        await pool.query('insert into constancias set?', constancianueva)
+        await pool.query('insert into constancias set ?', constancianueva)
         rta = 'Ingresos actualizados'
     } catch (error) {
         console.log(error)
