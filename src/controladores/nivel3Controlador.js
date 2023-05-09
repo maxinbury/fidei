@@ -6,7 +6,7 @@ const { isLevel3 } = require('../lib/authnivel3')
 const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const passport= require('passport')
-const agregaricc = require('./funciones/agregaricc')
+const agregaricc = require('../routes/funciones/agregaricc')
 
 
 const historialIcc =  async (req, res) => {
