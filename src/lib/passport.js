@@ -8,6 +8,10 @@ const sacarguion = require('../public/apps/transformarcuit')
 const ponerguion = require('../public/apps/transformarcuit')
 ////    aux = ponerguion.ponerguion(aux)
 
+
+
+
+///Logueo
 passport.use('local.signin', new LocalStrategy({
     usernameField: 'cuil_cuit', // usuario es el nombre que recibe del hbs
     passwordField: 'password',
@@ -52,7 +56,7 @@ passport.use('local.signin', new LocalStrategy({
 }))
 
 
-
+///Registro
 passport.use('local.signup', new LocalStrategy({
     usernameField: 'cuil_cuit',
     passwordField: 'password',
@@ -185,6 +189,8 @@ console.log(cuil_cuit)
 
 
 ))
+
+
 passport.serializeUser((user, done) => {
     done(null, user.id)
 })
@@ -194,7 +200,7 @@ passport.deserializeUser(async (id, done) => {
     done(null, rows[0])
 })
 
-
+///Modificacion contraseña
 passport.use('local.modificarpass', new LocalStrategy({
     usernameField: 'cuil_cuit', // usuario es el nombre que recibe del hbs
     passwordField: 'password',
@@ -242,7 +248,7 @@ passport.use('local.modificarpass', new LocalStrategy({
     }
 }))
 
-
+///Registro de usuarios de varios niveles
 passport.use('local.signupnivel3', new LocalStrategy({
     usernameField: 'cuil_cuit',
     passwordField: 'password',
@@ -300,7 +306,7 @@ passport.use('local.signupnivel3', new LocalStrategy({
 
 
 
-/// Recupero de contraseña 
+/// Recupero de contraseña, envio de clave
 
 passport.use('local.recupero', new LocalStrategy({
     usernameField: 'cuil_cuit',

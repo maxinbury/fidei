@@ -11,21 +11,12 @@ const sacarguion = require('../../public/apps/transformarcuit')
 const pagodecuota = require('../funciones/pagoDeCuota')
 const enviodemail = require('../Emails/Enviodemail')
 
+///Funcion modelo de guardado de imagen
 async function s3Upload(req, res) {
     let { ingreso, formData } = req.body
 
     formData = await readFormData(req);
 
-
-
-
-
-    //  const etc =  req.formData
-
-    //  console.log(formData)
-    // console.log(formData.name)  FILE
-    //console.log(formData.ingreso) falla
-    // falla console.log(req.formdata.ingreso)
 
     try {
 
@@ -37,11 +28,11 @@ async function s3Upload(req, res) {
         res.send('ERROR!!!!');
     }
 }
-
+/// Funcion para traer la url de la imagen
 async function s3Get(req, res) {
-    console.log('1');
+    
     try {
-        console.log('2');
+       
         const bucketData = await getBucketListFromS3("mypdfstorage");
         const { Contents = [] } = bucketData;
         res.header("Access-Control-Allow-Origin", "*");
@@ -56,7 +47,9 @@ async function s3Get(req, res) {
         res.send([]);
     }
 }
-
+///Extrae los datos    
+//Field: Arreglo con datos
+///File: PDF
 async function readFormData(req) {
     return new Promise(resolve => {
         const dataObj = {};
@@ -84,11 +77,11 @@ async function readFormData(req) {
         });
     });
 }
-
+///traer a partir de la url
 async function getSignedUrl(req, res) {
 
     try {
-        console.log("url2")
+
 
         const { key } = req.params;
         const url = await getPresignedURL("mypdfstorage", key);
@@ -99,13 +92,10 @@ async function getSignedUrl(req, res) {
     }
 }
 
-
-
-
 async function getSignedUrl2(req, res) {
 
     try {
-        console.log("url2")
+
 
         const { key } = req.params;
         const url = await getPresignedURL2("mypdfstorage", key);
@@ -115,14 +105,14 @@ async function getSignedUrl2(req, res) {
         res.send('');
     }
 }
-
+/// Funcion para traer la url de la imagen
 async function traerImagen(ubicacion) {
 
     try {
-        console.log('ubicacion')
+      
         console.log(ubicacion)
         const { key } = { ubicacion };
-        console.log('key')
+  
         console.log(key)
         const url = await getPresignedURL("mypdfstorage", key);
         console.log(url)
@@ -135,7 +125,7 @@ async function traerImagen(ubicacion) {
     }
 }
 
-
+///funcion para guardar comprobante deingresos declarados
 async function determinaringreso(req, res) {
 
     formData = await leerformlegajo(req);
@@ -187,7 +177,7 @@ async function determinaringreso(req, res) {
     res.json(rta)
 }
 
-
+///funcion para subir algun legajo
 async function subirlegajo(req, res) {
 
     formData = await leerformlegajo(req);
@@ -232,6 +222,7 @@ async function subirlegajo(req, res) {
         console.log('NOOO  ')
     }
 }
+///funcion para leer un form legajo
 async function leerformlegajo(req) {
     return new Promise(resolve => {
         const dataObj = {};
@@ -265,7 +256,7 @@ async function leerformlegajo(req) {
     });
 }
 
-
+////funciond eterminar persona politicamente expuesta
 async function determinarPep(req, res) {
 
     formData = await leerformlegajo(req);
@@ -314,7 +305,7 @@ async function determinarPep(req, res) {
     }
 }
 
-
+////Subir legajo sin aprobar
 async function subirlegajo1(req, res) {
 
     formData = await leerformlegajo(req);
@@ -361,7 +352,6 @@ async function subirlegajo1(req, res) {
     }
 }
 ////cargarcbu
-
 async function cargarcbu(req, res) {
 
     formData = await leerformlegajo(req);

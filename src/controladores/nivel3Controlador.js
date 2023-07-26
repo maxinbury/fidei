@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const ponerguion = require('../public/apps/transformarcuit')
-const { isLevel3 } = require('../lib/authnivel3')
 const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const passport= require('passport')

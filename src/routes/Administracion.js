@@ -3,7 +3,8 @@ const router = express.Router()
 const pool = require('../database')
 const XLSX = require('xlsx')
 const { isLoggedIn, isLoggedInn2 } = require('../lib/auth') //proteger profile
-const { isLevel2 } = require('../lib/authnivel2')
+const http = require('http');
+const https = require('https');
 const { pendientes, aprobar, aprobarcomp, rechazar2, rechazarcomp, pendientestodas, rechazo, aprobacioncbu, aprobarcbu, rechazarcbu, rechazobu, postrechazocbu } = require('../controladores/aprobacionesControlador')
 const multer = require('multer')
 const path = require('path')
@@ -123,7 +124,55 @@ router.get('/traerlinkcuota/:id', async (req, res) => {
 
 })
 
+router.get('/traerlink360/:id', async (req, res) => {
+  const {id} = req.params
+ 
+  let cuota = await pool.query('select * from cuotas where id  = ?',[id] )
+  monto=cuota[0]['cuota_con_ajuste']
+   // Crea un objeto de preferencia
+  
 
+   const data = JSON.stringify({
+    payment_request: {
+      description: 'concepto_del_pago',
+      first_due_date: '27-01-2022',
+      first_total: 1167.34,
+      payer_name: 'nombre_pagador'
+    }
+  });
+  
+  const options = {
+    hostname: 'api.sandbox.pagos360.com',////https://api.sandbox.pagos360.com   api.pagos360.com
+    path: '/payment-request',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer <API Key>'
+    }
+  };
+  
+  const requ = https.request(options, (res) => {
+    let responseBody = '';
+  
+    res.on('data', (chunk) => {
+      responseBody += chunk;
+    });
+  
+    res.on('end', () => {
+      console.log(responseBody);
+    });
+  });
+  
+  requ.on('error', (error) => {
+    console.error(error);
+  });
+  
+  requ.write(data);
+  requ.end();
+ 
+ 
+ 
+ })
 
 
 router.get('/mercado', async (req, res) => {

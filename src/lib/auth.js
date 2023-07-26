@@ -1,24 +1,27 @@
 const jwt = require("jsonwebtoken")
+
 module.exports = {
-
-
-
+    //Decofidicacion de token Logueado
     isLoggedInn(req,res, next){
-        
-        //
-        const authorization = req.get('authorization')
+        const authorization = req.get('authorization') ///
         let token =null
-   
+        console.log(authorization)
         if (authorization && authorization.startsWith('Bearer')){
-      
-            token = authorization.substring(7) 
+            console.log('authorization2')
+            token = authorization.substring(7) ////  Bearer  length
+            console.log(token)
+            console.log('authorization3')
         }
         let decodedToken = {}
         
         try{
+          
              decodedToken = jwt.verify(token, 'fideicomisocs121')
            
-        }catch{}
+        }catch(error){
+            console.log('error')
+            console.log(error)
+        }
       
         if (!token || !decodedToken.id){
             res.send('error login')
@@ -29,10 +32,11 @@ module.exports = {
         
        
     },
-
+    ///decodificacion Token y verificacion nivel 2
     isLoggedInn2(req,res, next){
       
         //
+        
         const authorization = req.get('authorization')
         let token =null
         console.log(authorization)
@@ -41,10 +45,9 @@ module.exports = {
             token = authorization.substring(7) 
         }
         let decodedToken = {}
-        
+    
         try{
              decodedToken = jwt.verify(token, 'fideicomisocs121')
-             console.log(decodedToken)
            
         }catch{}
       
@@ -57,7 +60,7 @@ module.exports = {
         
         next()
     },
-
+    /////Decodificacion nibel 3
     isLoggedInn3(req,res, next){
         console.log('entra1')
         //
@@ -85,7 +88,7 @@ module.exports = {
         
         next()
     },
-
+/// Veridicacion token con handlebars
     isLoggedIn(req,res, next){
         if (req.isAuthenticated()) {     /// isathenticated metodo de pasport
             return next()   //si existe esta seccion continua con el codigo

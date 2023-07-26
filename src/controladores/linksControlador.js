@@ -2,7 +2,6 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn,isLoggedInn, isLoggedInn2} = require('../lib/auth') //proteger profile
-const { isLevel2 } = require('../lib/authnivel2')
 const XLSX = require('xlsx')
 const fs = require('fs')
 const multer = require('multer')
@@ -496,7 +495,46 @@ const add2 = async (req, res) => {
 
 
 }
+const add3 = async (req, res) => {
+    const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
+    const newLink = {
+        Nombre,
+        tipo_dni,
+        razon,
+        telefono,
+        domicilio,
+        observaciones,
+        cuil_cuit,
+        habilitado:"Si"
+        //user_id: req.user.id
+    };
 
+
+
+    try {
+        const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
+        if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
+            res.send('Error cuil_cuit ya existe')
+
+        }
+        else {
+            await pool.query('INSERT INTO clientes set ?', [newLink]);
+            res.send('Guardado correctamente')
+
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.send('message', 'Error algo salio mal')
+
+
+    }
+
+
+
+
+
+}
 const modificarCuil=  async (req, res) => {
     const {cuil_cuit, id } = req.body;
    
@@ -595,6 +633,7 @@ const detalleCuil =  async (req, res) => {
 
 }
 module.exports = {
+    add3,
     determinarEmpresa,
     habilitar,
     estadisticasLegajos,

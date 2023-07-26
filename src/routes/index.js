@@ -19,8 +19,7 @@ router.get('/logueado', async (req, res) => {
 console.log(req.user)
   res.json(req.user);
 
-  
-//res.render('index')
+
 })
 
 router.get('/estalogeado', async (req, res) => {
@@ -34,7 +33,6 @@ router.get('/estalogeado', async (req, res) => {
   }
 
 
-console.log(logueado)
 res.json(logueado);
 })
 

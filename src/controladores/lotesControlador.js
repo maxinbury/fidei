@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLevel2 } = require('../lib/authnivel2')
+
 const { isLoggedIn, isLoggedInn2} = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 

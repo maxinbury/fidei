@@ -2,14 +2,12 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const { isLoggedIn,isLoggedInn, isLoggedInn2} = require('../lib/auth') //proteger profile
-const { isLevel2 } = require('../lib/authnivel2')
 const XLSX = require('xlsx')
 const fs = require('fs')
 const multer = require('multer')
 const path = require('path')
-
 const enviodemail = require('./Emails/Enviodemail')
-const { determinarEmpresa, habilitar, estadisticasLegajos, deshabilitar, borrarCbu, cbusPendientes, legajosCuil, ventalotee, add2, modificarCuil, AgregarIngreso, detalleCuil } = require('../controladores/linkscontrolador')
+const { determinarEmpresa, habilitar, estadisticasLegajos, deshabilitar, borrarCbu, cbusPendientes, legajosCuil, ventalotee, add2,add3, modificarCuil, AgregarIngreso, detalleCuil, cantidadInfo } = require('../controladores/linkscontrolador')
 
 
 /////////aws
@@ -33,9 +31,7 @@ const fileUpload = multer({
 
 router.post('/determinarempresa', isLoggedInn2, determinarEmpresa)
 
-
 router.post('/habilitar',isLoggedInn2, habilitar)
-
 
 
 router.post("/estadisticaslegajos", isLoggedInn2, estadisticasLegajos)
@@ -45,24 +41,16 @@ router.post("/estadisticaslegajos", isLoggedInn2, estadisticasLegajos)
 router.post('/deshabilitar',isLoggedInn2, deshabilitar)
 
 
-
-
-
 /// borrar CBU, cualquier nivel
 
 router.get('/borrarcbu/:id',isLoggedInn,  borrarCbu)
 
 
-
 ///// Funcion devuelve cantidad de clientes /// agregar 
 
-router.get('/infocantidad',isLoggedInn2, )
-
-
+router.get('/infocantidad',cantidadInfo )
 
 router.get('/cbuspendientes', isLoggedInn2, cbusPendientes)
-
-
 
 //lista legajos de un cliente 
 router.get('/legajos/:cuil_cuit',isLoggedInn2, legajosCuil)
@@ -74,6 +62,8 @@ router.post('/ventalotee',isLoggedInn2, ventalotee)
 
 ////react 
 router.post('/add2',isLoggedInn2, add2)
+//legales
+router.post('/add3',isLoggedInn2, add3)
 ///////modificar cuil
 router.post('/modificarcuil',isLoggedInn2, modificarCuil)
 /////////
@@ -83,12 +73,10 @@ router.post('/agregaringreso2',isLoggedInn2, AgregarIngreso)
 ////////////////////////////////
 
 
-
-
 router.get('/detalle/:cuil_cuit', isLoggedInn2, detalleCuil)
 
 
-router.get('/clientehabilitado/:cuil_cuit', isLoggedInn2, async (req, res) => {
+router.get('/clientehabilitado/:cuil_cuit', async (req, res) => {
     const { cuil_cuit } = req.params
  
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
@@ -128,7 +116,6 @@ router.post('/modificarcli',isLoggedInn2, async (req, res) => {
 
 
 })
-
 
 
 router.post('/enviarmailprueba/',isLoggedInn2, async (req, res) => {
@@ -183,30 +170,6 @@ enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
    
 
 })
-
-
-/* const aws = require ('aws-sdk')
-/////////aws
-aws.config.update({
-    secretAccessKey: "4ShxwNJR7g4D7x+9NW6/gTjL6WbwHNea5Ig6JvLu",
-    accessKeyId: 'AKIAVMDPHXOO7ETOD76L',
-    region: "sa-east-1",
-
-});
-const BUCKET = "mypdfstorage"
-const s3 = new aws.S3();
-
-const upload = multer({
-    storage: multerS3({
-        s3: s3,
-        acl: "public-read",
-        bucket: BUCKET,
-        key: function (req, file, cb) {
-            console.log(file);
-            cb(null, file.originalname)
-        }
-    })
-}) */
 
 
 

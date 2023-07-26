@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 const ponerguion = require('../public/apps/transformarcuit')
-const { isLevel3 } = require('../lib/authnivel3')
+
 const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const passport= require('passport')
@@ -88,7 +88,7 @@ res.json(valores)
 )
 
 //Habilitar usuario para pagar
-router.get("/habilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, res) => {
+router.get("/habilitarusuario/:cuil_cuit", isLoggedIn, async (req, res) => {
     let { cuil_cuit } = req.params
     console.log(cuil_cuit)
     habilitado = 'SI'
@@ -100,7 +100,7 @@ router.get("/habilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, res)
     res.redirect("/links/detallecliente/"+cuil_cuit)
 })
 //Habilitar usuario para pagar
-router.get("/deshabilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, res) => {
+router.get("/deshabilitarusuario/:cuil_cuit", isLoggedIn, async (req, res) => {
     let { cuil_cuit } = req.params
     habilitado = 'NO'
     aux = {
@@ -113,7 +113,7 @@ router.get("/deshabilitarusuario/:cuil_cuit", isLoggedIn,isLevel3, async (req, r
 })
 
 //ACCION DE  AGREGAR ICC GENERAL
-router.post('/agregariccgral',isLevel3, async (req, res,) => {
+router.post('/agregariccgral', async (req, res,) => {
     const { ICC, mes, anio, zona } = req.body;
     console.log('icc gral')
     const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona = ?", [mes, anio,zona])

@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local').Strategy
 const pool = require('../database')
 const helpers = require('../lib/helpers')
 
+///Registro nivel 3: desconectado 
 passport.use('local.signup', new LocalStrategy({
     usernameField: 'cuil_cuit',
     passwordField: 'password',

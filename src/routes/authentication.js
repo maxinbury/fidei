@@ -5,25 +5,25 @@ const passport = require('passport')
 const { isLoggedIn, isLoggedInn, isLoggedInn2, isNotLoggedIn } = require('../lib/auth') //proteger profile
 //const isClient = require('../lib/authusuario') ----->>>>  Para Rol 
 const pool = require('../database')
-const { isLevel2 } = require('../lib/authnivel2')
 const jwt = require('jsonwebtoken')
 const enviodemail = require('./Emails/Enviodemail')
 
 
 
-
+///Recupero de contraseña
 router.post('/recuperoo', passport.authenticate('local.recupero', {
     successRedirect: '/exitorecupero',
     failureRedirect: '/noexito',
     failureFlash: true
 
 }))
-
+////Mensaje de recuperacion excitosa
 router.get('/exitorecupero', (req, res) => {
     console.log('Registrado')
     res.send('Contraseña actualizada')
 })
 
+///Envio de clave secreta
 router.post('/recupero', async (req, res) => {
     let { cuil_cuit } = req.body
 
@@ -61,7 +61,7 @@ console.log(cuil_cuit)
 
 })
 
-
+///Registro nivel 
 router.post('/signup', passport.authenticate('local.signup', {
 
     successRedirect: '/signin',
@@ -69,16 +69,19 @@ router.post('/signup', passport.authenticate('local.signup', {
     failureFlash: true
 
 }))
+//Registro nivel 2
 router.post('/signupp', passport.authenticate('local.signup', {
     successRedirect: '/exitosignup',
     failureRedirect: '/noexito',
     failureFlash: true
 
 }))
-
+///Datos dle usuario
 router.get('/traerusuario/:cuil_cuit',isLoggedInn, async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
+   
     const usuario = await pool.query('select * from users where cuil_cuit= ? ', [cuil_cuit])
+   
     res.json(usuario)
 
 

@@ -925,7 +925,325 @@ const lotes = async (req, res) => {
     res.render('cuotas/lotes')
 }
 
+
+
+const asignarloteacuotas = async (req, res, next) => {
+    const { id, id_origen } = req.body
+    
+    
+    console.log(id)
+    console.log(id_origen)
+
+    datos = {idcuotas:id}
+    await pool.query('UPDATE lotes set ? WHERE id = ?', [datos, id_origen])
+
+
+}
+
+
+const modificarmontototal = async (req, res, next) => {
+    const { montonuevo, id_lote } = req.body
+    console.log(montonuevo)
+
+  try {
+        await pool.query('UPDATE cuotas set saldo_inicial = ? WHERE id_lote = ? and nro_cuota= 1', [montonuevo, id_lote])
+res.json('realizado')
+  } catch (error) {
+    console.log(error)
+    res.json('No realizado')
+  }
+
+
+}
+
+
+const traercuotaselcliente = async (req, res) => {
+    const { id } = req.params
+    console.log(id)
+    lote = await pool.query ('select * from lotes where id = ?',[id])
+    console.log(lote[0]['cuil_cuit'])
+    
+    todos = await pool.query ('select DISTINCT id_lote, zona, manzana, parcela  from cuotas where cuil_cuit = ?',[lote[0]['cuil_cuit']])
+    console.log(todos)
+    res.json(todos)
+    
+    }
+
+    const listavarios = async (req, res) => {
+        const { cuil_cuit } = req.params
+        try {
+            
+            lotess = await pool.query('select * from lotes where cuil_cuit = ? ',[cuil_cuit])
+            console.log(lotess)
+            let valor = {}
+            try {
+                valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
+                valorparque = valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+                valormetro = await pool.query('select * from nivel3 where valormetroparque = "IC3" order by id')
+                valorotro =valormetro[(valormetro.length - 1)]['valormetrocuadrado']
+        
+                valor = {
+                    valorparque,
+                    valorotro
+                }
+            } catch (error) {
+                
+            }
+          
+    
+            res.json([lotess,valor])
+        } catch (error) {
+            res.send('Error algo sucedio')
+        }
+    
+    
+    
+    
+    }
+
+    const deletes = async (req, res) => {
+        const { id } = req.params
+        try {
+    
+            await pool.query('DELETE FROM cuotas WHERE id = ?', [id])
+            res.send('Cuota eliminada')
+        } catch (error) {
+            res.send('Error algo sucedio')
+        }
+    
+    
+    
+    
+    }
+
+    const postcuotas =  async (req, res, next) => {
+        const { id } = req.body
+        const rows = await pool.query('SELECT * FROM cuotas WHERE id_cliente = ?', [id])
+        cartodas
+        if (rows.length > 0) {
+            res.redirect(`../cuotas/${id}`)
+    
+    
+        } else { res.redirect('clientes') }
+    
+    }
+
+
+const actualizarcuota = async (req, res, next) => {
+    const { saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC, id  } = req.body
+
+console.log(id)
+const act = {
+    cuota_con_ajuste,
+    Ajuste_ICC
+}
+console.log(act)
+await pool.query('UPDATE cuotas set ? WHERE id = ?', [act, id])
+
+
+}
+const borrartodas =  async (req, res) => {
+    const { id } = req.params;
+    try {
+        await pool.query('DELETE FROM cuotas WHERE id_lote = ?', [id])
+        lote =  await pool.query('select * FROM lotes WHERE id = ?', [id])
+      
+        cuil_cuit = lote[0]['cuil_cuit']
+        link = {
+            toleranciadec:0
+        }
+        
+        await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [link, cuil_cuit])
+       
+        res.send('Borradas correctamente')
+    } catch (error) {
+        console.log(error)
+        res.send('Error algo sucedió')
+    }
+
+
+    
+}
+
+const ief =async (req, res) => {
+    const id = req.params
+    idaux = id.id
+   
+
+    let lote = await pool.query('select * from lotes where id = ? ', [idaux])
+    let cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+    // console.log(cantidad)    cantidad de liquidadas y vencidas
+    if (cantidad === 0) {
+        console.log(lote)
+        idaux = lote[0]['idcuotas']
+         cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
+    }
+
+
+    let devengado = ((await pool.query('select sum(cuota_con_ajuste) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(cuota_con_ajuste)'])
+    // console.log(devengado)
+
+    let abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
+ 
+    console.log(cantidad)
+   
+    exigible = (devengado - abonado).toFixed(2)
+    if (cantidad === 0) {
+       console.log('undefined')
+        const dato1 = {
+            'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const dato2 = {
+            'datoa': 'Monto devengado hasta la cuota',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const dato3 = {
+            'datoa': 'Monto abonado hasta la cuota',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const dato4 = {
+            'datoa': 'Deuda Exigible',
+            'datob': "No hay cuotas Calculadas"
+        }
+        const deuda_exigible = [dato1, dato2, dato3, dato4]
+        const dato5 = {
+            'datoa': 'Cantidad de cuotas a Vencer',
+            'datob': 'no calculado'
+        }
+        const dato6 = {
+            'datoa': 'Monto cuota pura',
+            'datob': 'no calculado'
+        }
+        const dato7 = {
+            'datoa': 'Saldo de capital a vencer',
+            'datob': 'no calculado'
+        }
+
+        const cuotas_pendientes = [dato5, dato6, dato7]
+        const respuesta = [deuda_exigible, cuotas_pendientes]
+
+
+        res.json(respuesta)
+    } else {
+           console.log('defined')
+        devengado.toFixed(2)
+        //////SI HAY CUOTAS 
+
+        try {
+           devengado= devengado.toFixed(2)
+        } catch (error) {
+            console.log(error)
+        }
+        try {
+           abonado= abonado.toFixed(2)
+        } catch (error) {
+            console.log(error)
+        } 
+
+        const dato1 = {
+            'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+            'datob': cantidad
+        }
+        const dato2 = {
+            'datoa': 'Monto devengado hasta la cuota',
+            'datob': devengado
+        }
+        const dato3 = {
+            'datoa': 'Monto abonado hasta la cuota',
+            'datob': abonado
+        }
+        const dato4 = {
+            'datoa': 'Deuda Exigible',
+            'datob': exigible
+        }
+        const deuda_exigible = [dato1, dato2, dato3, dato4]
+        try {
+            const cantidad2 = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['count(*)']
+
+            const Amortizacion = (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
+
+            let capital = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
+            console.log(cantidad2)
+            console.log(Amortizacion)
+           
+
+            try {
+                capital = capital.toFixed(2)
+            } catch (error) {
+                
+            }
+
+            const dato5 = {
+                'datoa': 'Cantidad de cuotas a Vencer',
+                'datob': cantidad2
+            }
+            const dato6 = {
+                'datoa': 'Monto cuota pura',
+                'datob': Amortizacion
+            }
+            const dato7 = {
+                'datoa': 'Saldo de capital a vencer',
+                'datob': capital
+            }
+            const cuotas_pendientes = [dato5, dato6, dato7]
+            const respuesta = [deuda_exigible, cuotas_pendientes]
+
+
+            res.json(respuesta)
+
+        } catch (error) {
+
+        }
+
+
+      
+
+    }
+
+
+
+}
+
+const traercuota = async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        cuota = await pool.query('select * from cuotas where id = ?',[id])
+        
+ 
+        res.json(cuota)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const traercuotasfinales =  async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        cuota = await pool.query('select * from cuotas where id = ?',[id])
+        
+        todas = await pool.query('select * from cuotas where id_lote = ? and parcialidad = "final"',[cuota[0]['id_lote']])
+      console.log(todas.length)
+        res.json(todas)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
+    traercuotasfinales,
+    traercuota,
+    ief,
+    borrartodas,
+    actualizarcuota,
+    postcuotas,
+    deletes,
+    listavarios,
+    traercuotaselcliente,
+    modificarmontototal,
+    asignarloteacuotas,
     lista,
     ampliar,
     add_cliente,

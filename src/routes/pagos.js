@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLevel2 } = require('../lib/authnivel2')
 const { isLoggedIn, isLoggedInn, isLoggedInn2, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const multer = require('multer')
 const path = require('path')
@@ -12,6 +11,8 @@ const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
 const enviodemail = require('./Emails/Enviodemail')
 const { Console } = require('console')
+
+
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../Excel'),
     filename: (req, file, cb) => {
@@ -691,12 +692,12 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
 ///////
 
-router.get("/", isLevel2, async (req, res) => {
+router.get("/",  async (req, res) => {
     const pagos = await pool.query('SELECT * FROM pagos ')
     res.render('pagos/listap', { pagos })
 })
 
-router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) => { // pagot es el objeto pago
+router.get('/aprobar/:id', isLoggedIn,  async (req, res) => { // pagot es el objeto pago
     const { id } = req.params
 
     var pagot = await pool.query('select * from pagos where id = ?', [id])
@@ -759,20 +760,20 @@ router.get('/aprobar/:id', isLoggedIn, isLevel2, async (req, res) => { // pagot 
 
 
 
-router.get('/realizara/:id', isLoggedIn, isLevel2, async (req, res) => {
+router.get('/realizara/:id', isLoggedIn,  async (req, res) => {
     const id = req.params.id // requiere el parametro id  c 
     const cuota = await pool.query('SELECT * FROM cuotas WHERE id= ?', [id])
 
     res.render('pagos/realizara', { cuota })
 
 })
-router.get('/realizar', isLoggedIn, isLevel2, async (req, res) => {
+router.get('/realizar', isLoggedIn,  async (req, res) => {
 
     res.render('pagos/realizar')
 
 })
 
-router.get('/pendientes', isLoggedIn, isLevel2, async (req, res) => {
+router.get('/pendientes', isLoggedIn,  async (req, res) => {
     const pendientes = await pool.query("Select * from pagos where estado = 'P'")
     console.log(pendientes)
     res.render('pagos/pendientes', { pendientes })
