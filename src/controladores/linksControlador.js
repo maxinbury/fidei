@@ -364,6 +364,16 @@ const cantidadInfo =  async (req, res) => {
 
 }
 
+const lista2 =  async (req, res) => {
+
+    const clientes = await pool.query('select * from clientes where cod_zona="Legales"' )
+
+    res.json(clientes)
+
+
+}
+
+
 const cbusPendientes =  async (req, res) => {
  
 
@@ -505,7 +515,8 @@ const add3 = async (req, res) => {
         domicilio,
         observaciones,
         cuil_cuit,
-        habilitado:"Si"
+        habilitado:"Si",
+        cod_zona:"Legales"
         //user_id: req.user.id
     };
 
@@ -603,6 +614,36 @@ const modificarCuil=  async (req, res) => {
 
 
 }
+
+
+const ventaLoteleg=  async (req, res) => {
+    const { fraccion, parcela,manzana,cuil_cuit } = req.body;
+   
+
+    try {
+        const lote = await pool.query('Select * from lotes where zona=? and fraccion = ? and  parcela=? and manzana=?', ["Legales",fraccion, parcela,manzana]);
+     
+        if (lote.length >0){
+const newLink = {cuil_cuit}
+            await pool.query('UPDATE lotes set ? WHERE id = ?', [newLink, lote[0]['id']])
+            res.json('Lote asignado')
+        }else{
+            res.json('Lote no existe')
+        }
+
+    } catch (error) {
+        console.log(error)
+        res.send('message', 'Error algo salio mal')
+
+
+    }
+
+
+
+
+
+}
+
 const AgregarIngreso = async (req, res) => {
     const { ingresos, cuil_cuit } = req.body
     console.log(cuil_cuit)
@@ -633,7 +674,9 @@ const detalleCuil =  async (req, res) => {
 
 }
 module.exports = {
+    ventaLoteleg,
     add3,
+    lista2,
     determinarEmpresa,
     habilitar,
     estadisticasLegajos,

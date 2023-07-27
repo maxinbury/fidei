@@ -119,6 +119,21 @@ const loteCliente2 = async (req, res) => {
 
 }
 
+
+
+const traerlotesleg = async (req, res) => {
+ 
+    try {
+        const lotes = await pool.query('select distinct(fraccion) from lotes where zona="Legales"')
+        
+res.json(lotes)
+    } catch (error) {
+        console.log(error)
+        res.json("Error")
+    }
+
+}
+
 const listadeTodos = async (req, res) => {
  
     const lotes = await pool.query('select * from lotes')
@@ -131,6 +146,15 @@ const listadeTodos = async (req, res) => {
     res.json([lotes,disponibles.length,parque.length,ic3.length])
 }
 
+const lista2 = async (req, res) => {
+ 
+    const lotes = await pool.query('select * from lotes where zona ="Legales"')
+    const disponibles = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="Legales"')
+
+
+    res.json([lotes,disponibles.length])
+}
+
 const listadeLotes = async (req, res) => {
 
     const zona = await pool.query('select zona from lotes group by=zona')
@@ -138,10 +162,38 @@ const listadeLotes = async (req, res) => {
 
     res.json(zona)
 }
+const nuevolote = async (req, res) => {
+const {parcela, manzana, fraccion} = req.body
+try { const nuevo={
+    parcela, manzana, fraccion,
+    zona:"Legales" 
+}
+
+ const exi = await pool.query('select * from lotes where  parcela=? and  manzana=? and  fraccion=? and zona=?',[ parcela, manzana, fraccion,"Legales"])
+
+if (exi.length>0){
+    res.json("Error, lote ya existe")
+}else{
+     await pool.query('insert into lotes set ?',[nuevo])
+res.json("Realizado")
+}
+
+
+    
+} catch (error) {
+    console.log(error)
+    res.json("No realizado")
+}
+   
+
+}
 
 
 
 module.exports = {
+    traerlotesleg,
+    lista2,
+    nuevolote,
     loteCliente,
     calcularValor,
     loteCliente2,

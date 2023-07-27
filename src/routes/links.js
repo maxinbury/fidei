@@ -7,7 +7,7 @@ const fs = require('fs')
 const multer = require('multer')
 const path = require('path')
 const enviodemail = require('./Emails/Enviodemail')
-const { determinarEmpresa, habilitar, estadisticasLegajos, deshabilitar, borrarCbu, cbusPendientes, legajosCuil, ventalotee, add2,add3, modificarCuil, AgregarIngreso, detalleCuil, cantidadInfo } = require('../controladores/linkscontrolador')
+const { determinarEmpresa, habilitar, estadisticasLegajos, deshabilitar, borrarCbu, cbusPendientes, legajosCuil, ventalotee, add2,add3, modificarCuil, AgregarIngreso, detalleCuil, cantidadInfo, lista2, ventaLoteleg } = require('../controladores/linkscontrolador')
 
 
 /////////aws
@@ -49,6 +49,13 @@ router.get('/borrarcbu/:id',isLoggedInn,  borrarCbu)
 ///// Funcion devuelve cantidad de clientes /// agregar 
 
 router.get('/infocantidad',cantidadInfo )
+
+router.get('/lista2',lista2 )
+
+
+router.post('/ventaLoteleg',ventaLoteleg )
+
+
 
 router.get('/cbuspendientes', isLoggedInn2, cbusPendientes)
 
