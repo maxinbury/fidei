@@ -4,7 +4,7 @@ const router = express.Router()
 
 const { isLoggedIn,isLoggedInn2  } = require('../lib/auth') //proteger profile
 
-const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes, asignarloteacuotas, modificarmontototal, traercuotaselcliente, listavarios, deletes, postcuotas, actualizarcuota, borrartodas, ief, traercuota, traercuotasfinales, agregarcuotasleg } = require('../controladores/cuotasControlador')
+const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes, asignarloteacuotas, modificarmontototal, traercuotaselcliente, listavarios, deletes, postcuotas, actualizarcuota, borrartodas, ief, traercuota, traercuotasfinales, agregarcuotasleg, vercuotas2 } = require('../controladores/cuotasControlador')
 
 
 
@@ -53,6 +53,13 @@ router.get("/quelote/:cuil_cuit", isLoggedIn,  quelote)
 router.get("/lote/:id", lotefuncion)
 // auxililar react
 router.get("/lote2/:id",isLoggedInn2, lotefuncion2)
+
+
+
+router.get("/vercuotas2/:id",isLoggedInn2,vercuotas2 )
+
+
+
 
 
 // LISTADO DE CUOTAS DE UN CUIL DETERMINADO 
