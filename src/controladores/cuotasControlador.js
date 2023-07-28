@@ -1485,7 +1485,8 @@ console.log('leg')
                     cuil_cuit,
                     id_cliente,
                     zona:"Legales",
-                    id_lote:id
+                    id_lote:id,
+                    parcialidad:"Final"
 
                 };
                 mes++
