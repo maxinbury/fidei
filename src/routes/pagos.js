@@ -417,14 +417,14 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
             updatepago = {
                 estado: "A"
             }
-            if ( tipo === "Sospechoso" ){
+            if (tipo === "Sospechoso") {
 
                 updatepago = {
                     estado: "A",
                     tipo
                 }
             }
-          
+
 
             await pool.query('UPDATE pagos set  ? WHERE id = ?', [updatepago, id])
 
@@ -517,7 +517,7 @@ router.get("/listainusual", isLoggedInn2, async (req, res) => {
 router.get('/pendientess', isLoggedInn2, async (req, res) => {
     // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
     const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P'  or estado='justificacionp' ")
-   
+
 
     res.json(pendientes)
 
@@ -692,12 +692,86 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
 ///////
 
-router.get("/",  async (req, res) => {
+
+
+router.post("/pagarnivel4", async (req, res) => {
+    const { cantidad, fecha, id, cuil_cuit } = req.body
+    try {
+        console.log(cantidad)
+        console.log(fecha)
+
+        auxiliarfecha = fecha.split("-");
+        fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
+        fechapago = fechapago.replace('-', '/')
+        fechapago = fechapago.replace('-', '/')
+        mes = parseInt(fecha.substring(5, 7))
+        anio = parseInt(fecha.substring(0, 4))
+
+
+        let cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+        const id_lote = cuota[0]['id_lote']
+        let nr = parseInt(cuota[0]['nro_cuota'])
+        for (let i = 1; i <= cantidad; i++) {
+
+            cuota = await pool.query('select * from cuotas where id_lote = ? and nro_cuota=?', [id_lote, nr]) //objeto cuota
+
+            /// sumar pagp-- incompleto aun
+            const newLink = {
+                id_cuota:cuota[0]['id'],
+                monto:cuota[0]['Amortizacion'],
+                cuil_cuit:cuota[0]['cuil_cuit'],
+                mes,
+                estado: 'A',
+                anio,
+                cuil_cuit_administrador: cuil_cuit,
+                cuil_cuit_distinto:'No',
+                monto_distinto:'No',
+                monto_inusual:'No',
+                fecha:fechapago
+
+
+            };
+
+            await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+
+            /// recorrer las cuotas y asignar el pago a la amortizacion y saldo real asignar saldo final 
+
+            update = {
+                Saldo_real:cuota[0]['saldo_cierre'],
+                pago:cuota[0]['Amortizacion'],
+               
+            }
+            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]['id']])
+
+
+
+
+
+            nr += 1
+        }
+
+
+
+
+
+
+    } catch (ex) {
+        console.log('NOOO  ')
+        res.json(['No realizado', cuota[0]['cuil_cuit']])
+    }
+    res.json(['Realizado', cuota[0]['cuil_cuit']])
+})
+
+
+
+
+router.get("/", async (req, res) => {
     const pagos = await pool.query('SELECT * FROM pagos ')
     res.render('pagos/listap', { pagos })
 })
 
-router.get('/aprobar/:id', isLoggedIn,  async (req, res) => { // pagot es el objeto pago
+router.get('/aprobar/:id', isLoggedIn, async (req, res) => { // pagot es el objeto pago
     const { id } = req.params
 
     var pagot = await pool.query('select * from pagos where id = ?', [id])
@@ -760,20 +834,20 @@ router.get('/aprobar/:id', isLoggedIn,  async (req, res) => { // pagot es el obj
 
 
 
-router.get('/realizara/:id', isLoggedIn,  async (req, res) => {
+router.get('/realizara/:id', isLoggedIn, async (req, res) => {
     const id = req.params.id // requiere el parametro id  c 
     const cuota = await pool.query('SELECT * FROM cuotas WHERE id= ?', [id])
 
     res.render('pagos/realizara', { cuota })
 
 })
-router.get('/realizar', isLoggedIn,  async (req, res) => {
+router.get('/realizar', isLoggedIn, async (req, res) => {
 
     res.render('pagos/realizar')
 
 })
 
-router.get('/pendientes', isLoggedIn,  async (req, res) => {
+router.get('/pendientes', isLoggedIn, async (req, res) => {
     const pendientes = await pool.query("Select * from pagos where estado = 'P'")
     console.log(pendientes)
     res.render('pagos/pendientes', { pendientes })

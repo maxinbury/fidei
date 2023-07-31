@@ -657,7 +657,17 @@ const lotefuncion = async (req, res) => {
 
 }
 
+const vercuotas4 = async (req, res) => {
+    const id = req.params.id
 
+
+
+    let cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
+
+
+    res.json(cuotas)
+}
+   
 
 const vercuotas2 = async (req, res) => {
    
@@ -1444,6 +1454,7 @@ const traercuotasfinales = async (req, res) => {
         res.json(todas)
     } catch (error) {
         console.log(error)
+        res.json([{Amortizacion:0}])
     }
 }
 
@@ -1560,6 +1571,7 @@ module.exports = {
     lotes,
     lotefuncion2,
     cuotasdeunlote,
-    addautvarias
+    addautvarias,
+    vercuotas4
 
 }
