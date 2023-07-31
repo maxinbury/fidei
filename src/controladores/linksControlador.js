@@ -619,7 +619,8 @@ const ventaLoteleg=  async (req, res) => {
         const lote = await pool.query('Select * from lotes where zona=? and fraccion = ? and  parcela=? and manzana=?', ["Legales",fraccion, parcela,manzana]);
      
         if (lote.length >0){
-const newLink = {cuil_cuit}
+const newLink = {cuil_cuit,
+estado:"Ocupado"}
             await pool.query('UPDATE lotes set ? WHERE id = ?', [newLink, lote[0]['id']])
             res.json('Lote asignado')
         }else{
