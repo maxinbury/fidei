@@ -540,11 +540,6 @@ const add3 = async (req, res) => {
 
 
     }
-
-
-
-
-
 }
 const modificarCuil=  async (req, res) => {
     const {cuil_cuit, id } = req.body;
@@ -614,8 +609,6 @@ const modificarCuil=  async (req, res) => {
 
 
 }
-
-
 
 
 const ventaLoteleg=  async (req, res) => {
@@ -694,3 +687,5 @@ module.exports = {
     detalleCuil
 
 }
+
+
