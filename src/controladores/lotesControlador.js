@@ -165,7 +165,7 @@ const listadeLotes = async (req, res) => {
 const nuevolote = async (req, res) => {
 const {parcela, manzana, fraccion} = req.body
 try { const nuevo={
-    parcela, manzana, fraccion,
+    parcela, manzana, fraccion:"Legales",
     zona:"Legales" 
 }
 
