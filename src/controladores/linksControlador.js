@@ -616,6 +616,8 @@ const modificarCuil=  async (req, res) => {
 }
 
 
+
+
 const ventaLoteleg=  async (req, res) => {
     const { fraccion, parcela,manzana,cuil_cuit } = req.body;
    
