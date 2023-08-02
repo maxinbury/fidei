@@ -1460,8 +1460,8 @@ const traercuotasfinales = async (req, res) => {
 
 
 const agregarcuotasleg = async (req, res) => {
-    var { id, monto_total, cantidad_cuotas, mes, anio,cambiarmonto, Amortizacion} = req.body;
-console.log('leg')
+    var { id, monto_total, cantidad_cuotas, mes, anio, Amortizacion,cambiarmonto} = req.body;
+console.log(cambiarmonto)
     const lot = await pool.query('SELECT * from lotes where id= ?', [id])
     cuil_cuit = lot[0]['cuil_cuit']
 
@@ -1471,8 +1471,9 @@ console.log('leg')
     //llega
     try {
         //llega
+        
         if (!cambiarmonto){
-            const Amortizacion = parseFloat(monto_total)  / parseFloat(cantidad_cuotas);
+             Amortizacion = parseFloat(monto_total)  / parseFloat(cantidad_cuotas);
         }
         
 

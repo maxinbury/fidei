@@ -832,6 +832,20 @@ router.get('/aprobar/:id', isLoggedIn, async (req, res) => { // pagot es el obje
 
 
 
+router.get('/traerpago/:id', isLoggedInn, async (req, res) => {
+    const id = req.params.id // requiere el parametro id 
+    try {
+            const cuota = await pool.query('SELECT * FROM pagos WHERE id= ?', [id])
+
+  
+    res.json(cuota)
+
+    } catch (error) {
+        console.log(error)
+        res.json([])
+    }
+
+})
 
 router.get('/traerpagodecuota/:id', isLoggedInn, async (req, res) => {
     const id = req.params.id // requiere el parametro id 

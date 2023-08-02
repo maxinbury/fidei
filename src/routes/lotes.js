@@ -11,7 +11,7 @@ const { loteCliente, loteCliente2, listadeTodos, listadeLotes, nuevolote, lista2
 router.get('/lotescliente/:cuil_cuit', isLoggedInn2, loteCliente)
 
 
-router.post('/calcularvalor',isLoggedInn2, )
+router.post('/desasignarlote/:id',isLoggedInn2, )
 
 
 ///////
@@ -42,6 +42,7 @@ router.get('/traerlotesleg', isLoggedInn2,traerlotesleg )
 
 
 
+router.get('/desasignarlote', isLoggedInn2, )
 
 
 module.exports = router

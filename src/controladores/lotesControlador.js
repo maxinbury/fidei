@@ -162,6 +162,23 @@ const listadeLotes = async (req, res) => {
 
     res.json(zona)
 }
+
+const desasignarlote = async (req, res) => {
+const id = req.params.id
+    
+
+await pool.query('UPDATE lotes SET cuil_cuit=?,estado=? WHERE id=? ',["0","libre",id])
+
+
+    res.json("realizado")
+}
+
+
+
+
+
+
+
 const nuevolote = async (req, res) => {
 const {parcela, manzana, fraccion} = req.body
 try { const nuevo={
@@ -198,6 +215,7 @@ module.exports = {
     calcularValor,
     loteCliente2,
     listadeTodos,
-    listadeLotes
+    listadeLotes,
+    desasignarlote
 
 }
