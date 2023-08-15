@@ -697,8 +697,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 router.post("/pagarnivel4", async (req, res) => {
     const { cantidad, fecha, id, cuil_cuit } = req.body
     try {
-        console.log(cantidad)
-        console.log(fecha)
+ 
 
         auxiliarfecha = fecha.split("-");
         fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
@@ -711,6 +710,13 @@ router.post("/pagarnivel4", async (req, res) => {
         let cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
         const id_lote = cuota[0]['id_lote']
         let nr = parseInt(cuota[0]['nro_cuota'])
+
+        const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ?', [cuota[0]['id_lote']]) //objeto cuota
+       console.log(nr+parseInt(cantidad))
+       console.log(cantidades_disponibles.length)
+        if (nr+parseInt(cantidad) >cantidades_disponibles.length){
+            res.json(['No realizado,la cantidad elegida supera la cantidad disponibles', cuota[0]['cuil_cuit']])
+        }else{
         for (let i = 1; i <= cantidad; i++) {
 
             cuota = await pool.query('select * from cuotas where id_lote = ? and nro_cuota=?', [id_lote, nr]) //objeto cuota
@@ -750,9 +756,9 @@ router.post("/pagarnivel4", async (req, res) => {
 
             nr += 1
         }
+        res.json(['Realizado', cuota[0]['cuil_cuit']])
 
-
-
+}
 
 
 
@@ -760,7 +766,7 @@ router.post("/pagarnivel4", async (req, res) => {
         console.log('NOOO  ')
         res.json(['No realizado', cuota[0]['cuil_cuit']])
     }
-    res.json(['Realizado', cuota[0]['cuil_cuit']])
+ 
 })
 
 
