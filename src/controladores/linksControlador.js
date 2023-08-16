@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn,isLoggedInn, isLoggedInn2} = require('../lib/auth') //proteger profile
+const { isLoggedIn, isLoggedInn, isLoggedInn2 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const fs = require('fs')
 const multer = require('multer')
@@ -12,19 +12,19 @@ const enviodemail = require('../routes/Emails/Enviodemail')
 
 
 const determinarEmpresa = async (req, res) => {
-    const { razon,cuil_cuit } = req.body
-    
+    const { razon, cuil_cuit } = req.body
+
     const newLink = {
         razon
     }
     try {
-      
+
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
 
         try {
             await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
             console.log('usuario cambiado ')
-        } catch{
+        } catch {
             console.log(error)
         }
 
@@ -48,10 +48,10 @@ const habilitar = async (req, res) => {
     }
     newLink2 = {
         cuil_cuit: cuil_cuit_admin,
-        tabla_referencia:'clientes',
-        cuil_cuit_referencia:cuil_cuit,
-        fecha:(new Date(Date.now())).toLocaleDateString(),
-        adicional:'Habilitado'
+        tabla_referencia: 'clientes',
+        cuil_cuit_referencia: cuil_cuit,
+        fecha: (new Date(Date.now())).toLocaleDateString(),
+        adicional: 'Habilitado'
     }
     try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
@@ -71,13 +71,13 @@ const habilitar = async (req, res) => {
 }
 
 
-const estadisticasLegajos =  async (req, res) => {
+const estadisticasLegajos = async (req, res) => {
     const { cuil_cuit } = req.body
     console.log(cuil_cuit)
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
     const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
-   const cui =  '%'+cuil_cuit+'%'
-    const client = await pool.query('select * from clientes where cuil_cuit like ? ',[cui])
+    const cui = '%' + cuil_cuit + '%'
+    const client = await pool.query('select * from clientes where cuil_cuit like ? ', [cui])
     razon = client[0]['razon']
 
     a = "Dni "
@@ -111,121 +111,121 @@ const estadisticasLegajos =  async (req, res) => {
 
 
     for (var i = 0; i < legajosAprobados.length; i++) {
-       
-    if (razon == 'Empresa'){
-        switch (legajosAprobados[i]['tipo']) {
-            case "Dni":
-                a = ""
-                aa = 1
-                break;
-            case "Constancia de Afip":
-                b = ""
-                bb = 1
-                break;
-            case "Estatuto Social":
-                c = ""
-                cc = 1
 
-                break;
-            case "Acta del organo decisorio":
-                d =""
-                dd = 1
-                break;
-            case "Acreditacion Domicilio":
-                e = ""
-                ee = 1
-                break;
-            case "Ultimos balances":
-                f = ""
-                ff = 1
-                break;
-            case "DjIva":
-                g = ""
-                gg = 1
+        if (razon == 'Empresa') {
+            switch (legajosAprobados[i]['tipo']) {
+                case "Dni":
+                    a = ""
+                    aa = 1
+                    break;
+                case "Constancia de Afip":
+                    b = ""
+                    bb = 1
+                    break;
+                case "Estatuto Social":
+                    c = ""
+                    cc = 1
 
-                break;
-            case "Pagos Previsionales":
-                h = ""
-                hh = 1
-                break;
-            case "Dj Datospers":
-                aux = ""
-                auxaux = 1
-                break;
-            case "Dj CalidadPerso":
-                j = ""
-                jj = 1
-                break;
-            case "Dj OrigenFondos":
-                k = ""
-                kk = 1
-                break;
+                    break;
+                case "Acta del organo decisorio":
+                    d = ""
+                    dd = 1
+                    break;
+                case "Acreditacion Domicilio":
+                    e = ""
+                    ee = 1
+                    break;
+                case "Ultimos balances":
+                    f = ""
+                    ff = 1
+                    break;
+                case "DjIva":
+                    g = ""
+                    gg = 1
+
+                    break;
+                case "Pagos Previsionales":
+                    h = ""
+                    hh = 1
+                    break;
+                case "Dj Datospers":
+                    aux = ""
+                    auxaux = 1
+                    break;
+                case "Dj CalidadPerso":
+                    j = ""
+                    jj = 1
+                    break;
+                case "Dj OrigenFondos":
+                    k = ""
+                    kk = 1
+                    break;
                 case "Referencias comerciales":
                     m = ""
                     mm = 1
                     break;
-            default:
-                break;
-        }
-    }else{
-        switch (legajosAprobados[i]['tipo']) {
-            case "Dni":
-                a = ""
-                aa = 1
-                break;
-            case "Constancia de Afip":
-                b = ""
-                bb = 1
-                break;
-          
-            case "Acreditacion Domicilio":
-                e = ""
-                ee = 1
-                break;
-            
-            case "Dj Datospers":
-                aux = ""
-                auxaux = 1
-                break;
-            case "Dj CalidadPerso":
-                j = ""
-                jj = 1
-                break;
-            case "Dj OrigenFondos":
-                k = ""
-                kk = 1
-                break;
+                default:
+                    break;
+            }
+        } else {
+            switch (legajosAprobados[i]['tipo']) {
+                case "Dni":
+                    a = ""
+                    aa = 1
+                    break;
+                case "Constancia de Afip":
+                    b = ""
+                    bb = 1
+                    break;
+
+                case "Acreditacion Domicilio":
+                    e = ""
+                    ee = 1
+                    break;
+
+                case "Dj Datospers":
+                    aux = ""
+                    auxaux = 1
+                    break;
+                case "Dj CalidadPerso":
+                    j = ""
+                    jj = 1
+                    break;
+                case "Dj OrigenFondos":
+                    k = ""
+                    kk = 1
+                    break;
                 case "Acreditacion de ingresos":
                     l = ""
                     ll = 1
                     break;
-            default:
-                break;
+                default:
+                    break;
+            }
+
+
         }
 
-
     }
 
+
+    if (razon == 'Empresa') {
+        Faltan = 'Aun falta completar ' + a + b + c + d + e + f + g + h + aux + j + k + m
+        porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + auxaux + jj + kk + mm)
+
+        porccompleto = porccompleto / 12
+
+        porccompleto = (porccompleto * 100).toFixed(2)
+    } else {
+        console.log('Persona')
+        Faltan = 'Aun falta completar ' + a + b + e + aux + j + k + l
+        porccompleto = (aa + bb + ee + auxaux + jj + kk + ll)
+
+        porccompleto = porccompleto / 7
+
+        porccompleto = (porccompleto * 100).toFixed(2)
     }
-   
- 
- if (razon == 'Empresa'){
-    Faltan ='Aun falta completar '+ a+b+c+d+e+f+g+h+aux+j+k+m
-    porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + auxaux + jj+ kk+mm) 
-
-    porccompleto= porccompleto/12
-  
-    porccompleto=( porccompleto*100).toFixed(2)
- }else {
-    console.log('Persona')
-    Faltan ='Aun falta completar '+ a+b+e+aux+j+k+l
-    porccompleto = (aa + bb +  ee +  auxaux + jj+ kk+ll) 
-
-    porccompleto= porccompleto/7
-  
-    porccompleto=( porccompleto*100).toFixed(2)
- }
-   console.log(ll)
+    console.log(ll)
 
     let pendientes = 0
     let aprobadas = 0
@@ -267,8 +267,8 @@ const estadisticasLegajos =  async (req, res) => {
         porcA = 0
         porcR = 0
     }
- 
-  
+
+
 
     const status = {
         "total": legajos.length,
@@ -310,18 +310,18 @@ const estadisticasLegajos =  async (req, res) => {
 
 }
 
-const deshabilitar =  async (req, res) => {
-    const { cuil_cuit,cuil_cuit_admin} = req.body
+const deshabilitar = async (req, res) => {
+    const { cuil_cuit, cuil_cuit_admin } = req.body
 
     newLink = {
         habilitado: 'No'
     }
     newLink2 = {
         cuil_cuit: cuil_cuit_admin,
-        tabla_referencia:'clientes',
-        cuil_cuit_referencia:cuil_cuit,
-        fecha:(new Date(Date.now())).toLocaleDateString(),
-        adicional:'Deshabilitado'
+        tabla_referencia: 'clientes',
+        cuil_cuit_referencia: cuil_cuit,
+        fecha: (new Date(Date.now())).toLocaleDateString(),
+        adicional: 'Deshabilitado'
     }
     try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
@@ -340,45 +340,78 @@ const deshabilitar =  async (req, res) => {
 
 const borrarCbu = async (req, res) => {
     let { id } = req.params
-    
-try {
-    await pool.query('DELETE  FROM cbus WHERE id = ?', [id])
-    res.json('Borrado')
 
-} catch (error) {
-    console.log(error)
-    res.json('Error algo sucedio ')
+    try {
+        await pool.query('DELETE  FROM cbus WHERE id = ?', [id])
+        res.json('Borrado')
+
+    } catch (error) {
+        console.log(error)
+        res.json('Error algo sucedio ')
+
+    }
+
 
 }
-    
-
-}
 
 
-const cantidadInfo =  async (req, res) => {
+const cantidadInfo = async (req, res) => {
 
-    const clientes = await pool.query('select * from clientes' )
+    const clientes = await pool.query('select * from clientes')
 
     res.json(clientes)
 
 
 }
 
-const lista2 =  async (req, res) => {
+const lista2 = async (req, res) => {
 
-    const clientes = await pool.query('select * from clientes where cod_zona="Legales"' )
+    const clientes = await pool.query('select * from clientes where cod_zona="Legales" ')
+    fecha = (new Date(Date.now())).toLocaleDateString()
+    console.log(fecha)
+    const fech = fecha.split("/");
+    const mesact = parseInt(fech[1])
+    const anoac = parseInt(fech[2])
 
-    res.json(clientes)
+    let env = []
+
+    for (cli in clientes) {
+        let bandmesconcurr = false
+        let lotes = await pool.query('select * from lotes  where cuil_cuit=? ', [clientes[cli]['cuil_cuit']])
+        let cantidad_falt =0
+        for (lot in lotes) {
+            let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])
+            let cuotavenc = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and mes=? and anio=? and id_lote=? ', [mesact,anoac,lotes[lot]['id']])
+            if (cuotavenc.length>0){
+                bandmesconcurr=true
+            }
+            cantidad_falt+=cuotaact.length
+    
+        
+           console.log(cantidad_falt)
+        }
+
+        let nuevo ={
+            cuil_cuit : clientes[cli]['cuil_cuit'],
+            Nombre : clientes[cli]['Nombre'],
+            cantidad_falt,
+            bandmesconcurr,
+            
+        }
+        env.push(nuevo)
+    }
+
+    res.json(env)
 
 
 }
 
 
-const cbusPendientes =  async (req, res) => {
- 
+const cbusPendientes = async (req, res) => {
 
 
-    const cbus = await pool.query('select * from cbus where estado="P"', )
+
+    const cbus = await pool.query('select * from cbus where estado="P"',)
 
     res.json(cbus)
 
@@ -436,26 +469,30 @@ const ventalotee = async (req, res) => {
                 console.log('existe')
                 console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-                mensaje='Lote asignado'
-                res.json([mensaje,cuil_cuit])
-            } else {  mensaje='Lote no existe'
-            res.json([mensaje,cuil_cuit]) }
+                mensaje = 'Lote asignado'
+                res.json([mensaje, cuil_cuit])
+            } else {
+                mensaje = 'Lote no existe'
+                res.json([mensaje, cuil_cuit])
+            }
 
 
 
-   
-        }else{
+
+        } else {
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and  lote =?', [zona, fraccion, manzana, parcela, lote])
             console.log('existe')
-        
+
             if (existe.length > 0) {
                 console.log('existe')
                 console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
-                mensaje='Lote asignado'
-            res.json([mensaje,cuil_cuit])
-            } else {  mensaje='Lote no existe'
-            res.json([mensaje,cuil_cuit]) }
+                mensaje = 'Lote asignado'
+                res.json([mensaje, cuil_cuit])
+            } else {
+                mensaje = 'Lote no existe'
+                res.json([mensaje, cuil_cuit])
+            }
 
 
         }
@@ -515,8 +552,8 @@ const add3 = async (req, res) => {
         domicilio,
         observaciones,
         cuil_cuit,
-        habilitado:"Si",
-        cod_zona:"Legales"
+        habilitado: "Si",
+        cod_zona: "Legales"
         //user_id: req.user.id
     };
 
@@ -541,9 +578,9 @@ const add3 = async (req, res) => {
 
     }
 }
-const modificarCuil=  async (req, res) => {
-    const {cuil_cuit, id } = req.body;
-   
+const modificarCuil = async (req, res) => {
+    const { cuil_cuit, id } = req.body;
+
 
 
 
@@ -552,47 +589,48 @@ const modificarCuil=  async (req, res) => {
         if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
             cuil_cuit_ant = row[0]["cuil_cuit"]
             console.log(cuil_cuit_ant)
-            nuevo= {cuil_cuit:cuil_cuit
+            nuevo = {
+                cuil_cuit: cuil_cuit
             }
 
             try {
-                await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
             try {
-                await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
             try {
-                await pool.query('UPDATE cuotas set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE cuotas set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
             try {
-                await pool.query('UPDATE pagos set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE pagos set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
             try {
-                await pool.query('UPDATE constancias set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE constancias set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
             try {
-                await pool.query('UPDATE lotes set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE lotes set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
             try {
-                await pool.query('UPDATE notificaciones set ? WHERE cuil_cuit = ?', [nuevo,cuil_cuit_ant])
+                await pool.query('UPDATE notificaciones set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
                 console.log(error)
             }
         }
         else {
-           // await pool.query('INSERT INTO clientes set ?', [newLink]);
+            // await pool.query('INSERT INTO clientes set ?', [newLink]);
             res.send('Guardado correctamente')
 
         }
@@ -611,19 +649,21 @@ const modificarCuil=  async (req, res) => {
 }
 
 
-const ventaLoteleg=  async (req, res) => {
-    const { fraccion, parcela,manzana,cuil_cuit } = req.body;
-   
+const ventaLoteleg = async (req, res) => {
+    const { fraccion, parcela, manzana, cuil_cuit } = req.body;
+
 
     try {
-        const lote = await pool.query('Select * from lotes where zona=? and fraccion = ? and  parcela=? and manzana=?', ["Legales",fraccion, parcela,manzana]);
-     
-        if (lote.length >0){
-const newLink = {cuil_cuit,
-estado:"Ocupado"}
+        const lote = await pool.query('Select * from lotes where zona=? and fraccion = ? and  parcela=? and manzana=?', ["Legales", fraccion, parcela, manzana]);
+
+        if (lote.length > 0) {
+            const newLink = {
+                cuil_cuit,
+                estado: "Ocupado"
+            }
             await pool.query('UPDATE lotes set ? WHERE id = ?', [newLink, lote[0]['id']])
             res.json('Lote asignado')
-        }else{
+        } else {
             res.json('Lote no existe')
         }
 
@@ -661,9 +701,9 @@ const AgregarIngreso = async (req, res) => {
 
 
 }
-const detalleCuil =  async (req, res) => {
+const detalleCuil = async (req, res) => {
     const { cuil_cuit } = req.params
- 
+
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
 
     res.json(links)

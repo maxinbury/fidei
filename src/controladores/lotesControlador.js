@@ -4,6 +4,7 @@ const pool = require('../database')
 
 const { isLoggedIn, isLoggedInn2} = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
+const { EC2 } = require('aws-sdk')
 
 ///////
 
@@ -178,6 +179,40 @@ await pool.query('UPDATE lotes SET cuil_cuit=?,estado=? WHERE id=? ',["0","libre
 
 
 
+const traermanzanas = async (req, res) => {
+
+    const exi = await pool.query('select * from manzanas ')
+    res.json(exi)
+}
+
+const nuevamanzana = async (req, res) => {
+    const {manzana} = req.body
+    try { 
+        const nuevo={
+       manzana
+    }
+    
+     const exi = await pool.query('select * from manzanas where  manzana=? ',[ manzana])
+    console.log(exi)
+    if (exi.length>0){
+        res.json("Error, lote ya existe")
+    }else{
+         await pool.query('insert into manzanas set ?',[nuevo])
+    res.json("Realizado")
+    }
+    
+    
+        
+    } catch (error) {
+        console.log(error)
+        res.json("No realizado")
+    }
+       
+    
+
+}
+
+
 
 const nuevolote = async (req, res) => {
 const {parcela, manzana, fraccion} = req.body
@@ -216,6 +251,8 @@ module.exports = {
     loteCliente2,
     listadeTodos,
     listadeLotes,
-    desasignarlote
+    desasignarlote,
+    nuevamanzana,
+    traermanzanas
 
 }

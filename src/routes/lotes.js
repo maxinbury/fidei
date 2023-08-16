@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedInn2, isLoggedInn} = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
-const { loteCliente, loteCliente2, listadeTodos, listadeLotes, nuevolote, lista2, traerlotesleg } = require('../controladores/lotesControlador')
+const { loteCliente, loteCliente2, listadeTodos, listadeLotes, nuevolote, lista2, traerlotesleg, nuevamanzana, traermanzanas } = require('../controladores/lotesControlador')
 
 
 
@@ -34,15 +34,17 @@ router.get('/lista2',isLoggedInn2,lista2)
 //filtro solo lotes
 router.get('/listadelotes', isLoggedInn2,listadeLotes )
 
+router.post('/nuevamanzana', isLoggedInn, nuevamanzana)
+
 router.post('/nuevolote', isLoggedInn,nuevolote )
-
-
 
 router.get('/traerlotesleg', isLoggedInn2,traerlotesleg )
 
-
+router.get('/traermanzanas', isLoggedInn2,traermanzanas )
 
 router.get('/desasignarlote', isLoggedInn2, )
+
+
 
 
 module.exports = router
