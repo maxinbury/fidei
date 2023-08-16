@@ -654,7 +654,7 @@ const ventaLoteleg = async (req, res) => {
 
 
     try {
-        const lote = await pool.query('Select * from lotes where zona=? and fraccion = ? and  parcela=? and manzana=?', ["Legales", fraccion, parcela, manzana]);
+        const lote = await pool.query('Select * from lotes where zona=?  and  parcela=? and manzana=?', ["Legales",  parcela, manzana]);
 
         if (lote.length > 0) {
             const newLink = {

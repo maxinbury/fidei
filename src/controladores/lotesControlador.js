@@ -216,13 +216,14 @@ const nuevamanzana = async (req, res) => {
 
 const nuevolote = async (req, res) => {
 const {parcela, manzana, fraccion} = req.body
-try { const nuevo={
-    parcela, manzana, fraccion:"Legales",
+try { 
+manzanaa = await pool.query('select *  from manzanas where id =?',[manzana])
+ const exi = await pool.query('select * from lotes where  parcela=? and  manzana=? and  fraccion=? and zona=?',[ parcela, manzanaa[0]['manzana'], fraccion,"Legales"])
+ const nuevo={
+    parcela, manzana: manzanaa[0]['manzana'], fraccion:"Legales",
     zona:"Legales" 
 }
-
- const exi = await pool.query('select * from lotes where  parcela=? and  manzana=? and  fraccion=? and zona=?',[ parcela, manzana, fraccion,"Legales"])
-
+console.log(nuevo)
 if (exi.length>0){
     res.json("Error, lote ya existe")
 }else{
