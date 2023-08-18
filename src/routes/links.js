@@ -80,7 +80,7 @@ router.post('/agregaringreso2',isLoggedInn2, AgregarIngreso)
 ////////////////////////////////
 
 
-router.get('/detalle/:cuil_cuit', isLoggedInn2, detalleCuil)
+router.get('/detalle/:cuil_cuit',detalleCuil)
 
 
 router.get('/clientehabilitado/:cuil_cuit', async (req, res) => {
