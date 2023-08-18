@@ -12,7 +12,7 @@ const passport = require('passport')
 const s3Controller = require('./configAWS/s3-controller');
 ////////
 const enviodemail = require('./Emails/Enviodemail')
-const { enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos } = require('../controladores/usuario1controlador')
+const { enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos, cliente2, modificarcli2 } = require('../controladores/usuario1controlador')
 
 
 
@@ -91,6 +91,9 @@ router.get('/constanciasdelpago/:id', constanciadelpago)
 
 router.get('/cliente/:cuil_cuit', isLoggedInn, cliente)
 
+router.get('/cliente2/:cuil_cuit',  cliente2)
+
+
 
 router.get('/usuario1acredingresos/:cuil_cuit', isLoggedInn,usuario1acredingresos)
 
@@ -111,6 +114,10 @@ router.get('/cbuscliente/:cuil_cuit', isLoggedInn, cbuscliente)
 router.post('/realizarr', isLoggedInn, realizarr)
 ////////modificar daos
 router.post('/modificarcli',isLoggedInn,modificarcli)
+
+///modificar 2
+router.post('/modificarcli2',isLoggedInn,modificarcli2)
+
 
 //////////////////////checklegajos
 router.post("/completolegajos", isLoggedInn, completolegajos)

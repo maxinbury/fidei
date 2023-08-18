@@ -92,15 +92,32 @@ const cliente = async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
-       cliente = await pool.query('select * from clientes where cuil_cuit= ? ',[cuil_cuit])
+       clientes = await pool.query('select * from clientes where cuil_cuit= ? ',[cuil_cuit])
        
-       res.json(cliente)
+       res.json(clientes)
     } catch (error) {
+        console.log(error)
         res.send('algo salio mal')
     }
 
    
 }
+
+const cliente2 = async (req, res, ) => {
+    cuil_cuit = req.params.cuil_cuit
+
+    try {
+       clientes = await pool.query('select * from users where cuil_cuit= ? ',[cuil_cuit])
+       console.log(clientes)
+       res.json(clientes)
+    } catch (error) {
+        console.log(error)
+        res.send('algo salio mal')
+    }
+
+   
+}
+
 const usuario1acredingresos =  async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
@@ -317,11 +334,13 @@ const realizarr = async (req, res, done) => {
 
 }
 const modificarcli =  async (req, res) => {
-    const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
-    
+    const { cuil_cuit,sueldo, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
+    console.log(cuil_cuit,sueldo, email, provincia, telefono, ingresos, domicilio, razon_social)
     try {
         aux = '%' + cuil_cuit + '%'
         const newLink = {
+            cuil_cuit,
+            sueldo,
             email,
             provincia,
             telefono,
@@ -332,11 +351,34 @@ const modificarcli =  async (req, res) => {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
         res.send('Cliente modificado')
     } catch (error) {
+        console.log(error)
         res.send('Error algo sucedió' + error)
     }
 
 
 }
+
+const modificarcli2 =  async (req, res) => {
+    const { cuil_cuit,sueldo, email, provincia, telefono, nombre, domicilio, razon_social } = req.body
+    console.log(cuil_cuit,sueldo, email, provincia, telefono, nombre, domicilio, razon_social)
+    try {
+        aux = '%' + cuil_cuit + '%'
+        const newLink = {
+            cuil_cuit,
+            sueldo,
+             nombre
+        }
+        await pool.query('UPDATE users set ? WHERE cuil_cuit like ?', [newLink, aux])
+        res.send('Cliente modificado')
+    } catch (error) {
+        console.log(error)
+        res.send('Error algo sucedió' + error)
+    }
+
+
+}
+
+
 const completolegajos = async (req, res) => {
     const { cuil_cuit } = req.body
     console.log(cuil_cuit)
@@ -628,5 +670,7 @@ module.exports = {
     constanciadelpago,
     leerimagen,
     subirlegajoprueba,
-    enviarconsulta
+    enviarconsulta,
+    cliente2,
+    modificarcli2
 }
