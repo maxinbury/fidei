@@ -8,7 +8,7 @@ const { loteCliente, loteCliente2, listadeTodos, listadeLotes, nuevolote, lista2
 
 
 
-router.get('/lotescliente/:cuil_cuit', isLoggedInn2, loteCliente)
+router.get('/lotescliente/:cuil_cuit', /* isLoggedInn2, */ loteCliente)
 
 
 router.post('/desasignarlote/:id',isLoggedInn2, )

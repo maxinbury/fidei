@@ -60,7 +60,7 @@ router.get("/vercuotas2/:id",isLoggedInn2,vercuotas2 )
 
 
 
-router.get("/vercuotas4/:id",isLoggedInn2,vercuotas4 )
+router.get("/vercuotas4/:id",/* isLoggedInn2, */vercuotas4 )
 
 // LISTADO DE CUOTAS DE UN CUIL DETERMINADO 
 //desconectamos 
