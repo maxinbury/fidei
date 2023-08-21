@@ -215,12 +215,12 @@ const nuevamanzana = async (req, res) => {
 
 
 const nuevolote = async (req, res) => {
-const {parcela, manzana, fraccion} = req.body
+const {parcela, manzana, fraccion, adrema} = req.body
 try { 
 manzanaa = await pool.query('select *  from manzanas where id =?',[manzana])
  const exi = await pool.query('select * from lotes where  parcela=? and  manzana=? and  fraccion=? and zona=?',[ parcela, manzanaa[0]['manzana'], fraccion,"Legales"])
  const nuevo={
-    parcela, manzana: manzanaa[0]['manzana'], fraccion:"Legales",
+    parcela, manzana: manzanaa[0]['manzana'], fraccion:"Legales",adrema,
     zona:"Legales" 
 }
 console.log(nuevo)
