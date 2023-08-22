@@ -212,7 +212,26 @@ const nuevamanzana = async (req, res) => {
 
 }
 
+const modificarlote = async (req, res) => {
+    const {parcela, manzana, fraccion, adrema,id} = req.body
+    console.log(parcela, manzana, fraccion, adrema)
 
+
+    try {
+        const newLink ={
+            parcela, manzana, fraccion, adrema
+        }
+         await pool.query('UPDATE lotes set ? WHERE id = ?', [newLink, id])
+         res.json('Realizado')
+
+    } catch (error) {
+        console.log(error)
+        res.json('No relizado')
+    }
+   
+
+
+}
 
 const nuevolote = async (req, res) => {
 const {parcela, manzana, fraccion, adrema} = req.body
@@ -254,6 +273,7 @@ module.exports = {
     listadeLotes,
     desasignarlote,
     nuevamanzana,
-    traermanzanas
+    traermanzanas,
+    modificarlote
 
 }

@@ -3,7 +3,7 @@ const router = express.Router()
 const pool = require('../database')
 const { isLoggedInn2, isLoggedInn} = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
-const { loteCliente, loteCliente2, listadeTodos, listadeLotes, nuevolote, lista2, traerlotesleg, nuevamanzana, traermanzanas } = require('../controladores/lotesControlador')
+const { loteCliente, loteCliente2, listadeTodos, listadeLotes, nuevolote, lista2, traerlotesleg, nuevamanzana, traermanzanas, modificarlote } = require('../controladores/lotesControlador')
 
 
 
@@ -37,6 +37,10 @@ router.get('/listadelotes', isLoggedInn2,listadeLotes )
 router.post('/nuevamanzana', isLoggedInn, nuevamanzana)
 
 router.post('/nuevolote', isLoggedInn,nuevolote )
+
+router.post('/modificarlote', isLoggedInn,modificarlote )
+
+
 
 router.get('/traerlotesleg', isLoggedInn2,traerlotesleg )
 
