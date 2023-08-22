@@ -101,6 +101,29 @@ router.get('/clientehabilitado/:cuil_cuit', async (req, res) => {
 
 })
 // MODIDICACION CLIENTES
+
+
+router.post('/modificarclientelegales',isLoggedInn2, async (req, res) => {
+    const { cuil_cuit, email, Nombre, telefono, id } = req.body
+    
+    try {
+ 
+        const newLink = {
+        cuil_cuit,
+        email,
+        telefono,
+        Nombre
+        }
+        console.log(newLink)
+        console.log(id)
+        await pool.query('UPDATE clientes set ? WHERE id= ?', [newLink, id])
+        res.send('Cliente modificado')
+    } catch (error) {
+        res.send('Error algo sucedió' + error)
+    }
+
+
+})
 router.post('/modificarcli',isLoggedInn2, async (req, res) => {
     const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social, observaciones } = req.body
     
