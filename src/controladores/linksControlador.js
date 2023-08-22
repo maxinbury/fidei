@@ -374,7 +374,8 @@ const lista2 = async (req, res) => {
     const anoac = parseInt(fech[2])
 
     let env = []
-
+    let tot = []
+    let pagadas =[]
     for (cli in clientes) {
         let bandmesconcurr = false
         let lotes = await pool.query('select * from lotes  where cuil_cuit=? ', [clientes[cli]['cuil_cuit']])
@@ -383,6 +384,10 @@ const lista2 = async (req, res) => {
         for (lot in lotes) {
             let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])
             let cuotavenc = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and mes=? and anio=? and id_lote=? ', [mesact, anoac, lotes[lot]['id']])
+          tot = await pool.query('select * from cuotas where id_lote=?', [lotes[lot]['id']])
+             pagadas = await pool.query('select * from cuotas  join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where  id_lote=?', [lotes[lot]['id']])
+    
+        
             if (cuotavenc.length > 0) {
                 bandmesconcurr = true
             }
@@ -395,26 +400,24 @@ const lista2 = async (req, res) => {
                     if (cuotaact[actt]['anio'] == anoac) {
                       
                             if (cuotaact[actt]['mes'] < mesact) {
-                               console.log('suma')
+                  
                                cantidad_venc = cantidad_venc+1
-                                console.log(cantidad_venc)
-                                console.log('fin')
+                             
                             }
                     }
-                }
-               
-            }
-
-
-        
+                }  
+            }        
         }
-        console.log(cantidad_falt)
+  
+       
         let nuevo = {
             cuil_cuit: clientes[cli]['cuil_cuit'],
             Nombre: clientes[cli]['Nombre'],
             cantidad_falt,
             bandmesconcurr,
             cantidad_venc,
+            pagadas:pagadas.length,
+            totales: tot.length
 
         }
         env.push(nuevo)

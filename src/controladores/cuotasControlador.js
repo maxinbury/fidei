@@ -53,6 +53,27 @@ const add_cliente = async (req, res) => {
 
 }
 
+
+const borrarpago = async (req, res) => {
+    const { id_cuota } = req.body;
+    try {
+        const cuota= pool.query(`select * from cuotas where id =?`,[id_cuota])
+
+        const newLink = {
+            pago:0,
+            Saldo_real:cuota[0]['saldo_inicial']
+    
+        };
+        await pool.query('UPDATE cuotas set ? WHERE id= ?', [newLink, id_cuota])
+        await pool.query('DELETE FROM pagos WHERE id_cuota = ?', [id_cuota])
+        res.json('Realizado')
+    } catch (error) {
+        res.json('No realizado')
+    }
+   
+
+}
+
 const postadd = async (req, res) => {
     const { saldo_inicial, saldo_cierre, cuil_cuit } = req.body;
     const newLink = {
@@ -1719,6 +1740,7 @@ module.exports = {
     cuotasdeunlote,
     addautvarias,
     vercuotas4,
-    ief2
+    ief2,
+    borrarpago
 
 }
