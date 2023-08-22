@@ -4,7 +4,7 @@ const router = express.Router()
 
 const { isLoggedIn,isLoggedInn2  } = require('../lib/auth') //proteger profile
 
-const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes, asignarloteacuotas, modificarmontototal, traercuotaselcliente, listavarios, deletes, postcuotas, actualizarcuota, borrartodas, ief, traercuota, traercuotasfinales, agregarcuotasleg, vercuotas2, vercuotas4 } = require('../controladores/cuotasControlador')
+const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes, asignarloteacuotas, modificarmontototal, traercuotaselcliente, listavarios, deletes, postcuotas, actualizarcuota, borrartodas, ief, traercuota, traercuotasfinales, agregarcuotasleg, vercuotas2, vercuotas4, ief2 } = require('../controladores/cuotasControlador')
 
 
 
@@ -105,6 +105,7 @@ router.get('/borrartodas/:id',isLoggedInn2,borrartodas)
 
 router.get('/ief/:id', isLoggedInn2, ief)
 
+router.get('/ief2/:id', ief2)
 
 ///trae una cuota 
 
