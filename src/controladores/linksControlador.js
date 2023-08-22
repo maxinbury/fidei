@@ -378,25 +378,44 @@ const lista2 = async (req, res) => {
     for (cli in clientes) {
         let bandmesconcurr = false
         let lotes = await pool.query('select * from lotes  where cuil_cuit=? ', [clientes[cli]['cuil_cuit']])
-        let cantidad_falt =0
+        let cantidad_falt = 0
+        let cantidad_venc = 0
         for (lot in lotes) {
             let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])
-            let cuotavenc = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and mes=? and anio=? and id_lote=? ', [mesact,anoac,lotes[lot]['id']])
-            if (cuotavenc.length>0){
-                bandmesconcurr=true
+            let cuotavenc = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and mes=? and anio=? and id_lote=? ', [mesact, anoac, lotes[lot]['id']])
+            if (cuotavenc.length > 0) {
+                bandmesconcurr = true
             }
-            cantidad_falt+=cuotaact.length
-    
-        
-           console.log(cantidad_falt)
-        }
+            cantidad_falt += cuotaact.length
+            for (actt in cuotaact) {
+                if (cuotaact[actt]['anio'] < anoac) {
+                   
+                    cantidad_venc += 1
+                } else {
+                    if (cuotaact[actt]['anio'] == anoac) {
+                      
+                            if (cuotaact[actt]['mes'] < mesact) {
+                               console.log('suma')
+                               cantidad_venc = cantidad_venc+1
+                                console.log(cantidad_venc)
+                                console.log('fin')
+                            }
+                    }
+                }
+               
+            }
 
-        let nuevo ={
-            cuil_cuit : clientes[cli]['cuil_cuit'],
-            Nombre : clientes[cli]['Nombre'],
+
+        
+        }
+        console.log(cantidad_falt)
+        let nuevo = {
+            cuil_cuit: clientes[cli]['cuil_cuit'],
+            Nombre: clientes[cli]['Nombre'],
             cantidad_falt,
             bandmesconcurr,
-            
+            cantidad_venc,
+
         }
         env.push(nuevo)
     }
@@ -654,7 +673,7 @@ const ventaLoteleg = async (req, res) => {
 
 
     try {
-        const lote = await pool.query('Select * from lotes where zona=?  and  parcela=? and manzana=?', ["Legales",  parcela, manzana]);
+        const lote = await pool.query('Select * from lotes where zona=?  and  parcela=? and manzana=?', ["Legales", parcela, manzana]);
 
         if (lote.length > 0) {
             const newLink = {
