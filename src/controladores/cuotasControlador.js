@@ -1446,7 +1446,7 @@ const ief2 = async (req, res) => {
     }
 
 
-    let devengado = ((await pool.query('select sum(Amortizacion) from cuotas where id_lote = ?', [idaux]))[0]['sum(Amortizacion)'])
+    let devengado = ((await pool.query('select * from cuotas where id_lote = ?', [idaux]))[0]['saldo_inicial'])
      console.log(devengado)
      console.log('devengado')
     let abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
