@@ -368,7 +368,7 @@ const lista2 = async (req, res) => {
 
     const clientes = await pool.query('select * from clientes where cod_zona="Legales" ')
     fecha = (new Date(Date.now())).toLocaleDateString()
-
+    console.log(fecha)
     const fech = fecha.split("/");
     const mesact = parseInt(fech[1])
     const anoac = parseInt(fech[2])
