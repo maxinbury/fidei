@@ -372,7 +372,8 @@ const lista2 = async (req, res) => {
     const fech = fecha.split("/");
     const mesact = parseInt(fech[1])
     const anoac = parseInt(fech[2])
-
+console.log(mesact)
+console.log(anoac)
     let env = []
     let tot = []
     let pagadas =[]
@@ -383,6 +384,7 @@ const lista2 = async (req, res) => {
         let cantidad_venc = 0
         for (lot in lotes) {
             let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])
+            console.log(clientes[cli]['Nombre'])
             let cuotavenc = await pool.query('select * from cuotas where mes=? and anio=? and id_lote=? and pago>0 ', [mesact, anoac, lotes[lot]['id']])
           console.log(cuotavenc)
           tot = await pool.query('select * from cuotas where id_lote=?', [lotes[lot]['id']])
