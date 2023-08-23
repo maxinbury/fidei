@@ -693,6 +693,81 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 ///////
 
 
+router.post("/pagarnivel4lote", async (req, res) => {
+    const { cantidad, fecha, id, cuil_cuit } = req.body
+    try {
+ 
+
+        auxiliarfecha = fecha.split("-");
+        fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
+        fechapago = fechapago.replace('-', '/')
+        fechapago = fechapago.replace('-', '/')
+        mes = parseInt(fecha.substring(5, 7))
+        anio = parseInt(fecha.substring(0, 4))
+
+
+        let cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+        const id_lote = cuota[0]['id_lote']
+        let nr = parseInt(cuota[0]['nro_cuota'])
+
+        const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ?', [cuota[0]['id_lote']]) //objeto cuota
+       console.log(nr+parseInt(cantidad))
+       console.log(cantidades_disponibles.length)
+        if (nr+parseInt(cantidad) >cantidades_disponibles.length){
+            res.json(['No realizado,la cantidad elegida supera la cantidad disponibles', cuota[0]['cuil_cuit']])
+        }else{
+        for (let i = 1; i <= cantidad; i++) {
+
+            cuota = await pool.query('select * from cuotas where id_lote = ? and nro_cuota=?', [id_lote, nr]) //objeto cuota
+
+            /// sumar pagp-- incompleto aun
+            const newLink = {
+                id_cuota:cuota[0]['id'],
+                monto:cuota[0]['Amortizacion'],
+                cuil_cuit:cuota[0]['cuil_cuit'],
+                mes,
+                estado: 'A',
+                anio,
+                cuil_cuit_administrador: cuil_cuit,
+                cuil_cuit_distinto:'No',
+                monto_distinto:'No',
+                monto_inusual:'No',
+                fecha:fechapago
+
+
+            };
+
+            await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+
+            /// recorrer las cuotas y asignar el pago a la amortizacion y saldo real asignar saldo final 
+
+            update = {
+                Saldo_real:cuota[0]['saldo_cierre'],
+                pago:cuota[0]['Amortizacion'],
+               
+            }
+            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]['id']])
+
+
+
+
+
+            nr += 1
+        }
+        res.json(['Realizado', cuota[0]['cuil_cuit']])
+
+}
+
+
+
+    } catch (ex) {
+        console.log('NOOO  ')
+        res.json(['No realizado', cuota[0]['cuil_cuit']])
+    }
+ 
+})
+
 
 router.post("/pagarnivel4", async (req, res) => {
     const { cantidad, fecha, id, cuil_cuit } = req.body
@@ -763,7 +838,7 @@ router.post("/pagarnivel4", async (req, res) => {
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+        console.log(ex)
         res.json(['No realizado', cuota[0]['cuil_cuit']])
     }
  
@@ -841,10 +916,11 @@ router.get('/aprobar/:id', isLoggedIn, async (req, res) => { // pagot es el obje
 router.get('/traerpago/:id', isLoggedInn, async (req, res) => {
     const id = req.params.id // requiere el parametro id 
     try {
-            const cuota = await pool.query('SELECT * FROM pagos join (select cuil_cuit as cuil_cuitcli, nombre as nombrecli from clientes) as selec1 on pagos.cuil_cuit=selec1.cuil_cuitcli join (select id as idcuota, nro_cuota from cuotas) as selec2 on pagos.id_cuota=selec2.idcuota WHERE id= ?', [id])
-
+            const cuota = await pool.query('SELECT *,id_lote FROM pagos join (select cuil_cuit as cuil_cuitcli, nombre as nombrecli from clientes) as selec1 on pagos.cuil_cuit=selec1.cuil_cuitcli join (select id as idcuota, nro_cuota, id_lote from cuotas) as selec2 on pagos.id_cuota=selec2.idcuota WHERE id= ?', [id])
+console.log(cuota)
+const total = await pool.query('SELECT * FROM cuotas where id_lote=?',[cuota[0]['id_lote']])
   
-    res.json(cuota)
+    res.json([cuota,total.length])
 
     } catch (error) {
         console.log(error)

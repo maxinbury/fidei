@@ -1606,6 +1606,26 @@ const traercuota = async (req, res) => {
     }
 }
 
+
+const traercuotasdisponiblesporlote = async (req, res) => {
+    const { id } = req.params;
+
+
+    try {
+       
+
+        console.log(id)
+        todas = await pool.query('select * from cuotas where id_lote = ? and pago is null ', [id])
+        console.log(todas)
+    
+        res.json(todas)
+    } catch (error) {
+        console.log(error)
+        res.json([{Amortizacion:0}])
+    }
+    
+}
+
 const traercuotasfinales = async (req, res) => {
     const { id } = req.params;
 
@@ -1741,6 +1761,7 @@ module.exports = {
     addautvarias,
     vercuotas4,
     ief2,
-    borrarpago
+    borrarpago,
+    traercuotasdisponiblesporlote
 
 }
