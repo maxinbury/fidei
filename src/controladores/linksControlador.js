@@ -384,7 +384,7 @@ const lista2 = async (req, res) => {
         for (lot in lotes) {
             let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])
             let cuotavenc = await pool.query('select * from cuotas where mes=? and anio=? and id_lote=? and pago>0 ', [mesact, anoac, lotes[lot]['id']])
-   
+          console.log(cuotavenc)
           tot = await pool.query('select * from cuotas where id_lote=?', [lotes[lot]['id']])
              pagadas = await pool.query('select * from cuotas  join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where  id_lote=?', [lotes[lot]['id']])
     
