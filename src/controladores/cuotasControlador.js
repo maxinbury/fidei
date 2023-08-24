@@ -1615,7 +1615,7 @@ const iefgralleg = async (req, res) => {
             let cantida = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [lote[l]['id']]))[0]['count(*)']
 
             let devengad = ((await pool.query('select * from cuotas where id_lote = ?', [lote[l]['id']]))[0]['saldo_inicial'])
-            let abonad = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [lote[l]['id']]))[0]['sum(pagos.monto)']
+            let abonad = (await pool.query('select sum(pago)  from cuotas where id_lote = ? ', [lote[l]['id']]))[0]['sum(pago)']
 
             cantida2 = (await pool.query('select count(*) from cuotas where id_lote = ? and pago = 0', [lote[l]['id']]))[0]['count(*)']
             capita = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and pago = 0', [lote[l]['id']]))[0]['sum(Amortizacion )']
@@ -1628,11 +1628,11 @@ const iefgralleg = async (req, res) => {
             cantidad2 += cantida2
             capital += capita
         } catch (error) {
-
+console.log(error)
         }
 
     }
-    console.log(cantidad,devengado,abonado,cantidad2,capital)
+  
 
     if (cantidad === 0) {
 
