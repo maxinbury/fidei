@@ -1608,6 +1608,7 @@ const iefgralleg = async (req, res) => {
     let abonado = 0
     let cantidad2 = 0
     let capital = 0
+    let pagada = 0
     for (l in lote) {
         try {
 
@@ -1620,6 +1621,8 @@ const iefgralleg = async (req, res) => {
             cantida2 = (await pool.query('select count(*) from cuotas where id_lote = ? and pago = 0', [lote[l]['id']]))[0]['count(*)']
             capita = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and pago = 0', [lote[l]['id']]))[0]['sum(Amortizacion )']
 
+            pagad = (await pool.query('select count(*) from cuotas where id_lote = ? and pago != 0 and pago is not null', [lote[l]['id']]))[0]['count(*)']
+            pagada += pagad
             devengado += devengad
             abonado += abonad
             cantidad += cantida
@@ -1695,7 +1698,7 @@ console.log(error)
         }
 
         const dato1 = {
-            'datoa': 'Cantidad de cuotas liquidadas y vencidas',
+            'datoa': 'Cantidad de cuotas a pagar',
             'datob': cantidad
         }
         const dato2 = {
@@ -1730,12 +1733,12 @@ console.log(error)
             }
 
             const dato5 = {
-                'datoa': 'Cantidad de cuotas a Vencer',
+                'datoa': 'Cantidad de cuotas por cobrar',
                 'datob': cantidad2
             }
             const dato6 = {
-                'datoa': 'Monto cuota pura',
-                'datob': Amortizacion
+                'datoa': 'Cantidad pagadas',
+                'datob': pagada
             }
             const dato7 = {
                 'datoa': 'Saldo de capital a vencer',
