@@ -377,12 +377,15 @@ const lista2 = async (req, res) => {
     let tot = []
     let pagadas =[]
     for (cli in clientes) {
-        
+      
+        pagadas =[]
+        tot = []
         let bandmesconcurr = false
         let lotes = await pool.query('select * from lotes  where cuil_cuit=? ', [clientes[cli]['cuil_cuit']])
         let quelote =""
         let cantidad_falt = 0
         let cantidad_venc = 0
+     
         for (lot in lotes) {
             quelote =quelote+lotes[lot]['manzana']+" - "+lotes[lot]['parcela']
             let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])

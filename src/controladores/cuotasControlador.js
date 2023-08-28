@@ -1618,7 +1618,7 @@ const iefgralleg = async (req, res) => {
             let devengad = ((await pool.query('select * from cuotas where id_lote = ?', [lote[l]['id']]))[0]['saldo_inicial'])
             let abonad = (await pool.query('select sum(pago)  from cuotas where id_lote = ? ', [lote[l]['id']]))[0]['sum(pago)']
 
-            cantida2 = (await pool.query('select count(*) from cuotas where id_lote = ? and pago = 0', [lote[l]['id']]))[0]['count(*)']
+            cantida2 = (await pool.query('select count(*) from cuotas where id_lote = ? and (pago = 0 or pago is null)', [lote[l]['id']]))[0]['count(*)']
             capita = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and pago = 0', [lote[l]['id']]))[0]['sum(Amortizacion )']
 
             pagad = (await pool.query('select count(*) from cuotas where id_lote = ? and pago != 0 and pago is not null', [lote[l]['id']]))[0]['count(*)']
