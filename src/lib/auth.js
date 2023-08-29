@@ -7,10 +7,10 @@ module.exports = {
         let token =null
         console.log(authorization)
         if (authorization && authorization.startsWith('Bearer')){
-            console.log('authorization2')
+            
             token = authorization.substring(7) ////  Bearer  length
             console.log(token)
-            console.log('authorization3')
+            
         }
         let decodedToken = {}
         
@@ -29,9 +29,8 @@ module.exports = {
         }else{ next()}
       
        // res.send(decodedToken.cuil_cuit)
-        
-       
     },
+
     ///decodificacion Token y verificacion nivel 2
     isLoggedInn2(req,res, next){
       
@@ -39,7 +38,7 @@ module.exports = {
         
         const authorization = req.get('authorization')
         let token =null
-        console.log(authorization)
+     
         if (authorization && authorization.startsWith('Bearer')){
           
             token = authorization.substring(7) 
@@ -52,7 +51,7 @@ module.exports = {
         }catch{}
       
         if (!token || !decodedToken.id || (decodedToken.nivel <2) ){
-            console.log('error token')
+            
             return res.send('error login')
         }
       
@@ -62,7 +61,34 @@ module.exports = {
     },
     /////Decodificacion nibel 3
     isLoggedInn3(req,res, next){
-        console.log('entra1')
+       
+        //
+        const authorization = req.get('authorization')
+        let token =null
+       
+        if (authorization && authorization.startsWith('Bearer')){
+           
+            token = authorization.substring(7) 
+        }
+        let decodedToken = {}
+        
+        try{
+             decodedToken = jwt.verify(token, 'fideicomisocs121')
+             
+           
+        }catch{}
+      
+        if (!token || !decodedToken.id || (decodedToken.nivel <3) ){
+            console.log('error token')
+            return res.send('error login')
+        }
+      
+       // res.send(decodedToken.cuil_cuit)
+        
+        next()
+    },
+    isLoggedInn4(req,res, next){
+    
         //
         const authorization = req.get('authorization')
         let token =null
@@ -75,11 +101,13 @@ module.exports = {
         
         try{
              decodedToken = jwt.verify(token, 'fideicomisocs121')
-             console.log(decodedToken)
+             
            
-        }catch{}
-      
-        if (!token || !decodedToken.id || (decodedToken.nivel <3) ){
+        }catch(error){
+          
+        }
+      console.log(decodedToken.nivel )
+        if (!token || !decodedToken.id || (decodedToken.nivel <4) ){
             console.log('error token')
             return res.send('error login')
         }

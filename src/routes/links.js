@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-const { isLoggedIn,isLoggedInn, isLoggedInn2} = require('../lib/auth') //proteger profile
+const { isLoggedIn,isLoggedInn, isLoggedInn2, isLoggedInn4} = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
 const fs = require('fs')
 const multer = require('multer')
@@ -50,7 +50,7 @@ router.get('/borrarcbu/:id',isLoggedInn,  borrarCbu)
 
 router.get('/infocantidad',cantidadInfo )
 
-router.get('/lista2',lista2 )
+router.get('/lista2',isLoggedInn4,lista2 )
 
 
 router.post('/ventaLoteleg',ventaLoteleg )
@@ -83,7 +83,7 @@ router.post('/agregaringreso2',isLoggedInn2, AgregarIngreso)
 router.get('/detalle/:cuil_cuit',detalleCuil)
 
 
-router.get('/clientehabilitado/:cuil_cuit', async (req, res) => {
+router.get('/clientehabilitado/:cuil_cuit',isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
  
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
