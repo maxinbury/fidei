@@ -1786,7 +1786,7 @@ const traercuotasdisponiblesporlote = async (req, res) => {
 
 
         console.log(id)
-        todas = await pool.query('select * from cuotas where id_lote = ? and (pago is null) ', [id])
+        todas = await pool.query('select * from cuotas where ((id_lote = ?) and (pago is null)) ', [id])
         console.log(todas)
 
         res.json(todas)
