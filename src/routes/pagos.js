@@ -708,7 +708,7 @@ router.post("/pagarnivel4lote", async (req, res) => {
 
 
         let au = await pool.query('select * from lotes where id = ? ', [id]) //objeto cuota
-        let cuota = await pool.query('select * from cuotas where id_lote = ? and pago is null', [id]) //objeto cuota
+        let cuota = await pool.query('select * from cuotas where id_lote = ?  and pago =0', [id]) //objeto cuota
         console.log(cuota)
         const id_lote = id
         let nr = parseInt(cuota[0]['nro_cuota'])
