@@ -696,7 +696,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 router.post("/pagarnivel4lote", async (req, res) => {
     const { cantidad, fecha, id, cuil_cuit } = req.body
     try {
- 
+ console.log(id)
 
         auxiliarfecha = fecha.split("-");
         fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
@@ -704,17 +704,20 @@ router.post("/pagarnivel4lote", async (req, res) => {
         fechapago = fechapago.replace('-', '/')
         mes = parseInt(fecha.substring(5, 7))
         anio = parseInt(fecha.substring(0, 4))
+    
 
 
-        let cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-        const id_lote = cuota[0]['id_lote']
+        let au = await pool.query('select * from lotes where id = ? ', [id]) //objeto cuota
+        let cuota = await pool.query('select * from cuotas where id_lote = ? and pago is null', [id]) //objeto cuota
+        console.log(cuota)
+        const id_lote = id
         let nr = parseInt(cuota[0]['nro_cuota'])
+        cuota = await pool.query('select * from cuotas where id_lote = ? and nro_cuota=?', [id_lote, nr])
 
-        const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ?', [cuota[0]['id_lote']]) //objeto cuota
-       console.log(nr+parseInt(cantidad))
-       console.log(cantidades_disponibles.length)
+        const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ? ', [id_lote]) //objeto cuota
+  
         if (nr+parseInt(cantidad) >cantidades_disponibles.length){
-            res.json(['No realizado,la cantidad elegida supera la cantidad disponibles', cuota[0]['cuil_cuit']])
+            res.json(['No realizado,la cantidad elegida supera la cantidad disponibles', au[0]['cuil_cuit']])
         }else{
         for (let i = 1; i <= cantidad; i++) {
 
@@ -747,7 +750,7 @@ router.post("/pagarnivel4lote", async (req, res) => {
                 pago:cuota[0]['Amortizacion'],
                
             }
-            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, cuota[0]['id']])
+            await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, au[0]['cuil_cuit']])
 
 
 
@@ -755,15 +758,15 @@ router.post("/pagarnivel4lote", async (req, res) => {
 
             nr += 1
         }
-        res.json(['Realizado', cuota[0]['cuil_cuit']])
+        res.json(['Realizado', au[0]['cuil_cuit']])
 
 }
 
 
 
     } catch (ex) {
-        console.log('NOOO  ')
-        res.json(['No realizado', cuota[0]['cuil_cuit']])
+        console.log(ex)
+        res.json(['No realizado', au[0]['cuil_cuit']])
     }
  
 })
@@ -786,7 +789,7 @@ router.post("/pagarnivel4", async (req, res) => {
         const id_lote = cuota[0]['id_lote']
         let nr = parseInt(cuota[0]['nro_cuota'])
 
-        const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ?', [cuota[0]['id_lote']]) //objeto cuota
+        const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ? ', [cuota[0]['id_lote']]) //objeto cuota
        console.log(nr+parseInt(cantidad))
        console.log(cantidades_disponibles.length)
         if (nr+parseInt(cantidad) >cantidades_disponibles.length){
