@@ -128,7 +128,7 @@ router.get('/traercuotasfinales/:id',isLoggedInn2,traercuotasfinales)
 
 router.get('/traercuotasdisponiblesporlote/:id',isLoggedInn2,traercuotasdisponiblesporlote)
 
-
+/* 
 router.get('/corregir', async(req,res)=>{
 
     cuotas = await pool.query('select * from cuotas where zona="Legales"')
@@ -144,7 +144,7 @@ console.log(cuotas[i]['pago'])
 
     }
 res.json('Realizado')
-})
+}) */
 
 
 module.exports = router
