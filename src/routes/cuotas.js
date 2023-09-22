@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-
+const pool = require('../database')
 
 const { isLoggedIn,isLoggedInn2, isLoggedInn4  } = require('../lib/auth') //proteger profile
 
@@ -128,6 +128,23 @@ router.get('/traercuotasfinales/:id',isLoggedInn2,traercuotasfinales)
 
 router.get('/traercuotasdisponiblesporlote/:id',isLoggedInn2,traercuotasdisponiblesporlote)
 
+
+router.get('/corregir', async(req,res)=>{
+
+    cuotas = await pool.query('select * from cuotas where zona="Legales"')
+
+    for( i in cuotas){
+console.log(cuotas[i]['pago'])
+        if (cuotas[i]['pago'] == null ){
+            await pool.query('UPDATE cuotas SET Saldo_real = ? WHERE id=? ',[ parseFloat(cuotas[i]['saldo_inicial'])-0 ,cuotas[i]['id']])
+
+        }else{
+        await pool.query('UPDATE cuotas SET Saldo_real = ? WHERE id=? ',[ parseFloat(cuotas[i]['saldo_inicial'])-parseFloat(cuotas[i]['pago']) ,cuotas[i]['id']])
+}
+
+    }
+res.json('Realizado')
+})
 
 
 module.exports = router
