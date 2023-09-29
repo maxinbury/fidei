@@ -57,7 +57,8 @@ const add_cliente = async (req, res) => {
 const borrarpago = async (req, res) => {
     const { id_cuota } = req.body;
     try {
-        const cuota = pool.query(`select * from cuotas where id =?`, [id_cuota])
+       
+        const cuota = await pool.query(`select * from cuotas where id =?`, [id_cuota])
 
         const newLink = {
             pago: 0,
@@ -68,6 +69,7 @@ const borrarpago = async (req, res) => {
         await pool.query('DELETE FROM pagos WHERE id_cuota = ?', [id_cuota])
         res.json('Realizado')
     } catch (error) {
+        console.log(error)
         res.json('No realizado')
     }
 
