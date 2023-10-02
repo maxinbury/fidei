@@ -1837,6 +1837,8 @@ const agregarcuotasleg = async (req, res) => {
         let saldo_inicial = parseFloat(monto_total)
 
         let saldo_cierre = parseFloat(saldo_inicial) - Amortizacion
+        Saldo_real=saldo_inicial
+        cuota_con_ajuste= Amortizacion
         //  const Saldo_real = saldo_inicial
         const id_cliente = row[0].id
 
@@ -1854,6 +1856,8 @@ const agregarcuotasleg = async (req, res) => {
                     saldo_inicial,
                     saldo_cierre,
                     cuil_cuit,
+                    Saldo_real,
+                    cuota_con_ajuste,
                     id_cliente,
                     zona: "Legales",
                     id_lote: id,
