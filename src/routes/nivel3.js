@@ -39,7 +39,7 @@ router.post('/asignarvalormetroc',isLoggedInn3, asignarvalormetroc)
 router.post('/consultaricc',isLoggedInn3, consultarIcc)
 
 ///// REACT ii gral
-router.post('/agregariccgral2', isLoggedInn3, )
+router.post('/agregariccgral2', isLoggedInn3,agregarIccGral2 )
 //////
 
 ///// AGREGA a ICC al IC3

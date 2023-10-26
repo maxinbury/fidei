@@ -408,5 +408,5 @@ console.log(cantidad)
  
 
   }
-  
-  exports.pagodecuota = {pagodecuota,pagodecuotaniv4}
+  exports.pagodecuota = pagodecuota
+  exports.pagodecuotaniv4 = pagodecuotaniv4
