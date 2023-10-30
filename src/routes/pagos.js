@@ -509,7 +509,8 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos = await pool.query('SELECT pagos.id, pagos.monto, pagos.cuil_cuit, pagos.id_cuota, clientes.Nombre FROM pagos join clientes on pagos.cuil_cuit = clientes.cuil_cuit where estado="averificarnivel3" ')
+    const pagos = await pool.query('select * from historial_pagosi join (select cuil_cuit as cuil, nombre, ingresos from clientes) as sel  on historial_pagosi.cuil_cuit = sel.cuil where proceso ="averificarnivel3" ')
+
     res.json(pagos)
 })
 
@@ -620,7 +621,7 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
 router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     const { id, detalle, tipo } = req.body
 
-    auxi = await pool.query('select *  from pagos where id=?', [id]);//pagos
+    auxi = await pool.query('select *  from historial_pagosi where id=?', [id]);//pagos
     console.log(auxi)
     console.log(id)
     cuil_cuit = auxi[0]['cuil_cuit']
@@ -629,7 +630,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     switch (tipo) {
         case 'Inusual':
             console.log('Inusual')
-            estado = 'Inusual'
+            proceso = 'Inusual'
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 
 
@@ -637,7 +638,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             break;
         case 'Sospechoso':
             console.log('Sospechoso')
-            estado = 'declaradosospechoso'
+            proceso = 'declaradosospechoso'
 
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
             const update2 = {
@@ -659,7 +660,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             mensaje = "Recibimos un pado del cuil: " + cuil_cuit + 'de un monto de ' + auxi[0]['monto'] + ' Detalle: ' + detalle
             //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
 
-            pagoaux = await pool.query('select * from pagos where id = ?', [id])
+            pagoaux = await pool.query('select * from historial_pagosi where id = ?', [id])
             ubicacion = pagoaux[0]['ubicacion']
 
             enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, ubicacion)
@@ -670,17 +671,18 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
 
     const update = {
-        estado,
-
+        proceso:tipo,
+        detalle
 
     }
 
     try {
-        await pool.query('UPDATE pagos set  ? WHERE id = ?', [update, id])
+        await pool.query('UPDATE historial_pagosi set  ? WHERE id = ?', [update, id])
 
     } catch (error) {
         console.log(error)
         res.send('algo salio mal')
+        
     }
 
     res.send('Todo en orden')

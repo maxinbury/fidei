@@ -1095,12 +1095,32 @@ async function pagonivel2(req, res) {
 
         montomax = cliente[0]['ingresos'] * 0.3
         console.log(montomax)
+        console.log(monto)
+        const id_cuota = id
         if (montomax < monto) {
 
             monto_inusual = 'Si'
         }
+if (monto_inusual=='Si'){
+    
+    const newLink2 = {
+        id_cuota,
+        monto,
+        cuil_cuit,
+        mes,
+        estado: estado,
+        anio,
+        proceso:"averificarnivel3",
+        cuil_cuit_administrador,
+        ubicacion: formData.file.originalFilename,///////////aca ver el problema
 
-        const id_cuota = id
+    };
+    await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+}
+
+
+  
 
 
         const newLink = {
