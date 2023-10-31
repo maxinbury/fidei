@@ -535,7 +535,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
     const { mes, anio } = req.body
     console.log(mes)
     console.log(anio)
-    const pagos = await pool.query('select * from pagos join clientes on pagos.cuil_cuit= clientes.cuil_cuit where mes =? and anio=? and pagos.observaciones = "Inusual" or tipo = "declaradosospechoso"', [mes, anio])
+    const pagos = await pool.query('select * from historial_pagosi join (select cuil_cuit as cuil, Nombre,ingresos from clientes ) as  sel on historial_pagosi.cuil_cuit=sel.cuil where mes=? and anio=?', [mes, anio])
     console.log(pagos)
     if (pagos.length > 0) {
         res.json(pagos)
