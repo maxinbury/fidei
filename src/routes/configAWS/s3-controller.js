@@ -1092,8 +1092,12 @@ async function pagonivel2(req, res) {
         console.log(aux)
         let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
         ///////////////////CONSIDERAR PEP
-
-        montomax = cliente[0]['ingresos'] * 0.3
+        let variante=0.3
+        if(cliente[0]['expuesta'] =="SI"){
+            console.log('expuesta')
+                variante=0.2
+        }
+        montomax = cliente[0]['ingresos'] * variante
         console.log(montomax)
         console.log(monto)
         const id_cuota = id
