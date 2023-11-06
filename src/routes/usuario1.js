@@ -12,7 +12,7 @@ const passport = require('passport')
 const s3Controller = require('./configAWS/s3-controller');
 ////////
 const enviodemail = require('./Emails/Enviodemail')
-const { enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos, cliente2, modificarcli2 } = require('../controladores/usuario1controlador')
+const { enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos, cliente2, modificarcli2, lotescliente2, constanciass } = require('../controladores/usuario1controlador')
 
 
 
@@ -107,7 +107,7 @@ router.get('/cbus/:cuil_cuit', isLoggedInn, cbus)
 
 router.get('/borrarunlegajo/:id',borrarunlegajo)
 
-router.get('/constancias/:cuil_cuit', isLoggedInn, constancias)
+router.get('/constancias/:cuil_cuit', isLoggedInn, constanciass)
 router.get('/cbuscliente/:cuil_cuit', isLoggedInn, cbuscliente)
 
 ////pago react nivel 1
@@ -123,6 +123,9 @@ router.post('/modificarcli2',isLoggedInn,modificarcli2)
 router.post("/completolegajos", isLoggedInn, completolegajos)
 ///lotes del cliente
 router.get('/lotescliente/:cuil_cuit', isLoggedInn, lotescliente)
+
+router.get('/lotesCliente2/:cuil_cuit', isLoggedInn, lotescliente2)
+
 
 ///cuotasdeunlote
 router.get("/lote2/:id",  isLoggedInn, lote2)

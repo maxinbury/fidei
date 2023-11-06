@@ -1068,17 +1068,13 @@ async function pagonivel2(req, res) {
     let mensaje = ''
 
     const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-    console.log(cuota)
+
     aux = '%' + cuota[0]["cuil_cuit"] + '%'
 
     cuil_cuit = cuota[0]["cuil_cuit"]
-    let cuota_con_ajuste = cuota[0]["cuota_con_ajuste"]
-    let saldo_realc = cuota[0]["Saldo_real"]
+
     Saldo_real = parseFloat(cuota[0]["Saldo_real"])
-    let nro_cuota = cuota[0]["nro_cuota"]
-    let id_lote = cuota[0]["id_lote"]
-    let Amortizacion = cuota[0]["Amortizacion"]
-    let diferencia = cuota[0]["diferencia"]
+
 
     mes = cuota[0]["mes"]
     anio = cuota[0]["anio"]

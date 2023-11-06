@@ -201,7 +201,7 @@ const borrarunlegajo =  async (req, res, ) => {
 
    
 }
-const constancias = async (req, res, ) => {
+const constanciass = async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
@@ -217,12 +217,13 @@ const constancias = async (req, res, ) => {
 }
 const cbuscliente = async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
-
+console.log(cuil_cuit)
     try {
-       cbus = await pool.query('select * from cbus where cuil_cuit= ? and estado ="A"',[cuil_cuit])
-       console.log(cbus)
-       res.json(cbus)
+       cbuss = await pool.query('select * from cbus where cuil_cuit= ? and estado ="A"',[cuil_cuit])
+       console.log(cbuss)
+       res.json(cbuss)
     } catch (error) {
+        console.log(error)
         res.send('algo salio mal')
     }
 
@@ -519,16 +520,42 @@ const completolegajos = async (req, res) => {
 const lotescliente =  async (req, res) => {
     cuil_cuit = req.params.cuil_cuit
 
+    try {
+        lotes = await pool.query('select  * from lotes where cuil_cuit =  ?', [cuil_cuit]);
+        cuotas =  await pool.query('select  * from cuotas where cuil_cuit =  ? and parcialidad = "Final"', [cuil_cuit]);
+        clienteaux = await pool.query('select  * from clientes where cuil_cuit =  ?', [cuil_cuit]);
+        cuotaapagar= cuotas[(cuotas.length-1)]
+        console.log(cuotaapagar)
     
-    lotes = await pool.query('select  * from lotes where cuil_cuit =  ?', [cuil_cuit]);
-    cuotas =  await pool.query('select  * from cuotas where cuil_cuit =  ? and parcialidad = "Final"', [cuil_cuit]);
-    cliente =await pool.query('select  * from clientes where cuil_cuit =  ?', [cuil_cuit]);
-    cuotaapagar= cuotas[(cuotas.length-1)]
-    console.log(cuotaapagar)
+    res.send([lotes,cuotas,cuotaapagar,clienteaux])
+    } catch (error) {
+console.log8error
 
-res.send([lotes,cuotas,cuotaapagar,cliente])
+        res.send([[],[],[],[]])
+    }
+
 
 }
+
+const lotescliente2 =  async (req, res) => {
+    id = req.params.cuil_cuit
+
+    try {
+        lotes = await pool.query('select  * from lotes where id =  ?', [id]);
+        cuotas =  await pool.query('select  * from cuotas where id_lote =  ? and parcialidad = "Final"', [id]);
+        clienteaux = await pool.query('select  * from clientes where cuil_cuit =  ?', [lotes[0]['cuil_cuit']]);
+        cuotaapagar= cuotas[(cuotas.length-1)]
+        console.log(cuotaapagar)
+    
+    res.send([lotes,cuotas,cuotaapagar,clienteaux])
+    } catch (error) {
+console.log(error)
+
+        res.send([[],[],[],[]])
+    }
+
+}
+
 const lote2 = async (req, res) => {
     try {
         const id = req.params.id
@@ -659,7 +686,7 @@ module.exports = {
     modificarcli,
     realizarr,
     cbuscliente,
-    constancias,
+    constanciass,
     borrarunlegajo,
     cbus,
     cantidadiibb,
@@ -672,5 +699,6 @@ module.exports = {
     subirlegajoprueba,
     enviarconsulta,
     cliente2,
-    modificarcli2
+    modificarcli2,
+    lotescliente2
 }

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../database')
 
-const { isLoggedIn,isLoggedInn2, isLoggedInn4  } = require('../lib/auth') //proteger profile
+const { isLoggedIn,isLoggedInn2, isLoggedInn4, isLoggedInn  } = require('../lib/auth') //proteger profile
 
 const { lista,addautvarias, ampliar, add_cliente, cuotasdeunlote, postadd, postaddaut2, postaddaut, quelote, lotefuncion, lotefuncion2, cuotascli, edit_c, agregar_icc, post_agregaricc, lotes, asignarloteacuotas, modificarmontototal, traercuotaselcliente, listavarios, deletes, postcuotas, actualizarcuota, borrartodas, ief, traercuota, traercuotasfinales, agregarcuotasleg, vercuotas2, vercuotas4, ief2, borrarpago, traercuotasdisponiblesporlote, iefgralleg } = require('../controladores/cuotasControlador')
 
@@ -44,7 +44,7 @@ router.post('/addautvarias',isLoggedInn2, addautvarias)
 
 
 /// cuotasdeunloteReact
-router.get("/cuotasdeunlote/:id",isLoggedInn2, cuotasdeunlote)
+router.get("/cuotasdeunlote/:id",isLoggedInn, cuotasdeunlote)
 
 
 
