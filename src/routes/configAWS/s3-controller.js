@@ -1,5 +1,5 @@
 const formidable = require('formidable');
-const { uploadFileToS3, getBucketListFromS3, getPresignedURL,getPresignedURL2} = require('./s3-service');
+const { uploadFileToS3, getBucketListFromS3, getPresignedURL, getPresignedURL2 } = require('./s3-service');
 const express = require('express')
 const router = express.Router()
 const pool = require('../../database')
@@ -30,9 +30,9 @@ async function s3Upload(req, res) {
 }
 /// Funcion para traer la url de la imagen
 async function s3Get(req, res) {
-    
+
     try {
-       
+
         const bucketData = await getBucketListFromS3("mypdfstorage");
         const { Contents = [] } = bucketData;
         res.header("Access-Control-Allow-Origin", "*");
@@ -109,10 +109,10 @@ async function getSignedUrl2(req, res) {
 async function traerImagen(ubicacion) {
 
     try {
-      
+
         console.log(ubicacion)
         const { key } = { ubicacion };
-  
+
         console.log(key)
         const url = await getPresignedURL("mypdfstorage", key);
         console.log(url)
@@ -188,19 +188,50 @@ async function subirlegajo(req, res) {
     tipo = myArray[1]
     descripcion = myArray[2]
 
+    if (tipo == "Cbu personal") {
+        console.log('A cbu')
+        const datoss = {
+            ubicacion: formData.file.originalFilename,
+            cuil_cuit: cuil_cuit,
+            numero: descripcion,
+           
+            lazo:"Cbu personal",
+            estado: 'A'
+        }
 
-    const datoss = {
-        ubicacion: formData.file.originalFilename,
-        cuil_cuit: cuil_cuit,
-        tipo: tipo,
-        descripcion: descripcion,
-        fecha: (new Date(Date.now())).toLocaleDateString(),
+        await pool.query('insert into cbus set?', datoss)
 
-        estado: 'Aprobada'
+    } else {
+        if (tipo == "Cbu familiar") {
+            console.log('A cbu')
+            const datoss = {
+                ubicacion: formData.file.originalFilename,
+                cuil_cuit: cuil_cuit,
+                numero: descripcion,
+                
+                lazo:"Cbu familiar",
+                estado: 'A'
+            }
+
+            await pool.query('insert into cbus set?', datoss)
+
+        } else {
+
+            const datoss = {
+                ubicacion: formData.file.originalFilename,
+                cuil_cuit: cuil_cuit,
+                tipo: tipo,
+                descripcion: descripcion,
+                fecha: (new Date(Date.now())).toLocaleDateString(),
+
+                estado: 'Aprobada'
+            }
+            await pool.query('insert into constancias set?', datoss)
+        }
     }
-    console.log(datoss)
+
     try {
-        await pool.query('insert into constancias set?', datoss)
+
         CONSOLE.LOG(SUBIDO)
     } catch (error) {
 
@@ -520,124 +551,124 @@ async function pagarniv1(req, res) {
 
 
                                     console.log(credito)
-                                    if (credito.includes("$")){
-                                    credito = credito.replace("$", "")
-                                    console.log(credito)
-                                    credito = credito.replace(" ", "")
-                                    console.log(credito)
-                                    credito = credito.replace(".", "")
-                                    console.log(credito)
-                                    credito = credito.replace(",", ".")
-                                    console.log(credito)
-                                    console.log('monto')
-                                    console.log(monto)
-                                    console.log(9)
-                                    if (credito === monto) {
-                                        console.log(10)
-                                        console.log('entra')
-                                        monto_distinto = 'No'
-                                        fecha = dataExcel[property]['']
-                                        console.log(fecha)
-                                        console.log(fechapago)
-                                        if (fecha === fechapago) {
+                                    if (credito.includes("$")) {
+                                        credito = credito.replace("$", "")
+                                        console.log(credito)
+                                        credito = credito.replace(" ", "")
+                                        console.log(credito)
+                                        credito = credito.replace(".", "")
+                                        console.log(credito)
+                                        credito = credito.replace(",", ".")
+                                        console.log(credito)
+                                        console.log('monto')
+                                        console.log(monto)
+                                        console.log(9)
+                                        if (credito === monto) {
+                                            console.log(10)
+                                            console.log('entra')
+                                            monto_distinto = 'No'
+                                            fecha = dataExcel[property]['']
+                                            console.log(fecha)
+                                            console.log(fechapago)
+                                            if (fecha === fechapago) {
 
 
-                                            verificacion = await pool.query('select * from pagos where monto=? and fecha=? ', [monto, fechapago])
-                                            if (verificacion.length > 0) {
-                                                yarealizado = 'SI'
+                                                verificacion = await pool.query('select * from pagos where monto=? and fecha=? ', [monto, fechapago])
+                                                if (verificacion.length > 0) {
+                                                    yarealizado = 'SI'
 
-                                            } else {
-                                                estadoo = 'A'
-                                                try {
-                                                    
-                                                } catch (error) {
-                                                    
-                                                }
-                                                mensaje = 'Su pago ha sido aprobado' 
-                                               
-                                                email = cliente[0]['email']
-                                                asunto = 'Pago aprobado'
-                                                encabezado = 'este mail es muy importante'
-                                                enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
-                                              
+                                                } else {
+                                                    estadoo = 'A'
+                                                    try {
 
-                                            }
+                                                    } catch (error) {
 
+                                                    }
+                                                    mensaje = 'Su pago ha sido aprobado'
 
-
-
-
-
-
-                                        }
-
-
-
-                                    }
-
-                                }else {
-                                   
-                                    console.log(credito)
-                                    credito = credito.replace(" ", "")
-                                    console.log(credito)
-                                  //  credito = credito.replace(".", "")
-                                    console.log(credito)
-                                    credito = credito.replace(",", ".")
-                                    console.log(credito)
-                                    console.log('monto')
-                                    console.log(monto)
-                                    console.log(9)
-                                    if (credito === monto) {
-                                        console.log(10)
-                                        console.log('entra')
-                                        monto_distinto = 'No'
-                                        fecha = dataExcel[property]['']
-                                        console.log(fecha)
-                                        console.log(fechapago)
-                                        if (fecha === fechapago) {
-                                            console.log('fechaigual')
-
-                                            verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
-                                            console.log('fechaigual')
-                                            console.log(verificacion)
-                                            if (verificacion.length > 0) {
-                                                yarealizado = 'SI'
-
-                                            } else {
-                                                estadoo = 'A'
-                                                try {
-                                                    mensaje = 'Su pago ha sido aprobado' 
-                                               
                                                     email = cliente[0]['email']
                                                     asunto = 'Pago aprobado'
                                                     encabezado = 'este mail es muy importante'
-                                                  await  enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
-                                                  
-    
-                                                } catch (error) {
-                                                    console.log(error)
+                                                    enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+
+
                                                 }
-                                               
+
+
+
+
+
+
+
                                             }
 
 
 
+                                        }
 
+                                    } else {
+
+                                        console.log(credito)
+                                        credito = credito.replace(" ", "")
+                                        console.log(credito)
+                                        //  credito = credito.replace(".", "")
+                                        console.log(credito)
+                                        credito = credito.replace(",", ".")
+                                        console.log(credito)
+                                        console.log('monto')
+                                        console.log(monto)
+                                        console.log(9)
+                                        if (credito === monto) {
+                                            console.log(10)
+                                            console.log('entra')
+                                            monto_distinto = 'No'
+                                            fecha = dataExcel[property]['']
+                                            console.log(fecha)
+                                            console.log(fechapago)
+                                            if (fecha === fechapago) {
+                                                console.log('fechaigual')
+
+                                                verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
+                                                console.log('fechaigual')
+                                                console.log(verificacion)
+                                                if (verificacion.length > 0) {
+                                                    yarealizado = 'SI'
+
+                                                } else {
+                                                    estadoo = 'A'
+                                                    try {
+                                                        mensaje = 'Su pago ha sido aprobado'
+
+                                                        email = cliente[0]['email']
+                                                        asunto = 'Pago aprobado'
+                                                        encabezado = 'este mail es muy importante'
+                                                        await enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+
+
+                                                    } catch (error) {
+                                                        console.log(error)
+                                                    }
+
+                                                }
+
+
+
+
+
+
+
+                                            }
 
 
 
                                         }
 
 
-
                                     }
-
-
-                                }
 
                                 } catch (error) {
                                 }
-                            
+
                             }
 
                         }
@@ -758,9 +789,9 @@ async function pagarnivel1cuota(req, res) {
         let monto_distinto = 'Si'
         let monto_inusual = 'No'
         aux = '%' + cuil_cuit + '%'
-      
+
         let regex = /(\d+)/g;
-       
+
         ///busca la cuota
         let existe = await pool.query('Select * from cuotas where  id=?   and parcialidad = "Final" order by nro_cuota', [id])
         // estado = existe[0]
@@ -783,14 +814,14 @@ async function pagarnivel1cuota(req, res) {
                 montomax = cliente[0]['ingresos'] * 0.3
             }
             console.log(cliente[0]['ingresos'])
-     
+
 
             console.log(montomax)
             if (montomax < monto) {
                 monto_inusual = 'Si'
             }
             ////// final verificacion de ingresos
-      
+
             let extracto = await pool.query('Select * from extracto ')
             cantidad = extracto.length
 
@@ -813,7 +844,7 @@ async function pagarnivel1cuota(req, res) {
                         const sheet = workbooksheets[0]
 
                         const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-                      
+
 
                         console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
@@ -833,130 +864,130 @@ async function pagarnivel1cuota(req, res) {
 
                                 credito = String(dataExcel[property]['Créditos'])
 
-                               
+
                                 try {
 
                                     console.log('credito')
 
 
-                                 
-                                    if (credito.includes("$")){
-                                    credito = credito.replace("$", "")
-                                  
-                                    credito = credito.replace(" ", "")
-                              
-                                    credito = credito.replace(".", "")
-                           
-                                    credito = credito.replace(",", ".")
-                          
-                                    
-                                    console.log(9)
-                                    if (credito === monto) {
-                                
-                                     
-                                        monto_distinto = 'No'
-                                        fecha = dataExcel[property]['']
-                                        console.log(fecha)
-                                        console.log(fechapago)
-                                        if (fecha === fechapago) {
+
+                                    if (credito.includes("$")) {
+                                        credito = credito.replace("$", "")
+
+                                        credito = credito.replace(" ", "")
+
+                                        credito = credito.replace(".", "")
+
+                                        credito = credito.replace(",", ".")
 
 
-                                            verificacion = await pool.query('select * from pagos where monto=? and fecha=? ', [monto, fechapago])
-                                            if (verificacion.length > 0) {
-                                                yarealizado = 'SI'
-
-                                            } else {
-                                                estadoo = 'A'
-                                                try {
-                                                    
-                                                } catch (error) {
-                                                    
-                                                }
-                                                mensaje = 'Su pago ha sido aprobado' 
-                                               
-                                                email = cliente[0]['email']
-                                                asunto = 'Pago aprobado'
-                                                encabezado = 'este mail es muy importante'
-                                                enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
-                                              
-
-                                            }
+                                        console.log(9)
+                                        if (credito === monto) {
 
 
+                                            monto_distinto = 'No'
+                                            fecha = dataExcel[property]['']
+                                            console.log(fecha)
+                                            console.log(fechapago)
+                                            if (fecha === fechapago) {
 
 
+                                                verificacion = await pool.query('select * from pagos where monto=? and fecha=? ', [monto, fechapago])
+                                                if (verificacion.length > 0) {
+                                                    yarealizado = 'SI'
 
+                                                } else {
+                                                    estadoo = 'A'
+                                                    try {
 
+                                                    } catch (error) {
 
-                                        }
+                                                    }
+                                                    mensaje = 'Su pago ha sido aprobado'
 
-
-
-                                    }
-
-                                }else {
-                                   
-                                    console.log(credito)
-                                    credito = credito.replace(" ", "")
-                                    console.log(credito)
-                                  //  credito = credito.replace(".", "")
-                                    console.log(credito)
-                                    credito = credito.replace(",", ".")
-                                    console.log(credito)
-                                    console.log('monto')
-                                    console.log(monto)
-                                    console.log(9)
-                                    if (credito === monto) {
-                                        console.log(10)
-                                        console.log('entra')
-                                        monto_distinto = 'No'
-                                        fecha = dataExcel[property]['']
-                                        console.log(fecha)
-                                        console.log(fechapago)
-                                        if (fecha === fechapago) {
-                                            console.log('fechaigual')
-
-                                            verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
-                                            console.log('fechaigual')
-                                            console.log(verificacion)
-                                            if (verificacion.length > 0) {
-                                                yarealizado = 'SI'
-
-                                            } else {
-                                                estadoo = 'A'
-                                                try {
-                                                    mensaje = 'Su pago ha sido aprobado' 
-                                               
                                                     email = cliente[0]['email']
                                                     asunto = 'Pago aprobado'
                                                     encabezado = 'este mail es muy importante'
-                                                  await  enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
-                                                  
-    
-                                                } catch (error) {
-                                                    console.log(error)
+                                                    enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+
+
                                                 }
-                                               
+
+
+
+
+
+
+
                                             }
 
 
 
+                                        }
 
+                                    } else {
+
+                                        console.log(credito)
+                                        credito = credito.replace(" ", "")
+                                        console.log(credito)
+                                        //  credito = credito.replace(".", "")
+                                        console.log(credito)
+                                        credito = credito.replace(",", ".")
+                                        console.log(credito)
+                                        console.log('monto')
+                                        console.log(monto)
+                                        console.log(9)
+                                        if (credito === monto) {
+                                            console.log(10)
+                                            console.log('entra')
+                                            monto_distinto = 'No'
+                                            fecha = dataExcel[property]['']
+                                            console.log(fecha)
+                                            console.log(fechapago)
+                                            if (fecha === fechapago) {
+                                                console.log('fechaigual')
+
+                                                verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
+                                                console.log('fechaigual')
+                                                console.log(verificacion)
+                                                if (verificacion.length > 0) {
+                                                    yarealizado = 'SI'
+
+                                                } else {
+                                                    estadoo = 'A'
+                                                    try {
+                                                        mensaje = 'Su pago ha sido aprobado'
+
+                                                        email = cliente[0]['email']
+                                                        asunto = 'Pago aprobado'
+                                                        encabezado = 'este mail es muy importante'
+                                                        await enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
+
+
+                                                    } catch (error) {
+                                                        console.log(error)
+                                                    }
+
+                                                }
+
+
+
+
+
+
+
+                                            }
 
 
 
                                         }
 
 
-
                                     }
-
-
-                                }
 
                                 } catch (error) {
                                 }
-                            
+
                             }
 
                         }
@@ -1088,10 +1119,10 @@ async function pagonivel2(req, res) {
         console.log(aux)
         let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
         ///////////////////CONSIDERAR PEP
-        let variante=0.3
-        if(cliente[0]['expuesta'] =="SI"){
+        let variante = 0.3
+        if (cliente[0]['expuesta'] == "SI") {
             console.log('expuesta')
-                variante=0.2
+            variante = 0.2
         }
         montomax = cliente[0]['ingresos'] * variante
         console.log(montomax)
@@ -1101,26 +1132,26 @@ async function pagonivel2(req, res) {
 
             monto_inusual = 'Si'
         }
-if (monto_inusual=='Si'){
-    
-    const newLink2 = {
-        id_cuota,
-        monto,
-        cuil_cuit,
-        mes,
-        estado: estado,
-        anio,
-        proceso:"averificarnivel3",
-        cuil_cuit_administrador,
-        ubicacion: formData.file.originalFilename,///////////aca ver el problema
+        if (monto_inusual == 'Si') {
 
-    };
-    await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+            const newLink2 = {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                mes,
+                estado: estado,
+                anio,
+                proceso: "averificarnivel3",
+                cuil_cuit_administrador,
+                ubicacion: formData.file.originalFilename,///////////aca ver el problema
 
-}
+            };
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+        }
 
 
-  
+
 
 
         const newLink = {
@@ -1157,12 +1188,12 @@ if (monto_inusual=='Si'){
 
         await uploadFileToS3(formData.file, "mypdfstorage");
         console.log(' Uploaded!!  ')
-        res.json([mensaje, cuota[0]['cuil_cuit']])
+        res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
 
 
     } catch (ex) {
         console.log('NOOO  ')
-    }
+    }2
 }
 
 
