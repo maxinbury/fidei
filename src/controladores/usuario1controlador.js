@@ -217,10 +217,10 @@ const constanciass = async (req, res, ) => {
 }
 const cbuscliente = async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
-console.log(cuil_cuit)
+
     try {
        cbuss = await pool.query('select * from cbus where cuil_cuit= ? and estado ="A"',[cuil_cuit])
-       console.log(cbuss)
+   
        res.json(cbuss)
     } catch (error) {
         console.log(error)

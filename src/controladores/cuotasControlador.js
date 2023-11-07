@@ -911,11 +911,11 @@ const lotefuncion2 = async (req, res) => {
 
 
         let cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
-        console.log(cuotas)
+     
         if (cuotas.length === 0) {
-            console.log('cuotas')
+         
             cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['idcuotas']])
-            console.log(cuotas)
+      
         }
 
 
@@ -995,7 +995,7 @@ const lotefuncion2 = async (req, res) => {
                     ////////                    cuota_con_ajuste += parseFloat(Ajuste_ICC)
 
                     pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[i]['id']])
-                    console.log(pago)
+                    
                     try {
                         if (pago[0]['SUM(monto)'] === null) {
                             console.log('entra al try')

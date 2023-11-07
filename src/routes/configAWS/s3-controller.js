@@ -1089,6 +1089,13 @@ async function pagonivel2(req, res) {
     cuil_cuit_administrador = myArray[0] /// del administrador
     id = myArray[1]
     monto = myArray[2]
+    cbupago = myArray[4]
+    console.log(cbupago)
+    fecha=myArray[3]
+    if (cbupago==''){
+        cbupago=0
+    }
+    console.log(cbupago)
     ///
     ///INICIO GUARDADO DE PAGO
 
@@ -1157,6 +1164,7 @@ async function pagonivel2(req, res) {
         const newLink = {
             id_cuota,
             monto,
+            fecha,
             cuil_cuit,
             mes,
             estado: estado,
@@ -1165,6 +1173,7 @@ async function pagonivel2(req, res) {
             cuil_cuit_distinto,
             monto_distinto,
             monto_inusual,
+            id_cbu:cbupago,
             ubicacion: formData.file.originalFilename,///////////aca ver el problema
 
         };
