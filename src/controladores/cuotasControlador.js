@@ -904,14 +904,14 @@ const vercuotas2 = async (req, res) => {
 
 //// para react
 const lotefuncion2 = async (req, res) => {
-
+console.log('lotefuncon2')
     try {
         const id = req.params.id
         const lot = await pool.query('SELECT * FROM lotes WHERE id =  ?', [id])
 
 
         let cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
-     
+///////////ver si innecesario     
         if (cuotas.length === 0) {
          
             cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['idcuotas']])
@@ -927,7 +927,7 @@ const lotefuncion2 = async (req, res) => {
             pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[0]['id']])
             try {
                 if (pago[0]['SUM(monto)'] === null) {
-                    console.log('entra al try')
+                    
                     pag = 0
                 } else {
                     pag = parseFloat(pago[0]['SUM(monto)'])
@@ -939,13 +939,13 @@ const lotefuncion2 = async (req, res) => {
                 pag = 0
             }
 
-
+/////pago = 0 si no tiene   = cantidd si tiene 
             diferencia = parseFloat(- parseFloat(Amortizacion.toFixed(2)) + pag)
             saldoinicial = cuotas[0]['saldo_inicial']
 
             pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[0]['id']])
             saldo_cierre = parseFloat(cuotas[0]['saldo_inicial']) - parseFloat((Amortizacion).toFixed(2))
-            Saldo_real = parseFloat(cuotas[0]['saldo_inicial']) - pag,
+            Saldo_real = parseFloat(cuotas[0]['saldo_inicial']) - pag
 
                 cuota_con_ajuste = parseFloat(Amortizacion)
             nuev = {
@@ -1010,11 +1010,12 @@ const lotefuncion2 = async (req, res) => {
                         pag = 0
                     }
 
-                    Saldo_real -= +pag - Ajuste_ICC,
+                 //   Saldo_real -= +pag - Ajuste_ICC,
+                    Saldo_real = parseFloat(cuotas[i-1]['Saldo_real']) - pag+parseFloat(cuotas[i]['cuota_con_ajuste'])-parseFloat(cuotas[i]['Amortizacion']) ,
 
 
                         saldo_inicial = saldo_cierre.toFixed(2)
-                    saldo_cierre -= AmortizacionReal
+                    saldo_cierre -= Amortizacion
 
                     dif = - parseFloat(cuota_con_ajuste) + parseFloat(pag)
 
