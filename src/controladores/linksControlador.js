@@ -357,7 +357,7 @@ const borrarCbu = async (req, res) => {
 
 const cantidadInfo = async (req, res) => {
 
-    const clientes = await pool.query('select * from clientes')
+    const clientes = await pool.query('select * from clientes order by nombre')
 
     res.json(clientes)
 

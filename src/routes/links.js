@@ -61,9 +61,9 @@ for (x in todos ){
         for (y in lotes){
         
                 if (lotes[y]['zona']=="IC3"){
-                    lot=lot +lotes[y]['zona']+' -Fr: '+lotes[y]['fraccion']+' -Mz: '+lotes[y]['manzana']+' -Lote: '+lotes[y]['lote']+'/'
+                    lot=lot +lotes[y]['zona']+' -Fr: '+lotes[y]['fraccion']+' -Mz: '+lotes[y]['manzana']+' -Lote: '+lotes[y]['lote']+' // '
                 } else{
-                    lot=lot +lotes[y]['zona']+' -Fr: '+lotes[y]['fraccion']+' -Mz: '+lotes[y]['manzana']+' -Parc: '+lotes[y]['parcela']+'/'
+                    lot=lot +lotes[y]['zona']+' -Fr: '+lotes[y]['fraccion']+' -Mz: '+lotes[y]['manzana']+' -Parc: '+lotes[y]['parcela']+' // '
     
     
                 }

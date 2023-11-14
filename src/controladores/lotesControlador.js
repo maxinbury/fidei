@@ -137,7 +137,7 @@ res.json(lotes)
 
 const listadeTodos = async (req, res) => {
  
-    const lotes = await pool.query('select * from lotes')
+    const lotes = await pool.query('select * from lotes left join (select cuil_cuit as cui, nombre from clientes) as sel on lotes.cuil_cuit=sel.cui ')
     const disponibles = await pool.query('select * from lotes where estado = "DISPONIBLE" or estado = "disponible"')
     const parque = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="PIT"')
     const ic3 = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="IC3" ')
