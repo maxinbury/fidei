@@ -657,7 +657,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             email = 'pipao.pipo@gmail.com'
             asunto = 'Pago Sospechoso'
             encabezado = 'Pago Sospechoso al fideicomiso'
-            mensaje = "Recibimos un pado del cuil: " + cuil_cuit + 'de un monto de ' + auxi[0]['monto'] + ' Detalle: ' + detalle
+            mensaje = "Recibimos un pago del cuil: " + cuil_cuit + 'de un monto de ' + auxi[0]['monto'] + ' Detalle: ' + detalle
             //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
 
             pagoaux = await pool.query('select * from historial_pagosi where id = ?', [id])
