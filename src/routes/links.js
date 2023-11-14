@@ -50,6 +50,48 @@ router.get('/borrarcbu/:id',isLoggedInn,  borrarCbu)
 
 router.get('/infocantidad',cantidadInfo )
 
+router.get('/completarobservaciones',async (req, res) => {
+    try {
+        const todos = await pool.query('select * from clientes')
+for (x in todos ){
+  if (todos[x]['cuil_cuit'] !=0){
+    lotes = await pool.query('select * from lotes where cuil_cuit=?',[todos[x]['cuil_cuit']])
+    lot= '' 
+       try {
+        for (y in lotes){
+        
+                if (lotes[y]['zona']=="IC3"){
+                    lot=lot +lotes[y]['zona']+' -Fr: '+lotes[y]['fraccion']+' -Mz: '+lotes[y]['manzana']+' -Lote: '+lotes[y]['lote']+'/'
+                } else{
+                    lot=lot +lotes[y]['zona']+' -Fr: '+lotes[y]['fraccion']+' -Mz: '+lotes[y]['manzana']+' -Parc: '+lotes[y]['parcela']+'/'
+    
+    
+                }
+           
+           
+           
+
+
+
+        }
+    await pool.query('UPDATE clientes set  observaciones=? WHERE id = ?', [lot, todos[x]['id']])
+ } catch (error) {
+                console.log(error)
+            }
+}
+}
+    } catch (error) {
+        console.log(error)
+        res.json('error')
+    }
+res.json('listo')
+
+}
+
+)
+
+
+
 router.get('/lista2',isLoggedInn4,lista2 )
 
 

@@ -364,6 +364,9 @@ const cantidadInfo = async (req, res) => {
 
 }
 
+
+
+
 const lista2 = async (req, res) => {
 
     const clientes = await pool.query('select * from clientes where cod_zona="Legales" ')
