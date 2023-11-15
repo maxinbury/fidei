@@ -180,11 +180,12 @@ const cbus =  async (req, res, ) => {
     cuil_cuit = req.params.cuil_cuit
 
     try {
-       cbus = await pool.query('select * from cbus where cuil_cuit= ? ',[cuil_cuit])
+    const   cbus_cli = await pool.query('select * from cbus where cuil_cuit= ? ',[cuil_cuit])
      
-       res.json(cbus)
+       res.json(cbus_cli)
     } catch (error) {
-        res.send('algo salio mal')
+        console.log(error)
+        res.json('algo salio mal')
     }
 
    

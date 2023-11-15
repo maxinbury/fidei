@@ -141,7 +141,7 @@ console.log(cuil_cuit)
                             
                                 actumail = {
                                     email,
-                                    email2
+                                   
                                 }
                                 await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [actumail, cuil_cuit])
     
@@ -157,8 +157,8 @@ console.log(cuil_cuit)
                         try {
                           const result = await pool.query('INSERT INTO users  set ?', [newUser])
                             newUser.id = result.insertId// porque newuser no tiene el id
-                            console.log('llega')
-                           await enviodemail.enviarmail.enviarmail("pitsantacatalina@cmpcorrientes.com.ar", "Nuevo usuario ", "Se ha registrado un nuevo usuario en el sistema", "Se ha registrado un nueco usuario se trata de "+rows[0]['nombre'])
+                            const rr = await pool.query('select * from users where id = ? ',[newUser.id])
+                           await enviodemail.enviarmail.enviarmail(/*"pitsantacatalina@cmpcorrientes.com.ar"*/"fernandog.enrique.dev@gmail.com", "Nuevo usuario ", "Se ha registrado un nuevo usuario en el sistema", "Se ha registrado un nuevo usuario se trata de "+rr[0]['nombre'])
                             return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                         } catch (error) {
