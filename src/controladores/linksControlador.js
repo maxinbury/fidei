@@ -312,7 +312,7 @@ const estadisticasLegajos = async (req, res) => {
 
 const deshabilitar = async (req, res) => {
     const { cuil_cuit, cuil_cuit_admin } = req.body
-
+console.log(cuil_cuit_admin)
     newLink = {
         habilitado: 'No'
     }
@@ -456,7 +456,7 @@ const legajosCuil = async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
-
+    
     /*  legajos.map(img => {
           fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
   

@@ -129,8 +129,9 @@ router.get('/clientehabilitado/:cuil_cuit',isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
  
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
-    const habilitado = await pool.query('SELECT * FROM registro_operaciones WHERE cuil_cuit_referencia = ? and (adicional = "Habilitado" or adicional = "deshabilitado")', [cuil_cuit])
+    const habilitado = await pool.query('SELECT * FROM registro_operaciones WHERE cuil_cuit_referencia = ? and (adicional = "Habilitado" or adicional = "Deshabilitado")', [cuil_cuit])
    console.log(habilitado.length)
+   console.log(habilitado)
     if (habilitado.length>0){
     reg= habilitado[(habilitado.length)-1]
         }else{
