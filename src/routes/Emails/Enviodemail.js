@@ -61,7 +61,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
   async function enviarmailsospechoso (email,asunto,encabezado,mensaje, ubicacion) {
     console.log(ubicacion)
     try { 
-     link = await s3Controller.traerImagen(ubicacion)
+    // link = await s3Controller.traerImagen(ubicacion)
       let transporter = nodemailer.createTransport({
           host: "smtp-mail.outlook.com", // hostname
           port: 587, // port for secure SMTP
@@ -76,12 +76,19 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
       });
       
         // send mail with defined transport object
+        const auxx = "../Emails/img/marcas.png"
         let info = await transporter.sendMail({
           from: '"Administracion Fideicomiso Santa Catalina" <fideicomisoSCatalina@outlook.com>', // direccion de envio 
           to: [email], // list of receivers
           subject: asunto, // Subject line
           text: encabezado, // plain text body
-          html: "<b>  "+ mensaje+" </b>"+link, // html body
+          attachments: [
+            {   // use URL as an attachment
+              filename: 'marcas.png',
+              path: (path.join(__dirname, auxx)),
+          cid: "logo"          }
+          ],
+          html: "<b>  "+ mensaje+" </b><br/>"+"Descarga:"+ubicacion+"<br/> <br/> <br/>  `<img  style='position:absolute;height:10%;width:10%'src = 'cid:logo'></img>", // html body
         });
       
         console.log("Message sent: %s", info.messageId);

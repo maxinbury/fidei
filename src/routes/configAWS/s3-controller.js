@@ -109,12 +109,12 @@ async function getSignedUrl2(req, res) {
 async function traerImagen(ubicacion) {
 
     try {
-
+        console.log('ubicacion')
         console.log(ubicacion)
-        const { key } = { ubicacion };
+       // const { key } = { ubicacion };
 
-        console.log(key)
-        const url = await getPresignedURL("mypdfstorage", key);
+       console.log('ubicacion2')
+        const url = await getPresignedURL("mypdfstorage", ubicacion);
         console.log(url)
         return (url)
 

@@ -11,7 +11,7 @@ const ponerguion = require('../public/apps/transformarcuit')
 const sacarguion = require('../public/apps/transformarcuit')
 const enviodemail = require('./Emails/Enviodemail')
 const { Console } = require('console')
-
+const s3Controller = require('./configAWS/s3-controller');
 
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../Excel'),
@@ -657,13 +657,18 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             email = 'pipao.pipo@gmail.com'
             asunto = 'Pago Sospechoso'
             encabezado = 'Pago Sospechoso al fideicomiso'
-            mensaje = "Recibimos un pago del cuil: " + cuil_cuit + 'de un monto de ' + auxi[0]['monto'] + ' Detalle: ' + detalle
-            //    enviodemail.enviarmail(email,asunto,encabezado,mensaje)
+            mensaje = "Recibimos un pago del cuil: " + cuil_cuit + ' de un monto de  ' + auxi[0]['monto'] +' Pesos'+ '<br/> Detalle: ' + detalle
+            //    
 
             pagoaux = await pool.query('select * from historial_pagosi where id = ?', [id])
-            ubicacion = pagoaux[0]['ubicacion']
+            ubicacion = auxi[0]['ubicacion']
 
-            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, ubicacion)
+///////
+console.log('ubi')
+console.log(ubicacion)
+const traerub = await s3Controller.traerImagen(ubicacion)
+const descargaraqui= "<a href="+traerub+">Descargar aqui el comprobante</a>"
+            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, descargaraqui)
 
 
             break
