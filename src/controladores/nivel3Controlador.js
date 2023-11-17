@@ -170,7 +170,7 @@ const agregarIccGral2 =async (req, res,) => {
     }
 
     //////////////try
-    
+    console.log(datoss)
 
 
 
@@ -181,7 +181,17 @@ const agregarIccGral2 =async (req, res,) => {
 
     agregaricc.calcularicc(todas[i],ICC)
 }
+try {
 
+    exis =  await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio,zona])
+    if (exis.length>0){
+        await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
+    }else{
+
+    await pool.query('insert into icc_historial set?', datoss)}
+} catch (error) {
+    console.log(error)
+}
 res.send('Icc asignado con éxito');
 }
 module.exports = {

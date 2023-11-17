@@ -45,7 +45,7 @@ try {
 
         } else {
             const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ? and id_lote = ?', [nro_cuota - 1, cuil_cuit,todas["id_lote"]])
-          console.log(anterior)
+       
             
             let Saldo_real_anterior = parseFloat(anterior[0]["Saldo_real"])
             saldo_inicial = Saldo_real_anterior
@@ -57,9 +57,7 @@ try {
             const cuota_con_ajuste = ((cuota_con_ajuste_anterior) + parseFloat(Ajuste_ICC)).toFixed(2)
      
             Saldo_real_anterior = (parseFloat(Saldo_real_anterior) +  parseFloat(Ajuste_ICC))
-            console.log(typeof Saldo_real_anterior )
-            console.log(Ajuste_ICC )
-            console.log(Saldo_real_anterior )
+          
             const Saldo_real = parseFloat(Saldo_real_anterior).toFixed(3)
          
 
@@ -82,7 +80,7 @@ try {
   
             await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas["id"]])
             todass =   await pool.query('select * from  cuotas WHERE id_lote = ?', [ todas["id_lote"]])
-           console.log(todass.length)
+         
             if (todass.length> todas['nro_cuota'] ){
               
                 
@@ -101,9 +99,9 @@ try {
                     
 
                 }}
-                 console.log(cuotaa)
+               
                 await pool.query('UPDATE cuotas set ? WHERE id_lote = ? and nro_cuota>?', [cuotaa, todas["id_lote"],todas["nro_cuota"]])
-                console.log(typeof(todas['nro_cuota']))
+               
             }
 
         } catch (error) {
