@@ -73,19 +73,19 @@ const habilitar = async (req, res) => {
 
 const estadisticasLegajos = async (req, res) => {
     const { cuil_cuit } = req.body
-    console.log(cuil_cuit)
+
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
     const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
     const cui = '%' + cuil_cuit + '%'
-    const client = await pool.query('select * from clientes where cuil_cuit like ? ', [cui])
-    razon = client[0]['razon']
-
+    const client = await pool.query('select * from clientes where cuil_cuit = ? ', [cuil_cuit])
+    razonn = client[0]['razon']
+    console.log(client[0]['razon'])
     a = "Dni "
     b = "Constancia de Afip "
     c = "Estatuto Social "
     d = "Acta del organo decisorio "
     e = "Acreditacion Domicilio "
-    f = "Ultimos balances "
+    f = "Ultimos balances CPCE"
     g = "Dj Iva "
     h = "Pagos Previsionales "
     aux = "Dj Datos personales "
@@ -93,6 +93,11 @@ const estadisticasLegajos = async (req, res) => {
     k = "Dj Origen de Fondos "
     l = "Acreditacion de ingresos "
     m = "Referencias comerciales"
+    n = 0
+    o = "Recibo de sueldo"
+    p = "Pago Monotributo"
+    q = "Pago autonomo"
+
 
     aa = 0
     bb = 0
@@ -107,12 +112,12 @@ const estadisticasLegajos = async (req, res) => {
     kk = 0
     ll = 0
     mm = 0
+    nn = 0
+    let acreditacion_i = "No tiene constancias de acreditacion de ingresos"
 
-
-
-    for (var i = 0; i < legajosAprobados.length; i++) {
-
-        if (razon == 'Empresa') {
+    for (let i = 0; i < legajosAprobados.length; i++) {
+        console.log(legajosAprobados[i]['tipo'])
+        if (razonn == 'Empresa') {
             switch (legajosAprobados[i]['tipo']) {
                 case "Dni":
                     a = ""
@@ -135,19 +140,9 @@ const estadisticasLegajos = async (req, res) => {
                     e = ""
                     ee = 1
                     break;
-                case "Ultimos balances":
-                    f = ""
-                    ff = 1
-                    break;
-                case "DjIva":
-                    g = ""
-                    gg = 1
 
-                    break;
-                case "Pagos Previsionales":
-                    h = ""
-                    hh = 1
-                    break;
+
+
                 case "Dj Datospers":
                     aux = ""
                     auxaux = 1
@@ -157,15 +152,66 @@ const estadisticasLegajos = async (req, res) => {
                     jj = 1
                     break;
                 case "Dj OrigenFondos":
+                
                     k = ""
-                    kk = 1
+                   kk = 1
+                    break;
+                case "DDJJ IIBB":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+                case "DjIva":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+                case "Pagos Previsionales":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
+
+                    }
+                    l = ""
+                    ll = 1
                     break;
                 case "Referencias comerciales":
-                    m = ""
-                    mm = 1
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
+
+                    }
+                    l = ""
+                    ll = 1
                     break;
+                case "Ultimos balances CPCE":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+
+        
+
                 default:
                     break;
+
             }
         } else {
             switch (legajosAprobados[i]['tipo']) {
@@ -199,6 +245,48 @@ const estadisticasLegajos = async (req, res) => {
                     l = ""
                     ll = 1
                     break;
+                case "DDJJ IIBB":
+
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + " DDJJ IIBB"
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+                case "Recibo de sueldo":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + " Recibo de sueldo"
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+                case "Pago Monotributo":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + " Pago Monotributo"
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+                case "Pago autonomo":
+                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
+                    } else {
+                        acreditacion_i = acreditacion_i + ", " + " Pago autonomo"
+
+                    }
+                    l = ""
+                    ll = 1
+                    break;
+
                 default:
                     break;
             }
@@ -209,11 +297,11 @@ const estadisticasLegajos = async (req, res) => {
     }
 
 
-    if (razon == 'Empresa') {
-        Faltan = 'Aun falta completar ' + a + b + c + d + e + f + g + h + aux + j + k + m
-        porccompleto = (aa + bb + cc + dd + ee + ff + gg + hh + auxaux + jj + kk + mm)
+    if (razonn == 'Empresa') {
+        Faltan = 'Aun falta completar ' + a + b + c + d + e + aux + j + k + l
+        porccompleto = (aa + bb + cc + dd + ee + auxaux + jj + kk)
 
-        porccompleto = porccompleto / 12
+        porccompleto = porccompleto / 9
 
         porccompleto = (porccompleto * 100).toFixed(2)
     } else {
@@ -225,7 +313,7 @@ const estadisticasLegajos = async (req, res) => {
 
         porccompleto = (porccompleto * 100).toFixed(2)
     }
-    console.log(ll)
+
 
     let pendientes = 0
     let aprobadas = 0
@@ -283,7 +371,8 @@ const estadisticasLegajos = async (req, res) => {
         "porcRechazadas": porcR,
 
         porccompleto,
-        Faltan
+        Faltan,
+        acreditacion_i
 
     }
 
@@ -312,7 +401,7 @@ const estadisticasLegajos = async (req, res) => {
 
 const deshabilitar = async (req, res) => {
     const { cuil_cuit, cuil_cuit_admin } = req.body
-console.log(cuil_cuit_admin)
+    console.log(cuil_cuit_admin)
     newLink = {
         habilitado: 'No'
     }
@@ -378,47 +467,47 @@ const lista2 = async (req, res) => {
 
     let env = []
     let tot = []
-    let pagadas =[]
+    let pagadas = []
     for (cli in clientes) {
-      
-        pagadas =[]
+
+        pagadas = []
         tot = []
         let bandmesconcurr = false
         let lotes = await pool.query('select * from lotes  where cuil_cuit=? ', [clientes[cli]['cuil_cuit']])
-        let quelote =""
+        let quelote = ""
         let cantidad_falt = 0
         let cantidad_venc = 0
-     
+
         for (lot in lotes) {
-            quelote =quelote+lotes[lot]['manzana']+" - "+lotes[lot]['parcela']
+            quelote = quelote + lotes[lot]['manzana'] + " - " + lotes[lot]['parcela']
             let cuotaact = await pool.query('select * from cuotas left join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where id_cuota is null and id_lote=?', [lotes[lot]['id']])
             let cuotavenc = await pool.query('select * from cuotas where mes=? and anio=? and id_lote=? and pago>0 ', [mesact, anoac, lotes[lot]['id']])
-          tot = await pool.query('select * from cuotas where id_lote=?', [lotes[lot]['id']])
-             pagadas = await pool.query('select * from cuotas  join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where  id_lote=?', [lotes[lot]['id']])
-    
-        
+            tot = await pool.query('select * from cuotas where id_lote=?', [lotes[lot]['id']])
+            pagadas = await pool.query('select * from cuotas  join (select id_cuota from pagos )as sele on cuotas.id=sele.id_cuota where  id_lote=?', [lotes[lot]['id']])
+
+
             if (cuotavenc.length > 0) {
                 bandmesconcurr = true
             }
             cantidad_falt += cuotaact.length
             for (actt in cuotaact) {
                 if (cuotaact[actt]['anio'] < anoac) {
-                   
+
                     cantidad_venc += 1
                 } else {
                     if (cuotaact[actt]['anio'] == anoac) {
-                      
-                            if (cuotaact[actt]['mes'] < mesact) {
-                  
-                               cantidad_venc = cantidad_venc+1
-                             
-                            }
+
+                        if (cuotaact[actt]['mes'] < mesact) {
+
+                            cantidad_venc = cantidad_venc + 1
+
+                        }
                     }
-                }  
-            }        
+                }
+            }
         }
-  
-       
+
+
         let nuevo = {
             cuil_cuit: clientes[cli]['cuil_cuit'],
             Nombre: clientes[cli]['Nombre'],
@@ -426,7 +515,7 @@ const lista2 = async (req, res) => {
             bandmesconcurr,
             cantidad_venc,
             quelote,
-            pagadas:pagadas.length,
+            pagadas: pagadas.length,
             totales: tot.length
 
         }
@@ -456,7 +545,7 @@ const legajosCuil = async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
-    
+
     /*  legajos.map(img => {
           fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
   
