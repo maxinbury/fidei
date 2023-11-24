@@ -79,7 +79,7 @@ const estadisticasLegajos = async (req, res) => {
     const cui = '%' + cuil_cuit + '%'
     const client = await pool.query('select * from clientes where cuil_cuit = ? ', [cuil_cuit])
     razonn = client[0]['razon']
-    console.log(client[0]['razon'])
+
     a = "Dni "
     b = "Constancia de Afip "
     c = "Estatuto Social "
@@ -99,6 +99,7 @@ const estadisticasLegajos = async (req, res) => {
     q = "Pago autonomo"
 
 
+
     aa = 0
     bb = 0
     cc = 0
@@ -113,10 +114,22 @@ const estadisticasLegajos = async (req, res) => {
     ll = 0
     mm = 0
     nn = 0
+    ////////sumatoria de acreditacion de empresas
+    ggg = 0  ///dj iva
+    rrr = 0/// ibb
+    fff = 0 //cpe
+    hhh = 0 /// "Pagos Previsionales "
+    mmm = 0// "Referencias comerciales"
+
+    ////  sumatoria de acreditacion ingresos de personas
+    ooo = 0 /// "Recibo de sueldo"
+    ppp = 0 ///  "Pago Monotributo"
+    qqq = 0 ///  "Pago autonomo"
+
     let acreditacion_i = "No tiene constancias de acreditacion de ingresos"
 
     for (let i = 0; i < legajosAprobados.length; i++) {
-        console.log(legajosAprobados[i]['tipo'])
+    
         if (razonn == 'Empresa') {
             switch (legajosAprobados[i]['tipo']) {
                 case "Dni":
@@ -152,62 +165,48 @@ const estadisticasLegajos = async (req, res) => {
                     jj = 1
                     break;
                 case "Dj OrigenFondos":
-                
+
                     k = ""
-                   kk = 1
+                    kk = 1
                     break;
                 case "DDJJ IIBB":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    rrr += 1/// ibb
+
                     break;
                 case "DjIva":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    ggg += 1  ///dj iva
+
                     break;
                 case "Pagos Previsionales":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+
+                    hhh += 1 /// "Pagos Previsionales "
+
                     break;
                 case "Referencias comerciales":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+
+                    mmm += 1// "Referencias comerciales"
                     break;
                 case "Ultimos balances CPCE":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + legajosAprobados[i]['tipo']
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + legajosAprobados[i]['tipo']
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    fff += 1 //cpe
+
                     break;
 
-        
+
 
                 default:
                     break;
@@ -246,45 +245,28 @@ const estadisticasLegajos = async (req, res) => {
                     ll = 1
                     break;
                 case "DDJJ IIBB":
-
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + " DDJJ IIBB"
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    rrr +=1
                     break;
                 case "Recibo de sueldo":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + " Recibo de sueldo"
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    ooo +=1
                     break;
                 case "Pago Monotributo":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + " Pago Monotributo"
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    ppp +=1
                     break;
                 case "Pago autonomo":
-                    if (acreditacion_i == "No tiene constancias de acreditacion de ingresos") {
-                        acreditacion_i = "Cliente tiene como acreditacion de ingresos " + " DDJJ IIBB"
-                    } else {
-                        acreditacion_i = acreditacion_i + ", " + " Pago autonomo"
-
-                    }
+                    acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
+                    qqq +=1
                     break;
 
                 default:
@@ -301,17 +283,70 @@ const estadisticasLegajos = async (req, res) => {
         Faltan = 'Aun falta completar ' + a + b + c + d + e + aux + j + k + l
         porccompleto = (aa + bb + cc + dd + ee + auxaux + jj + kk)
 
+
         porccompleto = porccompleto / 9
 
         porccompleto = (porccompleto * 100).toFixed(2)
+        ///
+        //  ggg=0  ///dj iva
+        //   rrr = 0/// ibb
+        //  fff = 0 //cpe
+        //  hhh = 0 /// "Pagos Previsionales "
+        ////////mmm = 0// "Referencias comerciales"
+        if (acreditacion_i != "No tiene constancias de acreditacion de ingresos") {
+
+            if (ggg != 0) {
+                acreditacion_i = acreditacion_i + " " + ggg + " DjIva"
+            }
+            if (rrr != 0) {
+                acreditacion_i = acreditacion_i + " " + rrr + " IIBB"
+            }
+            if (hhh != 0) {
+                acreditacion_i = acreditacion_i + " " + hhh + " Pagos Previsionales"
+            }
+            if (mmm != 0) {
+                acreditacion_i = acreditacion_i + " " + mmm + " Referencias comerciales"
+            }
+            if (fff != 0) {
+                acreditacion_i = acreditacion_i + " " + fff + " Ultimos Balances CPCE"
+            }
+
+
+        }
+
+
     } else {
-        console.log('Persona')
+      
         Faltan = 'Aun falta completar ' + a + b + e + aux + j + k + l
         porccompleto = (aa + bb + ee + auxaux + jj + kk + ll)
 
         porccompleto = porccompleto / 7
 
         porccompleto = (porccompleto * 100).toFixed(2)
+
+        //////////////////////
+        ///  ooo = 0 /// "Recibo de sueldo"
+       ///// ppp = 0 ///  "Pago Monotributo"
+          //////  qqq = 0 ///  "Pago autonomo"
+          if (acreditacion_i != "No tiene constancias de acreditacion de ingresos") {
+
+            if (ooo != 0) {
+                acreditacion_i = acreditacion_i + " " + ggg + " Recibo de sueldo"
+            }
+            if (ppp != 0) {
+                acreditacion_i = acreditacion_i + " " + rrr + " Pago Monotributo"
+            }
+            if (qqq != 0) {
+                acreditacion_i = acreditacion_i + " " + hhh + " Pago autonomo"
+            }
+      
+            if (rrr != 0) {
+                acreditacion_i = acreditacion_i + " " + rrr + " IIBB"
+            }
+
+        }
+
+
     }
 
 
