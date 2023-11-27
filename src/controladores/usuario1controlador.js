@@ -403,6 +403,7 @@ const completolegajos = async (req, res) => {
     kk = false
     ll =false
     mm = false
+    nn = false
 
     for (var i = 0; i < legajosAprobados.length; i++) {
        
@@ -429,7 +430,7 @@ const completolegajos = async (req, res) => {
               
                 ee = true
                 break;
-            case "Ultimos balances":
+            case "Ultimos balances CPCE":
              
                 ff = true
                 break;
@@ -458,6 +459,12 @@ const completolegajos = async (req, res) => {
                   
                     mm = true
                     break;
+                    case "DDJJ IIBB":
+                  
+                    nn = true
+                    break;
+
+                    
             default:
                 break;
         }
@@ -504,7 +511,7 @@ const completolegajos = async (req, res) => {
    
  
  if (razon == 'Empresa'){
-    respuesta = [aa , bb , ee , auxaux , jj , kk , ff,  gg , hh , cc,dd, mm]
+    respuesta = [aa,ee, auxaux, jj , kk , bb ,ff,   gg , hh, cc ,  dd , mm,   nn   ]
 
 
  }else {
