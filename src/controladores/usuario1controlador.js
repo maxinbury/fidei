@@ -474,7 +474,7 @@ const completolegajos = async (req, res) => {
                
                 aa = true
                 break;
-            case "Constancia de Afip":
+            case "Constancia CUIL/CUIT":
                
                 bb = true
                 break;
@@ -484,7 +484,7 @@ const completolegajos = async (req, res) => {
                 ee = true
                 break;
             
-            case "Dj Datospers":
+            case "DJJ Datos Personales":
                
                 auxaux = true
                 break;
@@ -516,7 +516,7 @@ const completolegajos = async (req, res) => {
 
  }else {
   
-    respuesta = [aa, bb ,  ee ,  auxaux , jj, kk,ll]
+    respuesta = [aa,  ee,  auxaux, jj , kk, bb  ,ll]
 
 
  }
