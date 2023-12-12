@@ -63,9 +63,46 @@ router.post('/determinarmapa1', async (req, res) => {
     }
     res.json('Actualizado')
 })
+router.post('/determinarmapa2', async (req, res) => {
+    const { manzana, parcela,mapa1 } = req.body
+  
+    const asignar = {mapa2:mapa1}
+    try {
+        await pool.query('UPDATE lotes set ? WHERE zona ="PIT" and manzana=? and parcela=?', [asignar,manzana, parcela])
+ 
+    } catch (error) {
+        console.log(error)
+        res.json('error ')
+    }
+    res.json('Actualizado')
+})
+router.post('/traersegunmapa1', async (req, res) => {
+    const { mapa1 } = req.body
+  
+    
+    try {
+      datos=  await pool.query('select * from lotes where mapa1=?',[mapa1])
+ 
+    } catch (error) {
+        console.log(error)
+        res.json('error ')
+    }
+    res.json(datos)
+})
 
-
-
+router.post('/traersegunmapa2', async (req, res) => {
+    const { mapa2 } = req.body
+  
+    
+    try {
+      datos=  await pool.query('select * from lotes where mapa2=?',[mapa2])
+ 
+    } catch (error) {
+        console.log(error)
+        res.json('error ')
+    }
+    res.json(datos)
+})
 
 router.post('/calcularvalor', async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit,lote } = req.body
