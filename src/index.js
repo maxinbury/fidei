@@ -2,10 +2,10 @@ const express = require('express')
 const morgan = require('morgan')
 const exphbs = require('express-handlebars')
 const path = require('path')
-const flash = require ('connect-flash')
+const flash = require('connect-flash')
 const session = require('express-session')
 const MySQLStore = require('express-mysql-session')
-const {database} = require('./keys')
+const { database } = require('./keys')
 const passport = require('passport')
 const cors = require("cors");
 const jwt = require('jsonwebtoken')
@@ -18,23 +18,23 @@ const mercadopago = require('mercadopago')
 
 
 mercadopago.configure({
-    access_token:"APP_USR-6912288908238269-040415-5a368602ce75dc79949306b9fc9b4714-1345566063"
+    access_token: "APP_USR-6912288908238269-040415-5a368602ce75dc79949306b9fc9b4714-1345566063"
 })
 
 //inicializacion
 const app = express()
 require('./lib/passport')
-app.set('key',keys.key)
+app.set('key', keys.key)
 
 //settings
 
 app.set('port', process.env.PORT || 4000)
-app.set('views', path.join(__dirname,'views')) // indica donde esta la carpeta views 
+app.set('views', path.join(__dirname, 'views')) // indica donde esta la carpeta views 
 app.engine('.hbs', exphbs.engine({  // define la localizacion de los laoyuts nav y footers
-    defaultLayout:'main',
+    defaultLayout: 'main',
     layoutDir: path.join(app.get('views'), 'layouts'),
     partialsDir: path.join(app.get('views'), 'partials'),
-    extname:'.hbs',
+    extname: '.hbs',
     helpers: require('./lib/handlebars')
 }))
 
@@ -51,7 +51,7 @@ app.use(session({
 
 app.use(flash())
 app.use(morgan('dev'))
-app.use(express.urlencoded({extended:false})) // para recibir datos de formularios
+app.use(express.urlencoded({ extended: false })) // para recibir datos de formularios
 app.use(express.json())
 app.use(passport.initialize())
 app.use(passport.session())
@@ -60,7 +60,7 @@ app.use(cors());
 
 
 //globalvariables
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
     app.locals.success = req.flash('success')
     app.locals.success = req.flash('message')
     app.locals.user = req.user
@@ -85,20 +85,21 @@ app.use('/relevamiento', require('./routes/relevamiento'))
 app.use('/notificaciones', require('./routes/notificaciones'))
 app.use('/administracion', require('./routes/Administracion'))
 app.use('/novedades', require('./routes/novedades'))
+app.use('/apipagos', require('./routes/apipagos'))
 app.use('/home', require('./routes/home'))
 
 
 
-app.use(express.static(path.join(__dirname,'../pdfs')))
-app.use(express.static(path.join(__dirname,'pdfs')))
+app.use(express.static(path.join(__dirname, '../pdfs')))
+app.use(express.static(path.join(__dirname, 'pdfs')))
 //public  
-app.use(express.static(path.join(__dirname, 'public') ))
+app.use(express.static(path.join(__dirname, 'public')))
 
-app.use(express.static(path.join(__dirname, 'dbimages') ))
+app.use(express.static(path.join(__dirname, 'dbimages')))
 
 
 //start 
-app.listen(app.get('port'), ()=>{
+app.listen(app.get('port'), () => {
     console.log(`server onport`, app.get('port'))
 })
 

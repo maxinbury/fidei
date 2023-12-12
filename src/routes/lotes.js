@@ -50,6 +50,23 @@ router.get('/desasignarlote', isLoggedInn2, )
 
 
 
+router.post('/determinarmapa1', async (req, res) => {
+    const { manzana, lote,mapa1 } = req.body
+    console.log( manzana, lote,mapa1)
+    const asignar = {mapa1}
+    try {
+        await pool.query('UPDATE lotes set ? WHERE zona ="IC3" and manzana=? and lote=?', [asignar,manzana, lote])
+ 
+    } catch (error) {
+        console.log(error)
+        res.json('error ')
+    }
+    res.json('Actualizado')
+})
+
+
+
+
 router.post('/calcularvalor', async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit,lote } = req.body
    console.log( zona, manzana, parcela, cuil_cuit,lote)
