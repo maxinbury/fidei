@@ -66,7 +66,7 @@ router.post('/determinarmapa1', async (req, res) => {
 router.post('/determinarmapa2', async (req, res) => {
     const { manzana, parcela, mapa1 } = req.body
 
-    const asignar = { mapa1: mapa1 }
+    const asignar = { mapa2: mapa1 }
     try {
         await pool.query('UPDATE lotes set ? WHERE zona ="PIT" and manzana=? and parcela=?', [asignar, manzana, parcela])
 
