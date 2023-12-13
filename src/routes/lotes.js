@@ -102,6 +102,11 @@ router.post('/traersegunmapa1', async (req, res) => {
             cuotasss= await pool.query('select * from cuotas where id_lote=? and parcialidad="Final"', [datos[0]['id']])
             cuotas=cuotass.length
             cuotasliq=cuotasss.length
+            enviar={
+                nombrec ,
+                cuotas,
+               cuotasliq,
+            }
 /////////////
 
 
@@ -286,6 +291,11 @@ router.post('/traersegunmapa2', async (req, res) => {
             cuotasss= await pool.query('select * from cuotas where id_lote=? and parcialidad="Final"', [datos[0]['id']])
             cuotas=cuotass.length
             cuotasliq=cuotasss.length
+            enviar={
+                nombrec ,
+                cuotas,
+               cuotasliq,
+            }
 /////////////
 
 
