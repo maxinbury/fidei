@@ -76,12 +76,14 @@ router.post('/determinarmapa2', async (req, res) => {
     }
     res.json('Actualizado')
 })
+
+
 router.post('/traersegunmapa1', async (req, res) => {
     const { mapa1 } = req.body
 
 
     try {
-        datos = await pool.query('select * from lotes where mapa2=?', [mapa1])
+        datos = await pool.query('select * from lotes where mapa1=?', [mapa1])
 
         let nombrec = "Sin asignar"
         let cuotas = "Sin asignar"
@@ -266,7 +268,7 @@ router.post('/traersegunmapa2', async (req, res) => {
   
     try {
         datos = await pool.query('select * from lotes where mapa2=?', [mapa2])
-
+       
         let nombrec = "Sin asignar"
         let cuotas = "Sin asignar"
         let cuotasliq = "Sin asignar"
@@ -291,7 +293,7 @@ let lote = await pool.query('select * from lotes where id = ? ', [datos[0]['id']
 let cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [datos[0]['id']]))[0]['count(*)']
 // console.log(cantidad)    cantidad de liquidadas y vencidas
 if (cantidad === 0) {
-    console.log(lote)
+    
     idaux = lote[0]['idcuotas']
     cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [datos[0]['id']]))[0]['count(*)']
 }
@@ -441,6 +443,7 @@ console.log(error)
         console.log(error)
        
     }
+    console.log(respuesta)
     res.json([enviar,respuesta])
 })
 
