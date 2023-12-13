@@ -95,6 +95,7 @@ router.post('/traersegunmapa1', async (req, res) => {
            cuotasliq : "Sin asignar",
         }
         try {
+
             cliente = await pool.query('select * from clientes where cuil_cuit=?', [datos[0]['cuil_cuit']])
 
             nombrec = cliente[0]['nombre']
@@ -273,7 +274,7 @@ router.post('/traersegunmapa2', async (req, res) => {
   
     try {
         datos = await pool.query('select * from lotes where mapa2=?', [mapa2])
-       
+       console.log(datos)
         let nombrec = "Sin asignar"
         let cuotas = "Sin asignar"
         let cuotasliq = "Sin asignar"
