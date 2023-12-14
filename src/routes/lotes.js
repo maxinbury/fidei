@@ -274,7 +274,7 @@ router.post('/traersegunmapa2', async (req, res) => {
   
     try {
         datos = await pool.query('select * from lotes where mapa2=?', [mapa2])
-       console.log(datos)
+      
         let nombrec = "Sin asignar"
         let cuotas = "Sin asignar"
         let cuotasliq = "Sin asignar"
@@ -286,8 +286,8 @@ router.post('/traersegunmapa2', async (req, res) => {
         }
         try {
             cliente = await pool.query('select * from clientes where cuil_cuit=?', [datos[0]['cuil_cuit']])
-
-            nombrec = cliente[0]['nombre']
+          
+            nombrec = cliente[0]['Nombre']
             cuotass= await pool.query('select * from cuotas where id_lote=?', [datos[0]['id']])
             cuotasss= await pool.query('select * from cuotas where id_lote=? and parcialidad="Final"', [datos[0]['id']])
             cuotas=cuotass.length
@@ -454,7 +454,7 @@ console.log(error)
         console.log(error)
        
     }
-    console.log(respuesta)
+  
     res.json([enviar,respuesta])
 })
 
