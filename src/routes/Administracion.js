@@ -140,7 +140,7 @@ router.get('/traerlink360/:id', async (req, res) => {
       payer_name: 'nombre_pagador'
     }
   });
-  
+  console.log(data)
   const options = {
     hostname: 'api.sandbox.pagos360.com',////https://api.sandbox.pagos360.com   api.pagos360.com
     path: '/payment-request',

@@ -50,6 +50,20 @@ router.get('/desasignarlote', isLoggedInn2,)
 
 
 
+
+router.post('/determinarposecion', async (req, res) => {
+    const { posecion_lote, mapa1 } = req.body
+ console.log(posecion_lote, mapa1 )
+    const asignar = { posecion_lote }
+    try {
+        await pool.query('UPDATE lotes set ? WHERE mapa1=?', [asignar, mapa1])
+
+    } catch (error) {
+        console.log(error)
+        res.json('error ')
+    }
+    res.json('Actualizado')
+})
 router.post('/determinarmapa1', async (req, res) => {
     const { manzana, lote, mapa1 } = req.body
     console.log(manzana, lote, mapa1)
