@@ -140,11 +140,13 @@ const listadeTodos = async (req, res) => {
     const lotes = await pool.query('select * from lotes left join (select cuil_cuit as cui, nombre from clientes) as sel on lotes.cuil_cuit=sel.cui ')
     const disponibles = await pool.query('select * from lotes where estado = "DISPONIBLE" or estado = "disponible"')
     const parque = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="PIT"')
+    const parquetotal = await pool.query('select * from lotes where zona ="PIT"')
+    const parquevendidos = await pool.query('select * from lotes where (estado = "VENDIDO" or estado = "vendido") and zona ="PIT"')
     const ic3 = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="IC3" ')
 
     console.log(disponibles.length)
 
-    res.json([lotes,disponibles.length,parque.length,ic3.length])
+    res.json([lotes,disponibles.length,parque.length,ic3.length,parquetotal.length,parquevendidos.length])
 }
 
 const lista2 = async (req, res) => {
