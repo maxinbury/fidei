@@ -468,6 +468,18 @@ router.post('/traersegunmapa2', async (req, res) => {
 
     } catch (error) {
         console.log(error)
+        enviar = {
+            cuil_cuit:"Sin datos cargados",
+            nombrec:"Sin datos cargados",
+            adrema: "Sin datos cargados",
+            fraccion: "Sin datos cargados",
+            manzana: "Sin datos cargados",
+            parcela: "Sin datos cargados",
+            adrema: "Sin datos cargados",
+            cant_cuotas: "Sin datos cargados",
+            cuotasliq:"Sin datos cargados",
+
+        }
 
     }
 
