@@ -140,7 +140,7 @@ router.post('/notificacionhook', async (req, res) => {
     console.log(payload, type,entity_name)
    
 
-    console.log(body)
+   
 
 })
 
