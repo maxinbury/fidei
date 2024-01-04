@@ -86,6 +86,7 @@ app.use('/notificaciones', require('./routes/notificaciones'))
 app.use('/administracion', require('./routes/Administracion'))
 app.use('/novedades', require('./routes/novedades'))
 app.use('/apipagos', require('./routes/apipagos'))
+app.use('/pagos360', require('./routes/pagos360'))
 app.use('/home', require('./routes/home'))
 
 

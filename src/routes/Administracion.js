@@ -15,7 +15,7 @@ const mercadopago = require('mercadopago')
 ////
 
 mercadopago.configure(credenciales)
-const {apiKey360} =require (('../keys'))
+
 
 
 const diskstorage = multer.diskStorage({
@@ -124,82 +124,6 @@ router.get('/traerlinkcuota/:id', async (req, res) => {
 
 })
 
-router.get('/traerlink360/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    let cuota = await pool.query('select * from cuotas where id  = ?', [id]);
-    let pagador = await pool.query('select * from clientes where cuil_cuit= ?', [cuota[0]['cuil_cuit']]);
-
-    const monto = cuota[0]['cuota_con_ajuste'];
-
-    const fechaActual = new Date();
-    const ultimoDiaDelMes = new Date(fechaActual.getFullYear(), fechaActual.getMonth() + 1, 0);
-    const dia = ultimoDiaDelMes.getDate();
-    const mes = ultimoDiaDelMes.getMonth() + 1;
-    const año = ultimoDiaDelMes.getFullYear();
-    const fechaFormateada = `${dia < 10 ? '0' : ''}${dia}-${mes < 10 ? '0' : ''}${mes}-${año}`;
-
-    let newLink = {
-      link_pago: "",
-      vencimiento_l: "",
-    };
-
-    const data = JSON.stringify({
-      payment_request: {
-        description: cuota[0]['mes']+'/'+cuota[0]['anio'],
-        first_due_date: fechaFormateada,
-        first_total: monto,
-        payer_name: pagador[0]['Nombre'],
-      },
-    });
-
-    const options = {
-      hostname: 'api.sandbox.pagos360.com',
-      path: '/payment-request',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey360,
-      },
-    };
-
-    // Utiliza una Promesa para manejar la asincronía
-    const responseBody = await new Promise((resolve, reject) => {
-      const requ = https.request(options, (res) => {
-        let responseBody = '';
-
-        res.on('data', (chunk) => {
-          responseBody += chunk;
-        });
-
-        res.on('end', () => {
-          resolve(responseBody);
-        });
-      });
-
-      requ.on('error', (error) => {
-        reject(error);
-      });
-
-      requ.write(data);
-      requ.end();
-    });
-
-    newLink = {
-      link_pago: JSON.parse(responseBody).checkout_url,
-      vencimiento_l: JSON.parse(responseBody).first_due_date,
-    };
-
-    await pool.query('UPDATE cuotas set ? WHERE id = ?', [newLink, id]);
-
-    console.log(newLink);
-    res.json(newLink.link_pago);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
 
 router.get('/mercado', async (req, res) => {
  

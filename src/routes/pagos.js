@@ -134,15 +134,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
 
 
-router.post('/notificacionhook', async (req, res) => {
-    const {payload, type,entity_name } = req.body
 
-    console.log(payload, type,entity_name)
-   
-
-   
-
-})
 
 
 
