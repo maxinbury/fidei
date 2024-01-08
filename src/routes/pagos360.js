@@ -12,24 +12,24 @@ const pool = require('../database')
 
 router.get('/consultarestado/:id', async (req, res) => {
 
-  
-const adhesionId = req.params.id; // Reemplaza 'tu_id' con el ID real de la adhesión
-const apiUrl = `http://api.sandbox.pagos360.com/adhesion/${adhesionId}`;
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${apiKey360}`
-};
 
-axios.get(apiUrl, { headers })
-  .then(response => {
-    
-    console.log('Respuesta:', response.data);
-    res.json(response.data)
-  })
-  .catch(error => {
-    console.error('Error al realizar la solicitud:', error.response.data);
-    res.json(error.response.data)
-  });
+  const adhesionId = req.params.id; // Reemplaza 'tu_id' con el ID real de la adhesión
+  const apiUrl = `http://api.sandbox.pagos360.com/adhesion/${adhesionId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey360}`
+  };
+
+  axios.get(apiUrl, { headers })
+    .then(response => {
+
+      console.log('Respuesta:', response.data);
+      res.json(response.data)
+    })
+    .catch(error => {
+      console.error('Error al realizar la solicitud:', error.response.data);
+      res.json(error.response.data)
+    });
 
 
 })
@@ -117,18 +117,19 @@ router.get('/traerlink360/:id', async (req, res) => {
 
 /////////////debito cbu modificar
 router.post('/crearadhesiondebcbu', async (req, res) => {
-  const adhesionData1 = req.body;
+  const {cuil_cuit, cbu_number,cbu_holder_name} = req.body;
 
   const adhesionData = {
     adhesion_holder_name: "Juan Torres",
     email: "noemail@pagos360.com",
     description: "Descripción o concepto de la Adhesión",
     short_description: "hola mundo",
-    external_reference: "72HD6FS12",
-    cbu_number: "3220001805000046360015",
-    cbu_holder_name: "ALIASPRUEBAUNO",
+    external_reference: cuil_cuit,
+    cbu_number: cbu_number,
+    cbu_holder_name: cbu_holder_name,
     cbu_holder_id_number: 123456
   };
+  console.log(adhesionData)
   const apiUrl = 'https://api.sandbox.pagos360.com/adhesion';
   axios.post(apiUrl, { adhesion: adhesionData }, {
     headers: {
@@ -136,9 +137,25 @@ router.post('/crearadhesiondebcbu', async (req, res) => {
       'Authorization': `Bearer ${apiKey360}`
     }
   })
-    .then(response => {
-console.log(response.data)
+    .then(async response => {
+      console.log(response.data)
+      const nuevo = {
+        banco: response.data.bank,
+        estado: response.data.state,
+        identificacion: response.data.id,
+        fecha: response.data.created_at,
+        external_reference: response.data.external_reference,
+        cuil_cuit,
+
+      }
+      try {
+        await pool.query('insert into adhesiones set ?', nuevo)
+
+      } catch (error) {
+        console.log(error)
+      }
       res.json({ success: true, message: 'Adhesión creada exitosamente', data: response.data });
+
     })
     .catch(error => {
       console.log(error.response.data)
@@ -149,6 +166,7 @@ console.log(response.data)
 
 
 // Ruta para la creación de adhesiones en tarjeta
+// erorr  'Referencia externa es requerida y debe ser una cadena de texto'
 router.post('/crearadhesiondebtarjeta', async (req, res) => {
   const adhesionData1 = req.body;
 
@@ -168,7 +186,7 @@ router.post('/crearadhesiondebtarjeta', async (req, res) => {
   const requestData = {
     card_adhesion: {
       adhesion_holder_name: 'Juan Torres',
-      external_reference: '1A2B3C4D',  ///// aca enlazar los datos como cuil, id_cuota, etc
+      external_reference: '1A2B3C4dd',  ///// aca enlazar los datos como cuil, id_cuota, etc
       email: 'noemail@pagos360.com',
       card_holder_name: 'Juan Torres',
       card_number: '5100120000000001',
@@ -197,22 +215,25 @@ router.post('/crearadhesiondebtarjeta', async (req, res) => {
 
 // cancelar ahesion
 router.post('/cancelaradhecioncbu', async (req, res) => {
-  const adhesionData1 = req.body;
+  const {identificacion} = req.body;
 
 
   const adhesionId = 't1'; // Reemplaza 'tu_id' con el ID real de la adhesión
-  const apiUrl = `https://api.sandbox.pagos360.com/adhesion/${adhesionId}/cancel`;
+  const apiUrl = `https://api.sandbox.pagos360.com/adhesion/${identificacion}/cancel`;
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken}`
+    'Authorization': `Bearer ${apiKey360}`
   };
-  
-  axios.put(apiUrl, null, { headers })
+
+ await axios.put(apiUrl, null, { headers })
     .then(response => {
       console.log('Respuesta:', response.data);
+      res.json('Realizado')
     })
     .catch(error => {
+      console.log(error.response)
       console.error('Error al realizar la solicitud:', error.response.data);
+      res.json('error')
     });
 });
 
@@ -227,4 +248,50 @@ router.post('/notificaciondebhook', async (req, res) => {
 
 
 })
+
+
+router.get('/listacbus360/:cuil_cuit', async (req, res) => {
+  const { cuil_cuit } = req.params;
+
+try {
+  const listacbus = await pool.query('select * from adhesiones where cuil_cuit=?',[cuil_cuit])
+let enviar = []
+  for (ind in listacbus){
+
+    let apiUrl = `http://api.sandbox.pagos360.com/adhesion/${listacbus[ind]['identificacion']}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey360}`
+    };
+    
+  await  axios.get(apiUrl, { headers })
+      .then(response => {
+       // console.log('Respuesta:', response.data);
+        let nu = {
+          cuil_cuit,
+          id:listacbus[ind]['id'],
+          fecha:listacbus[ind]['fecha'],
+          numero:listacbus[ind]['numero'],
+          identificacion:listacbus[ind]['identificacion'],
+         estado: response.data.state
+        }
+      enviar.push(nu)
+      })
+    
+      .catch(error => {
+        console.error('Error al realizar la solicitud:', error.response.data);
+      });
+
+  }
+  console.log(2)
+  res.json([enviar])
+} catch (error) {
+  console.log(error)
+  res.json([{cuil_cuit:'error'}])
+}
+
+
+})
+
+
 module.exports = router
