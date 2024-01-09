@@ -176,10 +176,16 @@ router.post('/crearadhesiondebcbu', async (req, res) => {
 // cancelar ahesion
 router.post('/cancelaradhecioncbu', async (req, res) => {
   const {identificacion} = req.body;
-
-
-  const adhesionId = 't1'; // Reemplaza 'tu_id' con el ID real de la adhesión
-  const apiUrl = `https://api.sandbox.pagos360.com/adhesion/${identificacion}/cancel`;
+/////identificacione s id de nuestra base de datos. se busca en adhesion apra buscar el valor de la identificacion de 360
+const adhesion = await pool.query('select * from adhesiones where id=? ',[identificacion])
+  if(adhesion[0]['tipo']=="CBU"){
+     apiUrl = `https://api.sandbox.pagos360.com/adhesion/${adhesion[0]['identificacion']}/cancel`;
+ }else{
+   apiUrl =`https://api.sandbox.pagos360.com/card-adhesion/${adhesion[0]['identificacion']}/cancel`;
+ }
+   
+ 
+  
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${apiKey360}`
@@ -191,11 +197,15 @@ router.post('/cancelaradhecioncbu', async (req, res) => {
       res.json('Realizado')
     })
     .catch(error => {
-      console.log(error.response)
+      
+
+      console.log(error.response.request.res)
       console.error('Error al realizar la solicitud:', error.response.data);
       res.json('error')
     });
 });
+
+
 
 router.get('/listacbus360/:cuil_cuit', async (req, res) => {
   const { cuil_cuit } = req.params;
@@ -205,7 +215,18 @@ try {
 let enviar = []
   for (ind in listacbus){
 
-    let apiUrl = `http://api.sandbox.pagos360.com/adhesion/${listacbus[ind]['identificacion']}`;
+
+
+if(listacbus[ind]['tipo']=="CBU"){
+   apiUrl = `http://api.sandbox.pagos360.com/adhesion/${listacbus[ind]['identificacion']}`;
+}else{
+  apiUrl = `https://api.sandbox.pagos360.com/card-adhesion/${listacbus[ind]['identificacion']}`;
+}
+    
+
+   
+
+
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey360}`
@@ -229,6 +250,10 @@ let enviar = []
         console.error('Error al realizar la solicitud:', error.response.data);
       });
 
+
+
+
+
   }
   console.log(2)
   res.json([enviar])
@@ -249,10 +274,11 @@ router.post('/crearsolicituddebito', async (req, res) => {
   const apiUrl = 'https://api.sandbox.pagos360.com/debit-request';
   const cuota = await pool.query ('select * from cuotas where id =?',[id_cuota])
   adhesionid = await pool.query ('select * from adhesiones where cuit_cuil= =?',[cuota[0]['cuil_cuit']])
+  if (adhesionid.length>0){
   ///// controlar el debito q corresponda
   const requestData = {
     debit_request: {
-      adhesion_id: '6127',
+      adhesion_id: adhesionid[0]['identificacion'],
       description: 'Concepto del Pago',
       first_due_date: '15-4-2024',
       first_total: cuota[0]['cuota_con_ajuste']
@@ -275,6 +301,7 @@ axios.post(apiUrl, requestData, { headers })
     console.error( error.response.data.errors.children);
     res.json(error.response.data)
   });
+}else{ res.json('no tiene debito asociado confirmado')}
 });
 
 
@@ -293,47 +320,64 @@ axios.post(apiUrl, requestData, { headers })
 
 ///////////////////////////////////////FIN DEBITO CBU
 
+
+
+
+
+
+
+
+
+
+
+
 // Ruta para la creación de adhesiones en tarjeta
 // erorr  'Referencia externa es requerida y debe ser una cadena de texto'
 router.post('/crearadhesiondebtarjeta', async (req, res) => {
-  const adhesionData1 = req.body;
+  const {card_number,CVV,cuil_cuit} = req.body;
 
-  const adhesionData = {
-    adhesion_holder_name: "Juan Torres",
-    email: "noemail@pagos360.com",
-    description: "Descripción o concepto de la Adhesión",
-    short_description: "hola mundo",
-    external_reference: "72HD6FS1",
-    cbu_number: "5100120000000001",
-    cbu_holder_name: "Juan Torres",
-    cbu_holder_id_number: 123
-  };
  
-  const apiUrl = 'https://api.sandbox.pagos360.com/adhesion';
- 
+  const apiUrl = 'https://api.sandbox.pagos360.com/card-adhesion';
   const requestData = {
     card_adhesion: {
       adhesion_holder_name: 'Juan Torres',
-      external_reference: '1A2B3C4dd',  ///// aca enlazar los datos como cuil, id_cuota, etc
+      external_reference:cuil_cuit,
       email: 'noemail@pagos360.com',
       card_holder_name: 'Juan Torres',
-      card_number: '5100120000000001',
-      CVV: "123",
-      description: 'Descripción o concepto de la Adhesión'
+      card_number,
+            description: 'Descripción o concepto de la Adhesión'
     }
   };
-
+  
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${apiKey360}`
   };
 
-  axios.post(apiUrl, requestData, { headers })
-    .then(response => {
+await  axios.post(apiUrl, requestData, { headers })
+    .then(async response => {
       console.log('Respuesta:', response.data);
+      const nuevo = {
+        banco: response.data.bank,
+        estado: response.data.state,
+        identificacion: response.data.id,
+        fecha: response.data.created_at,
+        tipo:"Tarjeta",
+        last_four_digits:response.data.last_four_digits,
+        card:response.data.card,
+        external_reference: response.data.external_reference,
+        cuil_cuit,
+
+      }
+      try {
+        await pool.query('insert into adhesiones set ?', nuevo)
+
+      } catch (error) {
+        console.log(error)
+      }
     })
     .catch(error => {
-      console.log(error)
+  console.log(error.response.data)
 
       console.error('Error al realizar la solicitud:', error.response.data.children);
     });
