@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
-const secrets = require('./config');
+const secrets = require('../../../keys.js');
 
 function createS3Instance() {
     const s3 = new AWS.S3({
