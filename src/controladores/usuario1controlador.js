@@ -20,7 +20,7 @@ try {
 
 }
 catch (error){
-    console.log(error)
+   // console.log(error)
     res.json('Error algo sucedio')
 }
    
@@ -29,9 +29,7 @@ catch (error){
 }
 const subirlegajoprueba =async (req, res, done) => {
     const {formdata, file} = req.body
-  //  console.log(formdata)
-    //console.log(file)
-  console.log(req.file)
+
     const type = req.file.mimetype
     const name = req.file.originalname
     const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
@@ -72,17 +70,15 @@ const leerimagen = async (req, res, done) => {
 }
 const constanciadelpago =  async (req, res, ) => {
     id = req.params.id
-    console.log(id)
     const pago = await pool.query('select * from pagos where id =?',[id])
     const constancias = await pool.query('select * from constancias where otros =?',[id])
     const todas = pago.concat(constancias);
-    console.log(todas)
     try {
        
      
         res.json(todas)
     } catch (error) {
-        console.log(error)
+       // console.log(error)
     }
 
 
@@ -96,7 +92,7 @@ const cliente = async (req, res, ) => {
        
        res.json(clientes)
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('algo salio mal')
     }
 
@@ -108,10 +104,9 @@ const cliente2 = async (req, res, ) => {
 
     try {
        clientes = await pool.query('select * from users where cuil_cuit= ? ',[cuil_cuit])
-       console.log(clientes)
        res.json(clientes)
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('algo salio mal')
     }
 
@@ -140,7 +135,7 @@ const cantidadbalances =  async (req, res, ) => {
 
        res.json(cantidad.length)
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.json('algo salio mal')
     }
 
@@ -155,7 +150,7 @@ const cantidaddjiva =  async (req, res, ) => {
 
        res.json(cantidad)
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json('algo salio mal')
     }
 
@@ -170,7 +165,7 @@ const cantidadiibb = async (req, res, ) => {
 
        res.json(cantidad.length)
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json('algo salio mal')
     }
 
@@ -184,7 +179,7 @@ const cbus =  async (req, res, ) => {
      
        res.json(cbus_cli)
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.json('algo salio mal')
     }
 
@@ -210,7 +205,7 @@ const constanciass = async (req, res, ) => {
   
        res.json(constancias)
     } catch (error) {
-        console.log(error)
+     //   console.log(error)
         res.json('algo salio mal')
     }
 
@@ -224,7 +219,7 @@ const cbuscliente = async (req, res, ) => {
    
        res.json(cbuss)
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('algo salio mal')
     }
 
@@ -271,33 +266,27 @@ const realizarr = async (req, res, done) => {
     id_cuota = existe[ultima]['id']
     mes = existe[ultima]['mes']
     anio = existe[ultima]['anio']
-     console.log('Cuota a pagar ')
-     console.log(existe)
     if (existe.length > 0) {
         /// traer la ultima
         
          ///
-         console.log(aux)
         let cliente  = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
        
         try {
             montomax = cliente[0]['ingresos'] * 0.3
-            console.log(4)
             if (montomax < monto) {
 
                 monto_inusual='Si'
             }
 
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
         }
       
        
 
         const id_cuota = existe[0]["id"]
-        console.log(id_cuota)
         if (estado != 'A') {
-            console.log(1)
             const newInu = {
                 id_cuota,
                 cuil_cuit,
@@ -307,7 +296,6 @@ const realizarr = async (req, res, done) => {
              
     
             };
-            console.log(1)
             await pool.query('INSERT INTO historial_pagosi SET ?', [newInu]);
         
         }
@@ -337,7 +325,6 @@ const realizarr = async (req, res, done) => {
 }
 const modificarcli =  async (req, res) => {
     const { cuil_cuit,sueldo, email, provincia, telefono, ingresos, domicilio, razon_social } = req.body
-    console.log(cuil_cuit,sueldo, email, provincia, telefono, ingresos, domicilio, razon_social)
     try {
         aux = '%' + cuil_cuit + '%'
         const newLink = {
@@ -353,7 +340,7 @@ const modificarcli =  async (req, res) => {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
         res.send('Cliente modificado')
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('Error algo sucedió' + error)
     }
 
@@ -362,7 +349,6 @@ const modificarcli =  async (req, res) => {
 
 const modificarcli2 =  async (req, res) => {
     const { cuil_cuit,sueldo, email, provincia, telefono, nombre, domicilio, razon_social } = req.body
-    console.log(cuil_cuit,sueldo, email, provincia, telefono, nombre, domicilio, razon_social)
     try {
         aux = '%' + cuil_cuit + '%'
         const newLink = {
@@ -373,7 +359,7 @@ const modificarcli2 =  async (req, res) => {
         await pool.query('UPDATE users set ? WHERE cuil_cuit like ?', [newLink, aux])
         res.send('Cliente modificado')
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('Error algo sucedió' + error)
     }
 
@@ -383,7 +369,6 @@ const modificarcli2 =  async (req, res) => {
 
 const completolegajos = async (req, res) => {
     const { cuil_cuit } = req.body
-    console.log(cuil_cuit)
 
     const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
    const cui =  '%'+cuil_cuit+'%'
@@ -533,11 +518,9 @@ const lotescliente =  async (req, res) => {
         cuotas =  await pool.query('select  * from cuotas where cuil_cuit =  ? and parcialidad = "Final"', [cuil_cuit]);
         clienteaux = await pool.query('select  * from clientes where cuil_cuit =  ?', [cuil_cuit]);
         cuotaapagar= cuotas[(cuotas.length-1)]
-        console.log(cuotaapagar)
     
     res.send([lotes,cuotas,cuotaapagar,clienteaux])
     } catch (error) {
-console.log8error
 
         res.send([[],[],[],[]])
     }
@@ -553,11 +536,10 @@ const lotescliente2 =  async (req, res) => {
         cuotas =  await pool.query('select  * from cuotas where id_lote =  ? and parcialidad = "Final"', [id]);
         clienteaux = await pool.query('select  * from clientes where cuil_cuit =  ?', [lotes[0]['cuil_cuit']]);
         cuotaapagar= cuotas[(cuotas.length-1)]
-        console.log(cuotaapagar)
     
     res.send([lotes,cuotas,cuotaapagar,clienteaux])
     } catch (error) {
-console.log(error)
+//console.log(error)
 
         res.send([[],[],[],[]])
     }
@@ -568,7 +550,6 @@ const lote2 = async (req, res) => {
     try {
         const id = req.params.id
         
-        console.log(id)
        
     
         const cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ? and parcialidad="final"', [id])
@@ -577,7 +558,6 @@ const lote2 = async (req, res) => {
             const cuil_cuit = cuotas[0]['cuil_cuit']
        
             
-               console.log(cuil_cuit)
                let pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit =  ?', [cuil_cuit])
               
              
@@ -593,7 +573,6 @@ const lote2 = async (req, res) => {
 const ief =   async (req, res) => {
     const id = req.params
     idaux = id.id
-    console.log(idaux)
     try {
         
    
@@ -631,9 +610,7 @@ const ief =   async (req, res) => {
     const Amortizacion =  (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
    
     const capital =  (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
-    console.log(cantidad2)
-    console.log(Amortizacion)
-    console.log(capital)
+  
 
     const dato5 = {
         'datoa': 'Cantidad de cuotas a Vencer',
@@ -673,7 +650,6 @@ const noticliente =  async (req, res) => {
 }
 const notiid = async (req, res) => {
     const { id, cuil_cuit} = req.params
-    console.log(cuil_cuit)
     try {
         const notificaciones = await pool.query('SELECT * FROM notificaciones WHERE id = ?', [id])
      

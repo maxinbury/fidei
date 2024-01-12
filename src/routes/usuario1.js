@@ -136,7 +136,6 @@ router.get('/', isLoggedIn, async (req, res) => {
     let cuil_cuit = req.user.cuil_cuit
 
     let cliente = await pool.query('select * from users where cuil_cuit = ? ', [cuil_cuit])
-    console.log(cliente)
 
     res.render('usuario1/menu', { cliente })
 
@@ -220,7 +219,6 @@ router.get("/cuotasamp", async (req, res) => {
 
     cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
     aux = '%' + cuil_cuit + '%'
-    console.log(aux)
 
     const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
     var devengado = 0
@@ -321,7 +319,7 @@ router.get("/subirelegir", isLoggedIn, async (req, res) => {
         const lote = await pool.query('SELECT * FROM lotes WHERE cuil_cuit like ?', [aux])
         res.render('usuario1/subirelegir', { lote })
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.redirect('/usuario1')
     }
 
@@ -333,8 +331,7 @@ router.get("/subirelegir", isLoggedIn, async (req, res) => {
 
 router.post('/subirprueba', async (req, res, done) => {
     const { id } = req.body;
-    console.log(id)
-})
+ })
 
 
 
@@ -358,7 +355,6 @@ router.post("/subir", isLoggedIn, async (req, res) => {
 
             cbus = await pool.query('select * from cbus  where cuil_cuit like ? and estado ="A" ', aux)
 
-            console.log(cbus)
         } else {
 
             req.flash('message', 'Error, ACCESO DENEGADO ')
@@ -366,7 +362,7 @@ router.post("/subir", isLoggedIn, async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.redirect('/usuario1')
     }
 
@@ -421,7 +417,7 @@ router.post('/realizar', async (req, res, done) => {
 
 
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
         }
 
 
@@ -471,7 +467,7 @@ router.get("/subirinusual", isLoggedIn, async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
     }
 
     res.render('usuario1/subirinusual')
@@ -514,7 +510,7 @@ router.post('/addcbu', async (req, res) => {
         req.flash('message', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
     } catch (error) {
         req.flash('message', 'Error algo paso ')
-        console.log(error)
+      
     }
 
 
@@ -666,7 +662,7 @@ router.post('/edit_comp_acta', async (req, res) => {
             req.flash('success', 'Guardado correctamente, tu solicitud sera procesada y se notificará al confirmarse')
             res.redirect(`/usuario1`);
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
             req.flash('message', 'Error, algo sucedio inesperadamente ')
             res.redirect('/usuario1/legajo')
         }
@@ -746,7 +742,6 @@ router.get("/ingresos", async (req, res) => {
 //  GUARDADO DE BALANCE 
 router.post('/edit_comp_balance', async (req, res) => {
     const { comprobante, comprobante2 } = req.body;
-    console.log(comprobante)
 
     if ((comprobante.length == 0) || (comprobante2.length == 0)) {
         req.flash('message', 'Error, se deben subir 2 ')
@@ -774,7 +769,6 @@ router.post('/edit_comp_balance', async (req, res) => {
 //  GUARDADO DE BALANCE DJ IVA
 router.post('/edit_comp_djiva', async (req, res) => {
     const { comprobante, comprobante2, comprobante3 } = req.body;
-    console.log(comprobante)
 
     if ((comprobante.length == 0) || (comprobante2.length == 0) || (comprobante3.length == 0)) {
         req.flash('message', 'Error, se deben subir 3 ')
@@ -968,7 +962,6 @@ router.post('/edit_tel', async (req, res) => {
         tel
     }
     const id = req.user.id
-    console.log(id)
     await pool.query("UPDATE users SET ? WHERE id = ?", [newLink, id])
     req.flash('success', 'Guardado correctamente')
     res.redirect(`/usuario1`)
@@ -1005,7 +998,6 @@ router.post('/edit_correo', async (req, res) => {
 // COMPROBANTE RECIBO
 router.post('/edit_comp_recibo', async (req, res) => {
     const { comprobante } = req.body;
-    console.log(comprobante)
 
     if (comprobante.length > 0) {
 
@@ -1086,7 +1078,6 @@ router.post('/chatenviar', async (req, res) => {
 
     let cuil_cuit = req.user.cuil_cuit
     cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-    console.log(cuil_cuit)
 
     cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
     const newr = {
@@ -1108,10 +1099,8 @@ router.get("/chat", async (req, res) => {
 
 
     cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    console.log(cuil_cuit)
     const aux = '%' + cuil_cuit + '%'
     const chat = await pool.query('select * from chats where cuil_cuit like ?', [aux])
-    console.log(chat)
     res.render('usuario1/chat', { chat })
 
 })

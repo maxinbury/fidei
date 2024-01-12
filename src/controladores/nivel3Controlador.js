@@ -30,7 +30,7 @@ const borrarHistorial = async (req, res) => {
         await pool.query('DELETE FROM icc_historial ')
         res.send('Borrados correctamente')
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('Error algo sucedió')
     }
 
@@ -38,7 +38,6 @@ const borrarHistorial = async (req, res) => {
 
 const asignarClave = async (req, res) => {
     const  { cuil_cuit, clave_alta  } = req.body;
-    console.log(cuil_cuit)
     try {
       
        
@@ -79,7 +78,7 @@ const asignarvalormetroc = async (req, res) => {
         res.send('Borrados correctamente')
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('Error algo sucedió')
     }
 
@@ -119,8 +118,6 @@ try {
 const agregarIccgral = async (req, res,) => {
     let { ICC, mes, anio, zona } = req.body;
    
-console.log('iccgral2')
-
     let datoss = {
         ICC,
         mes,
@@ -141,7 +138,7 @@ console.log('iccgral2')
 
         await pool.query('insert into icc_historial set?', datoss)}
     } catch (error) {
-        console.log(error)
+       // console.log(error)
     }
 
 
@@ -170,7 +167,7 @@ const agregarIccGral2 =async (req, res,) => {
     }
 
     //////////////try
-    console.log(datoss)
+    //console.log(datoss)
 
 
 
@@ -190,7 +187,7 @@ try {
 
     await pool.query('insert into icc_historial set?', datoss)}
 } catch (error) {
-    console.log(error)
+   // console.log(error)
 }
 res.send('Icc asignado con éxito');
 }

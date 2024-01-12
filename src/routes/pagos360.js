@@ -255,10 +255,9 @@ if(listacbus[ind]['tipo']=="CBU"){
 
 
   }
-  console.log(2)
+ 
   res.json([enviar])
 } catch (error) {
-  console.log(error)
   res.json([{cuil_cuit:'error'}])
 }
 
@@ -284,7 +283,6 @@ router.post('/crearsolicituddebito', async (req, res) => {
       first_total: cuota[0]['cuota_con_ajuste']
     }
   };
-console.log(requestData)
  
 const headers = {
   'Content-Type': 'application/json',
@@ -373,13 +371,13 @@ await  axios.post(apiUrl, requestData, { headers })
         await pool.query('insert into adhesiones set ?', nuevo)
 
       } catch (error) {
-        console.log(error)
+       // console.log(error)
       }
     })
     .catch(error => {
-  console.log(error.response.data)
+ // console.log(error.response.data)
 
-      console.error('Error al realizar la solicitud:', error.response.data.children);
+    //  console.error('Error al realizar la solicitud:', error.response.data.children);
     });
 });
 

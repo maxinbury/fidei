@@ -13,8 +13,7 @@ const loteCliente =async (req, res) => {
 
 
     lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote, parcela from lotes where cuil_cuit =  ?', [cuil_cuit]);
-    console.log('lotes')
-    console.log(lotes)
+    
 
 
     res.json(lotes)
@@ -35,13 +34,12 @@ const calcularValor = async (req, res) => {
     }
 
    
-    console.log(valormetro)
 
     try {
         valor = valormetro[(valormetro.length-1)]['valormetrocuadrado']  
       
     } catch (error) {
-        console.log(error)
+    //    console.log(error)
     }
  
    if  (valor != undefined){
@@ -49,7 +47,7 @@ const calcularValor = async (req, res) => {
     try {
        const  aux= '%'+cuil_cuit+'%'
    const cliente = await pool.query('select * from clientes where cuil_cuit like ? ', aux)
-   console.log('cliente '+cliente )
+  
    const ingresos = cliente[0]['ingresos']
    if (cliente[0]['expuesta']==='SI' ){
     max = ingresos*0.2
@@ -97,11 +95,10 @@ const calcularValor = async (req, res) => {
         puede,
         valor
     }
-    console.log(detalle)
 
     res.json(detalle)
  } catch (error) {
-    console.log(error)
+   // console.log(error)
         res.send('Algo salio mal ')
     }}else {  res.send('Algo salio mal ') }
 
@@ -113,7 +110,6 @@ const loteCliente2 = async (req, res) => {
 
 
     lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote from lotes where cuil_cuit like  ?', [cuil_cuit]);
-    console.log(lotes)
 
 
     res.json(lotes)
@@ -129,7 +125,7 @@ const traerlotesleg = async (req, res) => {
         
 res.json(lotes)
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         res.json("Error")
     }
 
@@ -145,7 +141,7 @@ const listadeTodos = async (req, res) => {
     const ic3 = await pool.query('select * from lotes where (estado = "DISPONIBLE" or estado = "disponible") and zona ="IC3" ')
     parquevendidoss=(parquevendidos.length/parquetotal.length *100).toFixed(2)
     parquevendidoss= parquevendidoss + "% ("+parquevendidos.length+")"
-    console.log(disponibles.length)
+
 
     res.json([lotes,disponibles.length,parque.length,ic3.length,parquetotal.length,parquevendidoss])
 }
@@ -196,7 +192,6 @@ const nuevamanzana = async (req, res) => {
     }
     
      const exi = await pool.query('select * from manzanas where  manzana=? ',[ manzana])
-    console.log(exi)
     if (exi.length>0){
         res.json("Error, lote ya existe")
     }else{
@@ -207,7 +202,7 @@ const nuevamanzana = async (req, res) => {
     
         
     } catch (error) {
-        console.log(error)
+    //    console.log(error)
         res.json("No realizado")
     }
        
@@ -217,7 +212,6 @@ const nuevamanzana = async (req, res) => {
 
 const modificarlote = async (req, res) => {
     const {parcela, manzana, fraccion, adrema,id} = req.body
-    console.log(parcela, manzana, fraccion, adrema)
 
 
     try {
@@ -228,7 +222,7 @@ const modificarlote = async (req, res) => {
          res.json('Realizado')
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json('No relizado')
     }
    
@@ -245,7 +239,6 @@ manzanaa = await pool.query('select *  from manzanas where id =?',[manzana])
     parcela, manzana: manzanaa[0]['manzana'], fraccion:"Legales",adrema,
     zona:"Legales" 
 }
-console.log(nuevo)
 if (exi.length>0){
     res.json("Error, lote ya existe")
 }else{
@@ -256,7 +249,7 @@ res.json("Realizado")
 
     
 } catch (error) {
-    console.log(error)
+   // console.log(error)
     res.json("No realizado")
 }
    

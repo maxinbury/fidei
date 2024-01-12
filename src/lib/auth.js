@@ -9,7 +9,6 @@ module.exports = {
         if (authorization && authorization.startsWith('Bearer')){
             
             token = authorization.substring(7) ////  Bearer  length
-            console.log(token)
             
         }
         let decodedToken = {}
@@ -19,8 +18,7 @@ module.exports = {
              decodedToken = jwt.verify(token, 'fideicomisocs121')
            
         }catch(error){
-            console.log('error')
-            console.log(error)
+            //console.log(error)
         }
       
         if (!token || !decodedToken.id){
@@ -79,7 +77,6 @@ module.exports = {
         }catch{}
       
         if (!token || !decodedToken.id || (decodedToken.nivel <3) ){
-            console.log('error token')
             return res.send('error login')
         }
       
@@ -92,9 +89,7 @@ module.exports = {
         //
         const authorization = req.get('authorization')
         let token =null
-        console.log(authorization)
         if (authorization && authorization.startsWith('Bearer')){
-            console.log('entraa')
             token = authorization.substring(7) 
         }
         let decodedToken = {}
@@ -108,7 +103,6 @@ module.exports = {
         }
       
         if (!token || !decodedToken.id || (decodedToken.nivel <4) ){
-            console.log('error token')
             return res.send('error login')
         }
       

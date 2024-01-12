@@ -16,7 +16,7 @@ router.get('/todas',isLoggedInn2, async (req, res) => {
         res.json(todas)
 
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.json(error)
     }
   
@@ -39,7 +39,7 @@ router.get('/todosloschats',isLoggedInn2, async (req, res) => {
         res.json(todas)
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json(error)
     }
   
@@ -60,7 +60,7 @@ router.get('/leerchat/:id',isLoggedInn2, async (req, res) => {
         res.json(todas)
 
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.json(error)
     }
   
@@ -80,7 +80,7 @@ const id  =  req.params.id
         res.json(todas)
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json(error)
     }
   
@@ -110,7 +110,7 @@ router.post('/crear',isLoggedInn2, async (req, res) => {
       
      res.json('Cargada con éxito')
     } catch (error) {
-       console.log(error)
+     //  console.log(error)
         res.send('Error algo sucedió')
     }
 

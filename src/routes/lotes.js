@@ -53,26 +53,24 @@ router.get('/desasignarlote', isLoggedInn2,)
 
 router.post('/determinarposecion', async (req, res) => {
     const { posecion_lote, mapa1 } = req.body
-    console.log(posecion_lote, mapa1)
     const asignar = { posecion_lote }
     try {
         await pool.query('UPDATE lotes set ? WHERE mapa1=?', [asignar, mapa1])
 
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         res.json('error ')
     }
     res.json('Actualizado')
 })
 router.post('/determinarmapa1', async (req, res) => {
     const { manzana, lote, mapa1 } = req.body
-    console.log(manzana, lote, mapa1)
     const asignar = { mapa1 }
     try {
         await pool.query('UPDATE lotes set ? WHERE zona ="IC3" and manzana=? and lote=?', [asignar, manzana, lote])
 
     } catch (error) {
-        console.log(error)
+       /// console.log(error)
         res.json('error ')
     }
     res.json('Actualizado')
@@ -85,7 +83,7 @@ router.post('/determinarmapa2', async (req, res) => {
         await pool.query('UPDATE lotes set ? WHERE zona ="PIT" and manzana=? and parcela=?', [asignar, manzana, parcela])
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json('error ')
     }
     res.json('Actualizado')
@@ -111,7 +109,6 @@ router.post('/traersegunmapa1', async (req, res) => {
         try {
 
             cliente = await pool.query('select * from clientes where cuil_cuit=?', [datos[0]['cuil_cuit']])
-            console.log(cliente)
             nombrec = cliente[0]['Nombre']
             cuotass = await pool.query('select * from cuotas where id_lote=?', [datos[0]['id']])
             cuotasss = await pool.query('select * from cuotas where id_lote=? and parcialidad="Final"', [datos[0]['id']])
@@ -125,12 +122,10 @@ router.post('/traersegunmapa1', async (req, res) => {
             }
             /////////////
 
-            console.log(enviar)
             let lote = await pool.query('select * from lotes where id = ? ', [datos[0]['id']])
             let cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [datos[0]['id']]))[0]['count(*)']
             // console.log(cantidad)    cantidad de liquidadas y vencidas
             if (cantidad === 0) {
-                console.log(lote)
                 idaux = lote[0]['idcuotas']
                 cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [datos[0]['id']]))[0]['count(*)']
             }
@@ -143,7 +138,6 @@ router.post('/traersegunmapa1', async (req, res) => {
           
             exigible = (devengado - abonado).toFixed(2)
             if (cantidad === 0) {
-                console.log('undefined')
                 const dato1 = {
                     'datoa': 'Cantidad de cuotas liquidadas y vencidas',
                     'datob': "No hay cuotas Calculadas"
@@ -180,19 +174,18 @@ router.post('/traersegunmapa1', async (req, res) => {
 
 
             } else {
-                console.log('defined')
                 devengado.toFixed(2)
                 //////SI HAY CUOTAS 
 
                 try {
                     devengado = devengado.toFixed(2)
                 } catch (error) {
-                    console.log(error)
+                 //   console.log(error)
                 }
                 try {
                     abonado = abonado.toFixed(2)
                 } catch (error) {
-                    console.log(error)
+                  //  console.log(error)
                 }
 
                 const dato1 = {
@@ -224,7 +217,7 @@ router.post('/traersegunmapa1', async (req, res) => {
                     try {
                         capital = capital.toFixed(2)
                     } catch (error) {
-                        console.log(error)
+                        //console.log(error)
                     }
 
                     const dato5 = {
@@ -245,7 +238,7 @@ router.post('/traersegunmapa1', async (req, res) => {
 
 
                 } catch (error) {
-                    console.log(error)
+                  //  console.log(error)
                 }
 
             }
@@ -255,7 +248,7 @@ router.post('/traersegunmapa1', async (req, res) => {
             //////////
 
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
         }
 
 
@@ -276,7 +269,7 @@ router.post('/traersegunmapa1', async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
 
     }
     res.json([enviar, respuesta])
@@ -326,15 +319,12 @@ router.post('/traersegunmapa2', async (req, res) => {
 
 
             let devengado = ((await pool.query('select * from cuotas where id_lote = ?', [datos[0]['id']]))[0]['saldo_inicial'])
-            console.log(devengado)
-            console.log('devengado')
+       
             let abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [datos[0]['id']]))[0]['sum(pagos.monto)']
 
-            console.log(cantidad)
-
+          
             exigible = (devengado - abonado).toFixed(2)
             if (cantidad === 0) {
-                console.log('undefined')
                 const dato1 = {
                     'datoa': 'Cantidad de cuotas liquidadas y vencidas',
                     'datob': "No hay cuotas Calculadas"
@@ -371,19 +361,18 @@ router.post('/traersegunmapa2', async (req, res) => {
 
 
             } else {
-                console.log('defined')
                 devengado.toFixed(2)
                 //////SI HAY CUOTAS 
 
                 try {
                     devengado = devengado.toFixed(2)
                 } catch (error) {
-                    console.log(error)
+                   // console.log(error)
                 }
                 try {
                     abonado = abonado.toFixed(2)
                 } catch (error) {
-                    console.log(error)
+                  //  console.log(error)
                 }
 
                 const dato1 = {
@@ -415,7 +404,7 @@ router.post('/traersegunmapa2', async (req, res) => {
                     try {
                         capital = capital.toFixed(2)
                     } catch (error) {
-                        console.log(error)
+                      //  console.log(error)
                     }
 
                     const dato5 = {
@@ -436,7 +425,7 @@ router.post('/traersegunmapa2', async (req, res) => {
 
 
                 } catch (error) {
-                    console.log(error)
+                 //   console.log(error)
                 }
 
             }
@@ -446,7 +435,7 @@ router.post('/traersegunmapa2', async (req, res) => {
             //////////
 
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
         }
 
 
@@ -467,7 +456,7 @@ router.post('/traersegunmapa2', async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+     //   console.log(error)
         enviar = {
             cuil_cuit:"Sin datos cargados",
             nombrec:"Sin datos cargados",
@@ -488,11 +477,9 @@ router.post('/traersegunmapa2', async (req, res) => {
 
 router.post('/calcularvalor', async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit, lote } = req.body
-    console.log(zona, manzana, parcela, cuil_cuit, lote)
 
     if (zona === 'PIT') {
         valormetro = await pool.query('select * from nivel3 where valormetroparque = "PIT" order by id')
-        console.log(zona, manzana, parcela)
         lotee = await pool.query('select * from lotes where zona = ? and manzana =? and  parcela =? ', [zona, manzana, parcela])
     } else {
         valormetro = await pool.query('select * from nivel3 where valormetroparque != "PIT" order by id')
@@ -545,11 +532,10 @@ router.post('/calcularvalor', async (req, res) => {
                 puede,
                 valor
             }
-            console.log(detalle)
 
             res.json(detalle)
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
             res.send('Algo salio mal ')
         }
     } else { res.send('Algo salio mal ') }

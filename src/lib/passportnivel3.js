@@ -48,7 +48,6 @@ passport.use('local.signup', new LocalStrategy({
                 try {
 
                     rows = await pool.query('SELECT * FROM clientes WHERE id = ? and cuil_cuit like ?', [nro_cliente, aux])
-                    console.log(rows)
                     if (rows.length == 0) {
                         done(null, false, req.flash('message', 'error, el Numero de cliente no coincide')) 
                         
@@ -60,10 +59,10 @@ passport.use('local.signup', new LocalStrategy({
                         return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                     } catch (error) {
-                        console.log(error)
+                       // console.log(error)
                     }}
                 } catch (error) {
-                    console.log(error)
+                   // console.log(error)
                     req.flash('message', 'error,algo sucedio ')
                    
                 }
@@ -75,7 +74,7 @@ passport.use('local.signup', new LocalStrategy({
            
         }
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         req.flash('message', 'error,algo sucedio ')
         
 

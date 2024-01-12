@@ -55,21 +55,19 @@ router.post('/noti/:id/:algo', async (req, res) => {
    var {body} = await  mercadopago.merchant_orders.findById(orderId)
     break;
  }
- console.log(body.payments)
  var paidAmount = 0
  body.payments.forEach(payment=>{
   if (payment.status ==='approved'){
     paidAmount+= payment.transaction_amount
   }
  })
- console.log(paidAmount)
- console.log(body.total_amount)
+
  if (paidAmount >= body.total_amount){
-  console.log('Se concreto correctamente')
+  //console.log('Se concreto correctamente')
  }else{
-  console.log('No se concreto')
+ // console.log('No se concreto')
  }
-  res.send('ola')
+  //res.send('ola')
 
 })
 
@@ -110,12 +108,11 @@ router.get('/traerlinkcuota/:id', async (req, res) => {
   mercadopago.preferences
     .create(preference)
     .then(function (response) {
-      console.log(response.body.init_point)
       res.json(response.body.init_point)
       // En esta instancia deberás asignar el valor dentro de response.body.id por el ID de preferencia solicitado en el siguiente paso
     })
     .catch(function (error) {
-      console.log(error);
+      //console.log(error);
     });
 
 
@@ -154,12 +151,11 @@ router.get('/mercado', async (req, res) => {
   mercadopago.preferences
     .create(preference)
     .then(function (response) {
-      console.log(response.body.init_point)
       res.json(response.body.init_point)
       // En esta instancia deberás asignar el valor dentro de response.body.id por el ID de preferencia solicitado en el siguiente paso
     })
     .catch(function (error) {
-      console.log(error);
+      //console.log(error);
     });
 
 
@@ -202,7 +198,7 @@ router.post('/subirprueba', fileUpload, async (req, res, done) => {
     await pool.query('insert into extracto set?', datoss)
     res.send('Imagen guardada con exito')
   } catch (error) {
-    console.log(error)
+    //console.log(error)
   }
 
 
@@ -220,7 +216,7 @@ router.post('/cambiarestado', isLoggedInn2, async (req, res) => {
     await pool.query('UPDATE lotes set ? WHERE id = ?', [cuota, id])
     res.json('todo ok')
   } catch (error) {
-    console.log(error)
+    //console.log(error)
     res.json('Algo salio mal')
   }
 })
@@ -245,11 +241,9 @@ router.get('/borrarpago/:id', isLoggedInn2, async (req, res) => {
   const id = req.params.id
   pago = await pool.query('select * from pagos where id=?', [id])
   monto = parseFloat(-pago[0]['monto'])
-  console.log(monto)
 
   idcuotas = pago[0]['id_cuota']
-  console.log('monto')
-  console.log(idcuotas)
+
   if (pago[0]['estado'] === 'A') {
 
     await pagodecuota.pagodecuota(idcuotas, monto)
@@ -292,7 +286,6 @@ router.get('/extracto', async (req, res) => {
     let regex = /(\d+)/g;
     let mandar = []
     for (const property in dataExcel) {
-      console.log(dataExcel[property])
       /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
            estado = 'A'
            // tipo de pago normal 
@@ -319,14 +312,14 @@ router.get('/extracto', async (req, res) => {
 
         mandar.push(nuevo);
       } catch (error) {
-        console.log(error)
+      //  console.log(error)
       }
 
     }
     res.json(mandar)
   }
   catch (error) {
-    console.log(error)
+   // console.log(error)
   }
 
 

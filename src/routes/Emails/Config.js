@@ -1,13 +1,13 @@
 
 const nodemailer = require("nodemailer");
+const secrets = require('../../keys.js');
 
 // async..await is not allowed in global scope, must use a wrapper
 async function main(mail,mensaje) {
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
   let testAccount = await nodemailer.createTestAccount();
-console.log(mail)
-console.log(mensaje)
+
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     host: "smtp-mail.outlook.com", // hostname
@@ -16,19 +16,20 @@ console.log(mensaje)
     tls: {
        ciphers:'SSLv3'
     },
+    ////////////////////////////
     auth: {
-        user: 'fideicomisoSCatalina@outlook.com',
-        pass: '1385Fideicomiso'
+        user: secrets.auth.user,
+        pass: secrets.auth.user
     }
 });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: '"Fred Foo 👻" <fideicomisoSCatalina@outlook.com>', // sender address
+    from: '"  FSC" <fideicomisoSCatalina@outlook.com>', // sender address
     to: ["elotroyo005@outlook.com", mail], // list of receivers
-    subject: "Hellozzzz ✔", // Subject line
+    subject: "Buenas  tardes", // Subject line
     text: mensaje, // plain text body
-    html: "<b>Hello world?</b>", // html body
+    html: "<b> </b>", // html body
   });
 
   console.log("Message sent: %s", info.messageId);

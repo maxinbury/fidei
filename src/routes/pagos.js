@@ -110,7 +110,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                         mandar = [nuevo]
 
                     }
-                } else { console.log('null') }
+                } else { }
 
 
             } catch (error) {
@@ -146,7 +146,6 @@ router.get('/todoslosextractos', isLoggedInn2, async (req, res,) => {
 
     try {
         estr = await pool.query('select * from extracto ')
-        console.log(estr)
         res.json(estr)
     } catch (error) {
         res.send('algo salio mal')
@@ -166,7 +165,6 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
         cuil_cuit_lazo = pago[0]['cuil_cuit_lazo']
         monto = Math.trunc(parseFloat(pago[0]['monto']))
         monto = String(monto)
-        console.log(monto)
         let regex = /(\d+)/g;
         let extracto = await pool.query('Select * from extracto ')
         cantidad = extracto.length
@@ -177,10 +175,8 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
 
             cuil_cuit_lazo = sacarguion.sacarguion(cuil_cuit_lazo)
-            console.log(cuil_cuit)
 
             for (let i = 0; i < extracto.length; i++) {
-                console.log(i)
                 ///el while sale si se encuentra monto y cuil o si recorre todos los estractos
 
                 try {
@@ -212,7 +208,6 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                             referencia = dataExcel[property]['Referencia']
                             debitos = dataExcel[property]['Débitos']
                             creditos = dataExcel[property]['Créditos']
-                            console.log('encuentra cuil')
                             ///////agregar detaññes
                             nuevo = {
                                 fecha,
@@ -231,7 +226,6 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                             try {
                                 creditoString = String(dataExcel[property]['Créditos'])
                                 if (creditoString.includes(monto)) {
-                                    console.log('si')
                                     descripcion = (dataExcel[property]['Descripción']).match(regex)
                                     descripcion = ponerguion.ponerguion(descripcion)
                                     desc = (dataExcel[property]['Descripción'])
@@ -241,8 +235,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                                     referencia = dataExcel[property]['Referencia']
                                     debitos = dataExcel[property]['Débitos']
                                     creditos = dataExcel[property]['Créditos']
-                                    console.log('encuentra monto')
-                                    ///////agregar detaññes
+                                                                 ///////agregar detaññes
                                     nuevo = {
                                         fecha,
                                         descripcion,
@@ -264,15 +257,15 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
                     }
                 } catch (error) {
-                    console.log(error)
+                   // console.log(error)
                 }
 
             } //// fin comparacion de estractos
-            console.log(mandar)
+   
             res.json(mandar)
         } catch (error) {
-            console.log('salta')
-            console.log(error)
+          
+         //   console.log(error)
         }
 
 
@@ -282,7 +275,7 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('algo salio mal')
     }
 
@@ -304,7 +297,6 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
     const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
 
     let saldo_realc = cuota[0]["Saldo_real"]
-    console.log(saldo_realc)
     let nro_cuota = (cuota[0]["nro_cuota"])
     let id_lote = cuota[0]["id_lote"]
     //// hasta aca se trae la cuota
@@ -333,15 +325,13 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
             pago,
 
         }
-        console.log(update)
-        console.log(nuevo)
+   
 
         await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, id])
 
         await pool.query('INSERT INTO pagos set ?', [nuevo]);
 
 
-        console.log('idlote' + id_lote)
         cant_finales = await pool.query('select * from cuotas  WHERE id_lote = ? and parcialidad = "Final"', [id_lote])
 
 
@@ -354,15 +344,12 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
                 try {//
 
                     aux = await pool.query('select *from cuotas WHERE id_lote = ? and nro_cuota=?', [id_lote, i])
-                    console.log(aux)
                     saldo_realc = parseFloat(aux[0]["Saldo_real"])
-                    console.log('saldoreal ' + saldo_realc)
                     idaux = aux[0]["id"]
-                    console.log(id)
+              
 
-                    console.log('pagop' + pago)
                     Saldo_real = saldo_realc - monto
-                    console.log(Saldo_real)
+                
                     const update = {
                         Saldo_real,
 
@@ -378,7 +365,6 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
         }
 
 
-        console.log(cuota[0]['cuil_cuit'])
         res.send([cuota[0]['cuil_cuit'], 'Pago Realizado'])
 
 
@@ -396,7 +382,6 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
         // pagot es el objeto pago
         let pagot = await pool.query('select * from pagos where id = ?', [id])
-        console.log(id)
         let id_cuota = pagot[0]["id_cuota"]
         let monto = pagot[0]["monto"]
 
@@ -412,7 +397,6 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
         /////////////////////comparacion 
 
 
-        console.log('antes')
 
         try {
             ////compara si ya supero el 
@@ -435,7 +419,7 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 
 
         } catch (error) {
-            console.log(error)
+          //  console.log(error)
         }
         res.send('Aprobado')
     } catch (error) {
@@ -451,7 +435,6 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 ///// Detalles del pago 
 router.get("/detallespago/:id", async (req, res) => {
     const { id } = req.body
-    console.log(id)
 
     const detalles = await pool.query('SELECT * FROM pagos where id_cuota = ?', [id])
 
@@ -470,7 +453,6 @@ router.get("/cantidadpendientes", isLoggedInn2, async (req, res) => {
         const cbus = await pool.query('SELECT count(*) FROM cbus where estado= "P"  ')
         const cantcbus = cbus[0]['count(*)']
 
-        console.log(cantcbus)
         res.json([rta, cantlegajos, cantcbus])
     } catch (error) {
 
@@ -484,7 +466,6 @@ router.get("/cantidadpendientes", isLoggedInn2, async (req, res) => {
 /////detalles de todos los pagos de una cuota
 router.post("/detallespagos", isLoggedInn2, async (req, res) => {
     const { id } = req.body
-    console.log(id)
     const pagos = await pool.query('SELECT * FROM pagos where id_cuota = ? and estado = "A"', [id])
 
 
@@ -538,10 +519,9 @@ router.get('/pendientess', isLoggedInn2, async (req, res) => {
 ///// inusuales mensuales react
 router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
     const { mes, anio } = req.body
-    console.log(mes)
-    console.log(anio)
+   
     const pagos = await pool.query('select * from historial_pagosi join (select cuil_cuit as cuil, Nombre,ingresos from clientes ) as  sel on historial_pagosi.cuil_cuit=sel.cuil where mes=? and anio=?', [mes, anio])
-    console.log(pagos)
+   
     if (pagos.length > 0) {
         res.json(pagos)
     } else { res.json([]) }
@@ -559,7 +539,6 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
 
     switch (accion) {
         case 'rechazar':
-            console.log('rechazar')
             estado = 'averificarnivel3'
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 
@@ -567,7 +546,6 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
 
             break;
         case 'solicitar_doc':
-            console.log('solicitar_doc')
             estado = 'ajustificar'
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
             const update2 = {
@@ -613,7 +591,7 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
         cuil_cuit = aux[0]['cuil_cuit']
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('algo salio mal')
     }
 
@@ -627,14 +605,13 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
     const { id, detalle, tipo } = req.body
 
     auxi = await pool.query('select *  from historial_pagosi where id=?', [id]);//pagos
-    console.log(auxi)
-    console.log(id)
+  
     cuil_cuit = auxi[0]['cuil_cuit']
 
 
     switch (tipo) {
         case 'Inusual':
-            console.log('Inusual')
+          
             proceso = 'Inusual'
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
 
@@ -642,7 +619,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
             break;
         case 'Sospechoso':
-            console.log('Sospechoso')
+           
             proceso = 'declaradosospechoso'
 
             //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
@@ -668,9 +645,8 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
             pagoaux = await pool.query('select * from historial_pagosi where id = ?', [id])
             ubicacion = auxi[0]['ubicacion']
 
-///////
-console.log('ubi')
-console.log(ubicacion)
+
+
 const traerub = await s3Controller.traerImagen(ubicacion)
 const descargaraqui= "<a href="+traerub+">Descargar aqui el comprobante</a>"
             enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, descargaraqui)
@@ -690,7 +666,7 @@ const descargaraqui= "<a href="+traerub+">Descargar aqui el comprobante</a>"
         await pool.query('UPDATE historial_pagosi set  ? WHERE id = ?', [update, id])
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('algo salio mal')
         
     }
@@ -708,7 +684,7 @@ const descargaraqui= "<a href="+traerub+">Descargar aqui el comprobante</a>"
 router.post("/pagarnivel4lote", async (req, res) => {
     const { cantidad, fecha, id, cuil_cuit } = req.body
     try {
- console.log(id)
+
 
         auxiliarfecha = fecha.split("-");
         fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
@@ -725,7 +701,6 @@ router.post("/pagarnivel4lote", async (req, res) => {
         if (cuota.length==0){
             cuota = await pool.query('select * from cuotas where id_lote = ?  and pago is null', [id]) //objeto cuota
         }
-        console.log(cuota)
         const id_lote = id
         let nr = parseInt(cuota[0]['nro_cuota'])
         cuota = await pool.query('select * from cuotas where id_lote = ? and nro_cuota=?', [id_lote, nr])
@@ -781,7 +756,7 @@ router.post("/pagarnivel4lote", async (req, res) => {
 
 
     } catch (ex) {
-        console.log(ex)
+       // console.log(ex)
         res.json(['No realizado', au[0]['cuil_cuit']])
     }
  
@@ -806,8 +781,7 @@ router.post("/pagarnivel4", async (req, res) => {
         let nr = parseInt(cuota[0]['nro_cuota'])
 
         const cantidades_disponibles = await pool.query('select * from cuotas where id_lote = ? ', [cuota[0]['id_lote']]) //objeto cuota
-       console.log(nr+parseInt(cantidad))
-       console.log(cantidades_disponibles.length)
+ 
         if (nr+parseInt(cantidad) >cantidades_disponibles.length){
             res.json(['No realizado,la cantidad elegida supera la cantidad disponibles', cuota[0]['cuil_cuit']])
         }else{
@@ -857,7 +831,7 @@ router.post("/pagarnivel4", async (req, res) => {
 
 
     } catch (ex) {
-        console.log(ex)
+       // console.log(ex)
         res.json(['No realizado', cuota[0]['cuil_cuit']])
     }
  
@@ -879,7 +853,7 @@ router.get('/aprobar/:id', isLoggedIn, async (req, res) => { // pagot es el obje
     let auxiliar = pagot[0]["id_cuota"]
 
     const cuota = await pool.query('select * from cuotas where id = ?', [auxiliar]) //objeto cuota
-    console.log(cuota)// aca ver error
+   
 
 
     try {
@@ -888,15 +862,14 @@ router.get('/aprobar/:id', isLoggedIn, async (req, res) => { // pagot es el obje
 
         } else {
             const cuotaant = await pool.query("Select * from cuotas where cuil_cuit=? and nro_cuota= ?", [cuota[0]["cuil_cuit"], (cuota[0]["nro_cuota"]) - 1])
-            console.log(cuotaant[0]["Saldo_real"])
-            console.log(cuota[0]["Saldo_real"])
+       
             saldo_realc = cuotaant[0]["Saldo_real"] + cuota[0]["cuota_con_ajuste"]
             saldo_inicial = cuotaant[0]["Saldo_real"]
 
         }
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.redirect('/profile')
 
 
@@ -936,13 +909,13 @@ router.get('/traerpago/:id', isLoggedInn, async (req, res) => {
     const id = req.params.id // requiere el parametro id 
     try {
             const cuota = await pool.query('SELECT *,id_lote FROM pagos join (select cuil_cuit as cuil_cuitcli, nombre as nombrecli from clientes) as selec1 on pagos.cuil_cuit=selec1.cuil_cuitcli join (select id as idcuota, nro_cuota, id_lote from cuotas) as selec2 on pagos.id_cuota=selec2.idcuota WHERE id= ?', [id])
-console.log(cuota)
+
 const total = await pool.query('SELECT * FROM cuotas where id_lote=?',[cuota[0]['id_lote']])
   
     res.json([cuota,total.length])
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json([])
     }
 
@@ -952,13 +925,13 @@ router.get('/traerpagodecuota/:id', isLoggedInn, async (req, res) => {
     const id = req.params.id // requiere el parametro id 
     try {
             const cuota = await pool.query('SELECT * FROM cuotas WHERE id= ?', [id])
-            console.log(cuota)
+         
     const pago = await pool.query('SELECT * FROM pagos WHERE id_cuota= ?', [cuota[0]['id']])
-    console.log(pago)
+   
     res.json(pago)
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json([])
     }
 
@@ -980,7 +953,6 @@ router.get('/realizar', isLoggedIn, async (req, res) => {
 
 router.get('/pendientes', isLoggedIn, async (req, res) => {
     const pendientes = await pool.query("Select * from pagos where estado = 'P'")
-    console.log(pendientes)
     res.render('pagos/pendientes', { pendientes })
 
 })
@@ -991,7 +963,6 @@ router.post('/realizar', async (req, res) => {
     let { monto, id } = req.body;
     const estado = 'A'
     cuota = await pool.query('select * from cuotas WHERE id = ?'[id])
-    console.log(cuota)
     monto += cuota[0]['monto']
 
     const newLink = {

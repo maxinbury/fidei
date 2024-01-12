@@ -8,8 +8,7 @@ const { isLoggedInn } = require('../lib/auth')
 router.get('/leer/:id',isLoggedInn, async (req, res) => {
     id = req.params.id
    const { config} = req.body
-    console.log(config)
-    try {
+      try {
         const noti = await pool.query('select * from notificaciones where id = ?', [id]);
  
 
@@ -40,7 +39,7 @@ const aux = '%'+cuil_cuit+'%'
         res.json([noti,arr[0]])
 
     } catch (error) {
-        console.log(error)
+     //   console.log(error)
         res.json(error)
     }
   

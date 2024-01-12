@@ -23,14 +23,13 @@ const determinarEmpresa = async (req, res) => {
 
         try {
             await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
-            console.log('usuario cambiado ')
         } catch {
-            console.log(error)
+           // console.log(error)
         }
 
         res.send('Exito')
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('Sin exito')
     }
 
@@ -42,7 +41,6 @@ const determinarEmpresa = async (req, res) => {
 
 const habilitar = async (req, res) => {
     const { cuil_cuit, cuil_cuit_admin } = req.body
-    console.log(cuil_cuit)
     newLink = {
         habilitado: 'Si'
     }
@@ -59,7 +57,7 @@ const habilitar = async (req, res) => {
 
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
 
     }
 
@@ -436,7 +434,6 @@ const estadisticasLegajos = async (req, res) => {
 
 const deshabilitar = async (req, res) => {
     const { cuil_cuit, cuil_cuit_admin } = req.body
-    console.log(cuil_cuit_admin)
     newLink = {
         habilitado: 'No'
     }
@@ -451,7 +448,7 @@ const deshabilitar = async (req, res) => {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
         await pool.query('insert registro_operaciones  set ?', newLink2)
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
 
     }
 
@@ -470,7 +467,7 @@ const borrarCbu = async (req, res) => {
         res.json('Borrado')
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json('Error algo sucedio ')
 
     }
@@ -495,7 +492,6 @@ const lista2 = async (req, res) => {
 
     const clientes = await pool.query('select * from clientes where cod_zona="Legales" ')
     fecha = (new Date(Date.now())).toLocaleDateString()
-    console.log(fecha)
     const fech = fecha.split("/");
     const mesact = parseInt(fech[0])
     const anoac = parseInt(fech[2])
@@ -620,10 +616,7 @@ const ventalotee = async (req, res) => {
 
 
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and parcela=? and lote =?', [zona, fraccion, manzana, parcela, lote])
-            console.log('existe')
             if (existe.length > 0) {
-                console.log('existe')
-                console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
                 mensaje = 'Lote asignado'
                 res.json([mensaje, cuil_cuit])
@@ -637,11 +630,8 @@ const ventalotee = async (req, res) => {
 
         } else {
             const existe = await pool.query('select * from lotes where zona=? and fraccion =? and manzana =? and  lote =?', [zona, fraccion, manzana, parcela, lote])
-            console.log('existe')
 
             if (existe.length > 0) {
-                console.log('existe')
-                console.log(existe[0]['id'])
                 await pool.query('UPDATE lotes set ? WHERE id = ?', [venta, existe[0]['id']])
                 mensaje = 'Lote asignado'
                 res.json([mensaje, cuil_cuit])
@@ -654,7 +644,7 @@ const ventalotee = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('algo salio mal')
     }
 }
@@ -687,7 +677,7 @@ const add2 = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -728,7 +718,7 @@ const add3 = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -744,7 +734,6 @@ const modificarCuil = async (req, res) => {
         const row = await pool.query('Select * from clientes where id = ?', [id]);
         if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
             cuil_cuit_ant = row[0]["cuil_cuit"]
-            console.log(cuil_cuit_ant)
             nuevo = {
                 cuil_cuit: cuil_cuit
             }
@@ -752,37 +741,37 @@ const modificarCuil = async (req, res) => {
             try {
                 await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+               // console.log(error)
             }
             try {
                 await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+                //console.log(error)
             }
             try {
                 await pool.query('UPDATE cuotas set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+              //  console.log(error)
             }
             try {
                 await pool.query('UPDATE pagos set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+              //  console.log(error)
             }
             try {
                 await pool.query('UPDATE constancias set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+              //  console.log(error)
             }
             try {
                 await pool.query('UPDATE lotes set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+             //   console.log(error)
             }
             try {
                 await pool.query('UPDATE notificaciones set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-                console.log(error)
+               // console.log(error)
             }
         }
         else {
@@ -792,7 +781,7 @@ const modificarCuil = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -824,7 +813,7 @@ const ventaLoteleg = async (req, res) => {
         }
 
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -838,8 +827,7 @@ const ventaLoteleg = async (req, res) => {
 
 const AgregarIngreso = async (req, res) => {
     const { ingresos, cuil_cuit } = req.body
-    console.log(cuil_cuit)
-    console.log(ingresos)
+  
     const newLink = {
         ingresos
     }

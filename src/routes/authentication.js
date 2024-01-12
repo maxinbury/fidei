@@ -19,7 +19,6 @@ router.post('/recuperoo', passport.authenticate('local.recupero', {
 }))
 ////Mensaje de recuperacion excitosa
 router.get('/exitorecupero', (req, res) => {
-    console.log('Registrado')
     res.send('Contraseña actualizada')
 })
 
@@ -27,7 +26,6 @@ router.get('/exitorecupero', (req, res) => {
 router.post('/recupero', async (req, res) => {
     let { cuil_cuit } = req.body
 
-console.log(cuil_cuit)
     const banco = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let recupero = "";
 
@@ -39,7 +37,6 @@ console.log(cuil_cuit)
             recupero += banco.charAt(Math.floor(Math.random() * banco.length));
         }
 
-        console.log(recupero)
         actualizar = {
             recupero,
             intentos: 0
@@ -88,7 +85,6 @@ router.get('/traerusuario/:cuil_cuit',isLoggedInn, async (req, res) => {
 })
 
 router.get('/exitosignup', (req, res) => {
-    console.log('Registrado')
     res.send('Registrado exitosamente!')
 })
 
@@ -107,11 +103,7 @@ router.get('/noexitorecupero', (req, res) => {
 
 
 //router.post('/signup', passport.authenticate('localsignup',))
-router.get('/signin', isNotLoggedIn, (req, res) => {
-    console.log(req.user)
-    res.render('auth/signin')
 
-})
 
 /////////////jwt prueba
 router.post('/signinn', passport.authenticate('local.signin', { failureRedirect: '/login' }),
@@ -155,7 +147,6 @@ router.post('/signin', (req, res, next) => {
 
 //sORIGINAL
 router.get('/profile', isLoggedIn, async (req, res) => {
-    console.log(req.user)
     if (req.user.nivel == 2) {
         const pagos_p = await pool.query(" Select * from pagos where estado = 'P' ")
         const constancias_p = await pool.query(" Select * from constancias where estado = 'P' ")
@@ -204,7 +195,6 @@ router.get('/loging', async (req, res) => {
     const { cuil_cuit, password } = req.body;
 
     const rows = await pool.query('SELECT * FROM users')
-    console.log('pide')
 
     res.json(rows)
 
@@ -213,7 +203,6 @@ router.get('/loging', async (req, res) => {
 
 router.get('/prueba', isLoggedInn2, async (req, res) => {
     /*const { cuil_cuit, algo, token } = req.body;*/
-    console.log('hola')
 
     rows = await pool.query('select * from clientes ')
 

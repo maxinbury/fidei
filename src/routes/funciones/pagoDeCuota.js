@@ -16,9 +16,7 @@ const sacarguion = require('../../public/apps/transformarcuit')
 async function pagodecuota (id,monto) {
 
     //id es de cuotacuota
-console.log('calculo de cuota' )
-console.log(id)
-console.log(monto) 
+
     try {
         //// realizar el pago
 
@@ -54,12 +52,12 @@ console.log(monto)
             /// traer la ultima
 
             ///
-            console.log(aux)
+        
             let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
             ///////////////////CONSIDERAR PEP
 
             montomax = cliente[0]['ingresos'] * 0.3
-            console.log(montomax)
+         
             if (montomax < monto) {
 
                 monto_inusual = 'Si'
@@ -82,13 +80,12 @@ console.log(monto)
                 if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
                     /////////compara si con este nuevo pago se supera el monto(o con el anteroir)
              /////////ver que (si pasa se reste la diferencia
-             console.log('diferencia')
-             console.log(diferencia)
+          
+         
                     if (diferencia<0){ //si aun  no habia pasado la amortizacion y con este pago pasa
-                        console.log('diferencia')
+                     
                         Saldo_real = Saldo_real + diferencia
-                        console.log('Saldo Real')
-                        console.log(Saldo_real)
+                   
                         saldo_inicial = Saldo_real
                         auxiliar = -diferencia
                         diferencia =(diferencia+ parseFloat(monto)).toFixed(2)
@@ -117,7 +114,7 @@ console.log(monto)
                   
                     if ((actualizacion+parseFloat(monto)) <=0  ){// si no pasa junto con el monto
                        
-                        console.log(monto)
+                    
                         actualizacion =  monto
                     }else {
                         actualizacion = auxiliar
@@ -160,17 +157,15 @@ console.log(monto)
                 ///
                 bandera = true
            
-                console.log(cant_finales.length)
-                console.log(nro_cuota)
+            
                 if (nro_cuota < cant_finales.length) {
-                 
-                    console.log(actualizacion)
+               
                     if (actualizacion >= 0) { // si el pago ya superó el total }
-                        console.log('dentro if')
+                      
                      
                         for (ii = (nro_cuota); ii <= (cant_finales.length-1); ii++) {
                             saldo_inicial = Saldo_real
-                            console.log('dentro for')
+                         
                            ////////////// si el pago ya excedio el monto   
                                 //saldo real seria Saldo
                             
@@ -180,12 +175,12 @@ console.log(monto)
                                 idaux = cant_finales[ii]["id"]
                                 a = ii
                                 //  Saldo_real = saldo_realc - monto
-                                console.log(123)
+                            
                                 update = {
                                     Saldo_real,
                                     saldo_inicial
                                 }
-                                console.log(update)
+                              
 
 
                                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
@@ -204,7 +199,7 @@ console.log(monto)
 
 
             } catch (error) {
-                console.log(error)
+              //  console.log(error)
             }
 
 
@@ -226,7 +221,7 @@ console.log(monto)
 
         /////
     }  catch (error) {
-    console.log(error)
+    //console.log(error)
      mensaje = 'Error  indeterminado'
   
 }
@@ -238,10 +233,7 @@ console.log(monto)
   async function pagodecuotaniv4 (id,monto,cantidad) {
 
     //id es de cuotacuota
-console.log('calculo de cuota' )
-console.log(id)
-console.log(monto) 
-console.log(cantidad) 
+
     try {
         //// realizar el pago
 
@@ -277,13 +269,10 @@ console.log(cantidad)
                 if (cuota_con_ajuste < parseFloat(cuota[0]["pago"]) + parseFloat(monto)) {
                     /////////compara si con este nuevo pago se supera el monto(o con el anteroir)
              /////////ver que (si pasa se reste la diferencia
-             console.log('diferencia')
-             console.log(diferencia)
+        
                     if (diferencia<0){ //si aun  no habia pasado la amortizacion y con este pago pasa
-                        console.log('diferencia')
                         Saldo_real = Saldo_real + diferencia
-                        console.log('Saldo Real')
-                        console.log(Saldo_real)
+                    
                         saldo_inicial = Saldo_real
                         auxiliar = -diferencia
                         diferencia =(diferencia+ parseFloat(monto)).toFixed(2)
@@ -312,7 +301,6 @@ console.log(cantidad)
                   
                     if ((actualizacion+parseFloat(monto)) <=0  ){// si no pasa junto con el monto
                        
-                        console.log(monto)
                         actualizacion =  monto
                     }else {
                         actualizacion = auxiliar
@@ -340,17 +328,14 @@ console.log(cantidad)
                 ///
                 bandera = true
            
-                console.log(cant_finales.length)
-                console.log(nro_cuota)
                 if (nro_cuota < cant_finales.length) {
                  
-                    console.log(actualizacion)
+                 
                     if (actualizacion >= 0) { // si el pago ya superó el total }
-                        console.log('dentro if')
+                     
                      
                         for (ii = (nro_cuota); ii <= (cant_finales.length-1); ii++) {
                             saldo_inicial = Saldo_real
-                            console.log('dentro for')
                            ////////////// si el pago ya excedio el monto   
                                 //saldo real seria Saldo
                             
@@ -360,12 +345,11 @@ console.log(cantidad)
                                 idaux = cant_finales[ii]["id"]
                                 a = ii
                                 //  Saldo_real = saldo_realc - monto
-                                console.log(123)
                                 update = {
                                     Saldo_real,
                                     saldo_inicial
                                 }
-                                console.log(update)
+                        
 
 
                                 await pool.query('UPDATE cuotas set  ? WHERE id = ?', [update, idaux])
@@ -384,7 +368,7 @@ console.log(cantidad)
 
 
             } catch (error) {
-                console.log(error)
+             //   console.log(error)
             }
 
 
@@ -401,7 +385,7 @@ console.log(cantidad)
 
         /////
     }  catch (error) {
-    console.log(error)
+    //console.log(error)
      mensaje = 'Error  indeterminado'
   
 }

@@ -63,7 +63,6 @@ router.post('/calcularvalor', async (req, res) => {
         puede,
         valor
     }
-    console.log(detalle)
 
     res.json(detalle)
  } catch (error) {

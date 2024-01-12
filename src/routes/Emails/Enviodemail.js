@@ -6,7 +6,7 @@ const path = require('path')
 
 
 async function enviarmail (email,asunto,encabezado,mensaje) {
-  console.log(email)
+
   try {
     let transporter = nodemailer.createTransport({
         host: "smtp-mail.outlook.com", // hostname
@@ -41,11 +41,11 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
           ` // html body
       });
     
-      console.log("Message sent: %s", info.messageId);
+    
       // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
     
       // Preview only available when sending through an Ethereal account
-      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+   
       // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
     }
     catch (error) { console.log(error)}
@@ -59,7 +59,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
 
 
   async function enviarmailsospechoso (email,asunto,encabezado,mensaje, ubicacion) {
-    console.log(ubicacion)
+   
     try { 
     // link = await s3Controller.traerImagen(ubicacion)
       let transporter = nodemailer.createTransport({
@@ -91,11 +91,11 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
           html: "<b>  "+ mensaje+" </b><br/>"+"Descarga:"+ubicacion+"<br/> <br/> <br/>  `<img  style='position:absolute;height:10%;width:10%'src = 'cid:logo'></img>", // html body
         });
       
-        console.log("Message sent: %s", info.messageId);
+     
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
       
         // Preview only available when sending through an Ethereal account
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+        
         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
       }
       catch (error) {console.log(error) }
@@ -130,17 +130,15 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
           html: "<b>  "+ mensaje+" </b>", // html body
         });
       
-        console.log("Message sent: %s", info.messageId);
         // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
       
         // Preview only available when sending through an Ethereal account
-        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
         // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
         mensaje ='Se envio un codigo a tu correo'
      
          
     } catch (error) {
-      console.log(error)
+  //    console.log(error)
       mensaje='Error el cliente no tiene mail'
     }
         return (mensaje)

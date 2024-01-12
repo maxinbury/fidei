@@ -17,7 +17,7 @@ router.post("/datos", async (req, res) => {
     let uno = 0
     let dos = 0
     let tres = 0
-    console.log(datos[0]['Rango_Antiguedad'])
+   // console.log(datos[0]['Rango_Antiguedad'])
     for (var i = 0; i < datos.length; i++) {
      
     
@@ -88,7 +88,6 @@ router.post("/datos", async (req, res) => {
      const rangoo =[unoo,doss,tress]
   
     const rta =[status,rangoo,datos]
-    console.log(rta)
     res.json(rta)
 
 
@@ -97,7 +96,6 @@ router.post("/datos", async (req, res) => {
 
 router.post("/nuevazona", async (req, res) => {
     const { zona } = req.body
-    console.log(zona)
     try {
         const  nuev ={
             nombre:zona
@@ -152,7 +150,6 @@ router.post("/borrardatoszona", async (req, res) => {
 router.get('/zonas', async (req, res) => {
 
     const zonass = await pool.query(" Select DISTINCT Zona from relevamiento ")
-  console.log(zonass)
 
 res.json(zonas)
 }  

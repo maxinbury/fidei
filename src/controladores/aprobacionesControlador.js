@@ -10,8 +10,8 @@ const pendientestodas = async (req, res) => {
         res.json(constancias)
 
     } catch (error) {
-        console.log(error)
-        req.flash('message', 'Error algo salio mal')
+        //console.log(error)
+        req.json('message', 'Error algo salio mal')
 
     }
 
@@ -53,7 +53,7 @@ const aprobar = async (req, res) => {
         await enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
     }
 
     //
@@ -90,7 +90,7 @@ const pendientes = async (req, res) => {
 const rechazar2 = async (req, res) => {
     const { id, detalle } = req.body;
 
-    console.log(detalle)
+    
 
     try {
         const constancia = await pool.query('select * from  constancias where id=?', [id])
@@ -121,7 +121,7 @@ const rechazar2 = async (req, res) => {
         await enviodemail.enviarmail.enviarmail(email, asunto, encabezado, mensaje)
         res.send('rechazado')
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('Algo salio mal')
     }
 
@@ -131,24 +131,22 @@ const rechazar2 = async (req, res) => {
 }
 const rechazarcbu = async (req, res) => {
     const { id, detalle } = req.body;
-    console.log(id)
-    console.log(detalle)
+    
 
     try {
         const cbu = await pool.query('select * from  cbus where id=?', [id])
         const cuil_cuit = cbu[0]['cuil_cuit']
         await pool.query('UPDATE cbus set estado = ? WHERE id = ?', ["R", id])
-        console.log(cuil_cuit)
+       
         const cliente = await pool.query('select * from  clientes where cuil_cuit=?', [cuil_cuit])
-        console.log(cliente)
+     
         numerocodif = '******************' + (cbu[0]['numero'])[18] + (cbu[0]['numero'])[19] + (cbu[0]['numero'])[20] + (cbu[0]['numero'])[21]
         mensaje = 'Estimado/a Cliente <br/>' +
             'Le informamos que el certificado de su Cbu numero<b> ' + numerocodif + '</b> ha sido <b>Rechazado</b> debido al siguiente motivo:<br/>' + 
             detalle + '<br/>' +
 
             'Sin otro particular, se lo/a saluda atentamente.'
-        console.log(mensaje)
-
+       
         email = cliente[0]['email']
         asuntoo = 'Aprobacion de CBU'
         encabezado = 'Notificacion nueva'
@@ -165,7 +163,7 @@ const rechazarcbu = async (req, res) => {
 
         res.send('rechazado')
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('Algo salio mal')
     }
 
@@ -187,7 +185,7 @@ const rechazarcomp = async (req, res) => {
 
 const rechazo = async (req, res) => {
     const { id, asunto, cuil_cuit, descripcion, nombre } = req.body;
-    console.log(asunto)
+
 
     await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["R", id])
 
@@ -226,8 +224,7 @@ const aprobarcbu = async (req, res) => {
             'Le informamos que el certificado de CBU numero<b> ' + numerocodif + '</b> ha sido <b>aprobado</b>.<br/>' +
 
             'Sin otro particular, se lo/a saluda atentamente.'
-        console.log(cli)
-        console.log(mensaje)
+    
         email = cliente[0]['email']
         asuntoo = 'Aprobacion de CBU'
         encabezado = 'Notificacion nueva'
@@ -249,7 +246,7 @@ const aprobarcbu = async (req, res) => {
         await pool.query('INSERT INTO notificaciones set ?', [noti])
         res.send('Aprobado')
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         res.send('Error algo sucedio')
     }
 }
@@ -269,7 +266,7 @@ const rechazobu = async (req, res) => {
 
 const postrechazocbu = async (req, res) => {
     const { id, asunto, cuil_cuit, descripcion, nombre } = req.body;
-    console.log(id)
+   
 
     await pool.query('UPDATE constancias set estado = ? WHERE id = ?', ["R", id])
 

@@ -22,12 +22,11 @@ passport.use('local.signin', new LocalStrategy({
     const rowss = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
 
     if (rowss.length === 0) {
-        console.log(cuil_cuit.split('-').length )
         if (cuil_cuit.split('-').length === 1){
             cuil_cuit = ponerguion.ponerguion(cuil_cuit)
         
         }
-    }else {console.log('sin guiones') }
+    }
    
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
 
@@ -35,7 +34,6 @@ passport.use('local.signin', new LocalStrategy({
         const user = rows[0]
 
         const validPassword = await helpers.matchPassword(password, user.password)
-        console.log(user)
         if (validPassword) {
 
             /*  const userFoRToken = {
@@ -74,15 +72,11 @@ passport.use('local.signup', new LocalStrategy({
 
 
 
-    // transformar 
-console.log(cuil_cuit)
-console.log(cuil_cuit.split('-').length )
+
 if (cuil_cuit.split('-').length === 1){
     cuil_cuit = ponerguion.ponerguion(cuil_cuit)
 
 }
-
-console.log(cuil_cuit)
 
 ////    aux = ponerguion.ponerguion(aux)
 
@@ -134,7 +128,7 @@ console.log(cuil_cuit)
     
     
                             } catch (error) {
-                                console.log(error)
+                              //  console.log(error)
                             }
                         }else{
                             try {
@@ -148,7 +142,7 @@ console.log(cuil_cuit)
     
     
                             } catch (error) {
-                                console.log(error)
+                              //  console.log(error)
                             }
 
                         }
@@ -162,11 +156,11 @@ console.log(cuil_cuit)
                             return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
                         } catch (error) {
-                            console.log(error)
+                            //console.log(error)
                         }
                     }
                 } catch (error) {
-                    console.log(error)
+                 //   console.log(error)
                     req.flash('message', 'error,algo sucedio ')
                     // req.flash('message', 'error,algo sucedio ')
 
@@ -180,7 +174,7 @@ console.log(cuil_cuit)
 
         }
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         req.flash('message', 'error,algo sucedio ')
 
 
@@ -208,7 +202,6 @@ passport.use('local.modificarpass', new LocalStrategy({
 
 }, async (req, cuil_cuit, password, done) => {  // que es lo que va a hacer 
     const {newpass} = req.body
-    console.log(newpass)
     const rows = await pool.query('SELECT * FROM users WHERE cuil_cuit = ?', [cuil_cuit])
 
     if (rows.length > 0) {
@@ -217,30 +210,26 @@ passport.use('local.modificarpass', new LocalStrategy({
         const validPassword = await helpers.matchPassword(password, user.password)
        
        if (validPassword) {
-            console.log('contraseña valda')
             const newUser = {
                 password:newpass,
               
             }
-            console.log(1)
             newUser.password = await helpers.encryptPassword(newpass)
-            console.log(2)
-            console.log(2)
+          
             try {
-                console.log(3)
+              
                 await pool.query('UPDATE users set ? WHERE cuil_cuit like  ?', [newUser,cuil_cuit])
-                console.log(4)
+             
                // newUser.id = result.insertId// porque newuser no tiene el id
                done(null, user) // done termina, null el error, user lo pasa para serializar
            // para continuar, y devuelve el newUser para que almacene en una sesion
 
             } catch (error) {
-                console.log(error)
+               // console.log(error)
             }
            // done(null, user, req.flash('success', 'Welcome' + user.nombrecompleto)) // done termina, null el error, user lo pasa para serializar
 
         } else {
-            console.log('contraseña NO valda')
             done(null, false, req.flash('message', 'Pass incorrecta')) // false para no avanzar
         }
     } else {
@@ -284,17 +273,15 @@ passport.use('local.signupnivel3', new LocalStrategy({
                 return done(null, newUser)// para continuar, y devuelve el newUser para que almacene en una sesion
 
             } catch (error) {
-                console.log(error)
+               // console.log(error)
             }
         }
 
         else {
-            console.log('error, ese cuit ya tiene un usuairo existente')
             done(null, false, req.flash('message', 'error, ese cuit ya tiene un usuairo existente  ')) // false para no avanzar
 
         }
     } catch (error) {
-        console.log(error)
         req.flash('message', 'error,algo sucedio ')
 
 
@@ -317,7 +304,6 @@ passport.use('local.recupero', new LocalStrategy({
     const { codigo } = req.body
     //  const razon = await pool.query('Select razon from clientes where cuil_cuit like  ?', [cuil_cuit]) seleccionar razon
 
-    console.log('llega')
 
     const newUser = {
         password,
@@ -341,17 +327,17 @@ passport.use('local.recupero', new LocalStrategy({
                 return ('actualizado')// para continuar, y devuelve el newUser para que almacene en una sesion
 
             } catch (error) {
-                console.log(error)
+              //  console.log(error)
             }
         }
 
         else {
-            console.log('error, codigo mal')
+            
             done(null, false, req.flash('message', 'error, ese cuit ya tiene un usuairo existente  ')) // false para no avanzar
 
         }
     } catch (error) {
-        console.log(error)
+    
         req.flash('message', 'error,algo sucedio ')
 
 

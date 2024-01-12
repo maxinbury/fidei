@@ -72,7 +72,7 @@ async function readFormData(req) {
 
         ///
         form.on('end', () => {
-            console.log(dataObj)
+           
             resolve(dataObj);
         });
     });
@@ -109,18 +109,16 @@ async function getSignedUrl2(req, res) {
 async function traerImagen(ubicacion) {
 
     try {
-        console.log('ubicacion')
-        console.log(ubicacion)
+       
        // const { key } = { ubicacion };
 
-       console.log('ubicacion2')
         const url = await getPresignedURL("mypdfstorage", ubicacion);
-        console.log(url)
+   
         return (url)
 
 
     } catch (ex) {
-        console.log(ex)
+       // console.log(ex)
         return ('No se encontro imagen');
     }
 }
@@ -131,16 +129,15 @@ async function determinaringreso(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
+   
     cuil_cuit = myArray[0]
     descripcion = myArray[1]
-    console.log(descripcion)
+ 
     let rta = ''
     const datoss = {
         ingresos: descripcion
     }
-    console.log(datoss)
-    try {
+   try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datoss, cuil_cuit])
         const constancianueva = {
             ubicacion: formData.file.originalFilename,
@@ -154,7 +151,7 @@ async function determinaringreso(req, res) {
         await pool.query('insert into constancias set ?', constancianueva)
         rta = 'Ingresos actualizados'
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
         rta = 'Error algo sucedio'
     }
 
@@ -165,15 +162,15 @@ async function determinaringreso(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
+      
 
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+        
         rta = 'Error algo sucedio'
     }
-    console.log(rta)
+  
     res.json(rta)
 }
 
@@ -183,13 +180,13 @@ async function subirlegajo(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
+    
     cuil_cuit = myArray[0]
     tipo = myArray[1]
     descripcion = myArray[2]
 
     if (tipo == "Cbu personal") {
-        console.log('A cbu')
+      
         const datoss = {
             ubicacion: formData.file.originalFilename,
             cuil_cuit: cuil_cuit,
@@ -203,7 +200,7 @@ async function subirlegajo(req, res) {
 
     } else {
         if (tipo == "Cbu familiar") {
-            console.log('A cbu')
+           
             const datoss = {
                 ubicacion: formData.file.originalFilename,
                 cuil_cuit: cuil_cuit,
@@ -232,7 +229,7 @@ async function subirlegajo(req, res) {
 
     try {
 
-        CONSOLE.LOG(SUBIDO)
+      
     } catch (error) {
 
     }
@@ -244,13 +241,12 @@ async function subirlegajo(req, res) {
 
 
       await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!! ')
+      
         res.json(' Realizado con exito ')
 
 
 
     } catch (ex) {
-        console.log('NOOO  ')
     }
 }
 ///funcion para leer un form legajo
@@ -281,7 +277,6 @@ async function leerformlegajo(req) {
 
         ///
         form.on('end', () => {
-            console.log(dataObj)
             resolve(dataObj);
         });
     });
@@ -293,7 +288,6 @@ async function determinarPep(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
     cuil_cuit = myArray[0]
     expuesta = myArray[1]
 
@@ -308,14 +302,12 @@ async function determinarPep(req, res) {
 
         fecha: (new Date(Date.now())).toLocaleDateString()
     }
-    console.log(datoss)
     try {
         await pool.query('insert into constancias set?', datoss)
         const datosss = {
             expuesta,
         }
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datosss, cuil_cuit])
-        CONSOLE.LOG(SUBIDO)
     } catch (error) {
 
     }
@@ -327,12 +319,10 @@ async function determinarPep(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
 
 
 
     } catch (ex) {
-        console.log('NOOO  ')
     }
 }
 
@@ -342,7 +332,6 @@ async function subirlegajo1(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
     cuil_cuit = myArray[0]
     tipo = myArray[1]
     descripcion = myArray[2]
@@ -357,10 +346,8 @@ async function subirlegajo1(req, res) {
         estado: 'Pendiente',
         fecha: (new Date(Date.now())).toLocaleDateString()
     }
-    console.log(datoss)
     try {
         await pool.query('insert into constancias set?', datoss)
-        CONSOLE.LOG(SUBIDO)
     } catch (error) {
 
     }
@@ -373,13 +360,11 @@ async function subirlegajo1(req, res) {
 
         await uploadFileToS3(formData.file, "mypdfstorage");
         res.json('Subido con exito')
-        console.log(' Uploaded!!  ')
 
 
 
     } catch (ex) {
         res.json('Error algo sucedió ')
-        console.log(ex)
     }
 }
 ////cargarcbu
@@ -394,7 +379,6 @@ async function cargarcbu(req, res) {
     lazo = myArray[2]
     cuil_cuit_lazo = myArray[3]
     alias = myArray[4]
-    console.log(alias)
     cuil_cuit_lazo = ponerguion.ponerguion(cuil_cuit_lazo)
 
     const datoss = {
@@ -407,14 +391,13 @@ async function cargarcbu(req, res) {
         alias
 
     }
-    console.log(datoss)
 
     try {
         await pool.query('insert into cbus set?', datoss)
 
 
     } catch (error) {
-        console.log(error)
+      //  console.log(error)
     }
 
 
@@ -430,7 +413,7 @@ async function cargarcbu(req, res) {
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+      //  console.log('NOOO  ')
         res.json('no se ha podido subir')
     }
 }
@@ -444,7 +427,6 @@ async function pagarniv1(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
     cuil_cuit = myArray[0]
     id = myArray[1]
     monto = myArray[2]
@@ -459,7 +441,6 @@ async function pagarniv1(req, res) {
 
 
     try {
-        console.log(fechapago)
 
         //// realizar el pago
         let estadoo = 'P'
@@ -470,7 +451,6 @@ async function pagarniv1(req, res) {
         mes = parseInt(fecha.substring(5, 7))
         anio = parseInt(fecha.substring(0, 4))
         let regex = /(\d+)/g;
-        console.log(2)
         ///busca la cuota
         let existe = await pool.query('Select * from cuotas where  id_lote=?  and mes =? and anio = ? and parcialidad = "Final" order by nro_cuota', [id, mes, anio])
         // estado = existe[0]
@@ -479,7 +459,6 @@ async function pagarniv1(req, res) {
         if (existe.length > 0) {////////si existe la cuota
 
 
-            console.log(3)
             /// inicia verificacion de ingresos
             let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
             let montomax = 0
@@ -490,18 +469,15 @@ async function pagarniv1(req, res) {
                     montomax = cliente[0]['ingresos'] * 0.3
                 }
             } catch (error) {
-                console.log(error)
+               // console.log(error)
                 montomax = cliente[0]['ingresos'] * 0.3
             }
-            console.log(cliente[0]['ingresos'])
-            console.log('montomax')
-
-            console.log(montomax)
+       
             if (montomax < monto) {
                 monto_inusual = 'Si'
             }
             ////// final verificacion de ingresos
-            console.log(4)
+         
             let extracto = await pool.query('Select * from extracto ')
             cantidad = extracto.length
 
@@ -524,7 +500,7 @@ async function pagarniv1(req, res) {
                         const sheet = workbooksheets[0]
 
                         const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-                        console.log(6)
+        
 
                         console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
@@ -536,7 +512,6 @@ async function pagarniv1(req, res) {
 
                                 // tipo de pago normal 
 
-                                console.log(7)
 
                                 cuil_cuit_distinto = 'No'
 
@@ -544,32 +519,25 @@ async function pagarniv1(req, res) {
 
                                 credito = String(dataExcel[property]['Créditos'])
 
-                                console.log(8)
-                                try {
+                                                       try {
 
-                                    console.log('credito')
+                              
 
 
-                                    console.log(credito)
                                     if (credito.includes("$")) {
                                         credito = credito.replace("$", "")
-                                        console.log(credito)
+                                      
                                         credito = credito.replace(" ", "")
-                                        console.log(credito)
+                                   
                                         credito = credito.replace(".", "")
-                                        console.log(credito)
+                                       
                                         credito = credito.replace(",", ".")
-                                        console.log(credito)
-                                        console.log('monto')
-                                        console.log(monto)
-                                        console.log(9)
+                                   
                                         if (credito === monto) {
-                                            console.log(10)
-                                            console.log('entra')
+                                     
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                            console.log(fecha)
-                                            console.log(fechapago)
+                                    
                                             if (fecha === fechapago) {
 
 
@@ -608,29 +576,22 @@ async function pagarniv1(req, res) {
 
                                     } else {
 
-                                        console.log(credito)
+                                 
                                         credito = credito.replace(" ", "")
-                                        console.log(credito)
+                                  
                                         //  credito = credito.replace(".", "")
-                                        console.log(credito)
-                                        credito = credito.replace(",", ".")
-                                        console.log(credito)
-                                        console.log('monto')
-                                        console.log(monto)
-                                        console.log(9)
+                                      credito = credito.replace(",", ".")
+                                   
                                         if (credito === monto) {
-                                            console.log(10)
-                                            console.log('entra')
+                                        
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                            console.log(fecha)
-                                            console.log(fechapago)
+                                           
                                             if (fecha === fechapago) {
-                                                console.log('fechaigual')
+                                              
 
                                                 verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
-                                                console.log('fechaigual')
-                                                console.log(verificacion)
+                                           
                                                 if (verificacion.length > 0) {
                                                     yarealizado = 'SI'
 
@@ -646,7 +607,7 @@ async function pagarniv1(req, res) {
 
 
                                                     } catch (error) {
-                                                        console.log(error)
+                                                      //  console.log(error)
                                                     }
 
                                                 }
@@ -673,20 +634,20 @@ async function pagarniv1(req, res) {
 
                         }
                     } catch (error) {
-                        console.log(error)
+                      //  console.log(error)
                     }
                     i += 1
                 } //// fin comparacion de estractos
 
 
             } catch (error) {
-                console.log(error)
+              //  console.log(error)
             }
 
 
             //////////////////////////////
             const id_cuota = existe[0]["id"]
-            console.log(id_cuota)
+          
 
             //////////   regisTro aprobacion de pago  
 
@@ -735,7 +696,6 @@ async function pagarniv1(req, res) {
 
 
             await pool.query('INSERT INTO pagos SET ?', [newLink]);
-            console.log(estadoo)
             /////////FIN ETC PAGO 
             res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
 
@@ -744,18 +704,17 @@ async function pagarniv1(req, res) {
         }
         /////
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('Error la cuota no existe, elegir una fecha valida')
     }
     try {
         ///guardado de 
-        console.log('se guardaria')
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
+       
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+      //  console.log('NOOO  ')
     }
 }
 
@@ -767,7 +726,7 @@ async function pagarnivel1cuota(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
+  
     cuil_cuit = myArray[0]
     id = myArray[1] ////id de la cuota
     monto = myArray[2]
@@ -810,13 +769,12 @@ async function pagarnivel1cuota(req, res) {
                     montomax = cliente[0]['ingresos'] * 0.3
                 }
             } catch (error) {
-                console.log(error)
+               // console.log(error)
                 montomax = cliente[0]['ingresos'] * 0.3
             }
-            console.log(cliente[0]['ingresos'])
+   
 
 
-            console.log(montomax)
             if (montomax < monto) {
                 monto_inusual = 'Si'
             }
@@ -856,7 +814,6 @@ async function pagarnivel1cuota(req, res) {
 
                                 // tipo de pago normal 
 
-                                console.log(7)
 
                                 cuil_cuit_distinto = 'No'
 
@@ -866,8 +823,6 @@ async function pagarnivel1cuota(req, res) {
 
 
                                 try {
-
-                                    console.log('credito')
 
 
 
@@ -881,14 +836,12 @@ async function pagarnivel1cuota(req, res) {
                                         credito = credito.replace(",", ".")
 
 
-                                        console.log(9)
                                         if (credito === monto) {
 
 
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                            console.log(fecha)
-                                            console.log(fechapago)
+                                  
                                             if (fecha === fechapago) {
 
 
@@ -927,29 +880,23 @@ async function pagarnivel1cuota(req, res) {
 
                                     } else {
 
-                                        console.log(credito)
+                                     
                                         credito = credito.replace(" ", "")
-                                        console.log(credito)
+                                   
                                         //  credito = credito.replace(".", "")
-                                        console.log(credito)
+                                  
                                         credito = credito.replace(",", ".")
-                                        console.log(credito)
-                                        console.log('monto')
-                                        console.log(monto)
-                                        console.log(9)
+                                  
                                         if (credito === monto) {
-                                            console.log(10)
-                                            console.log('entra')
+                                         
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                            console.log(fecha)
-                                            console.log(fechapago)
+                                          
                                             if (fecha === fechapago) {
-                                                console.log('fechaigual')
+                                            
 
                                                 verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
-                                                console.log('fechaigual')
-                                                console.log(verificacion)
+                                          
                                                 if (verificacion.length > 0) {
                                                     yarealizado = 'SI'
 
@@ -965,7 +912,7 @@ async function pagarnivel1cuota(req, res) {
 
 
                                                     } catch (error) {
-                                                        console.log(error)
+                                                      //  console.log(error)
                                                     }
 
                                                 }
@@ -992,20 +939,20 @@ async function pagarnivel1cuota(req, res) {
 
                         }
                     } catch (error) {
-                        console.log(error)
+                       // console.log(error)
                     }
                     i += 1
                 } //// fin comparacion de estractos
 
 
             } catch (error) {
-                console.log(error)
+               // console.log(error)
             }
 
 
             //////////////////////////////
             const id_cuota = existe[0]["id"]
-            console.log(id_cuota)
+           
 
             //////////   regisTro aprobacion de pago  
 
@@ -1054,7 +1001,6 @@ async function pagarnivel1cuota(req, res) {
 
 
             await pool.query('INSERT INTO pagos SET ?', [newLink]);
-            console.log(estadoo)
             /////////FIN ETC PAGO 
             res.send('Recibimos exitosamente la notificacion del pago, notificaremos cuando sea corroborado')
 
@@ -1063,18 +1009,16 @@ async function pagarnivel1cuota(req, res) {
         }
         /////
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.send('Error la cuota no existe, elegir una fecha valida')
     }
     try {
         ///guardado de 
-        console.log('se guardaria')
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+      //  console.log('NOOO  ')
     }
 }
 
@@ -1085,17 +1029,15 @@ async function pagonivel2(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
+  
     cuil_cuit_administrador = myArray[0] /// del administrador
     id = myArray[1]
     monto = myArray[2]
     cbupago = myArray[4]
-    console.log(cbupago)
     fecha=myArray[3]
     if (cbupago==''){
         cbupago=0
     }
-    console.log(cbupago)
     ///
     ///INICIO GUARDADO DE PAGO
 
@@ -1122,8 +1064,6 @@ async function pagonivel2(req, res) {
     if (cuota[0]['parcialidad'] === 'Final') {
         /// traer la ultima
 
-        ///
-        console.log(aux)
         let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
         ///////////////////CONSIDERAR PEP
         let variante = 0.3
@@ -1132,8 +1072,7 @@ async function pagonivel2(req, res) {
             variante = 0.2
         }
         montomax = cliente[0]['ingresos'] * variante
-        console.log(montomax)
-        console.log(monto)
+
         const id_cuota = id
         if (montomax < monto) {
 
@@ -1187,7 +1126,7 @@ async function pagonivel2(req, res) {
         const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
         aux = cuota[0]["cuil_cuit"]
         mensaje = 'Pago realizado'
-        console.log('Realizado')
+
     } else {
         mensaje = 'cuota no calculada'
     }
@@ -1196,13 +1135,12 @@ async function pagonivel2(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
         res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
 
 
     } catch (ex) {
-        console.log('NOOO  ')
-    }2
+      // console.log('NOOO  ')
+    }
 }
 
 
@@ -1211,8 +1149,7 @@ async function pagarnivel2varios(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
-    console.log(myArray.length)
+  
     cuil_cuit_administrador = myArray[0] /// del administrador
 
     fecha = myArray[1]
@@ -1253,17 +1190,14 @@ async function pagarnivel2varios(req, res) {
         /// traer la ultima
 
         ///
-        console.log(aux)
 
         /////////FIN  GUARDADO DE PAGO
 
 
 
         let regex = /(\d+)/g;
-        console.log(myArray.length)
         monto = 0
         for (iii = 3; iii < (myArray.length); iii++) {
-            console.log('inicio del for pagos varios ')
 
 
             auxxx = myArray[iii].split(":")
@@ -1277,15 +1211,13 @@ async function pagarnivel2varios(req, res) {
 
             idd = parseInt(idd[0])
             mont = parseFloat(mont[0])
-            console.log('fin conversaion')
-            console.log(idd)
-            console.log(mont)
+       
             monto = monto + mont
 
             await pagodecuota.pagodecuota(idd, mont)
 
         }
-        console.log('sale')
+
 
         //pagodecuota.pagodecuota(id, monto)
 
@@ -1298,7 +1230,7 @@ async function pagarnivel2varios(req, res) {
 
 
         montomax = cliente[0]['ingresos'] * 0.3
-        console.log(montomax)
+   
         if (montomax < monto) {
 
             monto_inusual = 'Si'
@@ -1330,13 +1262,12 @@ async function pagarnivel2varios(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
+      
         res.json(['mensaje', aux])
 
 
     } catch (ex) {
-        console.log(ex)
-        console.log('NOOO  ')
+     
     }
 }
 
@@ -1346,7 +1277,7 @@ async function justificar(req, res) {
     formData = await leerformlegajo(req);
 
     const myArray = formData.datos.split(",");
-    console.log(myArray)
+  
     id = myArray[0]  // id
     cuil_cuit = myArray[1] //// cuil
     descripcion = myArray[2] /// descripcion
@@ -1386,12 +1317,12 @@ async function justificar(req, res) {
 
 
         await uploadFileToS3(formData.file, "mypdfstorage");
-        console.log(' Uploaded!!  ')
+       
 
 
 
     } catch (ex) {
-        console.log('NOOO  ')
+    
     }
 }
 

@@ -17,7 +17,6 @@ const conversacion = async (req, res) => {
    const aux = '%'+cuil_cuit+'%'
    try {
     const chat = await pool.query('select * from chats left join clientes on chats.cuil_cuit = clientes.cuil_cuit  where chats.cuil_cuit like ?',[aux])
-    console.log(chat)
     for (var i = 0; i < chat.length; i++) {
         if (chat[i]['leido'] ='NO') {
             await pool.query('UPDATE chats SET leido = "SI" WHERE id=? ',[chat[i]['id']])
@@ -26,7 +25,7 @@ const conversacion = async (req, res) => {
     }
     res.render('chats/conversacion', {chat})
 } catch (error) {
-    console.log(error)
+   // console.log(error)
     res.render('profile')
 }
    
@@ -34,7 +33,6 @@ const conversacion = async (req, res) => {
 
 const postenviar = async (req, res) => {
     const { mensaje_nivel2, cuil_cuit} = req.body;
-    console.log(mensaje_nivel2)
     const contestadopor = req.user.cuil_cuit
 
         try {

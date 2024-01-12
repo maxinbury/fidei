@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/logueado', async (req, res) => {
-console.log(req.user)
   res.json(req.user);
 
 

@@ -58,7 +58,6 @@ const nuevo={
       mail,
        nivel 
 }
-  console.log(nuevo)
 
 
 
@@ -68,7 +67,6 @@ const nuevo={
 router.get('/traerusuarios',isLoggedInn3, async (req, res) => {
 
     const usuarios = await pool.query(" Select * from users  ")
-    console.log(usuarios)
 
 res.json(usuarios)
     
@@ -79,7 +77,6 @@ res.json(usuarios)
 router.get('/historialvalormetro',isLoggedInn3, async (req, res) => {
 
     const valores = await pool.query(" Select * from nivel3  ")
-    console.log(valores)
 
 res.json(valores)
     
@@ -90,7 +87,6 @@ res.json(valores)
 //Habilitar usuario para pagar
 router.get("/habilitarusuario/:cuil_cuit", isLoggedIn, async (req, res) => {
     let { cuil_cuit } = req.params
-    console.log(cuil_cuit)
     habilitado = 'SI'
     aux = {
         habilitado
@@ -115,7 +111,6 @@ router.get("/deshabilitarusuario/:cuil_cuit", isLoggedIn, async (req, res) => {
 //ACCION DE  AGREGAR ICC GENERAL
 router.post('/agregariccgral', async (req, res,) => {
     const { ICC, mes, anio, zona } = req.body;
-    console.log('icc gral')
     const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona = ?", [mes, anio,zona])
     const parcialidad = "Final"
     for (var i = 0; i < todas.length; i++) {
@@ -141,7 +136,6 @@ router.post('/agregariccgral', async (req, res,) => {
 
         } else {
             const anterior = await pool.query('Select * from cuotas where nro_cuota = ? and cuil_cuit = ?', [nro_cuota - 1, cuil_cuit])
-            console.log(anterior)
             var Saldo_real_anterior = anterior[0]["Saldo_real"]
             
             const cuota_con_ajuste_anterior = anterior[0]["cuota_con_ajuste"]
@@ -168,7 +162,7 @@ router.post('/agregariccgral', async (req, res,) => {
             await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuota, todas[i]["id"]])
 
         } catch (error) {
-            console.log(error)
+           // console.log(error)
             res.redirect(`/cuotas`);
 
         }

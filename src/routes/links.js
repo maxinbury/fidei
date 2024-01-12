@@ -76,12 +76,12 @@ for (x in todos ){
         }
     await pool.query('UPDATE clientes set  observaciones=? WHERE id = ?', [lot, todos[x]['id']])
  } catch (error) {
-                console.log(error)
+             //   console.log(error)
             }
 }
 }
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         res.json('error')
     }
 res.json('listo')
@@ -130,8 +130,7 @@ router.get('/clientehabilitado/:cuil_cuit',isLoggedInn2, async (req, res) => {
  
     const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
     const habilitado = await pool.query('SELECT * FROM registro_operaciones WHERE cuil_cuit_referencia = ? and (adicional = "Habilitado" or adicional = "Deshabilitado")', [cuil_cuit])
-   console.log(habilitado.length)
-   console.log(habilitado)
+
     if (habilitado.length>0){
     reg= habilitado[(habilitado.length)-1]
         }else{
@@ -157,8 +156,7 @@ router.post('/modificarclientelegales',isLoggedInn2, async (req, res) => {
         telefono,
         Nombre
         }
-        console.log(newLink)
-        console.log(id)
+ 
         await pool.query('UPDATE clientes set ? WHERE id= ?', [newLink, id])
         res.send('Cliente modificado')
     } catch (error) {
@@ -193,12 +191,10 @@ router.post('/modificarcli',isLoggedInn2, async (req, res) => {
 
 router.post('/enviarmailprueba/',isLoggedInn2, async (req, res) => {
     const {cuil_cuit} = req.body
-console.log(cuil_cuit)
   cli = await pool.query ('select * from clientes where cuil_cuit = ?',[cuil_cuit])
     
 mensaje= 'Hola como estas '
-console.log(cli)
-console.log(mensaje)
+
 email = cli[0]['email']
 asunto = 'Aprobacion de CBU'
 encabezado= 'Notificacion nueva'
@@ -251,13 +247,13 @@ router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
 
 
     try {
-        console.log('1')
+      
         const type = req.file.mimetype
-        console.log('2')
+     
         const name = req.file.originalname
-        console.log('3')
+ 
         const data = fs.readFileSync(path.join(__dirname, '../../pdfs/' + req.file.filename))
-        console.log(req.file.filename)
+    
 
         const datos = {
             ubicacion: req.file.filename,
@@ -266,7 +262,6 @@ router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
             estado: 'A',
         }
         await pool.query('insert into constancias set?', datos)
-        console.log('req.file.filename')
         res.send('Imagen guardada con exito')
     } catch (error) {
         res.send('algo salio mal')
