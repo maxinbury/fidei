@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-
+const {hashf} =require (('../keys.js'))
 module.exports = {
     //Decofidicacion de token Logueado
     isLoggedInn(req,res, next){
@@ -14,11 +14,13 @@ module.exports = {
         let decodedToken = {}
         
         try{
-          
-             decodedToken = jwt.verify(token, 'fideicomisocs121')
+   
            
+             decodedToken = jwt.verify(token,hashf.key )
+            
         }catch(error){
-            //console.log(error)
+           //
+            console.log(error)
         }
       
         if (!token || !decodedToken.id){
@@ -44,7 +46,7 @@ module.exports = {
         let decodedToken = {}
     
         try{
-             decodedToken = jwt.verify(token, 'fideicomisocs121')
+             decodedToken = jwt.verify(token, hashf.key)
            
         }catch{}
       
@@ -71,7 +73,7 @@ module.exports = {
         let decodedToken = {}
         
         try{
-             decodedToken = jwt.verify(token, 'fideicomisocs121')
+             decodedToken = jwt.verify(token, hashf.key)
              
            
         }catch{}
@@ -95,7 +97,7 @@ module.exports = {
         let decodedToken = {}
         
         try{
-             decodedToken = jwt.verify(token, 'fideicomisocs121')
+             decodedToken = jwt.verify(token, hashf.key)
              
            
         }catch(error){
