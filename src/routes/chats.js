@@ -34,7 +34,7 @@ router.post("/dsadasda",  async (req, res) => {
 
 router.get("/dasdasda", async (req, res) => {
   
-    resp = await pool.query('select * from rk order by punt desc')
+    resp = await pool.query('select * from rk order by punt desc LIMIT 3')
     res.json(resp)
 })
 module.exports = router
