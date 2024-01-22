@@ -29,7 +29,7 @@ router.post("/dsadasda",  async (req, res) => {
 
 
 
-    res.json(pagos)
+    res.json("realizado")
 })
 
 router.get("/dasdasda", async (req, res) => {
