@@ -5,7 +5,8 @@ const axios = require('axios');
 const express = require('express')
 const router = express.Router()
 const pool = require('../database')
-
+const funcionpago = require('./funciones/pagos360');
+const { ServerlessApplicationRepository } = require('aws-sdk');
 
 
 
@@ -126,7 +127,7 @@ router.post('/crearadhesiondebcbu', async (req, res) => {
 
   const adhesionData = {
     adhesion_holder_name: "Juan Torres",
-    email: "noemail@pagos360.com",
+    email: "pipao.pipo@gmail.com",
     description: "Descripción o concepto de la Adhesión",
     short_description: "hola mundo",
     external_reference: cuil_cuit,
@@ -185,7 +186,7 @@ const adhesion = await pool.query('select * from adhesiones where id=? ',[identi
  }
    
  
-  
+  console.log(apiUrl)
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${apiKey360}`
@@ -199,8 +200,8 @@ const adhesion = await pool.query('select * from adhesiones where id=? ',[identi
     .catch(error => {
       
 
-      console.log(error.response.request.res)
-      console.error('Error al realizar la solicitud:', error.response.data);
+      //console.log(error.response.request.res)
+      console.error('Error al realizar la solicitud:', error.response);
       res.json('error')
     });
 });
@@ -338,10 +339,10 @@ router.post('/crearadhesiondebtarjeta', async (req, res) => {
   const apiUrl = 'https://api.sandbox.pagos360.com/card-adhesion';
   const requestData = {
     card_adhesion: {
-      adhesion_holder_name: 'Juan Torres',
+      adhesion_holder_name: 'pipo creditp',
       external_reference:cuil_cuit,
-      email: 'noemail@pagos360.com',
-      card_holder_name: 'Juan Torres',
+      email: 'pipao.pipo@gmail.com',
+      card_holder_name: 'Pipao credito',
       card_number,
             description: 'Descripción o concepto de la Adhesión'
     }
@@ -375,9 +376,9 @@ await  axios.post(apiUrl, requestData, { headers })
       }
     })
     .catch(error => {
- // console.log(error.response.data)
+  console.log(error.response.data.errors)
 
-    //  console.error('Error al realizar la solicitud:', error.response.data.children);
+     console.error('Error al realizar la solicitud:', error.response.data.errors.children);
     });
 });
 
@@ -398,5 +399,22 @@ router.post('/notificaciondebhook', async (req, res) => {
 
 
 
+
+/////generar debito automarico
+
+router.get('/solicitar', async (req, res) => {
+  const { id } = req.params;
+
+  respuesta= await funcionpago.debitoauomaticocbu("30-70858286-3")
+  res.json(respuesta)
+})
+
+
+router.get('/estado', async (req, res) => {
+  const { id } = req.params;
+
+  respuesta= await funcionpago.estadopagodebito("1851405")
+  res.json(respuesta)
+})
 
 module.exports = router
