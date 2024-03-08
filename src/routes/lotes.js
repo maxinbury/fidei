@@ -25,6 +25,19 @@ router.get('/lotescliente2/:cuil_cuit', isLoggedInn2, loteCliente2)
 //LISTA DE LOTES 
 router.get('/listadetodos', isLoggedInn2, listadeTodos)
 
+
+////
+router.get('/listausur', isLoggedInn2, async (req, res) => {
+    
+    const lotes = await pool.query('select * from lotes_gral')
+    
+    res.json([lotes])
+
+  
+
+})
+
+
 ///lista de legales
 router.get('/lista2', isLoggedInn2, lista2)
 
@@ -90,6 +103,10 @@ router.post('/determinarmapa2', async (req, res) => {
 })
 
 
+router.post('/determinarmapatodos', async (req, res) => {
+    const { mapa, categoria1, categoria2, area, perimetro } = req.body
+
+})
 router.post('/traersegunmapa1', async (req, res) => {
     const { mapa1 } = req.body
 
