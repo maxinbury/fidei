@@ -104,8 +104,62 @@ router.post('/determinarmapa2', async (req, res) => {
 
 
 router.post('/determinarmapatodos', async (req, res) => {
-    const { mapa, categoria1, categoria2, area, perimetro } = req.body
+    let { mapa, categoria1, categoria2, superficie, perimetro, parcela, mensura } = req.body
+    console.log( mapa, categoria1, categoria2, superficie, perimetro, parcela, mensura   )
+ 
+try {
+    const existe = await pool.query("select * from lotes_gral where mapa=?",[mapa])
 
+    if(existe.length>0){
+        if(categoria1==undefined){
+            categoria1=existe[0]["categoria1"]
+        }
+        if(categoria2==undefined){
+            categoria2=existe[0]["categoria2"]
+        }
+        if(superficie==undefined){
+            console.log("nosuperficie")
+            superficie=existe[0]["area"]
+        }
+        if(perimetro==undefined){
+            perimetro=existe[0]["perimetro"]
+        }
+        if(parcela==undefined){
+            parcela=existe[0]["parcela"]
+        }
+        if(mensura==undefined){
+            mensura=existe[0]["mensura"]
+        }
+        const asignar ={  categoria1, categoria2, superficie, perimetro, parcela, mensura}
+        await pool.query('UPDATE lotes_gral set ? WHERE mapa=?', [asignar, mapa])
+
+    }else{
+        if(categoria1==undefined){
+            categoria1="Sin determinar"
+        }
+        if(categoria2==undefined){
+            categoria2="Sin determinar"
+        }
+        if(superficie==undefined){
+            superficie="Sin determinar"
+        }
+        if(perimetro==undefined){
+            perimetro="Sin determinar"
+        }
+        if(parcela==undefined){
+            parcela="Sin determinar"
+        }
+        if(mensura==undefined){
+            mensura="Sin determinar"
+        }
+        
+        await pool.query('insert into lotes_gral set mapa=?, categoria1=?, categoria2=?, superficie=?, perimetro=?, parcela=?, mensura=?', [mapa, categoria1, categoria2, superficie, perimetro, parcela, mensura])
+
+    }
+    res.json("sad")
+} catch (error) {
+    console.log(error)
+}
 })
 router.post('/traersegunmapa1', async (req, res) => {
     const { mapa1 } = req.body
