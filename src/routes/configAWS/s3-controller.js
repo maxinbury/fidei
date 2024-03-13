@@ -21,9 +21,12 @@ async function s3Upload(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-
+        
         res.send('Uploaded!!');
+    }catch{console.log(error)}
     } catch (ex) {
         res.send('ERROR!!!!');
     }
@@ -161,9 +164,12 @@ async function determinaringreso(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-      
-
+        
+        
+    }catch{console.log(error)}
 
 
     } catch (ex) {
@@ -184,7 +190,7 @@ async function subirlegajo(req, res) {
     cuil_cuit = myArray[0]
     tipo = myArray[1]
     descripcion = myArray[2]
-
+console.log(1)
     if (tipo == "Cbu personal") {
       
         const datoss = {
@@ -211,9 +217,9 @@ async function subirlegajo(req, res) {
             }
 
             await pool.query('insert into cbus set?', datoss)
-
+            
         } else {
-
+            console.log(formData.file.originalFilename)
             const datoss = {
                 ubicacion: formData.file.originalFilename,
                 cuil_cuit: cuil_cuit,
@@ -231,7 +237,7 @@ async function subirlegajo(req, res) {
 
       
     } catch (error) {
-
+        console.log(error)
     }
 
 
@@ -240,14 +246,18 @@ async function subirlegajo(req, res) {
     try {
 
 
-      await uploadFileToS3(formData.file, "mypdfstorage");
       
+            try {
+        await uploadFileToS3(formData.file, "mypdfstorage");
+         }catch{console.log(error)}
         res.json(' Realizado con exito ')
+   
 
 
 
     } catch (ex) {
     }
+    return
 }
 ///funcion para leer un form legajo
 async function leerformlegajo(req) {
@@ -315,15 +325,17 @@ async function determinarPep(req, res) {
 
 
 
-    try {
 
 
+
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
+        
+        
+    }catch{console.log(error)}
 
-
-
-    } catch (ex) {
-    }
+   
 }
 
 ////Subir legajo sin aprobar
@@ -358,10 +370,13 @@ async function subirlegajo1(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-        res.json('Subido con exito')
-
-
+    
+        
+    }catch{console.log(error)}
+    res.json('Subido con exito')
 
     } catch (ex) {
         res.json('Error algo sucedió ')
@@ -406,10 +421,13 @@ async function cargarcbu(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-
-        res.json('Subido con exito')
-
+        
+      
+    }catch{console.log(error)}
+  res.json('Subido con exito')
 
 
     } catch (ex) {
@@ -709,9 +727,12 @@ async function pagarniv1(req, res) {
     }
     try {
         ///guardado de 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-       
-
+        
+        
+    }catch{console.log(error)}
 
     } catch (ex) {
       //  console.log('NOOO  ')
@@ -1014,9 +1035,12 @@ async function pagarnivel1cuota(req, res) {
     }
     try {
         ///guardado de 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-
-
+        
+        
+    }catch{console.log(error)}
     } catch (ex) {
       //  console.log('NOOO  ')
     }
@@ -1072,7 +1096,7 @@ async function pagonivel2(req, res) {
             variante = 0.2
         }
         montomax = cliente[0]['ingresos'] * variante
-
+        console.log(montomax)
         const id_cuota = id
         if (montomax < monto) {
 
@@ -1090,6 +1114,7 @@ async function pagonivel2(req, res) {
                 proceso: "averificarnivel3",
                 cuil_cuit_administrador,
                 ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                fecha
 
             };
             await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
@@ -1134,10 +1159,13 @@ async function pagonivel2(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-        res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
-
-
+       
+        
+    }catch{console.log(error)}
+ res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     } catch (ex) {
       // console.log('NOOO  ')
     }
@@ -1261,9 +1289,12 @@ async function pagarnivel2varios(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-      
-        res.json(['mensaje', aux])
+        
+       
+    }catch{console.log(error)} res.json(['mensaje', aux])
 
 
     } catch (ex) {
@@ -1316,9 +1347,12 @@ async function justificar(req, res) {
     try {
 
 
+        
+            try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-       
-
+        
+        
+    }catch{console.log(error)}
 
 
     } catch (ex) {
