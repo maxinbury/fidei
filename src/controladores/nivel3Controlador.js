@@ -172,7 +172,7 @@ const agregarIccGral2 =async (req, res,) => {
 
 
 
-    const todas = await pool.query("select * from cuotas where mes =? and anio =? and parcialidad = ? and zona =? ", [mes, anio,"Original", zona])
+    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona =? ", [mes, anio, zona])
 
     for (let i = 0; i < todas.length; i++) {  
 
