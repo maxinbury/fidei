@@ -576,7 +576,7 @@ const legajosCuil = async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
-
+    const cbsbusconstancias = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
     /*  legajos.map(img => {
           fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
   

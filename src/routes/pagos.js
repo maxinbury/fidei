@@ -442,6 +442,21 @@ router.get("/detallespago/:id", async (req, res) => {
     //*  res.json(cantidad[0]["count(*)"])
 })
 
+
+
+router.get("/cantidadpendientesadmin", isLoggedInn2, async (req, res) => {
+    try {
+        const detalles = await pool.query('SELECT count(*) FROM historial_pagosi where proceso="averificarnivel3" ')
+        const rta = detalles[0]['count(*)']
+
+        res.json([rta])
+    } catch (error) {
+console.log(error)
+    }
+
+
+})
+
 router.get("/cantidadpendientes", isLoggedInn2, async (req, res) => {
     try {
         const detalles = await pool.query('SELECT count(*) FROM pagos where estado="p" or estado="justificacionp" ')
