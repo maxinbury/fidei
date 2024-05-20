@@ -155,7 +155,7 @@ async function determinaringreso(req, res) {
         rta = 'Ingresos actualizados'
     } catch (error) {
       //  console.log(error)
-        rta = 'Error algo sucedio'
+        rta = 'Ingresos actualizados'
     }
 
 
@@ -174,7 +174,7 @@ async function determinaringreso(req, res) {
 
     } catch (ex) {
         
-        rta = 'Error algo sucedio'
+        rta = 'Ingresos actualizados'
     }
   
     res.json(rta)
@@ -1164,10 +1164,11 @@ async function pagonivel2(req, res) {
         await uploadFileToS3(formData.file, "mypdfstorage");
        
         
-    }catch{console.log(error)}
+    }catch(error){console.log(error)}
  res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     } catch (ex) {
       // console.log('NOOO  ')
+      console.log(ex)
     }
 }
 

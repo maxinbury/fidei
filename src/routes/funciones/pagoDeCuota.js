@@ -20,7 +20,7 @@ async function pagodecuota (id,monto) {
     try {
         //// realizar el pago
 
-
+console.log('pagodecuota')
 
 
         let monto_inusual = 'No'
@@ -47,17 +47,19 @@ async function pagodecuota (id,monto) {
         anio = cuota[0]["anio"]
 
         estado = 'A'
-
+        console.log('monto',monto)
         if (cuota[0]['parcialidad'] === 'Final') {
             /// traer la ultima
 
             ///
-        
+        console.log(aux)
             let cliente = await pool.query('Select * from clientes where cuil_cuit like ? ', [aux])
+            console.log(cliente)
             ///////////////////CONSIDERAR PEP
-
+            console.log('clienti',cliente[0]['ingresos'])
             montomax = cliente[0]['ingresos'] * 0.3
-         
+         console.log('montomax',montomax)
+
             if (montomax < monto) {
 
                 monto_inusual = 'Si'
@@ -199,7 +201,7 @@ async function pagodecuota (id,monto) {
 
 
             } catch (error) {
-              //  console.log(error)
+               console.log(error)
             }
 
 
