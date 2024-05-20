@@ -249,15 +249,18 @@ console.log(1)
       
             try {
         await uploadFileToS3(formData.file, "mypdfstorage");
-         }catch{console.log(error)}
-        res.json(' Realizado con exito ')
+         }catch (error){console.log(error)  
+             res.json(' Realizado con exito ')}
+     
    
 
 
 
     } catch (ex) {
+        console.log(ex)
+        res.json('Subido con exito')
     }
-    return
+            
 }
 ///funcion para leer un form legajo
 async function leerformlegajo(req) {
@@ -432,7 +435,7 @@ async function cargarcbu(req, res) {
 
     } catch (ex) {
       //  console.log('NOOO  ')
-        res.json('no se ha podido subir')
+        res.json('Subido con exito')
     }
 }
 
