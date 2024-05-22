@@ -274,6 +274,42 @@ router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
 
 
 })
+
+
+const upload = multer({ dest: 'uploads/' });
+
+router.post('/upload', upload.single('file'), (req, res) => {
+    const filePath = path.join(__dirname, req.file.path);
+    const workbook = xlsx.readFile(filePath);
+  
+    // Recorrer todas las hojas
+    const sheetNames = workbook.SheetNames;
+    const allData = [];
+  
+    sheetNames.forEach((sheetName) => {
+      const worksheet = workbook.Sheets[sheetName];
+      const sheetData = xlsx.utils.sheet_to_json(worksheet);
+  
+      sheetData.forEach((row) => {
+        // Aquí puedes hacer algo con cada fila
+        allData.push({ sheetName, row });
+      });
+    });
+  
+    // Eliminar el archivo subido después de procesarlo para no ocupar espacio innecesario
+    fs.unlinkSync(filePath);
+  
+    // Aquí puedes hacer algo con los datos procesados
+    console.log(allData);
+  
+    // Opcionalmente, puedes enviar los datos de vuelta al cliente
+    res.json(allData);
+  });
+
+
+
+
+
 module.exports = router
 
 

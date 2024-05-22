@@ -1167,11 +1167,12 @@ async function pagonivel2(req, res) {
         await uploadFileToS3(formData.file, "mypdfstorage");
        
         
-    }catch(error){console.log(error)}
+    }catch(error){console.log(error), res.json(['mensaje', cuota[0]['cuil_cuit'],cuota[0]['id_lote']])}
  res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     } catch (ex) {
       // console.log('NOOO  ')
       console.log(ex)
+      res.json(['mensaje', cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     }
 }
 
