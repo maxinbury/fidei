@@ -399,7 +399,7 @@ router.post('/notificaciondebhook', async (req, res) => {
 router.post('/notificacionhook', async (req, res) => {
   const { external_reference, adhesion_holder_name, email } = req.body
 
-  console.log(external_reference, adhesion_holder_name, email)
+  console.log('external_reference',external_reference, adhesion_holder_name, email)
 
 
 
