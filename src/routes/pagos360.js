@@ -60,7 +60,7 @@ router.get('/traerlink360/:id', async (req, res) => {
 
     const data = JSON.stringify({
       payment_request: {
-        description: cuota[0]['mes'] + '/' + cuota[0]['anio'],
+        description: 'Pago de cuota '+cuota[0]['mes'] + '/' + cuota[0]['anio'],
         first_due_date: fechaFormateada,
         first_total: monto,
         payer_name: pagador[0]['Nombre'],
@@ -398,7 +398,7 @@ router.post('/notificaciondebhook', async (req, res) => {
 })
 router.post('/notificacionhook', async (req, res) => {
   const { external_reference, adhesion_holder_name, email } = req.body
-
+console.log(body)
   console.log('external_reference',external_reference, adhesion_holder_name, email)
 
 
