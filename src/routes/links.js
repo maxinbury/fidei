@@ -135,7 +135,7 @@ router.get('/clientehabilitado/:cuil_cuit',isLoggedInn2, async (req, res) => {
     reg= habilitado[(habilitado.length)-1]
         }else{
             reg= {cuil_cuit:'Sistema',
-            fecha: '20/05/2022'}
+            fecha: 'de su creacion'}
 
         }
     
