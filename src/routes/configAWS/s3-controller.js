@@ -131,13 +131,12 @@ async function traerImagen(ubicacion) {
 
 ///funcion para guardar comprobante deingresos declarados
 async function determinaringreso(req, res) {
+    let { cuil_cuit,  descripcion } = req.body;
+      const filename = req.file.filename
 
-    formData = await leerformlegajo(req);
-
-    const myArray = formData.datos.split(",");
    
-    cuil_cuit = myArray[0]
-    descripcion = myArray[1]
+    cuil_cuit = cuil_cuit
+    descripcion =descripcion
  
     let rta = ''
     const datoss = {
@@ -146,7 +145,7 @@ async function determinaringreso(req, res) {
    try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datoss, cuil_cuit])
         const constancianueva = {
-            ubicacion: formData.file.originalFilename,
+            ubicacion: filename,
             cuil_cuit: cuil_cuit,
             descripcion: descripcion,
             tipo: "Ingresos Declarados",
@@ -168,11 +167,6 @@ async function determinaringreso(req, res) {
 
 
         
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-        
-    }catch{console.log(error)}
 
 
     } catch (ex) {
@@ -296,7 +290,7 @@ async function leerformlegajo(req) {
 ////funciond eterminar persona politicamente expuesta
 async function determinarPep(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
     cuil_cuit = myArray[0]
@@ -306,7 +300,7 @@ async function determinarPep(req, res) {
 
 
     const datoss = {
-        ubicacion: formData.file.originalFilename,
+        ubicacion: filename,
         cuil_cuit: cuil_cuit,
         tipo: 'Documentacion PEP',
         descripcion: 'Cuil administrador',
@@ -342,7 +336,7 @@ async function determinarPep(req, res) {
 ////Subir legajo sin aprobar
 async function subirlegajo1(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
     cuil_cuit = myArray[0]
@@ -352,7 +346,7 @@ async function subirlegajo1(req, res) {
 
 
     const datoss = {
-        ubicacion: formData.file.originalFilename,
+        ubicacion: filename,
         cuil_cuit: cuil_cuit,
         tipo: tipo,
         descripcion: descripcion,
@@ -386,7 +380,7 @@ async function subirlegajo1(req, res) {
 ////cargarcbu
 async function cargarcbu(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
 
@@ -398,7 +392,7 @@ async function cargarcbu(req, res) {
     cuil_cuit_lazo = ponerguion.ponerguion(cuil_cuit_lazo)
 
     const datoss = {
-        ubicacion: formData.file.originalFilename,
+        ubicacion: filename,
         cuil_cuit,
         numero,
         lazo,
@@ -443,7 +437,7 @@ async function cargarcbu(req, res) {
 //////////////pago
 async function pagarniv1(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
     cuil_cuit = myArray[0]
@@ -683,7 +677,7 @@ async function pagarniv1(req, res) {
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
-                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    ubicacion: filename,///////////aca ver el problema
                     id_cbu,
                     yarealizado
 
@@ -704,7 +698,7 @@ async function pagarniv1(req, res) {
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
-                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    ubicacion: filename,///////////aca ver el problema
                     id_cbu,
                     observaciones: 'Inusual',
                     yarealizado
@@ -745,7 +739,7 @@ async function pagarniv1(req, res) {
 
 async function pagarnivel1cuota(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
   
@@ -991,7 +985,7 @@ async function pagarnivel1cuota(req, res) {
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
-                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    ubicacion: filename,///////////aca ver el problema
                     id_cbu,
                     yarealizado
 
@@ -1012,7 +1006,7 @@ async function pagarnivel1cuota(req, res) {
                     cuil_cuit_distinto,
                     monto_distinto,
                     monto_inusual,
-                    ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                    ubicacion: filename,///////////aca ver el problema
                     id_cbu,
                     observaciones: 'Inusual',
                     yarealizado
@@ -1174,7 +1168,7 @@ console.log(1)
 
 async function pagarnivel2varios(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
   
@@ -1278,7 +1272,7 @@ async function pagarnivel2varios(req, res) {
             cuil_cuit_distinto,
             monto_distinto,
             monto_inusual,
-            ubicacion: formData.file.originalFilename,///////////aca ver el problema
+            ubicacion: filename,///////////aca ver el problema
 
         };
 
@@ -1305,7 +1299,7 @@ async function pagarnivel2varios(req, res) {
 //////
 async function justificar(req, res) {
 
-    formData = await leerformlegajo(req);
+      const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
   
@@ -1324,7 +1318,7 @@ async function justificar(req, res) {
             tipo: 'justificacion',
             cuil_cuit: cuil_cuit,
             descripcion,
-            ubicacion: formData.file.originalFilename,
+            ubicacion: filename,
             fecha: (new Date(Date.now())).toLocaleDateString(),
             otros: noti[0]['id_referencia']
         }

@@ -76,7 +76,7 @@ router.post('/subirlegajo1', isLoggedInn,s3Controller.subirlegajo1);
 router.post('/cargarcbu',isLoggedInn, s3Controller.cargarcbu)
 
 /// DETERMINAR INGRESO, LIMITAR A NIVEL 2
-router.post('/determinaringreso', isLoggedInn,s3Controller.determinaringreso);
+router.post('/determinaringreso', upload.single('file') ,s3Controller.determinaringreso);
 
 
 router.post('/pagarnivel1', isLoggedInn, s3Controller.pagarniv1);
