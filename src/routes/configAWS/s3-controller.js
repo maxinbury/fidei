@@ -312,7 +312,7 @@ async function determinarPep(req, res) {
         }
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datosss, cuil_cuit])
     } catch (error) {
-
+console.log(error)
     }
 
 res.json('Realizado')
