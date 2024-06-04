@@ -15,23 +15,39 @@ const enviodemail = require('./Emails/Enviodemail')
 const { enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos, cliente2, modificarcli2, lotescliente2, constanciass } = require('../controladores/usuario1controlador')
 
 
-
-
-
-const diskstorage = multer.diskStorage({
-    destination: path.join(__dirname, '../../pdfs'),
+// Configuración de Multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadPath = path.join(__dirname, '../documentos');
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+      }
+      cb(null, uploadPath);
+    },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + '-legajo-' + file.originalname)
-
+    
+      cb(null, `${Date.now()}-${file.originalname}`);
     }
-}) //para que almacene temporalmente la imagen
-const fileUpload = multer({
-    storage: diskstorage,
+  });
 
-}).single('image')
+
+  
+  const upload = multer({ storage });
+  
+// Ruta para ver el archivo PDF
 
 //////////////// MODIFICAR CONTRASENIA
 
+router.get('/traerpdfconstancia/:id',async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    const query = await pool.query('SELECT * FROM constancias WHERE id = ?',[id]);
+  console.log(query)
+  
+      const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
+      res.sendFile(filePath);
+    ;
+  });
 router.post('/modificarpass', passport.authenticate('local.modificarpass', {
 
     successRedirect: '/exitorecupero',
@@ -49,7 +65,7 @@ router.get('/get-object-url2/:key', isLoggedInn, s3Controller.getSignedUrl2);
 
 
 //////PDFSS
-router.post('/subirlegajo', isLoggedInn2 ,s3Controller.subirlegajo);
+router.post('/subirlegajo', upload.single('file'),s3Controller.subirlegajo);
 
 /// determinar pdf
 router.post('/determinarPep', isLoggedInn2, s3Controller.determinarPep);
@@ -80,7 +96,7 @@ router.post('/justificacion', isLoggedInn, s3Controller.justificar);
 router.post('/enviarconsulta',isLoggedInn, enviarconsulta)
 
 
-router.post('/subirlegajoprueba',isLoggedInn, fileUpload, )
+
 
 router.get('/leerimagen ', )
 

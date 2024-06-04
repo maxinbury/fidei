@@ -11,6 +11,9 @@ const sacarguion = require('../../public/apps/transformarcuit')
 const pagodecuota = require('../funciones/pagoDeCuota')
 const enviodemail = require('../Emails/Enviodemail')
 
+
+
+
 ///Funcion modelo de guardado de imagen
 async function s3Upload(req, res) {
     let { ingreso, formData } = req.body
@@ -182,19 +185,16 @@ async function determinaringreso(req, res) {
 
 ///funcion para subir algun legajo
 async function subirlegajo(req, res) {
+    const { cuil_cuit, tipo, descripcion } = req.body;
+    const filename = req.file.filename;
+    console.log(cuil_cuit, tipo, descripcion,filename)
+   
 
-    formData = await leerformlegajo(req);
-
-    const myArray = formData.datos.split(",");
     
-    cuil_cuit = myArray[0]
-    tipo = myArray[1]
-    descripcion = myArray[2]
-console.log(1)
     if (tipo == "Cbu personal") {
       
         const datoss = {
-            ubicacion: formData.file.originalFilename,
+            ubicacion: filename,
             cuil_cuit: cuil_cuit,
             numero: descripcion,
            
@@ -208,7 +208,7 @@ console.log(1)
         if (tipo == "Cbu familiar") {
            
             const datoss = {
-                ubicacion: formData.file.originalFilename,
+                ubicacion: filename,
                 cuil_cuit: cuil_cuit,
                 numero: descripcion,
                 
@@ -219,9 +219,9 @@ console.log(1)
             await pool.query('insert into cbus set?', datoss)
             
         } else {
-            console.log(formData.file.originalFilename)
+        
             const datoss = {
-                ubicacion: formData.file.originalFilename,
+                ubicacion: filename,
                 cuil_cuit: cuil_cuit,
                 tipo: tipo,
                 descripcion: descripcion,
@@ -229,6 +229,7 @@ console.log(1)
 
                 estado: 'Aprobada'
             }
+           
             await pool.query('insert into constancias set?', datoss)
         }
     }
@@ -247,10 +248,7 @@ console.log(1)
 
 
       
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-         }catch (error){console.log(error)  
-             res.json(' Realizado con exito ')}
+             res.json(' Realizado con exito ')
      
    
 
