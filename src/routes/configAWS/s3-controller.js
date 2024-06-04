@@ -292,7 +292,7 @@ async function determinarPep(req, res) {
     let { cuil_cuit , expuesta } = req.body
       const filename = req.file.filename
 
-
+console.log( cuil_cuit , expuesta )
 
 
 
