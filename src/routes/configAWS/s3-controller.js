@@ -289,12 +289,10 @@ async function leerformlegajo(req) {
 
 ////funciond eterminar persona politicamente expuesta
 async function determinarPep(req, res) {
-
+    let { cuil_cuit , expuesta } = req.body
       const filename = req.file.filename
 
-    const myArray = formData.datos.split(",");
-    cuil_cuit = myArray[0]
-    expuesta = myArray[1]
+
 
 
 
@@ -317,18 +315,7 @@ async function determinarPep(req, res) {
 
     }
 
-
-
-
-
-
-
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-        
-    }catch{console.log(error)}
+res.json('Realizado')
 
    
 }

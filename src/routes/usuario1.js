@@ -68,7 +68,7 @@ router.get('/get-object-url2/:key', isLoggedInn, s3Controller.getSignedUrl2);
 router.post('/subirlegajo', upload.single('file'),s3Controller.subirlegajo);
 
 /// determinar pdf
-router.post('/determinarPep', isLoggedInn2, s3Controller.determinarPep);
+router.post('/determinarPep', upload.single('file'), s3Controller.determinarPep);
 
 
 router.post('/subirlegajo1', isLoggedInn,s3Controller.subirlegajo1);
