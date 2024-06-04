@@ -1050,23 +1050,24 @@ async function pagarnivel1cuota(req, res) {
 
 /////////////////////pagar nivel 2 directamente aprobado 
 async function pagonivel2(req, res) {
+    let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
+    const filename = req.file.filename;
+    console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
 
-    formData = await leerformlegajo(req);
-
-    const myArray = formData.datos.split(",");
   
-    cuil_cuit_administrador = myArray[0] /// del administrador
-    id = myArray[1]
-    monto = myArray[2]
-    cbupago = myArray[4]
-    fecha=myArray[3]
-    if (cbupago==''){
+    cuil_cuit_administrador = cuil_cuit/// del administrador
+    id = id_cuota
+    monto = pago
+
+    cbupago = cbu
+    console.log(cbupago)
+    if (cbupago=="undefined"){
         cbupago=0
     }
     ///
     ///INICIO GUARDADO DE PAGO
 
-
+console.log(1)
     let cuil_cuit_distinto = 'No'
     let monto_distinto = 'No'
     let monto_inusual = 'No'
@@ -1085,7 +1086,7 @@ async function pagonivel2(req, res) {
     anio = cuota[0]["anio"]
 
     estado = 'A'
-
+    console.log(1)
     if (cuota[0]['parcialidad'] === 'Final') {
         /// traer la ultima
 
@@ -1114,7 +1115,7 @@ async function pagonivel2(req, res) {
                 anio,
                 proceso: "averificarnivel3",
                 cuil_cuit_administrador,
-                ubicacion: formData.file.originalFilename,///////////aca ver el problema
+                ubicacion: filename,///////////aca ver el problema
                 fecha
 
             };
@@ -1124,7 +1125,7 @@ async function pagonivel2(req, res) {
 
 
 
-
+        console.log(11)
 
         const newLink = {
             id_cuota,
@@ -1139,7 +1140,7 @@ async function pagonivel2(req, res) {
             monto_distinto,
             monto_inusual,
             id_cbu:cbupago,
-            ubicacion: formData.file.originalFilename,///////////aca ver el problema
+            ubicacion: filename,///////////aca ver el problema
 
         };
 
@@ -1150,6 +1151,7 @@ async function pagonivel2(req, res) {
         await pagodecuota.pagodecuota(id, monto)
         ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
         const cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+        mensaje = 'Pago realizado'
         aux = cuota[0]["cuil_cuit"]
         mensaje = 'Pago realizado'
 
@@ -1161,11 +1163,6 @@ async function pagonivel2(req, res) {
 
 
         
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-       
-        
-    }catch(error){console.log(error), res.json(['mensaje', cuota[0]['cuil_cuit'],cuota[0]['id_lote']])}
  res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     } catch (ex) {
       // console.log('NOOO  ')

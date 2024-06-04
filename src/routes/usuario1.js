@@ -81,7 +81,7 @@ router.post('/determinaringreso', isLoggedInn,s3Controller.determinaringreso);
 
 router.post('/pagarnivel1', isLoggedInn, s3Controller.pagarniv1);
 
-router.post('/pagonivel2', isLoggedInn2, s3Controller.pagonivel2);
+router.post('/pagonivel2', upload.single('file'), s3Controller.pagonivel2);
 
 router.post('/pagarnivel1cuota', isLoggedInn, s3Controller.pagarnivel1cuota);
 
