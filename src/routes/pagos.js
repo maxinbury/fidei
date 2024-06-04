@@ -27,6 +27,7 @@ const fileUpload = multer({
 }).single('image')
 
 
+
 router.post('/extractoid', isLoggedInn2, async (req, res) => {
     const { id } = req.body
 

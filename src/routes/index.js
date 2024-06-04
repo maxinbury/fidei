@@ -1,12 +1,36 @@
 const express = require('express')
 const router = express.Router()
 
-
-
+const path = require('path')
+const fs = require('fs')
+const multer = require('multer')
 
 /// borrar despues
 const XLSX = require('xlsx')
 const pool = require('../database')
+
+
+// Configuración de Multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadPath = path.join(__dirname, '../documentos');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
+  },
+  filename: (req, file, cb) => {
+  
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+
+
+const upload = multer({ storage });
+
+
+
 
 router.get('/', async (req, res) => {
   const auxs = await pool.query('Select * from chats')
@@ -40,6 +64,16 @@ router.get('/ingresartexto', async (req, res) => {
 res.json(2);
 })
 
+router.get('/traerPdfConstanciadepago/:id',async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  const query = await pool.query('SELECT * FROM pagos WHERE id = ?',[id]);
+console.log(query)
+
+    const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
+    res.sendFile(filePath);
+  ;
+});
   /* const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (cuil_cuit = 34825125 and lote = 1) ',[34825125, 1])
         const nro_cuota = cantidad[0]['count(*)'] + 1
         console.log(cantidad)
