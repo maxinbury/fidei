@@ -70,6 +70,9 @@ router.post('/subirlegajo', upload.single('file'),s3Controller.subirlegajo);
 /// determinar pdf
 router.post('/determinarPep', upload.single('file'), s3Controller.determinarPep);
 
+router.post("/actualizarpago",  upload.single('file'), s3Controller.actualizarpago)
+
+
 
 router.post('/subirlegajo1', isLoggedInn,s3Controller.subirlegajo1);
 //// REACT  
@@ -133,6 +136,8 @@ router.post('/modificarcli',isLoggedInn,modificarcli)
 
 ///modificar 2
 router.post('/modificarcli2',isLoggedInn,modificarcli2)
+
+////
 
 
 //////////////////////checklegajos
@@ -222,49 +227,7 @@ router.get("/cuotas", async (req, res) => {
 })
 
 
-// LISTA DE CUOTAS CON DETALLES 
 
-router.get("/cuotasamp", async (req, res) => {
-
-    cuil_cuit = req.user.cuil_cuit
-
-
-
-    cuil_cuit = (cuil_cuit).slice(0, 2) + "-" + (cuil_cuit).slice(2);
-
-
-    cuil_cuit = (cuil_cuit).slice(0, 11) + "-" + (cuil_cuit).slice(11);
-    aux = '%' + cuil_cuit + '%'
-
-    const cuotas = await pool.query('SELECT * FROM cuotas WHERE cuil_cuit like ? and parcialidad != "Original" ', [aux])
-    var devengado = 0
-    var pagado = 0
-
-    for (var i = 0; i < cuotas.length; i++) {
-        if (cuotas[i]['parcialidad'] = 'Final') {
-            devengado += cuotas[i]['cuota_con_ajuste']
-        }
-        ;
-    }
-    const pagos = await pool.query('SELECT * FROM pagos WHERE cuil_cuit = ? and estado = "A"', [req.user.cuil_cuit])
-
-    for (var i = 0; i < pagos.length; i++) {
-
-        pagado += pagos[i]['monto']
-
-            ;
-    }
-    const total = {
-        pagado,
-        devengado
-
-    }
-    //  const total = [totall]
-
-    cuotas.push(total)
-    res.render('usuario1/listacuotasamp', { cuotas })
-
-})
 
 
 

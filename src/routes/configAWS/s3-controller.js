@@ -287,6 +287,28 @@ async function leerformlegajo(req) {
     });
 }
 
+async function actualizarpago(req, res) {
+    let { id } = req.body
+      const filename = req.file.filename
+try {
+    console.log(filename)
+     console.log(id)
+
+const datoss = {
+    ubicacion: filename,
+
+}
+console.log(datoss)
+await pool.query('UPDATE pagos SET ?  where id = ?', [datoss, id])
+
+  res.json('Realizado')
+} catch (error) {
+    console.log(error)
+    res.json("Error")
+}
+
+   
+}
 ////funciond eterminar persona politicamente expuesta
 async function determinarPep(req, res) {
     let { cuil_cuit , expuesta } = req.body
@@ -1361,5 +1383,6 @@ module.exports = {
     traerImagen,
     determinaringreso,
     pagarnivel1cuota,
-    getSignedUrl2
+    getSignedUrl2,
+    actualizarpago
 }
