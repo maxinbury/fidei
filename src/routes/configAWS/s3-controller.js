@@ -228,16 +228,7 @@ async function subirlegajo(req, res) {
         }
     }
 
-    try {
-
-      
-    } catch (error) {
-        console.log(error)
-    }
-
-
-
-
+console.log('llega')
     try {
 
 
