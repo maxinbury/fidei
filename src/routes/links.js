@@ -125,6 +125,24 @@ router.post('/agregaringreso2',isLoggedInn2, AgregarIngreso)
 router.get('/detalle/:cuil_cuit',detalleCuil)
 
 
+router.get('/clientehabilitadoic3/:cuil_cuit',isLoggedInn2, async (req, res) => {
+    const { cuil_cuit } = req.params
+ 
+    const links = await pool.query('SELECT * FROM clientes WHERE id= ?', [cuil_cuit])
+
+    const habilitado = await pool.query('SELECT * FROM registro_operaciones WHERE cuil_cuit_referencia = ? and (adicional = "Habilitado" or adicional = "Deshabilitado")', [links[0]['cuil_cuit']])
+
+    if (habilitado.length>0){
+    reg= habilitado[(habilitado.length)-1]
+        }else{
+            reg= {cuil_cuit:'Sistema',
+            fecha: 'de su creacion'}
+
+        }
+    
+    res.json([links,reg])
+
+})
 router.get('/clientehabilitado/:cuil_cuit',isLoggedInn2, async (req, res) => {
     const { cuil_cuit } = req.params
  
@@ -240,7 +258,12 @@ enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
 
 })
 
-
+router.get('/listaic3', async (req, res) => {
+ 
+    clientes = await pool.query('select * from clientes where zona = "IC3"')
+    res.json(clientes)
+}
+)
 
 router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
     const { tipo, cuil_cuit } = req.body

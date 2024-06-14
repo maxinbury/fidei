@@ -24,7 +24,6 @@ function convertExcelDate(excelDate) {
   return date.toISOString().split('T')[0];
 }
 
-
 router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   if (!req.file) {
     return res.status(400).send('No se ha subido ningún archivo');
@@ -44,10 +43,20 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
     const worksheet = workbook.Sheets[sheetName];
 
     const cellC2 = worksheet['C2'];
-    console.log(worksheet['C2']);
     let cliente = '';
+    let clienteId = null;
+
     try {
-      // cliente = await pool.query('select * from clientes where Nombre=?', [worksheet['C2'] ? worksheet['C2'].v : '']);
+      cliente = await pool.query('SELECT * FROM clientes WHERE Nombre=?', [worksheet['C2'] ? worksheet['C2'].v : '']);
+      if (cliente.length > 0) {
+        clienteId = cliente[0].id;
+      } else {
+        const result = await pool.query('INSERT INTO clientes (nombre, zona) VALUES (?, ?)', [worksheet['C2'].v, 'IC3']);
+        clienteId = result.insertId;
+    console.log(clienteId)
+        // Añadir el id al campo cuil_cuit
+        await pool.query('UPDATE clientes SET cuil_cuit = ? WHERE id = ?', [clienteId, clienteId]);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -67,7 +76,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
         columnIndices[column] = columnIndex;
         console.log(`Hoja: "${sheetName}"`);
         console.log(`${column}:`);
-        
+
         const rowIndex = XLSX.utils.decode_cell(cellAddress).r;
         for (let row = rowIndex + 1; ; row++) {
           const rowValues = [];
@@ -89,62 +98,62 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
               value = cellValue.v;
             }
             console.log(`${col}: ${value}`);
-     rowValues.push(`${col}: ${value}`);
+            rowValues.push(`${col}: ${value}`);
             rowObject[col.replace(/\s+/g, '')] = value; // Guardar el valor en el objeto fila sin espacios
             hasData = true;
           }
 
           if (hasData) {
             console.log(rowValues.join(', '));
-            console.log('probando2')
             // Insertar la fila en la base de datos, incluyendo el nombre de la hoja
             try {
-              if ( rowObject['Amortización'] != undefined && rowObject['IVAS/ajuste'] != undefined ){
-           /*    console.log(
-                rowObject['SheetName'],
-                rowObject['Cuota'],
-                rowObject['Mes'],
-                rowObject['SaldodeInicio'],
-                rowObject['AjusteporICC'],
-                rowObject['Amortización'],
-                rowObject['Basecálculo'],
-                rowObject['Ajuste'],
-                rowObject['CuotaConAjuste'],
-                rowObject['Pago'],
-                rowObject['Excedente'],
-                rowObject['IVAS/ajuste'],
-                rowObject['SaldoalCierre'],
-                rowObject['SALDOACUM.']
-              );
-          */ let ex= await pool.query('select * from cuotas_ic3 where cuota=? and nombre=?',[
+              if ((rowObject['Amortización'] != undefined && ((rowObject['IVAS/ajuste'] != undefined) || (rowObject['Cuota'] == 1)))|| (rowObject['Pago'] != undefined)) {
+                let ex = await pool.query('SELECT * FROM cuotas_ic3 WHERE cuota=? AND nombre=?', [
                   rowObject['Cuota'],
-                
-                  rowObject['SheetName'],
-                
-                ])
-                if (ex.length>0){
-                  console.log('yacargado')
-                }else{
-              await pool.query(
-                `INSERT INTO cuotas_ic3 (cuota, mes, saldo_inicial, ajuste_icc, amortizacion, base_calculo, ajuste, cuota_con_ajuste, nombre, iva) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [
-                  rowObject['Cuota'],
-                  rowObject['Mes'],
-                  rowObject['SaldodeInicio'],
-                  rowObject['AjusteporICC'],
-                  rowObject['Amortización'],
-                  rowObject['Basecálculo'],
-                  rowObject['Ajuste'],
-                  rowObject['CuotaConAjuste'],
-                  rowObject['SheetName'],
-                  rowObject['IVAS/ajuste'],
-                ]
-              );
-            }
+                  rowObject['SheetName']
+                ]);
+                if (ex.length > 0) {
+                  console.log('yacargadom, cargando pago ');///actualizar
+                  let cuotaId = ex[0]['id'];
+                  monto=""
+                  if(rowObject['Pago']== undefined){
+                    monto=0
+                  }else{
+                    monto=rowObject['Pago']
+                  }
+                  console.log("pagooooo", rowObject['Pago'])
+                  await pool.query(
+                    `INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)`,
+                    [
+                      monto,
+                      cuotaId
+                    ]
+                  );
 
+                } else {
+                  console.log('precargado')
+                  let resultado = await pool.query(
+                    `INSERT INTO cuotas_ic3 (cuota, mes, saldo_inicial, ajuste_icc, amortizacion, base_calculo, ajuste, cuota_con_ajuste, nombre, iva, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                      rowObject['Cuota'],
+                      rowObject['Mes'],
+                      rowObject['SaldodeInicio'],
+                      rowObject['AjusteporICC'],
+                      rowObject['Amortización'],
+                      rowObject['Basecálculo'],
+                      rowObject['Ajuste'],
+                      rowObject['CuotaConAjuste'],
+                      rowObject['SheetName'],
+                      rowObject['IVAS/ajuste'],
+                      clienteId
+                    ]
+                  );
+                  console.log('cargada cuota')
+            
+                }
 
-
-              console.log('Fila insertada en la base de datos');}
+                console.log('Fila insertada en la base de datos');
+              }
             } catch (error) {
               console.error('Error insertando la fila en la base de datos:', error);
             }
@@ -158,7 +167,6 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
 
   res.json({ success: true });
 });
-
 
 
 router.post('/subirexcellotes', upload.single('excel'), async (req, res) => {
