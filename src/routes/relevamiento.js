@@ -115,20 +115,19 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
                 if (ex.length > 0) {
                   console.log('yacargadom, cargando pago ');///actualizar
                   let cuotaId = ex[0]['id'];
-                  monto=""
+                
                   if(rowObject['Pago']== undefined){
                     monto=0
                   }else{
-                    monto=rowObject['Pago']
+                    await pool.query(
+                      `INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)`,
+                      [
+                        monto=rowObject['Pago'],
+                        cuotaId
+                      ]
+                    );
                   }
-                  console.log("pagooooo", rowObject['Pago'])
-                  await pool.query(
-                    `INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)`,
-                    [
-                      monto,
-                      cuotaId
-                    ]
-                  );
+                
 
                 } else {
                   console.log('precargado')
@@ -149,7 +148,18 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
                     ]
                   );
                   console.log('cargada cuota')
-            
+                  cuotaId=resultado.insertId
+                  if(rowObject['Pago']== undefined){
+                    monto=0
+                  }else{
+                    await pool.query(
+                      `INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)`,
+                      [
+                        monto=rowObject['Pago'],
+                        cuotaId
+                      ]
+                    );
+                  }
                 }
 
                 console.log('Fila insertada en la base de datos');

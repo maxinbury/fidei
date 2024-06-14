@@ -116,6 +116,16 @@ router.get('/traercuotasfinales/:id',isLoggedInn2,traercuotasfinales)
 router.get('/traercuotasdisponiblesporlote/:id',isLoggedInn2,traercuotasdisponiblesporlote)
 
 
+router.get('/traercuotasic3/:cuil_cuit', async(req,res)=>{
+const cuil_cuit = req.params.cuil_cuit
+
+const cliente = await pool.query('select * from clientes where cuil_cuit=? ',[cuil_cuit])
+cuotas= await pool.query( "select * from cuotas_ic3 where id_cliente=?",[cliente[0]['id']])
+console.log(cuotas.length)
+res.json(cuotas)
+})
+
+
 router.get('/corregir', async(req,res)=>{
 
     cuotas = await pool.query('select * from cuotas where zona="Legales"')

@@ -482,7 +482,7 @@ router.get("/cantidadpendientes", isLoggedInn2, async (req, res) => {
 /////detalles de todos los pagos de una cuota
 router.post("/detallespagos", isLoggedInn2, async (req, res) => {
     const { id } = req.body
-    const pagos = await pool.query('SELECT * FROM pagos where id_cuota = ? and estado = "A"', [id])
+    const pagos = await pool.query('SELECT * FROM pagos where id_cuota = ?', [id])
 
 
 
