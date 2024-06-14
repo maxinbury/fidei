@@ -35,7 +35,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   const columns = [
     'Cuota', 'Mes', 'Saldo de Inicio', 'Ajuste por ICC', 'Amortización',
     'Base cálculo ajuste', 'Ajuste', 'Cuota Con Ajuste', 'Pago', 'Excedente',
-    'IVA S/ajuste', 'Saldo al Cierre', 'SALDO ACUM.'
+    'IVA S/ajuste', 'Saldo al Cierre', 'SALDO ACUM.','SALDO REAL'
   ];
 
   for (let i = 0; i < workbook.SheetNames.length; i++) {
@@ -107,7 +107,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
             console.log(rowValues.join(', '));
             // Insertar la fila en la base de datos, incluyendo el nombre de la hoja
             try {
-              if ((rowObject['Amortización'] != undefined && ((rowObject['IVAS/ajuste'] != undefined) || (rowObject['Cuota'] == 1)))|| (rowObject['Pago'] != undefined)) {
+              if ((rowObject['Amortización'] != undefined)&& (rowObject['CuotaConAjuste'] != undefined)) {
                 let ex = await pool.query('SELECT * FROM cuotas_ic3 WHERE cuota=? AND nombre=?', [
                   rowObject['Cuota'],
                   rowObject['SheetName']
@@ -132,7 +132,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
                 } else {
                   console.log('precargado')
                   let resultado = await pool.query(
-                    `INSERT INTO cuotas_ic3 (cuota, mes, saldo_inicial, ajuste_icc, amortizacion, base_calculo, ajuste, cuota_con_ajuste, nombre, iva, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    `INSERT INTO cuotas_ic3 (cuota, mes, saldo_inicial, ajuste_icc, amortizacion, base_calculo, ajuste, cuota_con_ajuste, nombre, iva,saldo_real, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
                     [
                       rowObject['Cuota'],
                       rowObject['Mes'],
@@ -144,6 +144,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
                       rowObject['CuotaConAjuste'],
                       rowObject['SheetName'],
                       rowObject['IVAS/ajuste'],
+                      rowObject['SALDO REAL'],
                       clienteId
                     ]
                   );
