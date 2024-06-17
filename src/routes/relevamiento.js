@@ -24,6 +24,7 @@ function convertExcelDate(excelDate) {
   return date.toISOString().split('T')[0];
 }
 
+
 router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   if (!req.file) {
     return res.status(400).send('No se ha subido ningún archivo');
@@ -33,151 +34,148 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   const workbook = XLSX.readFile(filePath);
 
   const columns = [
-    'Cuota', 'Mes', 'Saldo de Inicio', 'Ajuste por ICC', 'Amortización',
+    'Cuota', 'Mes', 'Saldo de Inicio', 'SALDO ACUM.', 'Ajuste por ICC', 'Amortización',
     'Base cálculo ajuste', 'Ajuste', 'Cuota Con Ajuste', 'Pago', 'Excedente',
-    'IVA S/ajuste', 'Saldo al Cierre', 'SALDO ACUM.','SALDO REAL'
+    'IVA S/ajuste', 'Saldo al Cierre', 'SALDO REAL'
   ];
+
+  // Función para encontrar el encabezado correcto
+  const findHeader = (worksheet) => {
+    if (!worksheet['!ref']) return null;
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      let row = [];
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cell_address = { c: C, r: R };
+        const cell = worksheet[XLSX.utils.encode_cell(cell_address)];
+        if (cell && cell.t === 's') row.push(cell.v);
+      }
+      if (row.some(r => columns.includes(r))) return R;
+    }
+    return null;
+  };
 
   for (let i = 0; i < workbook.SheetNames.length; i++) {
     const sheetName = workbook.SheetNames[i];
     const worksheet = workbook.Sheets[sheetName];
 
-    const cellC2 = worksheet['C2'];
-    let cliente = '';
+    const headerRowIndex = findHeader(worksheet);
+    if (headerRowIndex === null) continue; // No se encontró el encabezado en esta hoja
+
     let clienteId = null;
 
     try {
-      cliente = await pool.query('SELECT * FROM clientes WHERE Nombre=?', [worksheet['C2'] ? worksheet['C2'].v : '']);
+      const cliente = await pool.query('SELECT * FROM clientes WHERE Nombre=?', [sheetName]);
       if (cliente.length > 0) {
         clienteId = cliente[0].id;
       } else {
-        const result = await pool.query('INSERT INTO clientes (nombre, zona) VALUES (?, ?)', [worksheet['C2'].v, 'IC3']);
+        const result = await pool.query('INSERT INTO clientes (nombre, zona) VALUES (?, ?)', [sheetName, 'IC3']);
         clienteId = result.insertId;
-    console.log(clienteId)
-        // Añadir el id al campo cuil_cuit
         await pool.query('UPDATE clientes SET cuil_cuit = ? WHERE id = ?', [clienteId, clienteId]);
       }
     } catch (error) {
-      console.error(error);
+      console.error(`Error procesando cliente ${sheetName}:`, error);
     }
 
-    if (cellC2 && cellC2.v !== undefined) {
-      console.log(`Contenido de la celda C2 en la hoja "${sheetName}": ${cellC2.v}`);
-    } else {
-      console.log(`No se encontró contenido en la celda C2 en la hoja "${sheetName}"`);
+    if (!clienteId) {
+      console.log(`No se pudo determinar el cliente para la hoja "${sheetName}". Continuando con la siguiente hoja.`);
+      continue;
     }
 
     let columnIndices = {};
-    for (const cellAddress in worksheet) {
-      const cell = worksheet[cellAddress];
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const cell = worksheet[XLSX.utils.encode_cell({ c: C, r: headerRowIndex })];
       if (cell && cell.t === 's' && columns.includes(cell.v)) {
-        const column = cell.v;
-        const columnIndex = XLSX.utils.decode_cell(cellAddress).c;
-        columnIndices[column] = columnIndex;
-        console.log(`Hoja: "${sheetName}"`);
-        console.log(`${column}:`);
+        columnIndices[cell.v] = C;
+      }
+    }
 
-        const rowIndex = XLSX.utils.decode_cell(cellAddress).r;
-        for (let row = rowIndex + 1; ; row++) {
-          const rowValues = [];
-          const rowObject = { SheetName: sheetName }; // Incluir el nombre de la hoja
-          let hasData = false;
-          for (const col of columns) {
-            const cellValue = worksheet[XLSX.utils.encode_cell({ r: row, c: columnIndices[col] })];
-            if (!cellValue) continue;
-
-            let value;
-            if (col === 'Mes' && cellValue.t === 'n') {
-              // Solo convertir fechas en la columna 'Mes'
-              try {
-                value = convertExcelDate(cellValue.v);
-              } catch (e) {
-                value = cellValue.v;
-              }
-            } else {
+    for (let R = headerRowIndex + 1; R <= range.e.r; ++R) {
+      const rowObject = { SheetName: sheetName };
+      let hasData = false;
+      for (const col of columns) {
+        const cellValue = worksheet[XLSX.utils.encode_cell({ r: R, c: columnIndices[col] })];
+        if (cellValue) {
+          let value = cellValue.v;
+          if (col === 'Mes' && cellValue.t === 'n') {
+            try {
+              value = convertExcelDate(cellValue.v);
+            } catch (e) {
               value = cellValue.v;
             }
-            console.log(`${col}: ${value}`);
-            rowValues.push(`${col}: ${value}`);
-            rowObject[col.replace(/\s+/g, '')] = value; // Guardar el valor en el objeto fila sin espacios
-            hasData = true;
           }
-
-          if (hasData) {
-            console.log(rowValues.join(', '));
-            // Insertar la fila en la base de datos, incluyendo el nombre de la hoja
-            try {
-              if ((rowObject['Amortización'] != undefined)&& (rowObject['CuotaConAjuste'] != undefined)) {
-                let ex = await pool.query('SELECT * FROM cuotas_ic3 WHERE cuota=? AND nombre=?', [
-                  rowObject['Cuota'],
-                  rowObject['SheetName']
-                ]);
-                if (ex.length > 0) {
-                  console.log('yacargadom, cargando pago ');///actualizar
-                  let cuotaId = ex[0]['id'];
-                
-                  if(rowObject['Pago']== undefined){
-                    monto=0
-                  }else{
-                    await pool.query(
-                      `INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)`,
-                      [
-                        monto=rowObject['Pago'],
-                        cuotaId
-                      ]
-                    );
-                  }
-                
-
-                } else {
-                  console.log('precargado')
-                  let resultado = await pool.query(
-                    `INSERT INTO cuotas_ic3 (cuota, mes, saldo_inicial, ajuste_icc, amortizacion, base_calculo, ajuste, cuota_con_ajuste, nombre, iva,saldo_real, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
-                    [
-                      rowObject['Cuota'],
-                      rowObject['Mes'],
-                      rowObject['SaldodeInicio'],
-                      rowObject['AjusteporICC'],
-                      rowObject['Amortización'],
-                      rowObject['Basecálculo'],
-                      rowObject['Ajuste'],
-                      rowObject['CuotaConAjuste'],
-                      rowObject['SheetName'],
-                      rowObject['IVAS/ajuste'],
-                      rowObject['SALDO REAL'],
-                      clienteId
-                    ]
-                  );
-                  console.log('cargada cuota')
-                  cuotaId=resultado.insertId
-                  if(rowObject['Pago']== undefined){
-                    monto=0
-                  }else{
-                    await pool.query(
-                      `INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)`,
-                      [
-                        monto=rowObject['Pago'],
-                        cuotaId
-                      ]
-                    );
-                  }
-                }
-
-                console.log('Fila insertada en la base de datos');
+          rowObject[col.replace(/\s+/g, '')] = value;
+          hasData = true;
+        }
+      }
+      if (hasData) {
+        try {
+          if (rowObject['Cuota'] !== undefined) { // Verificación mínima para la cuota
+            let ex = await pool.query('SELECT * FROM cuotas_ic3 WHERE cuota=? AND nombre=?', [
+              rowObject['Cuota'],
+              rowObject['SheetName']
+            ]);
+            if (ex.length > 0) {
+              let cuotaId = ex[0]['id'];
+              const updates = {};
+              if (rowObject['SALDOACUM.'] != undefined) updates.saldo_acum = rowObject['SALDOACUM.'];
+              if (rowObject['SaldoalCierre'] != undefined) updates.saldo_cierre = rowObject['SaldoalCierre'];
+              if (Object.keys(updates).length > 0) {
+                await pool.query('UPDATE cuotas_ic3 SET ? WHERE id = ?', [updates, cuotaId]);
+                console.log(`Actualizada cuota ${rowObject['Cuota']} en la hoja "${sheetName}"`);
               }
-            } catch (error) {
-              console.error('Error insertando la fila en la base de datos:', error);
+              if (rowObject['Pago'] != undefined) {
+                await pool.query('INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)', [
+                  rowObject['Pago'],
+                  cuotaId
+                ]);
+              }
+            } else {
+              let resultado = await pool.query(
+                `INSERT INTO cuotas_ic3 (cuota, mes, saldo_inicial, ajuste_icc, amortizacion, base_calculo, ajuste, cuota_con_ajuste, nombre, iva, saldo_real, saldo_cierre, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                  rowObject['Cuota'],
+                  rowObject['Mes'],
+                  rowObject['SaldodeInicio'],
+                  rowObject['AjusteporICC'],
+                  rowObject['Amortización'],
+                  rowObject['Basecálculo'],
+                  rowObject['Ajuste'],
+                  rowObject['CuotaConAjuste'],
+                  rowObject['SheetName'],
+                  rowObject['IVAS/ajuste'],
+                  rowObject['Saldoreal'],
+                  rowObject['SaldoalCierre'],
+                  clienteId
+                ]
+              );
+              console.log(`Cargada cuota ${rowObject['Cuota']} en la hoja "${sheetName}"`);
+              let cuotaId = resultado.insertId;
+              if (rowObject['Pago'] != undefined) {
+                await pool.query('INSERT INTO pagos (monto, id_cuota) VALUES (?, ?)', [
+                  rowObject['Pago'],
+                  cuotaId
+                ]);
+              }
             }
-          } else {
-            break;
           }
+        } catch (error) {
+          console.error(`Error insertando la fila en la base de datos para la cuota ${rowObject['Cuota']} en la hoja "${sheetName}":`, error);
         }
       }
     }
   }
 
+  // Eliminar el archivo temporal después de procesar
+  fs.unlinkSync(filePath);
+
   res.json({ success: true });
 });
+
+
+
+
 
 
 router.post('/subirexcellotes', upload.single('excel'), async (req, res) => {
