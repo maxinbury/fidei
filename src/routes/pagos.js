@@ -490,6 +490,34 @@ router.post("/detallespagos", isLoggedInn2, async (req, res) => {
     res.json(pagos)
 })
 
+
+router.post("/detallesPagocli", isLoggedInn2, async (req, res) => {
+    const { id } = req.body
+    console.log(id)
+    const pagos = await pool.query(`
+        SELECT 
+          pagos.*, 
+          sel.cuo,
+          sel.idic3, 
+          CONCAT(SUBSTRING(sel.mes, 6, 2), '-', SUBSTRING(sel.mes, 1, 4)) AS mes_anyo
+        FROM 
+          pagos 
+        JOIN 
+          (SELECT id AS idic3, mes, id_cliente AS idcli, cuota as cuo FROM cuotas_ic3) AS sel 
+        ON 
+          pagos.id_cuota = sel.idic3 
+        WHERE 
+          idcli = ?
+      `, [id]);
+
+
+
+    res.json(pagos)
+})
+
+
+
+
 router.get("/todoslospagos", isLoggedInn2, async (req, res) => {
 
 
