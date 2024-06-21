@@ -121,8 +121,27 @@ const cuil_cuit = req.params.cuil_cuit
 
 const cliente = await pool.query('select * from clientes where cuil_cuit=? ',[cuil_cuit])
 cuotas= await pool.query( "select * from cuotas_ic3 where id_cliente=?",[cliente[0]['id']])
+let env=[]
+for (i in cuotas){
+
+    nuevo={
+        id:cuotas[i]['id'],
+        mes:cuotas[i]['mes'],
+        cuota:cuotas[i]['cuota'],
+        saldo_inicial:cuotas[i]['saldo_inicial'],
+        amortizacion:cuotas[i]['amortizacion'],
+        ajuste:parseFloat(cuotas[i]['ajuste']).toFixed(3),
+        ajuste_icc:cuotas[i]['ajuste_icc'],
+        cuota_con_ajuste:parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(3),
+        iva:cuotas[i]['iva'],
+        saldo_cierre:cuotas[i]['saldo_cierre'],
+        iva:cuotas[i]['iva'],
+
+    }
+    env.push(nuevo)
+}
 console.log(cuotas.length)
-res.json(cuotas)
+res.json(env)
 })
 
 
