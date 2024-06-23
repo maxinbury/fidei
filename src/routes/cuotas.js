@@ -115,7 +115,7 @@ router.get('/traercuotasfinales/:id', isLoggedInn2, traercuotasfinales)
 
 router.get('/traercuotasdisponiblesporlote/:id', isLoggedInn2, traercuotasdisponiblesporlote)
 
-router.get('/actualic3', async (req, res) => {
+/* router.get('/actualic3', async (req, res) => {
 
 
     cuotas = await pool.query("select * from cuotas_ic3 ")
@@ -141,7 +141,7 @@ console.log('ok')
 
 
 
-})
+}) */
 
 
 router.get('/traercuotasic3/:cuil_cuit', async (req, res) => {
@@ -151,24 +151,58 @@ router.get('/traercuotasic3/:cuil_cuit', async (req, res) => {
     cuotas = await pool.query("select * from cuotas_ic3 where id_cliente=?", [cliente[0]['id']])
     let env = []
     for (i in cuotas) {
+        let pagos = await pool.query('select sum (monto) from pagos where id_cuota=?',[cuotas[i]['id']])
+        if(pagos[0]['sum (monto)'] == null){
+            
+            excedente=-cuotas[i]['cuota_con_ajuste']
+        }else{
+            excedente= parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2)-pagos[0]['sum (monto)'] 
+        }
+       saldo_final=cuotas[i]['saldo_inicial']-cuotas[i]['amortizacion']
+        saldo_real=(saldo_final-excedente).toFixed(2)
         if (i < 0) {/////cuota 2
 
+            base_calculo=parseFloat(cuotas[i-1]['cuota_con_ajuste']).toFixed(2),
+            ajuste=base_calculo
+            nuevo = {
+                id: cuotas[i]['id'],
+                mes: cuotas[i]['mes'],
+                anio: cuotas[i]['anio'],
+                pago:pagos[0]['sum (monto)'],
+                excedente,
+                cuota: cuotas[i]['cuota'],
+                saldo_inicial: cuotas[i]['saldo_inicial'],
+                amortizacion: cuotas[i]['amortizacion'],
+                ajuste: parseFloat(cuotas[i]['ajuste']).toFixed(2),
+                ajuste_icc: cuotas[i]['ajuste_icc'],
+                cuota_con_ajuste: parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2),
+                iva: cuotas[i]['iva'],
+                saldo_cierre: cuotas[i]['saldo_cierre'],
+                saldo_final,
+                saldo_real
+    
+            }
+        }else{
+            nuevo = {
+                id: cuotas[i]['id'],
+                mes: cuotas[i]['mes'],
+                excedente,
+                anio: cuotas[i]['anio'],
+                pago:pagos[0]['sum (monto)'],
+                cuota: cuotas[i]['cuota'],
+                saldo_inicial: cuotas[i]['saldo_inicial'],
+                amortizacion: cuotas[i]['amortizacion'],
+                ajuste: parseFloat(cuotas[i]['ajuste']).toFixed(2),
+                ajuste_icc: cuotas[i]['ajuste_icc'],
+                cuota_con_ajuste: parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2),
+                iva: cuotas[i]['iva'],
+                saldo_cierre: cuotas[i]['saldo_cierre'],
+                saldo_final,
+                saldo_real
+    
+            }
         }
-        nuevo = {
-            id: cuotas[i]['id'],
-            mes: cuotas[i]['mes'],
-            anio: cuotas[i]['anio'],
-            cuota: cuotas[i]['cuota'],
-            saldo_inicial: cuotas[i]['saldo_inicial'],
-            amortizacion: cuotas[i]['amortizacion'],
-            ajuste: parseFloat(cuotas[i]['ajuste']).toFixed(3),
-            ajuste_icc: cuotas[i]['ajuste_icc'],
-            cuota_con_ajuste: parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(3),
-            iva: cuotas[i]['iva'],
-            saldo_cierre: cuotas[i]['saldo_cierre'],
-            iva: cuotas[i]['iva'],
-
-        }
+      
         env.push(nuevo)
     }
     console.log(cuotas.length)
