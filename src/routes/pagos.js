@@ -498,18 +498,20 @@ router.post("/detallesPagocli", isLoggedInn2, async (req, res) => {
         SELECT 
           pagos.*, 
           sel.cuo,
-          sel.idic3, 
+          sel.idic3,
+          sel.aniooo,
+          sel.messs, 
+     
           CONCAT(SUBSTRING(sel.mes, 6, 2), '-', SUBSTRING(sel.mes, 1, 4)) AS mes_anyo
         FROM 
           pagos 
         JOIN 
-          (SELECT id AS idic3, mes, id_cliente AS idcli, cuota as cuo FROM cuotas_ic3) AS sel 
+          (SELECT id AS idic3, mes, id_cliente AS idcli, cuota as cuo, mes as messs, anio as aniooo FROM cuotas_ic3) AS sel 
         ON 
           pagos.id_cuota = sel.idic3 
         WHERE 
           idcli = ?
       `, [id]);
-
 
 
     res.json(pagos)
