@@ -4,11 +4,11 @@ const pool = require('../database')
 const ponerguion = require('../public/apps/transformarcuit')
 const { isLoggedIn, isLoggedInn3 } = require('../lib/auth') //proteger profile
 const XLSX = require('xlsx')
-const passport= require('passport')
+const passport = require('passport')
 const agregaricc = require('../routes/funciones/agregaricc')
 
 
-const historialIcc =  async (req, res) => {
+const historialIcc = async (req, res) => {
 
     const historial = await pool.query('select * from icc_historial')
 
@@ -30,55 +30,57 @@ const borrarHistorial = async (req, res) => {
         await pool.query('DELETE FROM icc_historial ')
         res.send('Borrados correctamente')
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
         res.send('Error algo sucedió')
     }
 
 }
 
 const asignarClave = async (req, res) => {
-    const  { cuil_cuit, clave_alta  } = req.body;
+    const { cuil_cuit, clave_alta } = req.body;
     try {
-      
-       
-        const aux = '%'+cuil_cuit+'%'
-        const existe = await pool.query('select * from clientes WHERE cuil_cuit like  ?',[aux])
-        if (existe.length>0){
+
+
+        const aux = '%' + cuil_cuit + '%'
+        const existe = await pool.query('select * from clientes WHERE cuil_cuit like  ?', [aux])
+        if (existe.length > 0) {
             const asignar = {
                 clave_alta: clave_alta
-               }
-               await pool.query('UPDATE clientes set ? WHERE cuil_cuit like  ?', [asignar,aux])
-               res.send('Clave asignada')
-        }else {
+            }
+            await pool.query('UPDATE clientes set ? WHERE cuil_cuit like  ?', [asignar, aux])
+            res.send('Clave asignada')
+        } else {
             res.send('Error cliente no existe')
         }
-        
 
-      
+
+
 
     } catch (error) {
-       
+
         res.send('Error algo sucedió')
     }
 
 }
 
 const asignarvalormetroc = async (req, res) => {
-    const  { valor,zona } = req.body;
+    const { valor, zona } = req.body;
     try {
-    
+
         fecha = (new Date(Date.now())).toLocaleDateString()
-        
-            val ={valormetrocuadrado:valor,
-                valormetroparque:zona,
-                fecha } 
-          
-                
+
+        val = {
+            valormetrocuadrado: valor,
+            valormetroparque: zona,
+            fecha
+        }
+
+
         await pool.query('insert into nivel3 set ?', val)
         res.send('Borrados correctamente')
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('Error algo sucedió')
     }
 
@@ -86,38 +88,38 @@ const asignarvalormetroc = async (req, res) => {
 
 const consultarIcc = async (req, res,) => {
     let { ICC, mes, anio, zona } = req.body;
-    let rta={} 
-try {
-        const existe = await pool.query('select * from icc_historial where mes=? and anio=? and zona =?',[mes,anio, zona])
-        if (existe.length>0){
-         
-         const valor = existe[0]['ICC']
-        
-            rta= {
-                resp:'El mes y año ya tiene un ICC asignado y es '+valor
+    let rta = {}
+    try {
+        const existe = await pool.query('select * from icc_historial where mes=? and anio=? and zona =?', [mes, anio, zona])
+        if (existe.length > 0) {
+
+            const valor = existe[0]['ICC']
+
+            rta = {
+                resp: 'El mes y año ya tiene un ICC asignado y es ' + valor
 
             }
-        }else{
-  
-            rta= {
-                resp:'El mes y año no tienen un ICC asignado'
+        } else {
+
+            rta = {
+                resp: 'El mes y año no tienen un ICC asignado'
 
             }
-          
+
 
         }
-   
+
         res.json(rta)
     } catch (error) {
-        
-   }
+
+    }
 
 
 }
 
 const agregarIccgral = async (req, res,) => {
     let { ICC, mes, anio, zona } = req.body;
-   
+
     let datoss = {
         ICC,
         mes,
@@ -127,35 +129,36 @@ const agregarIccgral = async (req, res,) => {
     }
 
     //////////////try
-    
+
 
     try {
 
-        exis =  await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio,zona])
-        if (exis.length>0){
+        exis = await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio, zona])
+        if (exis.length > 0) {
             await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
-        }else{
+        } else {
 
-        await pool.query('insert into icc_historial set?', datoss)}
+            await pool.query('insert into icc_historial set?', datoss)
+        }
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
     }
 
 
 
-    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona =?", [mes, anio,zona])
+    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona =?", [mes, anio, zona])
 
-    for (var i = 0; i < todas.length; i++) {  
+    for (var i = 0; i < todas.length; i++) {
 
-    await agregaricc.calcularicc(todas[i],ICC)
+        await agregaricc.calcularicc(todas[i], ICC)
+    }
+
+    res.send('Icc asignado con éxito');
 }
 
-res.send('Icc asignado con éxito');
-}
-
-const agregarIccGral2 =async (req, res,) => {
+const agregarIccGral2 = async (req, res,) => {
     let { ICC, mes, anio, zona } = req.body;
-   
+
 
 
     let datoss = {
@@ -170,26 +173,69 @@ const agregarIccGral2 =async (req, res,) => {
     //console.log(datoss)
 
 
+    if (zona = 'PIT') {
+        const todasssss = await pool.query("select * from cuotas where mes =? and anio =? and zona =? ", [mes, anio, zona])
+
+        for (let i = 0; i < todasssss.length; i++) {
+
+            await agregaricc.calcularicc(todasssss[i], ICC)
+        }
+    } else {
+        const todaxi = await pool.query("select * from cuotas_ic3 where mes =? and anio =? and zona =? ", [mes, anio, zona])
+
+        for (let indic = 0; indic < todaxi.length; indic++) {
 
 
-    const todas = await pool.query("select * from cuotas where mes =? and anio =? and zona =? ", [mes, anio, zona])
+            try {
+                ICC = ICC / 100
 
-    for (let i = 0; i < todas.length; i++) {  
+                if (todaxi[indic]['cuota'] > 1) {
 
-    agregaricc.calcularicc(todas[i],ICC)
-}
-try {
 
-    exis =  await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio,zona])
-    if (exis.length>0){
-        await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
-    }else{
+                    anteriorr = await pool.query('Select * from cuotas_ic3 where nro_cuota = ? and id_cliente = ?', [todaxi[indic]["nro_cuota"] - 1, todaxi[indic]["id_cliente"]])
+                    base_calculoooo = anteriorr[0][cuota_con_ajuste]
 
-    await pool.query('insert into icc_historial set?', datoss)}
-} catch (error) {
-   // console.log(error)
-}
-res.send('Icc asignado con éxito');
+
+                    diferencia = - cuota_con_ajuste
+                    cuotaparaactualizar = {
+                        base_calculo: anteriorr[0]['cuota_con_ajuste'],
+                        ajuste: anteriorr[0]['cuota_con_ajuste'] * ICC,////ajuste anteiror* /
+                        ajuste_icc: ICC,/// 0.4 
+                        cuota_con_ajuste: (anteriorr[0]['cuota_con_ajuste'] * ICC) + anteriorr[0]['cuota_con_ajuste']/// cuota ajustada
+
+
+                    }
+                    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuotaparaactualizar, todaxi["id"]])
+
+                }
+
+
+
+            } catch (error) {
+                console.log(error)
+
+
+            }
+
+
+
+        }
+    }
+    /////fin act cupta
+
+    try {
+
+        exis = await pool.query("select * from icc_historial where mes =? and anio =? and zona=?", [mes, anio, zona])
+        if (exis.length > 0) {
+            await pool.query('UPDATE icc_historial set ? WHERE id = ?', [datoss, exis[0]["id"]])
+        } else {
+
+            await pool.query('insert into icc_historial set?', datoss)
+        }
+    } catch (error) {
+        // console.log(error)
+    }
+    res.send('Icc asignado con éxito');
 }
 module.exports = {
     historialIcc,
