@@ -64,6 +64,7 @@ router.get('/get-object-url/:key', isLoggedInn, s3Controller.getSignedUrl);
 router.get('/get-object-url2/:key', isLoggedInn, s3Controller.getSignedUrl2);
 
 
+router.post('/pagarrapidoic3', upload.single('file'),s3Controller.pagarrapidoic3);
 //////PDFSS
 router.post('/subirlegajo', upload.single('file'),s3Controller.subirlegajo);
 

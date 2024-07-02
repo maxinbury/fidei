@@ -1040,10 +1040,8 @@ async function pagarnivel1cuota(req, res) {
       //  console.log('NOOO  ')
     }
 }
-
-
-/////////////////////pagar nivel 2 directamente aprobado 
-async function pagonivel2(req, res) {
+//////////pagorapidoic3
+async function pagarrapidoic3(req, res) {
     let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
     const filename = req.file.filename;
     console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
@@ -1061,7 +1059,6 @@ async function pagonivel2(req, res) {
     ///
     ///INICIO GUARDADO DE PAGO
 
-console.log(1)
     let cuil_cuit_distinto = 'No'
     let monto_distinto = 'No'
     let monto_inusual = 'No'
@@ -1119,7 +1116,6 @@ console.log(1)
 
 
 
-        console.log(11)
 
         const newLink = {
             id_cuota,
@@ -1152,6 +1148,128 @@ console.log(1)
     } else {
         mensaje = 'cuota no calculada'
     }
+
+    try {
+
+
+        
+ res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+    } catch (ex) {
+      // console.log('NOOO  ')
+      console.log(ex)
+      res.json(['mensaje', cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+    }
+}
+
+/////////////////////pagar nivel 2 directamente aprobado 
+async function pagonivel2(req, res) {
+    let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
+    const filename = req.file.filename;
+    console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
+
+  
+    cuil_cuit_administrador = cuil_cuit/// del administrador
+    id = id_cuota
+    monto = pago
+
+    cbupago = cbu
+    console.log(cbupago)
+    if (cbupago=="undefined"){
+        cbupago=0
+    }
+    ///
+    ///INICIO GUARDADO DE PAGO
+
+console.log(1)
+    let cuil_cuit_distinto = 'No'
+    let monto_distinto = 'No'
+    let monto_inusual = 'No'
+    let mensaje = ''
+
+    let cuota = await pool.query('select * from cuotas_ic3 where id = ?', [id]) //objeto cuota
+
+    aux = '%' + cuota[0]["cuil_cuit"] + '%'
+
+    cuil_cuit = cuota[0]["cuil_cuit"]
+
+    Saldo_real = parseFloat(cuota[0]["Saldo_real"])
+
+
+    mes = cuota[0]["mes"]
+    anio = cuota[0]["anio"]
+
+    estado = 'A'
+
+   
+        /// traer la ultima
+
+        let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
+        console.log(cliente)
+        ///////////////////CONSIDERAR PEP
+        let variante = 0.3
+        if (cliente[0]['expuesta'] == "SI") {
+            console.log('expuesta')
+            variante = 0.2
+        }
+        montomax = cliente[0]['ingresos'] * variante
+        console.log(montomax)
+         id_cuota = id
+        if (montomax < monto) {
+
+            monto_inusual = 'Si'
+        }
+        if (monto_inusual == 'Si') {
+
+            const newLink2 = {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                mes,
+                estado: estado,
+                anio,
+                proceso: "averificarnivel3",
+                cuil_cuit_administrador,
+                ubicacion: filename,///////////aca ver el problema
+                fecha
+
+            };
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+        }
+
+
+
+        console.log(11)
+
+        const newLink = {
+            id_cuota,
+            monto,
+            fecha,
+            cuil_cuit,
+            mes,
+            estado: estado,
+            anio,
+            cuil_cuit_administrador,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+            id_cbu:cbupago,
+            ubicacion: filename,///////////aca ver el problema
+
+        };
+
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+        /////////FIN  GUARDADO DE PAGO
+        ///INICIO IMPACTO EN LA CUOTA
+        //await pagodecuota.pagodecuota(id, monto)
+        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+         cuota = await pool.query('select * from cuotas_ic3 where id = ?', [id]) //objeto cuota
+        mensaje = 'Pago realizado'
+        aux = cuota[0]["cuil_cuit"]
+        mensaje = 'Pago realizado'
+
+    
 
     try {
 
@@ -1375,5 +1493,6 @@ module.exports = {
     determinaringreso,
     pagarnivel1cuota,
     getSignedUrl2,
-    actualizarpago
+    actualizarpago,
+    pagarrapidoic3
 }
