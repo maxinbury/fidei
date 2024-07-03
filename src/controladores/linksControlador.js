@@ -576,13 +576,15 @@ const legajosCuil = async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
+   const  array2 = await pool.query('select numero as descripcion, cuil_cuit, estado,ubicacion  from cbus where cuil_cuit =?', [cuil_cuit])
+    const result = legajos.concat(array2);
     const cl = await pool.query('select * from clientes where cuil_cuit =?', [cuil_cuit])
     /*  legajos.map(img => {
           fs.writeFileSync(path.join(__dirname, '../dbimages/' + img.id + '--.png'), img.comprobante)
   
       })
       const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
-    res.json([legajos,cl])
+    res.json([result,cl])
 
 
 }
