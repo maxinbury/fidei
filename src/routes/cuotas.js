@@ -144,72 +144,48 @@ console.log('ok')
 }) */
 
 
-router.get('/traercuotasic3/:cuil_cuit', async (req, res) => {
-    const cuil_cuit = req.params.cuil_cuit
-
-    const cliente = await pool.query('select * from clientes where cuil_cuit=? ', [cuil_cuit])
-    cuotas = await pool.query("select * from cuotas_ic3 where id_cliente=?", [cliente[0]['id']])
-    let env = []
-    for (i in cuotas) {
-        let pagos = await pool.query('select sum (monto) from pagos where id_cuota=?',[cuotas[i]['id']])
-        if(pagos[0]['sum (monto)'] == null){
-            
-            excedente=-cuotas[i]['cuota_con_ajuste']
-        }else{
-            excedente= parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2)-pagos[0]['sum (monto)'] 
-        }
-       saldo_final=(cuotas[i]['saldo_inicial']-cuotas[i]['amortizacion']).toFixed(2)
-        saldo_real=(saldo_final-excedente).toFixed(2)
-        if (i < 0) {/////cuota 2
-
-            base_calculo=parseFloat(cuotas[i-1]['cuota_con_ajuste']).toFixed(2),
-            ajuste=base_calculo
-            nuevo = {
+    router.get('/traercuotasic3/:cuil_cuit', async (req, res) => {
+        const cuil_cuit = req.params.cuil_cuit;
+    
+        const cliente = await pool.query('select * from clientes where cuil_cuit=?', [cuil_cuit]);
+        cuotas = await pool.query("select * from cuotas_ic3 where id_cliente=?", [cliente[0]['id']]);
+        let env = [];
+        for (let i in cuotas) {
+            let pagos = await pool.query('select sum(monto) as total_pago from pagos where id_cuota=?', [cuotas[i]['id']]);
+            let total_pago = pagos[0]['total_pago'] || 0; // Asignar 0 si es null
+    
+            let excedente = parseFloat(total_pago) - parseFloat(cuotas[i]['cuota_con_ajuste']);
+            excedente = parseFloat(excedente).toFixed(2);
+    
+            let saldo_final = parseFloat(cuotas[i]['saldo_inicial']) - parseFloat(cuotas[i]['amortizacion']);
+            saldo_final = parseFloat(saldo_final).toFixed(2);
+    
+            let saldo_real = parseFloat(saldo_final) - parseFloat(excedente);
+            saldo_real = parseFloat(saldo_real).toFixed(2);
+    
+            let nuevo = {
                 id: cuotas[i]['id'],
                 mes: cuotas[i]['mes'],
                 anio: cuotas[i]['anio'],
-                pago:pagos[0]['sum (monto)'],
+                pago: total_pago,
                 excedente,
                 cuota: cuotas[i]['cuota'],
                 saldo_inicial: cuotas[i]['saldo_inicial'],
-                amortizacion: cuotas[i]['amortizacion'].toFixed(2),
+                amortizacion: parseFloat(cuotas[i]['amortizacion']).toFixed(2),
                 ajuste: parseFloat(cuotas[i]['ajuste']).toFixed(2),
-                ajuste_icc: (cuotas[i]['ajuste_icc']).toFixed(2),
+                ajuste_icc: parseFloat(cuotas[i]['ajuste_icc']).toFixed(2),
                 cuota_con_ajuste: parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2),
                 iva: cuotas[i]['iva'],
                 saldo_cierre: cuotas[i]['saldo_cierre'],
                 saldo_final,
                 saldo_real
+            };
     
-            }
-        }else{
-            nuevo = {
-                id: cuotas[i]['id'],
-                mes: cuotas[i]['mes'],
-                excedente,
-                anio: cuotas[i]['anio'],
-                pago:pagos[0]['sum (monto)'],
-                cuota: cuotas[i]['cuota'],
-                saldo_inicial: cuotas[i]['saldo_inicial'],
-                amortizacion: cuotas[i]['amortizacion'],
-                ajuste: parseFloat(cuotas[i]['ajuste']).toFixed(2),
-                ajuste_icc: cuotas[i]['ajuste_icc'],
-                cuota_con_ajuste: parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2),
-                iva: cuotas[i]['iva'],
-                saldo_cierre: cuotas[i]['saldo_cierre'],
-                saldo_final,
-                saldo_real
-    
-            }
+            env.push(nuevo);
         }
-      
-        env.push(nuevo)
-    }
-    console.log(cuotas.length)
-    res.json(env)
-})
-
-
+        res.json(env);
+    });
+    
 router.get('/corregir', async (req, res) => {
 
     cuotas = await pool.query('select * from cuotas where zona="Legales"')
