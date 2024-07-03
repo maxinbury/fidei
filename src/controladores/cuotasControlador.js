@@ -1056,9 +1056,10 @@ const borrartodas = async (req, res) => {
 const ief = async (req, res) => {
     const id = req.params
     idaux = id.id
-
+console.log(id)
 
     let lote = await pool.query('select * from lotes where id = ? ', [idaux])
+    console.log(lote)
     let cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
     // console.log(cantidad)    cantidad de liquidadas y vencidas
     if (cantidad === 0) {
