@@ -523,7 +523,7 @@ router.post("/detallesPagocli", isLoggedInn2, async (req, res) => {
 router.get("/todoslospagos", isLoggedInn2, async (req, res) => {
 
 
-    const pagos = await pool.query('SELECT * FROM pagos join clientes on pagos.cuil_cuit = clientes.cuil_cuit ')
+    const pagos = await pool.query('SELECT * FROM pagos left join (select mes, anio, id as idc, cuil_cuit as cui from cuotas ) as sel  on pagos.id_cuota=sel.idc left join clientes on sel.cui = clientes.cuil_cuit ')
 
 
 
