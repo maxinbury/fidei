@@ -312,7 +312,7 @@ router.get('/extracto', async (req, res) => {
 
         mandar.push(nuevo);
       } catch (error) {
-      //  console.log(error)
+        console.log(error)
       }
 
     }

@@ -1178,11 +1178,9 @@ async function pagonivel2(req, res) {
         cbupago=0
     }
     ///
-    ///INICIO GUARDADO DE PAGO
-
-console.log(1)
+  
     let cuil_cuit_distinto = 'No'
-    let monto_distinto = 'No'
+    let monto_distinto = 'Si'
     let monto_inusual = 'No'
     let mensaje = ''
 
@@ -1201,7 +1199,65 @@ console.log(1)
     estado = 'A'
 
    
-        /// traer la ultima
+        ///INICIO comparacion
+
+
+    etc = await pool.query('select * from extracto')
+    nombre = etc[(etc.length) - 1]['ubicacion']
+    // const workbook = XLSX.readFile('./src/Excel/'+nombre)
+    const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    //console.log(dataExcel)
+
+    let regex = /(\d+)/g;
+    let mandar = []
+    for (const property in dataExcel) {
+      /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+           estado = 'A'
+           // tipo de pago normal 
+       } */
+
+      try {
+
+
+
+        descripcion = (dataExcel[property]['Descripción']).match(regex)
+        fecha = dataExcel[property]['']
+        referencia = dataExcel[property]['Referencia']
+        debitos = dataExcel[property]['Débitos']
+        creditos = dataExcel[property]['Créditos']
+        cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+        if (monto.includes(',')) {
+            // Replace comma with a dot
+             monto.replace(',', '.');
+        }
+        if(cleanedString == monto){
+             monto_distinto = 'No'
+            mensaje=dataExcel[property]['Descripción']
+            console.log('encontrado',dataExcel[property]['Descripción'])
+        }
+        nuevo = {
+          fecha,
+          descripcion,
+          referencia,
+          debitos,
+          cleanedString,
+
+
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
+
+    
+
+/////////////////////////////////////////////////////////////////////////////////
 
         let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
         console.log(cliente)
@@ -1238,9 +1294,6 @@ console.log(1)
         }
 
 
-
-        console.log(11)
-
         const newLink = {
             id_cuota,
             monto,
@@ -1265,9 +1318,9 @@ console.log(1)
         //await pagodecuota.pagodecuota(id, monto)
         ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
          cuota = await pool.query('select * from cuotas_ic3 where id = ?', [id]) //objeto cuota
-        mensaje = 'Pago realizado'
+        mensaje = 'Pago realizado ' + mensaje
         aux = cuota[0]["cuil_cuit"]
-        mensaje = 'Pago realizado'
+       
 
     
 
@@ -1279,7 +1332,7 @@ console.log(1)
     } catch (ex) {
       // console.log('NOOO  ')
       console.log(ex)
-      res.json(['mensaje', cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+      res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     }
 }
 

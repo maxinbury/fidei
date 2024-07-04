@@ -38,6 +38,18 @@ const storage = multer.diskStorage({
 
 //////////////// MODIFICAR CONTRASENIA
 
+
+router.get('/traerpdfonstanciacbu/:id',async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    const query = await pool.query('SELECT * FROM cbus WHERE id = ?',[id]);
+  console.log(query)
+  
+      const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
+      res.sendFile(filePath);
+    ;
+  });
+
 router.get('/traerpdfconstancia/:id',async (req, res) => {
     const { id } = req.params;
     console.log(id)
