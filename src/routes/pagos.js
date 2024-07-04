@@ -541,7 +541,7 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos = await pool.query('select * from historial_pagosi join (select cuil_cuit as cuil, nombre, ingresos from clientes) as sel  on historial_pagosi.cuil_cuit = sel.cuil where proceso ="averificarnivel3" ')
+    const pagos = await pool.query('select * from historial_pagosi left join (select cuil_cuit as cuil, nombre, ingresos from clientes) as sel  on historial_pagosi.cuil_cuit = sel.cuil where proceso ="averificarnivel3" ')
 
     res.json(pagos)
 })
