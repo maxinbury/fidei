@@ -648,79 +648,68 @@ router.post("/rechazarr", isLoggedInn2, async (req, res) => {
 
 ////Rechazar niv 3
 router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
-    const { id, detalle, tipo } = req.body
+    const { id, detalle, tipo } = req.body;
 
-    auxi = await pool.query('select *  from historial_pagosi where id=?', [id]);//pagos
-  
-    cuil_cuit = auxi[0]['cuil_cuit']
+    let auxi;
+    try {
+        auxi = await pool.query('SELECT * FROM historial_pagosi WHERE id = ?', [id]);
+    } catch (error) {
+        console.error("Error fetching data: ", error);
+        return res.status(500).send('Error fetching data');
+    }
 
+    const cuil_cuit = auxi[0]['cuil_cuit'];
 
+    let proceso;
     switch (tipo) {
         case 'Inusual':
-          
-            proceso = 'Inusual'
-            //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor1
-
-
-
+            proceso = 'Inusual';
             break;
         case 'Sospechoso':
-           
-            proceso = 'declaradosospechoso'
+            proceso = 'declaradosospechoso';
 
-            //Declaraciones ejecutadas cuando el resultado de expresión coincide con el valor2
             const update2 = {
                 leida: "No",
                 cuil_cuit: cuil_cuit,
                 id_referencia: id,
-                descripcion: 'El pago ha sido rechzado',
+                descripcion: 'El pago ha sido rechazado',
                 asunto: 'Pago'
-            }
+            };
             try {
-                await pool.query('INSERT INTO notificaciones set ?', [update2]);
+                await pool.query('INSERT INTO notificaciones SET ?', [update2]);
             } catch (error) {
-
+                console.error("Error inserting notification: ", error);
             }
 
-            email = 'pipao.pipo@gmail.com'
-            asunto = 'Pago Sospechoso'
-            encabezado = 'Pago Sospechoso al fideicomiso'
-            mensaje = "Recibimos un pago del cuil: " + cuil_cuit + ' de un monto de  ' + auxi[0]['monto'] +' Pesos'+ '<br/> Detalle: ' + detalle
-            //    
+            const email = 'pipao.pipo@gmail.com';
+            const asunto = 'Pago Sospechoso';
+            const encabezado = 'Pago Sospechoso al fideicomiso';
+            const mensaje = `Recibimos un pago del cuil: ${cuil_cuit} de un monto de ${auxi[0]['monto']} Pesos<br/> Detalle: ${detalle}`;
 
-            pagoaux = await pool.query('select * from historial_pagosi where id = ?', [id])
-            ubicacion = auxi[0]['ubicacion']
+            const ubicacion = auxi[0]['ubicacion'];
+            //const traerub = await s3Controller.traerImagen(ubicacion);
 
+            const descargaraqui = `<a href="${ubicacion}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 5px;">Descargar aquí el comprobante</a>`;
 
-
-const traerub = await s3Controller.traerImagen(ubicacion)
-const descargaraqui= "<a href="+traerub+">Descargar aqui el comprobante</a>"
-            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, descargaraqui)
-
-
-            break
+            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, descargaraqui);
+            break;
     }
-
 
     const update = {
-        proceso:tipo,
-        detalle
-
-    }
+        proceso: tipo,
+        detalle: detalle
+    };
 
     try {
-        await pool.query('UPDATE historial_pagosi set  ? WHERE id = ?', [update, id])
-
+        await pool.query('UPDATE historial_pagosi SET ? WHERE id = ?', [update, id]);
     } catch (error) {
-       // console.log(error)
-        res.send('algo salio mal')
-        
+        console.error("Error updating data: ", error);
+        return res.status(500).send('Error updating data');
     }
 
-    res.send('Todo en orden')
+    res.send('Todo en orden');
+});
 
-
-})
 
 
 
