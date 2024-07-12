@@ -1184,6 +1184,183 @@ async function pagonivel2(req, res) {
     let monto_inusual = 'No'
     let mensaje = ''
 
+    let cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+
+    aux = '%' + cuota[0]["cuil_cuit"] + '%'
+
+    cuil_cuit = cuota[0]["cuil_cuit"]
+
+    Saldo_real = parseFloat(cuota[0]["Saldo_real"])
+
+
+    mes = cuota[0]["mes"]
+    anio = cuota[0]["anio"]
+
+    estado = 'A'
+
+   
+        ///INICIO comparacion
+
+
+    etc = await pool.query('select * from extracto')
+    nombre = etc[(etc.length) - 1]['ubicacion']
+    // const workbook = XLSX.readFile('./src/Excel/'+nombre)
+    const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
+    const workbooksheets = workbook.SheetNames
+    const sheet = workbooksheets[0]
+
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    //console.log(dataExcel)
+
+    let regex = /(\d+)/g;
+    let mandar = []
+    for (const property in dataExcel) {
+      /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+           estado = 'A'
+           // tipo de pago normal 
+       } */
+
+      try {
+
+
+
+        descripcion = (dataExcel[property]['Descripción']).match(regex)
+        fecha = dataExcel[property]['']
+        referencia = dataExcel[property]['Referencia']
+        debitos = dataExcel[property]['Débitos']
+        creditos = dataExcel[property]['Créditos']
+        cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+        if (monto.includes(',')) {
+            // Replace comma with a dot
+             monto.replace(',', '.');
+        }
+        if(cleanedString == monto){
+             monto_distinto = 'No'
+            mensaje=dataExcel[property]['Descripción']
+            console.log('encontrado',dataExcel[property]['Descripción'])
+        }
+        nuevo = {
+          fecha,
+          descripcion,
+          referencia,
+          debitos,
+          cleanedString,
+
+
+        }
+
+      } catch (error) {
+        console.log(error)
+      }
+
+    }
+
+    
+
+/////////////////////////////////////////////////////////////////////////////////
+
+        let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
+        console.log(cliente)
+        ///////////////////CONSIDERAR PEP
+        let variante = 0.3
+        
+        if (cliente[0]['expuesta'] == "SI") {
+            console.log('expuesta')
+            variante = 0.2
+        }
+        montomax = cliente[0]['ingresos'] * variante
+        console.log('montomax',montomax)
+        console.log('monto',monto)
+        console.log(montomax)
+         id_cuota = id
+        if (montomax < monto) {
+
+            monto_inusual = 'Si'
+        }
+        if (monto_inusual == 'Si') {
+
+            const newLink2 = {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                mes,
+                estado: estado,
+                anio,
+                proceso: "averificarnivel3",
+                cuil_cuit_administrador,
+                ubicacion: filename,///////////aca ver el problema
+                fecha
+
+            };
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+        }
+
+
+        const newLink = {
+            id_cuota,
+            monto,
+            fecha,
+            cuil_cuit,
+            mes,
+            estado: estado,
+            anio,
+            cuil_cuit_administrador,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+            id_cbu:cbupago,
+            ubicacion: filename,///////////aca ver el problema
+
+        };
+
+        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+
+        /////////FIN  GUARDADO DE PAGO
+        ///INICIO IMPACTO EN LA CUOTA
+        //await pagodecuota.pagodecuota(id, monto)
+        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+         cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+        mensaje = 'Pago realizado ' + mensaje
+        aux = cuota[0]["cuil_cuit"]
+       
+
+    
+
+    try {
+
+
+        
+ res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+    } catch (ex) {
+      // console.log('NOOO  ')
+      console.log(ex)
+      res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+    }
+}
+
+async function pagarnivel2ic3(req, res) {
+    let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
+    const filename = req.file.filename;
+    console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
+
+  
+    cuil_cuit_administrador = cuil_cuit/// del administrador
+    id = id_cuota
+    monto = pago
+
+    cbupago = cbu
+    console.log(cbupago)
+    if (cbupago=="undefined"){
+        cbupago=0
+    }
+    ///
+  
+    let cuil_cuit_distinto = 'No'
+    let monto_distinto = 'Si'
+    let monto_inusual = 'No'
+    let mensaje = ''
+
     let cuota = await pool.query('select * from cuotas_ic3 where id = ?', [id]) //objeto cuota
 
     aux = '%' + cuota[0]["cuil_cuit"] + '%'
@@ -1263,11 +1440,14 @@ async function pagonivel2(req, res) {
         console.log(cliente)
         ///////////////////CONSIDERAR PEP
         let variante = 0.3
+        
         if (cliente[0]['expuesta'] == "SI") {
             console.log('expuesta')
             variante = 0.2
         }
         montomax = cliente[0]['ingresos'] * variante
+        console.log('montomax',montomax)
+        console.log('monto',monto)
         console.log(montomax)
          id_cuota = id
         if (montomax < monto) {
@@ -1335,8 +1515,6 @@ async function pagonivel2(req, res) {
       res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
     }
 }
-
-
 async function pagarnivel2varios(req, res) {
 
       const filename = req.file.filename
@@ -1547,5 +1725,6 @@ module.exports = {
     pagarnivel1cuota,
     getSignedUrl2,
     actualizarpago,
-    pagarrapidoic3
+    pagarrapidoic3,
+    pagarnivel2ic3
 }
