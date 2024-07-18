@@ -78,23 +78,23 @@ const estadisticasLegajos = async (req, res) => {
     const client = await pool.query('select * from clientes where cuil_cuit = ? ', [cuil_cuit])
     razonn = client[0]['razon']
 
-    a = "Dni "
-    b = "Constancia de Afip "
-    c = "Estatuto Social "
-    d = "Acta del organo decisorio "
-    e = "Acreditacion Domicilio "
-    f = "Ultimos balances CPCE"
-    g = "Dj Iva "
-    h = "Pagos Previsionales "
-    aux = "Dj Datos personales "
-    j = "Dj CalidadPerso "
-    k = "Dj Origen de Fondos "
-    l = "Acreditacion de ingresos "
-    m = "Referencias comerciales"
+    a = "Dni, "
+    b = "Constancia de Afip, "
+    c = "Estatuto Social, "
+    d = "Acta del organo decisorio, "
+    e = "Acreditacion Domicilio, "
+    f = "Ultimos balances CPCE, "
+    g = "Dj Iva, "
+    h = "Pagos Previsionales, "
+    aux = "Dj Datos personales, "
+    j = "Dj CalidadPerso, "
+    k = "Dj Origen de Fondos, "
+    l = "Constancia RePET, "
+    m = "Referencias comerciales, "
     n = 0
-    o = "Recibo de sueldo"
-    p = "Pago Monotributo"
-    q = "Pago autonomo"
+    o = "Recibo de sueldo, "
+    p = "Pago Monotributo, "
+    q = "Pago autonomo, "
 
 
 
@@ -238,7 +238,7 @@ const estadisticasLegajos = async (req, res) => {
                     k = ""
                     kk = 1
                     break;
-                case "Acreditacion de ingresos":
+                case "Constancia RePET":
                     l = ""
                     ll = 1
                     break;
