@@ -236,6 +236,39 @@ router.get('/pagos', isLoggedInn2, async (req, res) => {
   res.json(pagos)
 
 })
+
+
+router.get('/borrarcomprobante/:id', isLoggedInn2, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Recuperar el registro de pago desde la base de datos
+    const result = await pool.query('SELECT ubicacion FROM pagos WHERE id = ?', [id]);
+    
+    if (result.length > 0) {
+      const ubicacion = result[0].ubicacion;
+
+      // Comprobar si el archivo existe y eliminarlo
+      const filePath = path.join(__dirname, '../documentos/', ubicacion);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      // Actualizar la base de datos para establecer el campo ubicacion en null
+      await pool.query('UPDATE pagos SET ubicacion = NULL WHERE id = ?', [id]);
+
+      res.json("Realizado");
+    } else {
+      res.status(404).json({ message: "Pago no encontrado" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
+});
+
+
+
 //// borrar un pago
 router.get('/borrarpago/:id', isLoggedInn2, async (req, res) => {
   const id = req.params.id
