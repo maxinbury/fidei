@@ -8,7 +8,7 @@ const multer = require('multer')
 const path = require('path')
 const enviodemail = require('./Emails/Enviodemail')
 const { determinarEmpresa, habilitar, estadisticasLegajos, deshabilitar, borrarCbu, cbusPendientes, legajosCuil, ventalotee, add2,add3, modificarCuil, AgregarIngreso, detalleCuil, cantidadInfo, lista2, ventaLoteleg } = require('../controladores/linksControlador')
-
+const { busquedarenapet } = require('./funciones/buscarrenapet');
 
 /////////aws
 
@@ -332,6 +332,15 @@ router.post('/upload', upload.single('file'), (req, res) => {
 
 
 
+  router.get('/consultarenapet/', async (req, res) => {
+ 
+    const name = 'Referencia';
+    const result = await busquedarenapet(name);
+    console.log('Tipo de Lista:', result);
+    res.send(result)
+
+
+})
 
 module.exports = router
 
