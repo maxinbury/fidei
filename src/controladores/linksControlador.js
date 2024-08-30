@@ -24,12 +24,12 @@ const determinarEmpresa = async (req, res) => {
         try {
             await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
         } catch {
-           // console.log(error)
+            // console.log(error)
         }
 
         res.send('Exito')
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
         res.send('Sin exito')
     }
 
@@ -57,7 +57,7 @@ const habilitar = async (req, res) => {
 
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
 
     }
 
@@ -73,12 +73,13 @@ const estadisticasLegajos = async (req, res) => {
     const { cuil_cuit } = req.body
 
     const legajos = await pool.query('SELECT * FROM constancias where  cuil_cuit =?', [cuil_cuit])
-    const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and estado="Aprobada"', [cuil_cuit])
+    const legajosAprobados = await pool.query('SELECT * FROM constancias where  cuil_cuit =? and (estado="Aprobada" or tipo="Documentacion PEP")', [cuil_cuit])
     const cui = '%' + cuil_cuit + '%'
     const client = await pool.query('select * from clientes where cuil_cuit = ? ', [cuil_cuit])
     razonn = client[0]['razon']
 
-    a = "Dni, "
+    a = "Dni frente, "
+    a2 = "Dni dorso, "
     b = "Constancia de Afip, "
     c = "Estatuto Social, "
     d = "Acta del organo decisorio, "
@@ -89,16 +90,17 @@ const estadisticasLegajos = async (req, res) => {
     aux = "Dj Datos personales, "
     j = "Dj CalidadPerso, "
     k = "Dj Origen de Fondos, "
-    l = "Constancia RePET, "
+  l = "Constancia RePET, "
     m = "Referencias comerciales, "
     n = 0
     o = "Recibo de sueldo, "
     p = "Pago Monotributo, "
     q = "Pago autonomo, "
-
-
+    r = "Constancia RePET, "
+s="Recibo de sueldo"
 
     aa = 0
+    aa2 = 0
     bb = 0
     cc = 0
     dd = 0
@@ -112,13 +114,15 @@ const estadisticasLegajos = async (req, res) => {
     ll = 0
     mm = 0
     nn = 0
+    ss= 0
+    ////   porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk)
     ////////sumatoria de acreditacion de empresas
     ggg = 0  ///dj iva
     rrr = 0/// ibb
     fff = 0 //cpe
     hhh = 0 /// "Pagos Previsionales "
     mmm = 0// "Referencias comerciales"
-
+    sss= s
     ////  sumatoria de acreditacion ingresos de personas
     ooo = 0 /// "Recibo de sueldo"
     ppp = 0 ///  "Pago Monotributo"
@@ -127,12 +131,16 @@ const estadisticasLegajos = async (req, res) => {
     let acreditacion_i = "No tiene constancias de acreditacion de ingresos"
 
     for (let i = 0; i < legajosAprobados.length; i++) {
-    
+        console.log(legajosAprobados[i]['tipo'])
         if (razonn == 'Empresa') {
             switch (legajosAprobados[i]['tipo']) {
                 case "Dni":
                     a = ""
                     aa = 1
+                    break;
+                case "Dni dorso":
+                    a2 = ""
+                    aa2 = 1
                     break;
                 case "Constancia de Afip":
                     b = ""
@@ -162,6 +170,12 @@ const estadisticasLegajos = async (req, res) => {
                     j = ""
                     jj = 1
                     break;
+                    case "Documentacion PEP":
+                        console.log("Documentacion PEP")
+                        j = ""
+                        jj = 1
+                        break;
+                    
                 case "Dj OrigenFondos":
 
                     k = ""
@@ -197,9 +211,14 @@ const estadisticasLegajos = async (req, res) => {
                     mmm += 1// "Referencias comerciales"
                     break;
                 case "Ultimos balances CPCE":
+                    console.log('entro')
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
-                    l = ""
-                    ll = 1
+                    f = ""
+                    ff = 1
+                    g = ""
+                    gg = 1
+                    h = ""
+                    hh = 1
                     fff += 1 //cpe
 
                     break;
@@ -215,6 +234,10 @@ const estadisticasLegajos = async (req, res) => {
                 case "Dni":
                     a = ""
                     aa = 1
+                    break;
+                    case "Dni dorso":
+                    a2 = ""
+                    aa2 = 1
                     break;
                 case "Constancia de Afip":
                     b = ""
@@ -234,6 +257,10 @@ const estadisticasLegajos = async (req, res) => {
                     j = ""
                     jj = 1
                     break;
+                    case "Documentacion PEP":
+                        j = ""
+                        jj = 1
+                        break;
                 case "Dj OrigenFondos":
                     k = ""
                     kk = 1
@@ -246,25 +273,25 @@ const estadisticasLegajos = async (req, res) => {
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
-                    rrr +=1
+                    rrr += 1
                     break;
                 case "Recibo de sueldo":
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
-                    ooo +=1
+                    ooo += 1
                     break;
                 case "Pago Monotributo":
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
-                    ppp +=1
+                    ppp += 1
                     break;
                 case "Pago autonomo":
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
                     ll = 1
-                    qqq +=1
+                    qqq += 1
                     break;
 
                 default:
@@ -276,10 +303,10 @@ const estadisticasLegajos = async (req, res) => {
 
     }
 
-
+   
     if (razonn == 'Empresa') {
-        Faltan = 'Aun falta completar ' + a + b + c + d + e + aux + j + k + l
-        porccompleto = (aa + bb + cc + dd + ee + auxaux + jj + kk)
+        Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k + l
+        porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk)
 
 
         porccompleto = porccompleto / 9
@@ -291,6 +318,7 @@ const estadisticasLegajos = async (req, res) => {
         //  fff = 0 //cpe
         //  hhh = 0 /// "Pagos Previsionales "
         ////////mmm = 0// "Referencias comerciales"
+        console.log(acreditacion_i)
         if (acreditacion_i != "No tiene constancias de acreditacion de ingresos") {
 
             if (ggg != 0) {
@@ -314,8 +342,9 @@ const estadisticasLegajos = async (req, res) => {
 
 
     } else {
-      
-        Faltan = 'Aun falta completar ' + a + b + e + aux + j + k + l
+       
+        Faltan = 'Aun falta completar ' + a + a2 + b + e + aux + j + k + l + s
+        console.log(Faltan)
         porccompleto = (aa + bb + ee + auxaux + jj + kk + ll)
 
         porccompleto = porccompleto / 7
@@ -324,9 +353,9 @@ const estadisticasLegajos = async (req, res) => {
 
         //////////////////////
         ///  ooo = 0 /// "Recibo de sueldo"
-       ///// ppp = 0 ///  "Pago Monotributo"
-          //////  qqq = 0 ///  "Pago autonomo"
-          if (acreditacion_i != "No tiene constancias de acreditacion de ingresos") {
+        ///// ppp = 0 ///  "Pago Monotributo"
+        //////  qqq = 0 ///  "Pago autonomo"
+        if (acreditacion_i != "No tiene constancias de acreditacion de ingresos") {
 
             if (ooo != 0) {
                 acreditacion_i = acreditacion_i + " " + ggg + " Recibo de sueldo"
@@ -337,10 +366,15 @@ const estadisticasLegajos = async (req, res) => {
             if (qqq != 0) {
                 acreditacion_i = acreditacion_i + " " + hhh + " Pago autonomo"
             }
-      
+
             if (rrr != 0) {
                 acreditacion_i = acreditacion_i + " " + rrr + " IIBB"
             }
+            if ( sss != 0) {
+                acreditacion_i = acreditacion_i + " " + rrr + " Recibo(s) de sueldo"
+            }
+           
+
 
         }
 
@@ -448,7 +482,7 @@ const deshabilitar = async (req, res) => {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [newLink, cuil_cuit])
         await pool.query('insert registro_operaciones  set ?', newLink2)
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
 
     }
 
@@ -467,7 +501,7 @@ const borrarCbu = async (req, res) => {
         res.json('Borrado')
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.json('Error algo sucedio ')
 
     }
@@ -576,7 +610,7 @@ const legajosCuil = async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
-   const  array2 = await pool.query('select numero as descripcion, cuil_cuit, estado,ubicacion  from cbus where cuil_cuit =?', [cuil_cuit])
+    const array2 = await pool.query('select numero as descripcion, cuil_cuit, estado,ubicacion  from cbus where cuil_cuit =?', [cuil_cuit])
     const result = legajos.concat(array2);
     const cl = await pool.query('select * from clientes where cuil_cuit =?', [cuil_cuit])
     /*  legajos.map(img => {
@@ -584,7 +618,7 @@ const legajosCuil = async (req, res) => {
   
       })
       const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
-    res.json([result,cl])
+    res.json([result, cl])
 
 
 }
@@ -646,7 +680,7 @@ const ventalotee = async (req, res) => {
         }
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('algo salio mal')
     }
 }
@@ -679,7 +713,7 @@ const add2 = async (req, res) => {
         }
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -720,7 +754,7 @@ const add3 = async (req, res) => {
         }
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -743,7 +777,7 @@ const modificarCuil = async (req, res) => {
             try {
                 await pool.query('UPDATE users set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-               // console.log(error)
+                // console.log(error)
             }
             try {
                 await pool.query('UPDATE clientes set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
@@ -753,27 +787,27 @@ const modificarCuil = async (req, res) => {
             try {
                 await pool.query('UPDATE cuotas set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-              //  console.log(error)
+                //  console.log(error)
             }
             try {
                 await pool.query('UPDATE pagos set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-              //  console.log(error)
+                //  console.log(error)
             }
             try {
                 await pool.query('UPDATE constancias set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-              //  console.log(error)
+                //  console.log(error)
             }
             try {
                 await pool.query('UPDATE lotes set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-             //   console.log(error)
+                //   console.log(error)
             }
             try {
                 await pool.query('UPDATE notificaciones set ? WHERE cuil_cuit = ?', [nuevo, cuil_cuit_ant])
             } catch (error) {
-               // console.log(error)
+                // console.log(error)
             }
         }
         else {
@@ -783,7 +817,7 @@ const modificarCuil = async (req, res) => {
         }
 
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -815,7 +849,7 @@ const ventaLoteleg = async (req, res) => {
         }
 
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
         res.send('message', 'Error algo salio mal')
 
 
@@ -829,7 +863,7 @@ const ventaLoteleg = async (req, res) => {
 
 const AgregarIngreso = async (req, res) => {
     const { ingresos, cuil_cuit } = req.body
-  
+
     const newLink = {
         ingresos
     }
