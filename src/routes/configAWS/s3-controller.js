@@ -436,16 +436,12 @@ async function cargarcbu(req, res) {
 
 //////////////pago
 async function pagarniv1(req, res) {
+    let { id_cuota,cuil_cuit, pago, id_cbu, fecha,monto,fechapago,id} = req.body;
+    const filename = req.file.filename;
+    console.log(id_cuota,cuil_cuit, pago, id_cbu, fecha,filename)
+    
 
-      const filename = req.file.filename
-
-    const myArray = formData.datos.split(",");
-    cuil_cuit = myArray[0]
-    id = myArray[1]
-    monto = myArray[2]
-    fecha = myArray[3]
-    fechapago = myArray[4]
-    id_cbu = myArray[5]
+  
     auxiliarfecha = fechapago.split("-");
     fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
     fechapago = fechapago.replace('-', '/')
@@ -739,19 +735,12 @@ async function pagarniv1(req, res) {
 
 async function pagarnivel1cuota(req, res) {
 
-      const filename = req.file.filename
+    let { id_cuota,cuil_cuit, pago, id_cbu, fecha,monto,fechapago,id} = req.body;
+    const filename = req.file.filename;
+    console.log(id_cuota,cuil_cuit, pago, id_cbu, fecha,filename)
+    
 
-    const myArray = formData.datos.split(",");
-  
-    cuil_cuit = myArray[0]
-    id = myArray[1] ////id de la cuota
-    monto = myArray[2]
-    fechapago = myArray[3]
-    id_cbu = myArray[4]
-    auxiliarfecha = fechapago.split("-");
-    fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
-    fechapago = fechapago.replace('-', '/')
-    fechapago = fechapago.replace('-', '/')
+
 
 
 
