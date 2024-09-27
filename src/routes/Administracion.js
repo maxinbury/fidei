@@ -13,6 +13,9 @@ const pagodecuota = require('./funciones/pagoDeCuota')
 const {credenciales} = require ('../mp')
 const mercadopago = require('mercadopago')
 ////
+const axios = require('axios');
+const cheerio = require('cheerio');
+
 
 mercadopago.configure(credenciales)
 
@@ -175,7 +178,39 @@ router.get('/verpago', async (req, res) => {
 
 
 
+router.post('/consultapep', async (req, res) => {
+  const { nombre } = req.body;
+  console.log(`Buscando: ${nombre}`);
 
+  try {
+    // URL de la búsqueda
+    const url = `https://www.opensanctions.org/search/?q=${encodeURIComponent(nombre)}`;
+
+    // Hacer una solicitud GET a la página de resultados
+    const { data } = await axios.get(url);
+
+    // Cargar la página en Cheerio
+    const $ = cheerio.load(data);
+
+    // Extraer resultados de búsqueda y concatenarlos en un string
+    let resultadoTexto = '';
+    $('.search-result').each((i, el) => {
+      const nombreEntidad = $(el).find('.entity-header__title').text().trim(); // Actualizar selector
+      const detallesEntidad = $(el).find('.entity-header__details').text().trim(); // Actualizar selector
+      resultadoTexto += `Resultado ${i + 1}:\n${nombreEntidad}\n${detallesEntidad}\n\n`;
+    });
+
+    if (resultadoTexto.trim() === '') {
+      resultadoTexto = 'No se encontraron resultados.';
+    }
+
+    // Enviar el resultado concatenado al frontend
+    res.json({ resultado: resultadoTexto });
+  } catch (error) {
+    console.error('Error al realizar scraping:', error.message);
+    res.status(500).json({ error: 'Ocurrió un error al buscar el nombre.' });
+  }
+});
 
 
 router.post('/subirprueba', fileUpload, async (req, res, done) => {
