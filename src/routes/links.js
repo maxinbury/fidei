@@ -14,6 +14,7 @@ const axios = require('axios');
 const cron = require('node-cron');
 /////////aws
 const cheerio = require('cheerio');
+
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../../pdfs'),
     filename: (req, file, cb) => {
@@ -592,8 +593,8 @@ const busquedarenapet = async () => {
 };
 
 // Configurar el cron para ejecutar la función todos los días a las 16:35
-cron.schedule('00 17 * * *', async () => {
-  console.log('Iniciando la búsqueda automática a las 16:50...');
+cron.schedule('05 17 * * *', async () => {
+  console.log('Iniciando la búsqueda automática a las 17:00...');
 
   const { resultados, clientesAnalizados, mensaje, error } = await busquedarenapet();
 
