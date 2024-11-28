@@ -339,17 +339,286 @@ router.post('/upload', upload.single('file'), (req, res) => {
   });
 
 
+  // Función para escapar caracteres especiales en una expresión regular
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^=!:${}()|\[\]\/\\]/g, '\\$&'); // Escapa todos los caracteres especiales
+  }
+  
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^=!:${}()|\[\]\/\\]/g, '\\$&'); // Escapa todos los caracteres especiales
+  }
+  const removeAccents = (str) => {
+    return str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos
+      .toLowerCase(); // Convertir a minúsculas
+  };
+  
+  
+router.get('/consultarenapet/', async (req, res) => {
+  try {
+    // Obtener datos de la base de datos
+    const clientes = await pool.query('SELECT * FROM clientes');
+    if (!clientes.length) {
+      return res.status(404).json({ error: 'No se encontraron clientes en la base de datos.' });
+    }
+
+    // Escapar caracteres especiales en expresiones regulares
+    const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    // Función de búsqueda
+    const busquedarenapet = async (nombresArray) => {
+      try {
+        const url = 'https://repet.jus.gob.ar/';
+        const response = await axios.get(url);
+        const html = response.data;
+        const $ = cheerio.load(html);
+
+        // Normalizar el texto de la página
+        const pageText = removeAccents($('body').text());
+        const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+        const allResults = [];
+        for (const obj of nombresArray) {
+          const NombreCompleto = obj?.Nombre;
+          if (!NombreCompleto || typeof NombreCompleto !== 'string') continue;
+
+          // Separar el nombre completo en palabras y normalizarlas
+          const palabras = NombreCompleto.split(' ')
+            .map(word => removeAccents(word.trim()))
+            .filter(word => word.length > 0);
+
+          if (palabras.length === 0) continue;
+
+          // Crear expresiones regulares para cada palabra
+          const regexPalabras = palabras.map(palabra => new RegExp(`\\b${escapeRegExp(palabra)}\\b`, 'i'));
+
+          let matchedLines = [];
+
+          // Buscar coincidencias en las líneas
+          lines.forEach(line => {
+            const coincidencias = regexPalabras.every(regex => regex.test(line));
+            if (coincidencias) {
+              matchedLines.push(line);
+            }
+          });
+
+          // Agregar resultados si hay coincidencias
+          if (matchedLines.length > 0) {
+            allResults.push({
+              Nombre: NombreCompleto,
+              resultados: matchedLines,
+            });
+          }
+        }
+        return allResults;
+      } catch (error) {
+        console.error('Error en la búsqueda:', error);
+        return null;
+      }
+    };
+
+    // Ejecutar búsqueda
+    const resultados = await busquedarenapet(clientes);
+
+    if (resultados && resultados.length > 0) {
+      res.json({ resultados });
+    } else {
+      res.status(404).json({ mensaje: 'No se encontraron coincidencias.' });
+    }
+  } catch (error) {
+    console.error('Error en el endpoint:', error);
+    res.status(500).json({ error: 'Error al procesar la solicitud.' });
+  }
+});
+  
+/*  //////////mail
+     
+      
+ const transporter = nodemailer.createTransport({
+  service: 'gmail', // O el servicio de correo que utilices
+  auth: {
+    user: 'sistemasfideicomiso@gmail.com', // Reemplaza con tu correo
+    pass: 'mfqh gznx yezv wszc' // Reemplaza con tu contraseña
+  }
+});
+
+const mailOptions = {
+  from: 'email',
+  to: 'pipao.pipo@gmail.com',
+  subject: 'Nueva Consulta de la web',
+  text:  JSON.stringify(resultados, null, 2)
+};
+
+try {
+  await transporter.sendMail(mailOptions);
+  console.log('Correo enviado correctamente');
+} catch (error) {
+  console.error('Error al enviar el correo:', error);
+ // res.status(500).send('Error al enviar el correo');
+}
 
 
-  router.get('/consultarenapet/', async (req, res) => {
- 
-    const name = 'Referencia';
-    const result = await busquedarenapet(name);
-    console.log('Tipo de Lista:', result);
-    res.send(result)
 
 
-})
+///////// */
+
+/**   
+ * 
+ * const busquedarenapet = async (nombresArray) => {
+  try {
+    const url = 'https://repet.jus.gob.ar/';
+    const response = await axios.get(url);
+    const html = response.data;
+    const $ = cheerio.load(html);
+
+    const pageText = $('body').text();
+    const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+    const allResults = [];
+    for (const obj of nombresArray) {
+      const NombreCompleto = obj?.Nombre;
+      if (!NombreCompleto || typeof NombreCompleto !== 'string') continue;
+
+      // Separar el nombre completo en partes (nombre y apellidos)
+      const [nombre, ...apellidos] = NombreCompleto.split(' ').map(word => word.trim()).filter(word => word.length > 0);
+      if (!nombre || apellidos.length === 0) continue;
+
+      let matchedLines = [];
+
+      // Escapar los caracteres especiales y crear una expresión regular para el nombre y apellidos
+      const nombreRegex = new RegExp(`\\b${escapeRegExp(nombre)}\\b`, 'i'); // Coincidencia exacta de la palabra 'nombre'
+      const apellidosRegex = apellidos.map(apellido => new RegExp(`\\b${escapeRegExp(apellido)}\\b`, 'i')); // Coincidencia exacta de los apellidos
+
+      // Buscar coincidencias en las líneas
+      lines.forEach(line => {
+        const coincidencias = [];
+        const nombreCoincide = nombreRegex.test(line);  // Verificar coincidencia exacta de nombre
+        if (nombreCoincide) coincidencias.push(nombre);
+
+        const apellidosCoinciden = apellidos.filter(apellido => {
+          return apellidosRegex.some(regex => regex.test(line) && regex.source.includes(apellido));
+        });
+        coincidencias.push(...apellidosCoinciden);
+
+        // Verificar que el nombre y los apellidos coincidan con la línea completa, no solo fragmentos
+        if (coincidencias.length === apellidos.length + 1) {
+          matchedLines.push({
+            linea: line,
+            coincidencias: coincidencias, // Palabras que generaron la coincidencia
+          });
+        }
+      });
+
+      // Agregar resultados si hay coincidencias
+      if (matchedLines.length > 0) {
+        allResults.push({
+          Nombre: NombreCompleto,
+          resultados: matchedLines,
+        });
+      }
+    }
+    console.log(allResults);
+    return allResults;
+  } catch (error) {
+    console.error('Error en la búsqueda:', error);
+    return null;
+  }
+};
+
+ */
+  ////////////AUTOMARICA
+
+  
+// Función principal
+const busquedarenapet = async () => {
+  try {
+    // Obtener datos de la base de datos
+    const clientes = await pool.query('SELECT * FROM clientes');
+    if (!clientes.length) {
+      console.log('No se encontraron clientes en la base de datos.');
+      return { mensaje: 'No se encontraron clientes en la base de datos.', clientesAnalizados: 0 };
+    }
+
+    // Obtener y procesar la página
+    const url = 'https://repet.jus.gob.ar/';
+    const response = await axios.get(url);
+    const html = response.data;
+    const $ = cheerio.load(html);
+
+    const pageText = removeAccents($('body').text());
+    const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+    const allResults = [];
+    for (const obj of clientes) {
+      const NombreCompleto = obj?.Nombre;
+      if (!NombreCompleto || typeof NombreCompleto !== 'string') continue;
+
+      const palabras = NombreCompleto.split(' ')
+        .map(word => removeAccents(word.trim()))
+        .filter(word => word.length > 0);
+
+      if (palabras.length === 0) continue;
+
+      const regexPalabras = palabras.map(palabra => new RegExp(`\\b${escapeRegExp(palabra)}\\b`, 'i'));
+
+      let matchedLines = [];
+
+      lines.forEach(line => {
+        const coincidencias = regexPalabras.every(regex => regex.test(line));
+        if (coincidencias) {
+          matchedLines.push(line);
+        }
+      });
+
+      if (matchedLines.length > 0) {
+        allResults.push({
+          Nombre: NombreCompleto,
+          resultados: matchedLines,
+        });
+      }
+    }
+
+    if (allResults.length > 0) {
+      console.log('Resultados encontrados:', allResults);
+    } else {
+      console.log('No se encontraron coincidencias.');
+    }
+
+    return { resultados: allResults, clientesAnalizados: clientes.length };
+  } catch (error) {
+    console.error('Error en la búsqueda:', error);
+    return { error: 'Error durante la búsqueda', clientesAnalizados: 0 };
+  }
+};
+
+// Configurar el cron para ejecutar la función todos los días a las 16:35
+cron.schedule('10 17 * * *', async () => {
+  console.log('Iniciando la búsqueda automática a las 17:00...');
+
+  const { resultados, clientesAnalizados, mensaje, error } = await busquedarenapet();
+
+  // Configurar el contenido del correo
+  const mailOptions = {
+    from: 'sistemasfideicomiso@gmail.com',
+    to: 'pipao.pipo@gmail.com',
+    subject: 'Resultados de la consulta diaria',
+    text: resultados?.length
+      ? `Se encontraron coincidencias para ${resultados.length} clientes de un total de ${clientesAnalizados} analizados.\n\nResultados:\n${JSON.stringify(resultados, null, 2)}`
+      : mensaje || `No se encontraron coincidencias. Se analizaron ${clientesAnalizados} clientes.`,
+  };
+
+  // Enviar el correo
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo enviado correctamente');
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+  }
+});
+
+
+
 
 module.exports = router
 
