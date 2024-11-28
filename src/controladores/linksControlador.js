@@ -11,6 +11,78 @@ const nodemailer = require("nodemailer");
 const enviodemail = require('../routes/Emails/Enviodemail')
 
 
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+// Función para buscar en la página
+const buscarEnPagina = async (nombreCompleto) => {
+  try {
+    const url = 'https://repet.jus.gob.ar/';
+    const response = await axios.get(url);
+    const html = response.data;
+    const $ = cheerio.load(html);
+
+    const pageText = $('body').text();
+    const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+    // Separar el nombre en palabras
+    const palabras = nombreCompleto
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Eliminar tildes
+      .split(' ')
+      .filter(word => word.length > 0);
+
+    const totalPalabras = palabras.length;
+    const palabrasNecesarias = totalPalabras > 3 ? totalPalabras - 1 : totalPalabras;
+
+    let coincidencias = [];
+    for (const line of lines) {
+      const palabrasCoinciden = palabras.filter(palabra =>
+        line
+          .toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+          .includes(palabra)
+      );
+
+      if (palabrasCoinciden.length >= palabrasNecesarias) {
+        coincidencias.push({ linea: line, palabrasCoinciden });
+      }
+    }
+
+    return coincidencias.length > 0 ? coincidencias : null;
+  } catch (error) {
+    console.error('Error al buscar en la página:', error);
+    return null;
+  }
+};
+
+// Configurar transporte de correo
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'sistemasfideicomiso@gmail.com',
+    pass: 'mfqh gznx yezv wszc'
+  }
+});
+
+// Función para enviar correo
+const enviarCorreo = async (asunto, mensaje) => {
+  const mailOptions = {
+    from: 'sistemasfideicomiso@gmail.com',
+    to: 'pipao.pipo@gmail.com',
+    subject: asunto,
+    text: mensaje
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('Correo enviado correctamente');
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+  }
+};
+
+
 const determinarEmpresa = async (req, res) => {
     const { razon, cuil_cuit } = req.body
 
@@ -688,43 +760,40 @@ const ventalotee = async (req, res) => {
 
 const add2 = async (req, res) => {
     const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
-    const newLink = {
-        Nombre,
-        tipo_dni,
-        razon,
-        telefono,
-        domicilio,
-        observaciones,
-        cuil_cuit
-        //user_id: req.user.id
-    };
-
-
-
+    const newLink = { Nombre, tipo_dni, razon, telefono, domicilio, observaciones, cuil_cuit };
+  
     try {
-        const row = await pool.query('Select * from clientes where cuil_cuit = ?', [req.body.cuil_cuit]);
-        if (row.length > 0) {   // SI YA EXISTE EL CLIENTE
-            res.send('Error cuil_cuit ya existe')
-
-        }
-        else {
-            await pool.query('INSERT INTO clientes set ?', [newLink]);
-            res.send('Guardado correctamente')
-
-        }
-
+      // Verificar si el cliente ya existe
+      const row = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit]);
+      if (row.length > 0) {
+        res.send('Error: el cuil_cuit ya existe.');
+        return;
+      }
+  
+      // Buscar en la página
+      const resultadosBusqueda = await buscarEnPagina(Nombre);
+  
+      // Enviar correo según los resultados
+      if (resultadosBusqueda) {
+        const mensaje = `Se encontraron coincidencias para el cliente ${Nombre}:\n\n${JSON.stringify(resultadosBusqueda, null, 2)}`;
+        await enviarCorreo('Resultados encontrados para cliente', mensaje);
+      } else {
+        const mensaje = `No se encontraron coincidencias para el cliente ${Nombre}.`;
+        await enviarCorreo('Sin coincidencias para cliente', mensaje);
+      }
+  
+      // Insertar cliente en la base de datos
+      await pool.query('INSERT INTO clientes SET ?', [newLink]);
+      res.send('Cliente guardado correctamente y analizado.');
     } catch (error) {
-        // console.log(error)
-        res.send('message', 'Error algo salio mal')
-
-
+      console.error('Error al procesar la solicitud:', error);
+      res.status(500).send('Error al procesar la solicitud.');
     }
+  };
 
 
 
 
-
-}
 const add3 = async (req, res) => {
     const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
     const newLink = {
