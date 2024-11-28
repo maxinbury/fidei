@@ -593,7 +593,7 @@ const busquedarenapet = async () => {
 };
 
 // Configurar el cron para ejecutar la función todos los días a las 16:35
-cron.schedule('10 17 * * *', async () => {
+cron.schedule('17 17 * * *', async () => {
   console.log('Iniciando la búsqueda automática a las 17:00...');
 
   const { resultados, clientesAnalizados, mensaje, error } = await busquedarenapet();
