@@ -16,45 +16,114 @@ const cheerio = require('cheerio');
 
 // Función para buscar en la página
 const buscarEnPagina = async (nombreCompleto) => {
-  try {
-    const url = 'https://repet.jus.gob.ar/';
-    const response = await axios.get(url);
-    const html = response.data;
-    const $ = cheerio.load(html);
-
-    const pageText = $('body').text();
-    const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-
-    // Separar el nombre en palabras
-    const palabras = nombreCompleto
-      .toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Eliminar tildes
-      .split(' ')
-      .filter(word => word.length > 0);
-
-    const totalPalabras = palabras.length;
-    const palabrasNecesarias = totalPalabras > 3 ? totalPalabras - 1 : totalPalabras;
-
-    let coincidencias = [];
-    for (const line of lines) {
-      const palabrasCoinciden = palabras.filter(palabra =>
-        line
-          .toLowerCase()
-          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-          .includes(palabra)
-      );
-
-      if (palabrasCoinciden.length >= palabrasNecesarias) {
-        coincidencias.push({ linea: line, palabrasCoinciden });
+    try {
+      const url = 'https://repet.jus.gob.ar/';
+      const response = await axios.get(url);
+      const html = response.data;
+      const $ = cheerio.load(html);
+  
+      const pageText = $('body').text();
+      const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  
+      const palabras = nombreCompleto
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Eliminar tildes
+        .split(' ')
+        .filter(word => word.length > 0);
+  
+      const totalPalabras = palabras.length;
+      const palabrasNecesarias = totalPalabras > 3 ? totalPalabras - 1 : totalPalabras;
+  
+      let coincidencias = [];
+      for (const line of lines) {
+        const palabrasExactas = palabras.filter(palabra =>
+          line
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .includes(palabra)
+        );
+  
+        const palabrasSospechosas = palabras.filter(palabra =>
+          !palabrasExactas.includes(palabra) && // Evitar duplicar palabras ya exactas
+          line
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .split(' ')
+            .some(palabraLinea => diferenciaLetras(palabra, palabraLinea) <= 1)
+        );
+  
+        if (palabrasExactas.length + palabrasSospechosas.length >= palabrasNecesarias) {
+          coincidencias.push({ linea: line, palabrasExactas, palabrasSospechosas });
+        }
+      }
+  
+      return coincidencias.length > 0 ? coincidencias : null;
+    } catch (error) {
+      console.error('Error al buscar en la página:', error);
+      return null;
+    }
+  };
+  
+  // Función para calcular la diferencia de letras entre dos palabras
+  const diferenciaLetras = (str1, str2) => {
+    if (Math.abs(str1.length - str2.length) > 1) {
+      return Infinity; // Si las longitudes difieren en más de una letra, no son similares
+    }
+  
+    let diferencias = 0;
+    let i = 0, j = 0;
+  
+    while (i < str1.length && j < str2.length) {
+      if (str1[i] !== str2[j]) {
+        diferencias++;
+        if (diferencias > 1) return diferencias;
+  
+        if (str1.length > str2.length) i++; // Salto en str1
+        else if (str1.length < str2.length) j++; // Salto en str2
+        else {
+          i++;
+          j++;
+        }
+      } else {
+        i++;
+        j++;
       }
     }
-
-    return coincidencias.length > 0 ? coincidencias : null;
-  } catch (error) {
-    console.error('Error al buscar en la página:', error);
-    return null;
-  }
-};
+  
+    // Contar diferencias restantes si una palabra es más larga
+    diferencias += Math.abs((str1.length - i) - (str2.length - j));
+  
+    return diferencias;
+  };
+  
+  
+  // Función para calcular la similitud de Levenshtein
+  const similarity = (str1, str2) => {
+    const distance = levenshteinDistance(str1, str2);
+    const maxLength = Math.max(str1.length, str2.length);
+    return (maxLength - distance) / maxLength;
+  };
+  
+  // Función de distancia de Levenshtein
+  const levenshteinDistance = (a, b) => {
+    const matrix = Array.from({ length: a.length + 1 }, () => Array(b.length + 1).fill(0));
+  
+    for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+  
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1, // Inserción
+          matrix[i][j - 1] + 1, // Eliminación
+          matrix[i - 1][j - 1] + cost // Sustitución
+        );
+      }
+    }
+  
+    return matrix[a.length][b.length];
+  };
 
 // Configurar transporte de correo
 const transporter = nodemailer.createTransport({
@@ -69,7 +138,7 @@ const transporter = nodemailer.createTransport({
 const enviarCorreo = async (asunto, mensaje) => {
   const mailOptions = {
     from: 'sistemasfideicomiso@gmail.com',
-    to: 'pipao.pipo@gmail.com',
+    to: 'fernandog.enrique.dev@gmail.com',
     subject: asunto,
     text: mensaje
   };
@@ -757,7 +826,7 @@ const ventalotee = async (req, res) => {
         res.send('algo salio mal')
     }
 }
-
+///agregar cliente
 const add2 = async (req, res) => {
     const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
     const newLink = { Nombre, tipo_dni, razon, telefono, domicilio, observaciones, cuil_cuit };
@@ -775,13 +844,16 @@ const add2 = async (req, res) => {
   
       // Enviar correo según los resultados
       if (resultadosBusqueda) {
-        const mensaje = `Se encontraron coincidencias para el cliente ${Nombre}:\n\n${JSON.stringify(resultadosBusqueda, null, 2)}`;
+        const mensaje = `Se encontraron coincidencias para el cliente ${Nombre}:\n\n` +
+          resultadosBusqueda.map(result => 
+            `- Línea: ${result.linea}\n  Palabras exactas: ${result.palabrasExactas.join(', ')}\n  Palabras sospechosas: ${result.palabrasSospechosas.join(', ')}`
+          ).join('\n\n');
         await enviarCorreo('Resultados encontrados para cliente', mensaje);
       } else {
         const mensaje = `No se encontraron coincidencias para el cliente ${Nombre}.`;
         await enviarCorreo('Sin coincidencias para cliente', mensaje);
       }
-  
+      
       // Insertar cliente en la base de datos
       await pool.query('INSERT INTO clientes SET ?', [newLink]);
       res.send('Cliente guardado correctamente y analizado.');
