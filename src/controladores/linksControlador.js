@@ -209,7 +209,7 @@ const habilitar = async (req, res) => {
 
 }
 
-
+////////// una letra informa lo que falta, 2 letras numero que suma para porcentaje. 3 letras cetificacion de intgresos 
 const estadisticasLegajos = async (req, res) => {
     const { cuil_cuit } = req.body
 
@@ -231,7 +231,7 @@ const estadisticasLegajos = async (req, res) => {
     aux = "Dj Datos personales, "
     j = "Dj CalidadPerso, "
     k = "Dj Origen de Fondos, "
-  l = "Constancia RePET, "
+ t = "Constancia RePET, "
     m = "Referencias comerciales, "
     n = 0
     o = "Recibo de sueldo, "
@@ -256,6 +256,7 @@ s="Recibo de sueldo"
     mm = 0
     nn = 0
     ss= 0
+    tt = 0   ////Constancia RePET
     ////   porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk)
     ////////sumatoria de acreditacion de empresas
     ggg = 0  ///dj iva
@@ -263,11 +264,13 @@ s="Recibo de sueldo"
     fff = 0 //cpe
     hhh = 0 /// "Pagos Previsionales "
     mmm = 0// "Referencias comerciales"
+    lll = 0 //// constancia rpet 
     sss= s
     ////  sumatoria de acreditacion ingresos de personas
     ooo = 0 /// "Recibo de sueldo"
     ppp = 0 ///  "Pago Monotributo"
     qqq = 0 ///  "Pago autonomo"
+    ttt= 0 /// Constancia RePET
 
     let acreditacion_i = "No tiene constancias de acreditacion de ingresos"
 
@@ -301,7 +304,11 @@ s="Recibo de sueldo"
                     ee = 1
                     break;
 
-
+                    case "Constancia RePET":
+                        t = ""
+                         t = 1
+                        
+                         break;
 
                 case "Dj Datospers":
                     aux = ""
@@ -407,8 +414,9 @@ s="Recibo de sueldo"
                     kk = 1
                     break;
                 case "Constancia RePET":
-                    l = ""
-                    ll = 1
+                   t = ""
+                    t = 1
+                   
                     break;
                 case "DDJJ IIBB":
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
@@ -446,11 +454,11 @@ s="Recibo de sueldo"
 
    
     if (razonn == 'Empresa') {
-        Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k + l
-        porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk)
+        Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k + l +t
+        porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk + t)
 
 
-        porccompleto = porccompleto / 9
+        porccompleto = porccompleto / 10
 
         porccompleto = (porccompleto * 100).toFixed(2)
         ///
@@ -484,11 +492,12 @@ s="Recibo de sueldo"
 
     } else {
        
-        Faltan = 'Aun falta completar ' + a + a2 + b + e + aux + j + k + l + s
+        Faltan = 'Aun falta completar ' + a + a2 + b + e + aux + j + k  + s + t
         console.log(Faltan)
-        porccompleto = (aa + bb + ee + auxaux + jj + kk + ll)
-
-        porccompleto = porccompleto / 7
+        porccompleto = (aa + aa2+ bb + ee + auxaux + jj + kk + ll+ tt)
+///a dni  b constancia afil  c estaturo d acta organi   e domicilio auxDj calidad opersia j  Datospers
+// k origen de fondo t repet    ll Pago Monotributo
+        porccompleto = porccompleto / 9
 
         porccompleto = (porccompleto * 100).toFixed(2)
 
