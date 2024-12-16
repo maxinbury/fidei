@@ -661,13 +661,23 @@ const borrarCbu = async (req, res) => {
 
 
 const cantidadInfo = async (req, res) => {
+    try {
+        // Obtener clientes de la base de datos
+        const clientes = await pool.query('SELECT * FROM clientes');
 
-    const clientes = await pool.query('select * from clientes')
+        // Agregar el campo "porcentaje" con un número aleatorio a cada cliente
+        const clientesConPorcentaje = clientes.map(cliente => ({
+            ...cliente,
+            porcentaje: Math.floor(Math.random() * 100) + 1, // Número aleatorio entre 1 y 100
+        }));
 
-    res.json(clientes)
-
-
-}
+        // Enviar la respuesta con el nuevo campo agregado
+        res.json(clientesConPorcentaje);
+    } catch (error) {
+        console.error("Error al obtener clientes:", error);
+        res.status(500).json({ error: "Ocurrió un error al obtener los clientes" });
+    }
+};
 
 
 
