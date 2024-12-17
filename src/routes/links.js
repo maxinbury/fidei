@@ -195,6 +195,7 @@ router.post('/modificarclientelegales',isLoggedInn2, async (req, res) => {
 router.post('/modificarcli', isLoggedInn2, async (req, res) => {
   const {
       cuil_cuit,
+      cp,
       email,
       provincia,
       telefono,
@@ -222,6 +223,7 @@ router.post('/modificarcli', isLoggedInn2, async (req, res) => {
       // Crear objeto con los datos enviados
       const newLink = {
           email,
+          cp,
           provincia,
           telefono,
           ingresos,

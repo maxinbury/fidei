@@ -13,7 +13,16 @@ const traerriesgo =  require('../routes/funciones/riesgo')
 
 const axios = require('axios');
 const cheerio = require('cheerio');
-
+function calcularEdad(fechaNacimiento) {
+    const hoy = new Date();
+    const nacimiento = new Date(fechaNacimiento);
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+    const mes = hoy.getMonth() - nacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
+        edad--;
+    }
+    return edad;
+}
 // Función para buscar en la página
 const buscarEnPagina = async (nombreCompleto) => {
     try {
@@ -1048,13 +1057,39 @@ const AgregarIngreso = async (req, res) => {
 
 }
 const detalleCuil = async (req, res) => {
-    const { cuil_cuit } = req.params
+    try {
+        const { cuil_cuit } = req.params;
 
-    const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit])
+        // Consulta para obtener los datos del cliente
+        const links = await pool.query('SELECT * FROM clientes WHERE cuil_cuit= ?', [cuil_cuit]);
 
-    res.json(links)
+        if (links.length === 0) {
+            return res.status(404).json({ message: 'Cliente no encontrado' });
+        }
 
-}
+        // Asume que solo obtendrás un cliente con este cuil/cuit
+        const cliente = links[0];
+
+        // Calcula la edad del cliente
+        const edad = calcularEdad(cliente.fechaNacimiento);
+
+        // Calcula el riesgo del cliente  const porcentaje = await traerriesgo.matriz(cliente);
+        const riesgo = await traerriesgo.matriz(cliente);
+
+        // Agrega la edad y el riesgo al cliente
+        const clienteConDetalles = {
+            ...cliente,
+            edad,
+            riesgo
+        };
+
+        // Devuelve los datos del cliente con los detalles calculados
+        res.json([clienteConDetalles]);
+    } catch (error) {
+        console.error('Error en detalleCuil:', error);
+        res.status(500).json({ message: 'Error al procesar la solicitud' });
+    }
+};
 module.exports = {
     ventaLoteleg,
     add3,

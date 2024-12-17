@@ -8,6 +8,7 @@ const path = require('path')
 
 const actividadRiesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './actividad_riesgo.json' )));
 
+const cpriesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './codigop.json' )));
 // Función para calcular la edad
 function calcularEdad(fechaNacimiento) {
     const hoy = new Date();
@@ -55,7 +56,7 @@ async function matriz(cliente) {
 
         // Actividad económica
         const actividad = cliente['actividadEconomica'];
-        console.log('actividad',actividad)
+        console.log('actividad', actividad);
         const nivelRiesgo = actividadRiesgo.find(item => item['Unnamed: 0'] === actividad);
         if (nivelRiesgo) {
             const riesgoActividad = parseInt(nivelRiesgo['Unnamed: 1']) * 4; // Multiplica por 4
@@ -65,12 +66,22 @@ async function matriz(cliente) {
             riesgo += 2; // Valor por defecto si no se encuentra la actividad
         }
 
+        // Código postal (CP)
+        const cp = cliente['cp'];
+        const riesgoCP = cpriesgo.find(item => item['codigo'] === cp);
+        if (riesgoCP) {
+            const riesgoCPValue = parseInt(riesgoCP['riesgo']) * 2; // Multiplica por 3
+            console.log('riesgoCP', riesgoCPValue);
+            riesgo += riesgoCPValue;
+        } else {
+            riesgo += 1; // Valor por defecto si no se encuentra el CP
+        }
+
     } else {
         // Persona Jurídica
-       
+        // (Puedes agregar la lógica correspondiente aquí)
     }
 
-    
     return riesgo;
 }
 

@@ -1,0 +1,562 @@
+[
+  {
+    "codigo": "1900 Puerto de La Plata - Buenos Aires",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2000 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2001 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2002 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2003 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2004 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2005 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2006 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2007 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2008 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2009 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2010 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2011 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2012 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2013 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2014 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2015 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2016 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2017 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2020 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2021 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2022 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2023 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2024 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2025 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2026 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2027 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2028 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2029 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2030 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2031 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2032 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2033 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2034 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2035 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2036 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2037 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2038 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2039 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2152 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2154 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2156 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2200 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2202 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2204 Puerto de Timb\u00faes - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2206 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2208 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2210 Rosario - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2820 Gualeguaych\u00fa - Fray Bentos - Entre Rios",
+    "riesgo": 3
+  },
+  {
+    "codigo": "2900 Puerto de San Nicolas - Buenos Aires",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2915 Puerto de Ramallo - Buenos Aires",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2919 Puerto de Villa Constituci\u00f3n - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "2986 Puerto de Ibicuy - Entre R\u00edos",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3000 Puerto de Santa Fe - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3100 Puerto de Paran\u00e1 - Entre R\u00edos",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3105 Puerto de Diamante - Entre R\u00edos",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3190 Puerto de La Paz - Entre R\u00edos",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3193 Puerto de Nueva Palmira - Entre R\u00edos",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3200 Concordia - Salto - Entre Rios",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3230 Paso de los Libres - Corrientes",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3260 Concepci\u00f3n del Uruguay - Entre R\u00edos",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3280 Col\u00f3n - Paysandu - Entre Rios",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3300 Yaciret\u00e1 - Corrientes",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3302 Ituzaing\u00f3 - Corrientes",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3322 San Ignacio - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3340 Santo Tom\u00e9 - Sao Borja - Corrientes",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3360 Barra Bonita - M\u00b4Bigu\u00e1 - Misiones",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3363 Aurora - Pratos - Misiones",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3364 Comandante Andresito - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3366 Bernardo de Irigoyen - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3370 Puerto Iguaz\u00fa - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3376 Wanda - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3378 Puerto Esperanza - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3380 El Dorado - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3382 Puerto Victoria - Misiones",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3400 Puerto de Corrientes - Corrientes",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3503 Puerto de Barranqueras - Chaco",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3560 Puerto de Reconquista - Santa Fe",
+    "riesgo": 5
+  },
+  {
+    "codigo": "3604 Paso El Remanso - La Verde - Formosa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3610 Clorinda - Puerto Jos\u00e9 Falc\u00f3n - Formosa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3611 Paso Lamadrid - Misi\u00f3n San Leonardo - Formosa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3615 General Belgrano - General Bruguez - Formosa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3630 Isleta - Paraje Rojas Silva - Formosa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "3634 El Remanso - La Verde - Formosa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4178 Cruz Alta - Tucum\u00e1n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4400 Salta - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4411 Sico - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4413 Socompa - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4530 Aguas Blancas - Bermejo - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4535 El Condado - La Mamora (Los Toldos) - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4561 Misi\u00f3n La Paz - Pozo hondo - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4568 Salvador Mazza - Yacuiba - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4618 Jama - Jujuy",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4650 La Quiaca - Villaz\u00f3n - Jujuy",
+    "riesgo": 3
+  },
+  {
+    "codigo": "4651 El Condado - La Mamora - Salta",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5107 C\u00f3rdoba - C\u00f3rdoba",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5265 San Francisco - Catamarca",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5357 Pircas Negras - La Rioja",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5401 Casa de Piedra - San Juan",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5449 Calder\u00f3n - San Juan",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5460 Agua Negra - San Juan",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5507 Luj\u00e1n de Cuyo - Mendoza",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5557 Cristo Redentor - Mendoza",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5560 Portillo de Piuquenes - Mendoza",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5592 Caj\u00f3n del Maipo - Mendoza",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5613 Pehuenche - Mendoza",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5738 Justo Daract - San Luis",
+    "riesgo": 3
+  },
+  {
+    "codigo": "5960 Coyhaique - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "6360 General Pico - La Pampa",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8103 Bah\u00eda Blanca - Buenos Aires",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8345 Icalma - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8347 Pino Hachado - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8349 Copahue - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8353 Pichachen - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8370 Hua Hum - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8371 Carirri\u00f1e - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8400 Vuriloche - Rio Negro",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8407 Cardenal Antonio Samor\u00e9 - Neuqu\u00e9n",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8411 Perez Rosales - Rio Negro",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8430 R\u00edo Manso - Rio Negro",
+    "riesgo": 3
+  },
+  {
+    "codigo": "8431 R\u00edo Puelo - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9000 Comodoro Rivadavia - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9033 Pampa Alta - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9037 Triana - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9039 Huemules - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9040 Ingeniero Pallavicini - Ib\u00e1\u00f1ez - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9041 R\u00edo Jeinemeni (Los antiguos) - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9051 Cerro Redondo - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9201 Futaleuf\u00fa - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9203 R\u00edo Futaleuf\u00fa - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9225 Las Pampas - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9227 R\u00edo Frias - Chubut",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9301 Lago San Martin - O\u00b4Higgins - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9311 R\u00edo Mayer - Ribera Norte - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9315 Roballos - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9400 Integraci\u00f3n Austral - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9405 Marconi - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9407 Dorotea - Santa Cruz",
+    "riesgo": 3
+  },
+  {
+    "codigo": "9420 R\u00edo Bella Vista ( Ex Radman) - Tierra del Fuego",
+    "riesgo": 3
+  },
+  {
+    "codigo": "OTRAS ZONAS RIESGO BAJO - LOCALIDAD RIESGO BAJO",
+    "riesgo": 1
+  }
+]
