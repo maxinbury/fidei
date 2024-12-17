@@ -6,11 +6,11 @@ const router = express.Router();
 const pool = require('../../database');
 const path = require('path')
 
-const actividadRiesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './actividad_riesgo.json' )));
+const actividadRiesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './actividad_riesgo.json')));
 
-const cpriesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './codigop.json' )));
+const cpriesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './codigop.json')));
 
-const nacionalidadriesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './nacionalidad.json' )));
+const nacionalidadriesgo = JSON.parse(fs.readFileSync(path.join(__dirname, './nacionalidad.json')));
 // Función para calcular la edad
 function calcularEdad(fechaNacimiento) {
     const hoy = new Date();
@@ -83,7 +83,7 @@ async function matriz(cliente) {
         nacionalidadriesgo
         const nacionariesgo = cliente['nacionalidad'];
         const riesgoNAC = nacionalidadriesgo.find(item => item['NACIONALIDAD'] === nacionariesgo);
-       
+
         if (riesgoNAC) {
             const riesgoNACValue = parseInt(riesgoNAC['NIVEL DE RIESGO']) * 3; // Multiplica por 3
             console.log('riesgoNAC', riesgoNACValue);
@@ -91,6 +91,32 @@ async function matriz(cliente) {
         } else {
             riesgo += 3; // Valor por defecto si no se encuentra el CP
         }
+        //// volument transaccional
+        switch (cliente['volumenTransaccional']) {
+            case ('0 A 15 SMVM'):
+                riesgo += 4;
+                console.log('riesgo 1')
+                break;
+                case ('MAYOR DE 15 A 30 SMVM'):
+                riesgo += 8;
+                console.log('riesgo 2')
+                break;
+            case ('MAYOR DE 30 A 45 SMVM'):
+                riesgo += 12; 
+                 console.log('riesgo 3')
+                break;
+            case ('MAYOR DE 45 A 60 SMVM'):
+                riesgo += 16;
+                console.log('riesgo 4')
+                break;
+            case ('MAYOR DE 60 SMVM'):
+                riesgo += 20;
+                console.log('riesgo 5')
+                break;
+            default:
+                console.log('no se ecuentra',cliente['volumenTransaccional']);
+        }
+
     } else {
         // Persona Jurídica
         // (Puedes agregar la lógica correspondiente aquí)
