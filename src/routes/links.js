@@ -194,19 +194,19 @@ router.post('/modificarclientelegales',isLoggedInn2, async (req, res) => {
 })
 router.post('/modificarcli', isLoggedInn2, async (req, res) => {
   const {
-      cuil_cuit, 
-      email, 
-      provincia, 
-      telefono, 
-      ingresos, 
-      domicilio, 
-      razon_social, 
-      observaciones, 
-      fechaNacimiento, 
-      tipoCliente, 
-      actividadEconomica, 
-      nacionalidad, 
-      volumenTransaccional 
+      cuil_cuit,
+      email,
+      provincia,
+      telefono,
+      ingresos,
+      domicilio,
+      razon_social,
+      observaciones,
+      fechaNacimiento,
+      tipoCliente,
+      actividadEconomica,
+      nacionalidad,
+      volumenTransaccional
   } = req.body;
 
   try {
@@ -214,7 +214,10 @@ router.post('/modificarcli', isLoggedInn2, async (req, res) => {
           return res.status(400).send('El campo cuil_cuit es obligatorio');
       }
 
-      const aux = '%' + cuil_cuit + '%';
+      // Formatea la fecha si existe
+      const formattedFechaNacimiento = fechaNacimiento
+          ? new Date(fechaNacimiento).toISOString().split('T')[0] // Convierte a formato YYYY-MM-DD
+          : null;
 
       // Crear objeto con los datos enviados
       const newLink = {
@@ -225,7 +228,7 @@ router.post('/modificarcli', isLoggedInn2, async (req, res) => {
           domicilio,
           razon_social,
           observaciones,
-          fechaNacimiento,
+          fechaNacimiento: formattedFechaNacimiento,
           tipoCliente,
           actividadEconomica,
           nacionalidad,
@@ -249,7 +252,6 @@ router.post('/modificarcli', isLoggedInn2, async (req, res) => {
       res.status(500).send('Error: Algo sucedió. ' + error.message);
   }
 });
-
 
 
 router.post('/enviarmailprueba/',isLoggedInn2, async (req, res) => {
