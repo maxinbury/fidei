@@ -192,28 +192,64 @@ router.post('/modificarclientelegales',isLoggedInn2, async (req, res) => {
 
 
 })
-router.post('/modificarcli',isLoggedInn2, async (req, res) => {
-    const { cuil_cuit, email, provincia, telefono, ingresos, domicilio, razon_social, observaciones } = req.body
-    
-    try {
-        aux = '%' + cuil_cuit + '%'
-        const newLink = {
-            email,
-            provincia,
-            telefono,
-            ingresos,
-            domicilio,
-            razon_social,
-            observaciones
-        }
-        await pool.query('UPDATE clientes set ? WHERE cuil_cuit like ?', [newLink, aux])
-        res.send('Cliente modificado')
-    } catch (error) {
-        res.send('Error algo ssucedió' + error)
-    }
+router.post('/modificarcli', isLoggedInn2, async (req, res) => {
+  const {
+      cuil_cuit, 
+      email, 
+      provincia, 
+      telefono, 
+      ingresos, 
+      domicilio, 
+      razon_social, 
+      observaciones, 
+      fechaNacimiento, 
+      tipoCliente, 
+      actividadEconomica, 
+      nacionalidad, 
+      volumenTransaccional 
+  } = req.body;
 
+  try {
+      if (!cuil_cuit) {
+          return res.status(400).send('El campo cuil_cuit es obligatorio');
+      }
 
-})
+      const aux = '%' + cuil_cuit + '%';
+
+      // Crear objeto con los datos enviados
+      const newLink = {
+          email,
+          provincia,
+          telefono,
+          ingresos,
+          domicilio,
+          razon_social,
+          observaciones,
+          fechaNacimiento,
+          tipoCliente,
+          actividadEconomica,
+          nacionalidad,
+          volumenTransaccional
+      };
+
+      // Filtrar solo los campos que tienen valores no nulos o no indefinidos
+      const filteredLink = Object.fromEntries(
+          Object.entries(newLink).filter(([_, value]) => value != null && value !== '')
+      );
+
+      if (Object.keys(filteredLink).length === 0) {
+          return res.status(400).send('No se enviaron campos válidos para actualizar');
+      }
+
+      // Ejecutar la consulta con solo los campos válidos
+      await pool.query('UPDATE clientes SET ? WHERE cuil_cuit = ?', [filteredLink, cuil_cuit]);
+      res.send('Cliente modificado exitosamente');
+  } catch (error) {
+      console.error('Error al modificar el cliente:', error);
+      res.status(500).send('Error: Algo sucedió. ' + error.message);
+  }
+});
+
 
 
 router.post('/enviarmailprueba/',isLoggedInn2, async (req, res) => {

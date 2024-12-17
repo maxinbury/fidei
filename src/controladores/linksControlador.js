@@ -9,7 +9,7 @@ const path = require('path')
 const sacarguion = require('../public/apps/transformarcuit')
 const nodemailer = require("nodemailer");
 const enviodemail = require('../routes/Emails/Enviodemail')
-
+const traerriesgo =  require('../routes/funciones/riesgo')
 
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -665,11 +665,16 @@ const cantidadInfo = async (req, res) => {
         // Obtener clientes de la base de datos
         const clientes = await pool.query('SELECT * FROM clientes');
 
-        // Agregar el campo "porcentaje" con un número aleatorio a cada cliente
-        const clientesConPorcentaje = clientes.map(cliente => ({
-            ...cliente,
-            porcentaje: Math.floor(Math.random() * 100) + 1, // Número aleatorio entre 1 y 100
-        }));
+        // Calcular el porcentaje para cada cliente usando agregaricc.calcularicc
+        const clientesConPorcentaje = await Promise.all(
+            clientes.map(async (cliente) => {
+                const porcentaje = await traerriesgo.matriz(cliente); // Llama a la función con el valor requerido
+                return {
+                    ...cliente,
+                    porcentaje, // Agrega el porcentaje calculado
+                };
+            })
+        );
 
         // Enviar la respuesta con el nuevo campo agregado
         res.json(clientesConPorcentaje);
