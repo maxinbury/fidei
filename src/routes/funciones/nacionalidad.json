@@ -1,0 +1,854 @@
+[
+    {
+        "NACIONALIDAD": "AF -Afganistán",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "AL -Albania",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "DE -Alemania",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AD -Andorra",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AO -Angola",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "AI -Anguila",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AG -Antigua y Barbuda",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SA -Arabia Saudita",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "DZ -Argelia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "AR -Argentina",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AM -Armenia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "AW -Aruba",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AU -Australia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AT -Austria",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AZ -Azerbaiyán",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BS -Bahamas",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BD -Bangladesh",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BB -Barbados",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BH -Baréin",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "BE -Bélgica",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BZ -Belice",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BJ -Benín",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BY -Bielorrusia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BO -Bolivia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "BA -Bosnia y Herzegovina",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BW -Botsuana",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BR -Brasil",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BN -Brunéi",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BG -Bulgaria",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BF -Burkina Faso",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BI -Burundi",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "BT -Bután",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "CV -Cabo Verde",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KH -Camboya",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CM -Camerún",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CA -Canadá",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "TD -Chad",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CZ -Chequia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CL -Chile",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CN -China",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "CY -Chipre",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CO -Colombia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "KM -Comoras",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "CG -Congo (Congo-Brazzaville)",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KP -Corea del Norte (República Popular Democrática de Corea)",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "KR -Corea del Sur",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CI -costa de marfil",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CR -Costa Rica",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "HR -Croacia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CU -Cuba",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CW -curazao",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "DK -Dinamarca",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "DM -Dominica",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "EC -Ecuador",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "EG -Egipto",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SV -El Salvador",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AE -Emiratos Árabes Unidos",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "ER -Eritrea",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "SK -Eslovaquia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SI -Eslovenia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "ES -España",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "PS -Estado de Palestina",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "US -Estados Unidos de América",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "EE -Estonia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "ET -Etiopía",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "PH -Filipinas",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "FI -Finlandia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "FJ -Fiyi",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "FR -Francia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "GA -Gabón",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GM -Gambia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GE -Georgia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "GH -Ghana",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GI -Gibraltar",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GD -Granada",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "GR -Grecia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "GU -Guam",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "GT -Guatemala",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GY -Guayana",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GN -Guinea",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GQ -Guinea Ecuatorial",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "GW -Guinea-Bisáu",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "HT -Haití",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "HN -Honduras",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "HK -Hong Kong",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "HU -Hungría",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "IN -India",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "ID -Indonesia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "IQ -Irak",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "IR -Irán",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "IE -Irlanda",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CK -Isla de Cook",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "IM -Isla del hombre",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "IS -Islandia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "BM -islas Bermudas",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KY -Islas Caimán",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MH -Islas Marshall",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SB -Islas Salomón",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "TC -Islas Turcas y Caicos",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "VI -Islas Vírgenes (EE.UU.)",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "VG -Islas Vírgenes (Gran Bretaña)",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "IL -Israel",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "IT -Italia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "JM -Jamaica",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "JP -Japón",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "JO -Jordán",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "QA -Katar",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KZ -Kazajstán",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KE -Kenia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "KG -Kirguistán",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "-Kosovo",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KW -Kuwait",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "LA -Laos",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "LS -Lesoto",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "LV -Letonia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "LB -Líbano",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "LR -Liberia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "LY -Libia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "LI -Liechtenstein",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "LT -Lituania",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "LU -Luxemburgo",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MO -Macao",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MK -Macedonia (ARYM)",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "MG -Madagascar",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "-Madeira",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MY -Malasia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "MW -Malaui",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "MV -Maldivas",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "ML -Malí",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "MT -Malta",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MA -Marruecos",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "MU -Mauricio",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MR -Mauritania",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "MX -México",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "FM -Micronesia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MD -Moldavia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MC -Mónaco",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "MN -Mongolia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "ME -Montenegro",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "MZ -Mozambique",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "MM -Myanmar (antes Birmania)",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "NA -Namibia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "NR -Nauru",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "NP -Nepal",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "NI -Nicaragua",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "NE -Níger",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "NG -Nigeria",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "NU -Niue",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "NO -Noruega",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "NZ -Nueva Zelanda",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "OM -Omán",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "NL -Países Bajos",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "PK -Pakistán",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "PW -palaos",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "PA -Panamá",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "PG -Papúa Nueva Guinea",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "PY -Paraguay",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "PE -Perú",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "PL -Polonia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "PT -Portugal",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "PR -Puerto Rico",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "GB -Reino Unido",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CF -República Centroafricana",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "CD -República Democrática del Congo",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "DO -República Dominicana",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "RW -Ruanda",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "RO -Rumania",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "RU -Rusia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "WS -Samoa",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "AS -Samoa Americana",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "KN -San Cristóbal y Nieves",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SM -San Marino",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "VC -San Vicente y las Granadinas",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "LC -Santa Lucía",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "ST -Santo Tomé y Príncipe",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "SN -Senegal",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "RS -Serbia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SC -Seychelles",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SL -Sierra Leona",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SG -Singapur",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SY -Siria",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SO -Somalia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "LK -Sri Lanka",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SZ -Suazilandia (Esuatini)",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "ZA -Sudáfrica",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SD -Sudán",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SS -Sudán del Sur",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "SE -Suecia",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "CH -Suiza",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "SR -Surinam",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "PF -Tahitis",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "TH -Tailandia",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "TW -Taiwán",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "TZ -Tanzania",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "TJ -Tayikistán",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "TL -Timor Oriental",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "TG -Togo",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "TO -Tonga",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "TT -Trinidad y Tobago",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "TN -Túnez",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "TM -turkmenistán",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "TR -Turquía",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "UA -Ucrania",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "UG -Uganda",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "UY -Uruguay",
+        "NIVEL DE RIESGO": 1
+    },
+    {
+        "NACIONALIDAD": "UZ -Uzbekistán",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "VU -Vanuatu",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "VE -Venezuela",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "VN -Vietnam",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "YE -Yemen",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "DJ -Yibuti",
+        "NIVEL DE RIESGO": 3
+    },
+    {
+        "NACIONALIDAD": "ZM -Zambia",
+        "NIVEL DE RIESGO": 5
+    },
+    {
+        "NACIONALIDAD": "ZW -Zimbabue",
+        "NIVEL DE RIESGO": 5
+    }
+]
