@@ -23,6 +23,40 @@ function calcularEdad(fechaNacimiento) {
     return edad;
 }
 
+const riesgoPorTipo = {
+    "Consorcios de Propietarios": 3,
+    "Sociedad Anónima": 3,
+    "Sociedad de Hecho": 3,
+    "Sociedad de Responsabilidad Limitada": 3,
+    "Sociedad en comandita por acciones": 3,
+    "Sociedad en comandita Simple": 3,
+    "Sociedad Irregular": 3,
+    "Sociedad Unipersonal": 3,
+    "Sociedades cooperativas de trabajo": 3,
+    "Sociedades de garantía recíproca (SGR)": 3,
+    "Asociaciones Civiles": 5,
+    "Cooperativas": 5,
+    "Embajadas": 5,
+    "Entidades sindicales": 5,
+    "Fideicomisos": 5,
+    "Fundación": 5,
+    "Mutuales": 5,
+    "Organizaciones sin fines de lucro - Otros": 5,
+    "Sociedad Anónima Simplificada": 5,
+    "Entes Autarquicos": 5,
+    "La Iglesia Católica": 5,
+    "SAPEM (participación estatal mayoritaria)": 5,
+    "Sector Público Nacional, Provincial o Municipal": 5
+};
+
+const riesgoAntiguedad = {
+    "Mayor a 21 años": 1,
+    "Entre 11 y 20 años": 2,
+    "Entre 6 y 10 años": 3,
+    "Entre 2 y 5 años": 4,
+    "Menor o igual a 1 años": 5
+};
+
 // Función principal: matriz de riesgo
 async function matriz(cliente) {
     let riesgo = 0;
@@ -48,6 +82,30 @@ async function matriz(cliente) {
         } else if (edad >= 76) {
             riesgo += 15;
         }
+
+    } else {
+        // Persona Jurídica
+        if (riesgoPorTipo.hasOwnProperty(cliente['tipoClienteEmpresa'])) {
+            riesgo += riesgoPorTipo[cliente['tipoClienteEmpresa']]*2;
+        } else {
+            riesgo += 2; // Valor por defecto si no está en la lista
+        }
+        console.log('tipoClienteEmpresa',riesgoPorTipo[cliente['tipoClienteEmpresa']]*2)
+    // Sumar el riesgo si el valor coincide con el mapeo
+    if (riesgoAntiguedad[cliente['antiguedad']] !== undefined) {
+        riesgo += riesgoAntiguedad[cliente['antiguedad']]*3;
+        console.log('riesgoAntiguedad', riesgoAntiguedad[cliente['antiguedad']]*3)
+    } else {
+        console.warn("Valor de antigüedad no reconocido:", cliente['antiguedad']);
+    }
+
+        ///fin persona juridica
+
+    }
+
+
+
+
 
         // Persona expuesta políticamente (PEP)
         if (cliente['expuesta'] === 'SI') {
@@ -117,10 +175,6 @@ async function matriz(cliente) {
                 console.log('no se ecuentra',cliente['volumenTransaccional']);
         }
 
-    } else {
-        // Persona Jurídica
-        // (Puedes agregar la lógica correspondiente aquí)
-    }
 
     return riesgo;
 }
