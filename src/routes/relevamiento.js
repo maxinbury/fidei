@@ -23,7 +23,7 @@ function convertExcelDate(excelDate) {
   const date = new Date((excelDate - (25567 + 1)) * 86400 * 1000);
   return date.toISOString().split('T')[0];
 }
-
+/* 
 
 router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   if (!req.file) {
@@ -171,7 +171,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   fs.unlinkSync(filePath);
 
   res.json({ success: true });
-});
+}); */
 
 
 
@@ -377,5 +377,66 @@ router.get('/zonas', async (req, res) => {
 }
 
 )
+
+
+router.post('/subbirexcel', upload.single('excel'), async (req, res) => {
+  try {
+    // Leer el archivo Excel
+    const workbook = XLSX.readFile(req.file.path);
+    const sheetName = 'Info para matriz de riesgo'; // Hoja específica
+
+    // Obtener los datos de la hoja, omitiendo las primeras filas irrelevantes
+    const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+
+    // Identificar el encabezado y datos reales
+    const headerRowIndex = sheetData.findIndex(row => row.includes('Nombre o razón social del cliente'));
+    if (headerRowIndex === -1) {
+      throw new Error('No se encontró un encabezado válido en la hoja seleccionada.');
+    }
+
+    const headers = sheetData[headerRowIndex];
+    const dataRows = sheetData.slice(headerRowIndex + 1);
+
+    // Mostrar cada fila como objeto basado en los encabezados
+    const processedData = dataRows.map(row => {
+      const rowData = {};
+      headers.forEach((header, index) => {
+        if (header) rowData[header] = row[index];
+      });
+      return rowData;
+    });
+
+    // Log de cada elemento procesado con diferenciación por campo
+    processedData.forEach((row, index) => {
+      console.log(`Fila ${index + 1}:`);
+      Object.keys(row).forEach(key => {
+        switch (key) {
+          case 'Nacionalidad':
+            console.log(`${key}: Esta es la nacionalidad - ${row[key]}`);
+            break;
+          case 'Nombre o razón social del cliente':
+            console.log(`${key}: Este es el nombre o razón social - ${row[key]}`);
+            break;
+          case 'CUIT':
+            console.log(`${key}: Este es el CUIT - ${row[key]}`);
+            break;
+          case 'Domicilio Legal':
+            console.log(`${key}: Este es el domicilio legal - ${row[key]}`);
+            break;
+          default:
+            console.log(`${key}: ${row[key]}`);
+        }
+      });
+    });
+
+    res.json({ message: 'Archivo procesado correctamente', processedData });
+  } catch (error) {
+    console.error('Error al procesar el archivo Excel:', error.message);
+    res.status(500).send('Error al procesar el archivo Excel.');
+  }
+});
+
+
+
 
 module.exports = router
