@@ -146,45 +146,60 @@ console.log('ok')
 
     router.get('/traercuotasic3/:cuil_cuit', async (req, res) => {
         const cuil_cuit = req.params.cuil_cuit;
-    console.log(cuil_cuit)
-        const cliente = await pool.query('select * from clientes where cuil_cuit=?', [cuil_cuit]);
-        cuotas = await pool.query("select * from cuotas_ic3 where id_cliente=?", [cliente[0]['id']]);
-        let env = [];
-        for (let i in cuotas) {
-            let pagos = await pool.query('select sum(monto) as total_pago from pagos where id_cuota=?', [cuotas[i]['id']]);
-            let total_pago = pagos[0]['total_pago'] || 0; // Asignar 0 si es null
+        console.log(cuil_cuit);
+        
+        try {
+            // Obtener todos los clientes con el cuil_cuit proporcionado
+            const clientes = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [cuil_cuit]);
+            
+            if (clientes.length === 0) {
+                return res.status(404).json({ error: 'No se encontraron clientes con el CUIL/CUIT proporcionado.' });
+            }
     
-            let excedente = parseFloat(total_pago) - parseFloat(cuotas[i]['cuota_con_ajuste']);
-            excedente = parseFloat(excedente).toFixed(2);
+            let env = [];
     
-            let saldo_final = parseFloat(cuotas[i]['saldo_inicial']) - parseFloat(cuotas[i]['amortizacion']);
-            saldo_final = parseFloat(saldo_final).toFixed(2);
+            // Iterar sobre cada cliente y obtener sus cuotas
+            for (const cliente of clientes) {
+                const cuotas = await pool.query('SELECT * FROM cuotas_ic3 WHERE id_cliente = ?', [cliente.id]);
     
-            let saldo_real = parseFloat(saldo_final) - parseFloat(excedente);
-            saldo_real = parseFloat(saldo_real).toFixed(2);
+                for (const cuota of cuotas) {
+                    const pagos = await pool.query('SELECT SUM(monto) AS total_pago FROM pagos WHERE id_cuota = ?', [cuota.id]);
+                    const total_pago = pagos[0]?.total_pago || 0; // Asignar 0 si es null
     
-            let nuevo = {
-                id: cuotas[i]['id'],
-                mes: cuotas[i]['mes'],
-                anio: cuotas[i]['anio'],
-                pago: total_pago,
-                excedente,
-                cuota: cuotas[i]['cuota'],
-                saldo_inicial: cuotas[i]['saldo_inicial'],
-                amortizacion: parseFloat(cuotas[i]['amortizacion']).toFixed(2),
-                ajuste: parseFloat(cuotas[i]['ajuste']).toFixed(2),
-                ajuste_icc: parseFloat(cuotas[i]['ajuste_icc']).toFixed(2),
-                cuota_con_ajuste: parseFloat(cuotas[i]['cuota_con_ajuste']).toFixed(2),
-                iva: cuotas[i]['iva'],
-                saldo_cierre: cuotas[i]['saldo_cierre'],
-                saldo_final,
-                saldo_real
-            };
+                    const excedente = (parseFloat(total_pago) - parseFloat(cuota.cuota_con_ajuste)).toFixed(2);
+                    const saldo_final = (parseFloat(cuota.saldo_inicial) - parseFloat(cuota.amortizacion)).toFixed(2);
+                    const saldo_real = (parseFloat(saldo_final) - parseFloat(excedente)).toFixed(2);
     
-            env.push(nuevo);
+                    let nuevo = {
+                        id: cuota.id,
+                        mes: cuota.mes,
+                        anio: cuota.anio,
+                        pago: total_pago,
+                        id_cliente: cuota.id_cliente,
+                        excedente,
+                        cuota: cuota.cuota,
+                        saldo_inicial: cuota.saldo_inicial,
+                        amortizacion: parseFloat(cuota.amortizacion).toFixed(2),
+                        ajuste: parseFloat(cuota.ajuste).toFixed(2),
+                        ajuste_icc: parseFloat(cuota.ajuste_icc).toFixed(2),
+                        cuota_con_ajuste: parseFloat(cuota.cuota_con_ajuste).toFixed(2),
+                        iva: cuota.iva,
+                        saldo_cierre: cuota.saldo_cierre,
+                        saldo_final,
+                        saldo_real
+                    };
+    
+                    env.push(nuevo);
+                }
+            }
+    
+            res.json(env);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error al procesar la solicitud.' });
         }
-        res.json(env);
     });
+    
     
 router.get('/corregir', async (req, res) => {
 
