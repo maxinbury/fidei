@@ -67,8 +67,10 @@ async function matriz(cliente) {
         // Tipo de cliente
         if (cliente['tipoCliente'] === 'Persona Humana con actividad comercial') {
             riesgo += 6;
+            console.log('Persona Humana con actividad',6)
         } else {
             riesgo += 2;
+            console.log('Persona Humana con actividad',2)
         }
 
         // Edad del cliente
@@ -76,16 +78,16 @@ async function matriz(cliente) {
         console.log('edad',edad)
         if (edad >= 18 && edad <= 25) {
             riesgo += 6;
-            console.log('edad',6)
+            console.log('riesgo edad',6)
         } else if (edad >= 26 && edad <= 55) {
             riesgo += 3;
-            console.log('edad',3)
+            console.log('riesgo edad',3)
         } else if (edad >= 56 && edad <= 75) {
             riesgo += 9;
-            console.log('edad',9)
+            console.log('riesgo edad',9)
         } else if (edad >= 76) {
             riesgo += 15;
-            console.log('edad',15)
+            console.log('riesgo edad',15)
         }
 
     } else {
