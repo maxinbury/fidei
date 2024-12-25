@@ -150,30 +150,27 @@ async function matriz(cliente) {
             riesgo += 3; // Valor por defecto si no se encuentra el CP
         }
         //// volument transaccional
-        switch (cliente['volumenTransaccional']) {
-            case ('0 A 15 SMVM'):
-                riesgo += 4;
-                console.log('riesgo 1')
-                break;
-                case ('MAYOR DE 15 A 30 SMVM'):
-                riesgo += 8;
-                console.log('riesgo 2')
-                break;
-            case ('MAYOR DE 30 A 45 SMVM'):
-                riesgo += 12; 
-                 console.log('riesgo 3')
-                break;
-            case ('MAYOR DE 45 A 60 SMVM'):
-                riesgo += 16;
-                console.log('riesgo 4')
-                break;
-            case ('MAYOR DE 60 SMVM'):
-                riesgo += 20;
-                console.log('riesgo 5')
-                break;
-            default:
-                console.log('no se ecuentra',cliente['volumenTransaccional']);
+        const volumen = cliente['volumenTransaccional'];
+
+        if (volumen >= 0 && volumen <= 15) {
+            riesgo += 4;
+            console.log('riesgo 1');
+        } else if (volumen > 15 && volumen <= 30) {
+            riesgo += 8;
+            console.log('riesgo 2');
+        } else if (volumen > 30 && volumen <= 45) {
+            riesgo += 12;
+            console.log('riesgo 3');
+        } else if (volumen > 45 && volumen <= 60) {
+            riesgo += 16;
+            console.log('riesgo 4');
+        } else if (volumen > 60) {
+            riesgo += 20;
+            console.log('riesgo 5');
+        } else {
+            console.log('No se encuentra', volumen);
         }
+        
 
 
     return riesgo;
