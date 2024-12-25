@@ -110,8 +110,10 @@ async function matriz(cliente) {
         // Persona expuesta políticamente (PEP)
         if (cliente['expuesta'] === 'SI') {
             riesgo += 10;
+            console.log('expuesta',10)
         } else {
             riesgo += 2;
+            console.log('expuesta',2)
         }
 
         // Actividad económica
@@ -150,27 +152,32 @@ async function matriz(cliente) {
             riesgo += 3; // Valor por defecto si no se encuentra el CP
         }
         //// volument transaccional
-        const volumen = cliente['volumenTransaccional'];
+        try {
+            const volumen = cliente['volumenTransaccional'];
 
-        if (volumen >= 0 && volumen <= 15000000) {
-            riesgo += 4;
-            console.log('riesgo 1');
-        } else if (volumen > 15000000 && volumen <= 30000000) {
-            riesgo += 8;
-            console.log('riesgo 2');
-        } else if (volumen > 30000000 && volumen <= 45000000) {
-            riesgo += 12;
-            console.log('riesgo 3');
-        } else if (volumen > 45000000 && volumen <= 60000000) {
-            riesgo += 16;
-            console.log('riesgo 4');
-        } else if (volumen > 60000000) {
-            riesgo += 20;
-            console.log('riesgo 5');
-        } else {
-            console.log('No se encuentra', volumen);
+            if (volumen >= 0 && volumen <= 15000000) {
+                riesgo += 4;
+                console.log('volumen riesgo 1',4);
+            } else if (volumen > 15000000 && volumen <= 30000000) {
+                riesgo += 8;
+                console.log('volumen riesgo 2',8);
+            } else if (volumen > 30000000 && volumen <= 45000000) {
+                riesgo += 12;
+                console.log('volumen riesgo 3',12);
+            } else if (volumen > 45000000 && volumen <= 60000000) {
+                riesgo += 16;
+                console.log('volumen riesgo 4',16);
+            } else if (volumen > 60000000) {
+                riesgo += 20;
+                console.log('volumen riesgo 5',20);
+            } else {
+                console.log('No se encuentra', volumen);
+            }
+            
+        } catch (error) {
+            console.log(error)
         }
-        
+  
 
 
     return riesgo;
