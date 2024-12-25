@@ -152,19 +152,19 @@ async function matriz(cliente) {
         //// volument transaccional
         const volumen = cliente['volumenTransaccional'];
 
-        if (volumen >= 0 && volumen <= 15) {
+        if (volumen >= 0 && volumen <= 15000000) {
             riesgo += 4;
             console.log('riesgo 1');
-        } else if (volumen > 15 && volumen <= 30) {
+        } else if (volumen > 15000000 && volumen <= 30000000) {
             riesgo += 8;
             console.log('riesgo 2');
-        } else if (volumen > 30 && volumen <= 45) {
+        } else if (volumen > 30000000 && volumen <= 45000000) {
             riesgo += 12;
             console.log('riesgo 3');
-        } else if (volumen > 45 && volumen <= 60) {
+        } else if (volumen > 45000000 && volumen <= 60000000) {
             riesgo += 16;
             console.log('riesgo 4');
-        } else if (volumen > 60) {
+        } else if (volumen > 60000000) {
             riesgo += 20;
             console.log('riesgo 5');
         } else {
