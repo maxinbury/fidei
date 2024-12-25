@@ -73,14 +73,19 @@ async function matriz(cliente) {
 
         // Edad del cliente
         const edad = calcularEdad(cliente['fechaNacimiento']);
+        console.log('edad',edad)
         if (edad >= 18 && edad <= 25) {
             riesgo += 6;
+            console.log('edad',6)
         } else if (edad >= 26 && edad <= 55) {
             riesgo += 3;
+            console.log('edad',3)
         } else if (edad >= 56 && edad <= 75) {
             riesgo += 9;
+            console.log('edad',9)
         } else if (edad >= 76) {
             riesgo += 15;
+            console.log('edad',15)
         }
 
     } else {
