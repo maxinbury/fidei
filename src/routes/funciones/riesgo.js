@@ -65,7 +65,7 @@ async function matriz(cliente) {
         // Persona Física
 
         // Tipo de cliente
-        if (cliente['tipoCliente'] === 'Persona Humana con actividad comercial') {
+        if (cliente['tipoCliente'] === 'Persona Humana con Actividad Comercial') {
             riesgo += 6;
             console.log('Persona Humana con actividad',6)
         } else {
