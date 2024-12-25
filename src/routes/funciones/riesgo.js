@@ -90,6 +90,34 @@ async function matriz(cliente) {
             console.log('riesgo edad',15)
         }
 
+
+         //// volument transaccional persona
+         try {
+            const volumen = cliente['volumenTransaccional'];
+
+            if (volumen >= 0 && volumen <= 15000000) {
+                riesgo += 4;
+                console.log('volumen riesgo 1',4);
+            } else if (volumen > 15000000 && volumen <= 30000000) {
+                riesgo += 8;
+                console.log('volumen riesgo 2',8);
+            } else if (volumen > 30000000 && volumen <= 45000000) {
+                riesgo += 12;
+                console.log('volumen riesgo 3',12);
+            } else if (volumen > 45000000 && volumen <= 60000000) {
+                riesgo += 16;
+                console.log('volumen riesgo 4',16);
+            } else if (volumen > 60000000) {
+                riesgo += 20;
+                console.log('volumen riesgo 5',20);
+            } else {
+                console.log('No se encuentra', volumen);
+            }
+            
+        } catch (error) {
+            console.log(error)
+        }
+
     } else {
         // Persona Jurídica
         if (riesgoPorTipo.hasOwnProperty(cliente['tipoClienteEmpresa'])) {
@@ -104,6 +132,33 @@ async function matriz(cliente) {
         console.log('riesgoAntiguedad', riesgoAntiguedad[cliente['antiguedad']]*3)
     } else {
         console.warn("Valor de antigüedad no reconocido:", cliente['antiguedad']);
+    }
+
+     //// volument transaccional juridica
+     try {
+        const volumen = cliente['volumenTransaccional'];
+
+        if (volumen >= 0 && volumen <= 150000000) {
+            riesgo += 4;
+            console.log('volumen riesgo 1 juridica',4);
+        } else if (volumen > 150000000 && volumen <= 300000000) {
+            riesgo += 8;
+            console.log('volumen riesgo 2 juridica',8);
+        } else if (volumen > 300000000 && volumen <= 450000000) {
+            riesgo += 12;
+            console.log('volumen riesgo 3 juridica',12);
+        } else if (volumen > 450000000 && volumen <= 600000000) {
+            riesgo += 16;
+            console.log('volumen riesgo 4 juridica',16);
+        } else if (volumen > 600000000) {
+            riesgo += 20;
+            console.log('volumen riesgo 5 juridica',20);
+        } else {
+            console.log('No se encuentra', volumen);
+        }
+        
+    } catch (error) {
+        console.log(error)
     }
 
         ///fin persona juridica
@@ -158,32 +213,7 @@ async function matriz(cliente) {
         } else {
             riesgo += 3; // Valor por defecto si no se encuentra el CP
         }
-        //// volument transaccional
-        try {
-            const volumen = cliente['volumenTransaccional'];
-
-            if (volumen >= 0 && volumen <= 15000000) {
-                riesgo += 4;
-                console.log('volumen riesgo 1',4);
-            } else if (volumen > 15000000 && volumen <= 30000000) {
-                riesgo += 8;
-                console.log('volumen riesgo 2',8);
-            } else if (volumen > 30000000 && volumen <= 45000000) {
-                riesgo += 12;
-                console.log('volumen riesgo 3',12);
-            } else if (volumen > 45000000 && volumen <= 60000000) {
-                riesgo += 16;
-                console.log('volumen riesgo 4',16);
-            } else if (volumen > 60000000) {
-                riesgo += 20;
-                console.log('volumen riesgo 5',20);
-            } else {
-                console.log('No se encuentra', volumen);
-            }
-            
-        } catch (error) {
-            console.log(error)
-        }
+       
   
 
 
