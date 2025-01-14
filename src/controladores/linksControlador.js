@@ -472,11 +472,13 @@ u="Constancia CUIL/CUIT"
 
    
     if (razonn == 'Empresa') {
+        console.log(aa, aa2)
         Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k  +t
-        porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk + t)
+        porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk + tt)
 
-
+    console.log(porccompleto)
         porccompleto = porccompleto / 10
+    
 
         porccompleto = (porccompleto * 100).toFixed(2)
         ///
@@ -604,8 +606,7 @@ u="Constancia CUIL/CUIT"
 
         "Rechazadas": rechazadas,
         "porcRechazadas": porcR,
-
-        porccompleto:porccompleto || 0,
+        porccompleto: isNaN(porccompleto) ? 0 : porccompleto,
         Faltan,
         acreditacion_i
 
