@@ -42,7 +42,7 @@ router.post('/determinarempresa', isLoggedInn2, determinarEmpresa)
 
 router.post('/habilitar',isLoggedInn2, habilitar)
 
-
+//////commponents/nivel2/legajocliente/estadisticas
 router.post("/estadisticaslegajos", isLoggedInn2, estadisticasLegajos)
 
 

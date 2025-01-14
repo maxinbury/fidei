@@ -219,6 +219,7 @@ const habilitar = async (req, res) => {
 }
 
 ////////// una letra informa lo que falta, 2 letras numero que suma para porcentaje. 3 letras cetificacion de intgresos 
+//////commponents/nivel2/legajocliente/estadisticas
 const estadisticasLegajos = async (req, res) => {
     const { cuil_cuit } = req.body
 
@@ -248,6 +249,7 @@ const estadisticasLegajos = async (req, res) => {
     q = "Pago autonomo, "
     r = "Constancia RePET, "
 s="Recibo de sueldo"
+u="Constancia CUIL/CUIT"
 
     aa = 0
     aa2 = 0
@@ -266,6 +268,7 @@ s="Recibo de sueldo"
     nn = 0
     ss= 0
     tt = 0   ////Constancia RePET
+    uu=0
     ////   porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk)
     ////////sumatoria de acreditacion de empresas
     ggg = 0  ///dj iva
@@ -280,6 +283,7 @@ s="Recibo de sueldo"
     ppp = 0 ///  "Pago Monotributo"
     qqq = 0 ///  "Pago autonomo"
     ttt= 0 /// Constancia RePET
+
 
     let acreditacion_i = "No tiene constancias de acreditacion de ingresos"
 
@@ -396,6 +400,11 @@ s="Recibo de sueldo"
                     a2 = ""
                     aa2 = 1
                     break;
+                    
+                    case "Constancia CUIL/CUIT":
+                        u = ""
+                       uu = 1
+                        break;
                 case "Constancia de Afip":
                     b = ""
                     bb = 1
@@ -501,12 +510,12 @@ s="Recibo de sueldo"
 
     } else {
        
-        Faltan = 'Aun falta completar ' + a + a2 + b + e + aux + j + k  + s + t
+        Faltan = 'Aun falta completar ' + a + a2 +u + b + e + aux + j + k  + s + t 
         console.log(Faltan)
-        porccompleto = (aa + aa2+ bb + ee + auxaux + jj + kk + ll+ tt)
+        porccompleto = (aa + aa2+uu + bb + ee + auxaux + jj + kk + ll+ tt)
 ///a dni  b constancia afil  c estaturo d acta organi   e domicilio auxDj calidad opersia j  Datospers
 // k origen de fondo t repet    ll Pago Monotributo
-        porccompleto = porccompleto / 9
+        porccompleto = porccompleto / 10
 
         porccompleto = (porccompleto * 100).toFixed(2)
 
