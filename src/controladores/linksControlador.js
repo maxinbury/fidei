@@ -472,7 +472,7 @@ u="Constancia CUIL/CUIT"
 
    
     if (razonn == 'Empresa') {
-        Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k + l +t
+        Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k  +t
         porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk + t)
 
 
