@@ -605,7 +605,7 @@ u="Constancia CUIL/CUIT"
         "Rechazadas": rechazadas,
         "porcRechazadas": porcR,
 
-        porccompleto,
+        porccompleto:porccompleto || 0,
         Faltan,
         acreditacion_i
 
