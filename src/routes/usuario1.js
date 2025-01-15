@@ -81,6 +81,7 @@ router.post('/pagarrapidoic3', upload.single('file'),s3Controller.pagarrapidoic3
 router.post('/subirlegajo', upload.single('file'),s3Controller.subirlegajo);
 
 /// determinar pdf
+///Rutas: detalleclietnteingresos   determinar pepe
 router.post('/determinarPep', upload.single('file'), s3Controller.determinarPep);
 
 router.post("/actualizarpago",  upload.single('file'), s3Controller.actualizarpago)
