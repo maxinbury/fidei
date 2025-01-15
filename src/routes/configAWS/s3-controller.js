@@ -314,7 +314,7 @@ console.log( cuil_cuit , expuesta )
         ubicacion: filename,
         cuil_cuit: cuil_cuit,
         tipo: 'Documentacion PEP',
-        descripcion: 'Cuil administrador',
+        descripcion: expuesta,
 
         fecha: (new Date(Date.now())).toLocaleDateString()
     }
