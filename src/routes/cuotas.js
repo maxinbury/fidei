@@ -143,7 +143,7 @@ console.log('ok')
 
 }) */
 
-
+/////  ruta nivel2 /cuotasic3
     router.get('/traercuotasic3/:cuil_cuit', async (req, res) => {
         const cuil_cuit = req.params.cuil_cuit;
         console.log(cuil_cuit);
@@ -163,7 +163,7 @@ console.log('ok')
                 const cuotas = await pool.query('SELECT * FROM cuotas_ic3 WHERE id_cliente = ?', [cliente.id]);
     
                 for (const cuota of cuotas) {
-                    const pagos = await pool.query('SELECT SUM(monto) AS total_pago FROM pagos WHERE id_cuota = ?', [cuota.id]);
+                    const pagos = await pool.query('SELECT SUM(monto) AS total_pago FROM pagos_ic3 WHERE id_cuota = ?', [cuota.id]);
                     const total_pago = pagos[0]?.total_pago || 0; // Asignar 0 si es null
     
                     const excedente = (parseFloat(total_pago) - parseFloat(cuota.cuota_con_ajuste)).toFixed(2);
