@@ -491,6 +491,15 @@ router.post("/detallespagos", isLoggedInn2, async (req, res) => {
 })
 
 
+router.post("/detallesPagoic3", isLoggedInn2, async (req, res) => {
+    const { id } = req.body
+    const pagos = await pool.query('SELECT * FROM pagos_ic3 where id_cuota = ?', [id])
+
+
+
+
+    res.json(pagos)
+})
 router.post("/detallesPagocli", isLoggedInn2, async (req, res) => {
     const { id } = req.body
     console.log(id)

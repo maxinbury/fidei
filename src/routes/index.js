@@ -72,7 +72,18 @@ console.log(query)
 
     const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
     res.sendFile(filePath);
-  ;
+ 
+});
+
+router.get('/traerPdfConstanciadepagoic3/:id',async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  const query = await pool.query('SELECT * FROM pagos_ic3 WHERE id = ?',[id]);
+console.log(query)
+
+    const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
+    res.sendFile(filePath);
+ 
 });
   /* const cantidad = await pool.query('SELECT count(*) FROM pagos WHERE (cuil_cuit = 34825125 and lote = 1) ',[34825125, 1])
         const nro_cuota = cantidad[0]['count(*)'] + 1

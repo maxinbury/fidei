@@ -300,6 +300,31 @@ await pool.query('UPDATE pagos SET ?  where id = ?', [datoss, id])
 
    
 }
+
+
+async function actualizarpagoic3(req, res) {
+    let { id } = req.body
+      const filename = req.file.filename
+try {
+
+const datoss = {
+    ubicacion: filename,
+
+}
+console.log(id)
+await pool.query('UPDATE pagos_ic3 SET ?  where id = ?', [datoss, id])
+
+  res.json('Realizado')
+} catch (error) {
+    console.log(error)
+    res.json("Error")
+}
+
+   
+}
+
+
+
 ////funciond eterminar persona politicamente expuesta
 async function determinarPep(req, res) {
     let { cuil_cuit , expuesta } = req.body
@@ -1715,5 +1740,7 @@ module.exports = {
     getSignedUrl2,
     actualizarpago,
     pagarrapidoic3,
-    pagarnivel2ic3
+    pagarnivel2ic3,
+    actualizarpagoic3,
+    leerformlegajo
 }
