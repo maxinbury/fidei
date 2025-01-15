@@ -86,6 +86,8 @@ router.post('/determinarPep', upload.single('file'), s3Controller.determinarPep)
 
 router.post("/actualizarpago",  upload.single('file'), s3Controller.actualizarpago)
 
+router.post("/actualizarpagoic3",  upload.single('file'), s3Controller.actualizarpagoic3)
+
 
 
 router.post('/subirlegajo1', isLoggedInn,s3Controller.subirlegajo1);
