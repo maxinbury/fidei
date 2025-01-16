@@ -302,7 +302,34 @@ router.get('/borrarcomprobante/:id', isLoggedInn2, async (req, res) => {
   }
 });
 
+router.get('/borrarcomprobanteic3/:id', isLoggedInn2, async (req, res) => {
+  try {
+    const id = req.params.id;
 
+    // Recuperar el registro de pago desde la base de datos
+    const result = await pool.query('SELECT ubicacion FROM pagos_ic3 WHERE id = ?', [id]);
+    
+    if (result.length > 0) {
+      const ubicacion = result[0].ubicacion;
+
+      // Comprobar si el archivo existe y eliminarlo
+      const filePath = path.join(__dirname, '../documentos/', ubicacion);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+
+      // Actualizar la base de datos para establecer el campo ubicacion en null
+      await pool.query('UPDATE pagos_ic3 SET ubicacion = NULL WHERE id = ?', [id]);
+
+      res.json("Realizado");
+    } else {
+      res.status(404).json({ message: "Pago no encontrado" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
+});
 
 //// borrar un pago
 router.get('/borrarpago/:id', isLoggedInn2, async (req, res) => {
@@ -324,7 +351,23 @@ router.get('/borrarpago/:id', isLoggedInn2, async (req, res) => {
 })
 
 
+router.get('/borrarpagoic3/:id', isLoggedInn2, async (req, res) => {
+  const id = req.params.id
+  pago = await pool.query('select * from pagos_ic3 where id=?', [id])
+  monto = parseFloat(-pago[0]['monto'])
 
+  idcuotas = pago[0]['id_cuota']
+
+  if (pago[0]['estado'] === 'A') {
+
+    await pagodecuota.pagodecuota(idcuotas, monto)
+  }
+
+console.log(id)
+  await pool.query('DELETE FROM pagos_ic3 WHERE id= ?', [id])
+  res.send('enviado')
+
+})
 // LISTA TODAS PENDIENTES PAra React
 //   ver***
 router.get('/borrarusuario/:cuil_cuit', isLoggedInn2, async (req, res) => {
