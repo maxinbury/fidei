@@ -170,8 +170,42 @@ router.get('/clientehabilitado/:cuil_cuit',isLoggedInn2, async (req, res) => {
 
 })
 // MODIDICACION CLIENTES
+///agregar beneficiarios  
 
 
+router.post('/agregarbeneficiarios', async (req, res) => {
+  try {
+      const { id, 
+              beneficiario1, cuilBeneficiario1, porcentaje1,
+              beneficiario2, cuilBeneficiario2, porcentaje2,
+              beneficiario3, cuilBeneficiario3, porcentaje3 } = req.body;
+
+      if (!id) {
+          return res.status(400).json({ error: 'El ID es requerido' });
+      }
+
+
+      const updateBeneficiarios = `
+          UPDATE clientes
+          SET beneficiario1 = ?, cuilbeneficiario1 = ?, porcentaje1 = ?,
+              beneficiario2 = ?, cuilbeneficiario2 = ?, porcentaje2 = ?,
+              beneficiario3 = ?, cuilbeneficiario3 = ?, porcentaje3 = ?,
+              beneficiarios="Si"
+          WHERE id = ?
+      `;
+      await pool.query(updateBeneficiarios, [
+          beneficiario1, cuilBeneficiario1, porcentaje1,
+          beneficiario2, cuilBeneficiario2, porcentaje2,
+          beneficiario3, cuilBeneficiario3, porcentaje3,
+          id
+      ]);
+
+      res.status(200).json({ message: 'Cliente actualizado correctamente' });
+  } catch (error) {
+      console.error('Error al actualizar cliente:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 router.post('/modificarclientelegales',isLoggedInn2, async (req, res) => {
     const { cuil_cuit, email, Nombre, telefono, id } = req.body
     
