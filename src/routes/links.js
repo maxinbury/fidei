@@ -243,7 +243,9 @@ router.post('/modificarcli', isLoggedInn2, async (req, res) => {
       nacionalidad,
       volumenTransaccional,
       tipoClienteEmpresa,
-      antiguedad
+      antiguedad,
+      pep_extranjero,
+      categoria_especial
   } = req.body;
 
   try {
@@ -272,7 +274,9 @@ router.post('/modificarcli', isLoggedInn2, async (req, res) => {
           nacionalidad,
           volumenTransaccional,
           tipoClienteEmpresa,
-          antiguedad
+          antiguedad,
+          pep_extranjero,
+          categoria_especial
       };
 
       // Filtrar solo los campos que tienen valores no nulos o no indefinidos
