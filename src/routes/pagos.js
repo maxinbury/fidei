@@ -505,7 +505,7 @@ router.post("/detallesPagocli", isLoggedInn2, async (req, res) => {
     console.log(id)
     const pagos = await pool.query(`
         SELECT 
-          pagos.*, 
+          pagos_ic3.*, 
           sel.cuo,
           sel.idic3,
           sel.aniooo,
@@ -513,11 +513,11 @@ router.post("/detallesPagocli", isLoggedInn2, async (req, res) => {
      
           CONCAT(SUBSTRING(sel.mes, 6, 2), '-', SUBSTRING(sel.mes, 1, 4)) AS mes_anyo
         FROM 
-          pagos 
+          pagos_ic3 
         JOIN 
           (SELECT id AS idic3, mes, id_cliente AS idcli, cuota as cuo, mes as messs, anio as aniooo FROM cuotas_ic3) AS sel 
         ON 
-          pagos.id_cuota = sel.idic3 
+          pagos_ic3.id_cuota = sel.idic3 
         WHERE 
           idcli = ?
       `, [id]);
