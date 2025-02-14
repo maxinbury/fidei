@@ -170,10 +170,11 @@ const agregarIccGral2 = async (req, res,) => {
     }
 
     //////////////try
-    //console.log(datoss)
+    //
 
-
-    if (zona = 'PIT') {
+    console.log(datoss)
+    if (zona == 'PIT') {
+        console.log('PIT')
         const todasssss = await pool.query("select * from cuotas where mes =? and anio =? and zona =? ", [mes, anio, zona])
 
         for (let i = 0; i < todasssss.length; i++) {
@@ -181,31 +182,41 @@ const agregarIccGral2 = async (req, res,) => {
             await agregaricc.calcularicc(todasssss[i], ICC)
         }
     } else {
-        const todaxi = await pool.query("select * from cuotas_ic3 where mes =? and anio =? and zona =? ", [mes, anio, zona])
-
+       
+        const todaxi = await pool.query("select * from cuotas_ic3 where mes =? and anio =?  ", [mes, anio])
+        ICC = ICC / 100;
+        ICC = parseFloat(ICC.toFixed(3)); // 0.108
+        console.log(ICC);
+        
         for (let indic = 0; indic < todaxi.length; indic++) {
 
 
             try {
-                ICC = ICC / 100
+              //  ICC = ICC / 100
 
                 if (todaxi[indic]['cuota'] > 1) {
 
+            
+                    anteriorr = await pool.query('Select * from cuotas_ic3 where cuota = ? and id_cliente = ?', [todaxi[indic]["cuota"] - 1, todaxi[indic]["id_cliente"]])
+                    base_calculoooo = anteriorr[0]['cuota_con_ajuste']
 
-                    anteriorr = await pool.query('Select * from cuotas_ic3 where nro_cuota = ? and id_cliente = ?', [todaxi[indic]["nro_cuota"] - 1, todaxi[indic]["id_cliente"]])
-                    base_calculoooo = anteriorr[0][cuota_con_ajuste]
 
-
-                    diferencia = - cuota_con_ajuste
+                   // diferencia = - cuota_con_ajuste
+                    //console.log(diferencia)
+                    console.log(ICC)
                     cuotaparaactualizar = {
                         base_calculo: anteriorr[0]['cuota_con_ajuste'],
                         ajuste: anteriorr[0]['cuota_con_ajuste'] * ICC,////ajuste anteiror* /
                         ajuste_icc: ICC,/// 0.4 
-                        cuota_con_ajuste: (anteriorr[0]['cuota_con_ajuste'] * ICC) + anteriorr[0]['cuota_con_ajuste']/// cuota ajustada
+                        cuota_con_ajuste : (parseFloat(anteriorr[0]['cuota_con_ajuste']) * parseFloat(ICC)) + parseFloat(anteriorr[0]['cuota_con_ajuste'])
+
 
 
                     }
-                    await pool.query('UPDATE cuotas set ? WHERE id = ?', [cuotaparaactualizar, todaxi["id"]])
+                 
+                    await pool.query('UPDATE cuotas_ic3 set ? WHERE id = ?', [cuotaparaactualizar, todaxi[indic]["id"]])
+                    
+                
 
                 }
 
