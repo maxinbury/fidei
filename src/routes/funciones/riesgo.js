@@ -135,7 +135,7 @@ async function matriz(cliente) {
         riesgo += riesgoAntiguedad[cliente['antiguedad']]*3;
        // console.log('riesgoAntiguedad', riesgoAntiguedad[cliente['antiguedad']]*3)
     } else {
-        console.warn("Valor de antigüedad no reconocido:", cliente['antiguedad']);
+        //console.warn("Valor de antigüedad no reconocido:", cliente['antiguedad']);
     }
 
      //// volument transaccional juridica

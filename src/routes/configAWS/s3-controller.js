@@ -1396,6 +1396,9 @@ async function pagarnivel2ic3(req, res) {
     etc = await pool.query('select * from extracto')
     nombre = etc[(etc.length) - 1]['ubicacion']
     // const workbook = XLSX.readFile('./src/Excel/'+nombre)
+    try {
+        
+
     const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
@@ -1446,7 +1449,9 @@ async function pagarnivel2ic3(req, res) {
 
     }
 
-    
+} catch (error) {
+        
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -1487,7 +1492,7 @@ async function pagarnivel2ic3(req, res) {
 
         }
 
-
+console.log(`guardadndo`)
         const newLink = {
             id_cuota,
             monto,
@@ -1505,8 +1510,8 @@ async function pagarnivel2ic3(req, res) {
 
         };
 
-        await pool.query('INSERT INTO pagos SET ?', [newLink]);
-
+        await pool.query('INSERT INTO pagos_ic3 SET ?', [newLink]);
+        console.log(`guardado`)
         /////////FIN  GUARDADO DE PAGO
         ///INICIO IMPACTO EN LA CUOTA
         //await pagodecuota.pagodecuota(id, monto)
