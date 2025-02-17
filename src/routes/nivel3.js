@@ -73,6 +73,18 @@ res.json(usuarios)
     }
 
 )
+
+
+router.get('/traerdatosdetarjetas',isLoggedInn3, async (req, res) => {
+
+    const svm = await pool.query(" Select * from salariovital  ")
+
+res.json([svm])
+    
+    }
+
+)
+
 ///historial valor metro cuadrado 
 router.get('/historialvalormetro',isLoggedInn3, async (req, res) => {
 
