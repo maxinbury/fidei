@@ -239,7 +239,7 @@ const estadisticasLegajos = async (req, res) => {
     g = "Dj Iva, "
     h = "Pagos Previsionales, "
     aux = "Dj Datos personales, "
-    j = "Dj CalidadPerso, "
+    j = "Documentacion PEP, "
     k = "Dj Origen de Fondos, "
  t = "Constancia RePET, "
     m = "Referencias comerciales, "
@@ -250,6 +250,7 @@ const estadisticasLegajos = async (req, res) => {
     r = "Constancia RePET, "
 s="Recibo de sueldo"
 u="Constancia CUIL/CUIT"
+v="Acreditacion de ingresos"
 
     aa = 0
     aa2 = 0
@@ -283,6 +284,8 @@ u="Constancia CUIL/CUIT"
     ppp = 0 ///  "Pago Monotributo"
     qqq = 0 ///  "Pago autonomo"
     ttt= 0 /// Constancia RePET
+    vvv=0 ///acreditacion de ingresos
+
 
 
     let acreditacion_i = "No tiene constancias de acreditacion de ingresos"
@@ -319,7 +322,7 @@ u="Constancia CUIL/CUIT"
 
                     case "Constancia RePET":
                         t = ""
-                         t = 1
+                         tt = 1
                         
                          break;
 
@@ -433,9 +436,10 @@ u="Constancia CUIL/CUIT"
                     break;
                 case "Constancia RePET":
                    t = ""
-                    t = 1
+                    tt = 1
                    
                     break;
+
                 case "DDJJ IIBB":
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
@@ -448,6 +452,13 @@ u="Constancia CUIL/CUIT"
                     ll = 1
                     ooo += 1
                     break;
+                    
+                    case "Acreditacion de ingresos":
+                        acreditacion_i = "Cliente tiene como acreditacion de ingresos "
+                        l = ""
+                        ll = 1
+                      vvv += 1
+                        break;
                 case "Pago Monotributo":
                     acreditacion_i = "Cliente tiene como acreditacion de ingresos "
                     l = ""
@@ -470,9 +481,8 @@ u="Constancia CUIL/CUIT"
 
     }
 
-   
     if (razonn == 'Empresa') {
-        console.log(aa, aa2)
+       
         Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k  +t
         porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk + tt)
 
@@ -514,6 +524,7 @@ u="Constancia CUIL/CUIT"
        
         Faltan = 'Aun falta completar ' + a + a2 +u + b + e + aux + j + k  + s + t 
         console.log(Faltan)
+        console.log(aa , aa2,uu , bb , ee,auxaux, jj , kk ,ll, tt)
         porccompleto = (aa + aa2+uu + bb + ee + auxaux + jj + kk + ll+ tt)
 ///a dni  b constancia afil  c estaturo d acta organi   e domicilio auxDj calidad opersia j  Datospers
 // k origen de fondo t repet    ll Pago Monotributo
@@ -526,7 +537,10 @@ u="Constancia CUIL/CUIT"
         ///// ppp = 0 ///  "Pago Monotributo"
         //////  qqq = 0 ///  "Pago autonomo"
         if (acreditacion_i != "No tiene constancias de acreditacion de ingresos") {
-
+            
+            if (vvv != 0) {
+                acreditacion_i = acreditacion_i + " " + vvv + " Acreditacion de ingresos"
+            }
             if (ooo != 0) {
                 acreditacion_i = acreditacion_i + " " + ggg + " Recibo de sueldo"
             }
@@ -555,10 +569,6 @@ u="Constancia CUIL/CUIT"
     let pendientes = 0
     let aprobadas = 0
     let rechazadas = 0
-
-    let uno = 0
-    let dos = 0
-    let tres = 0
 
 
     for (var i = 0; i < legajos.length; i++) {
