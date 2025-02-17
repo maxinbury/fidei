@@ -74,6 +74,17 @@ console.log(query)
     res.sendFile(filePath);
  
 });
+router.get('/traerPdfConstanciadepagoic3/:id',async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+  const query = await pool.query('SELECT * FROM pagos_ic3 WHERE id = ?',[id]);
+console.log(query)
+
+    const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
+    res.sendFile(filePath);
+ 
+});
+
 
 router.get('/traerPdfConstanciadepagoic3/:id',async (req, res) => {
   const { id } = req.params;
