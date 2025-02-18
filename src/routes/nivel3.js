@@ -63,6 +63,26 @@ const nuevo={
 
 })
 
+///nivel 3 smvm
+router.post('/enviardatosnuevosalario', async (req, res,) => {
+    const { valor, fecha } = req.body;
+ 
+
+newInu ={
+    valor,
+     fecha 
+}
+try {
+   await pool.query('INSERT INTO salariovital SET ?', [newInu]);
+   res.json('realizado')
+} catch (error) {
+    console.log(error)
+    res.json('error algo sucedio')
+}
+
+
+})
+
 ////////lista de usuarios
 router.get('/traerusuarios',isLoggedInn3, async (req, res) => {
 
@@ -75,15 +95,31 @@ res.json(usuarios)
 )
 
 
-router.get('/traerdatosdetarjetas',isLoggedInn3, async (req, res) => {
 
-    const svm = await pool.query(" Select * from salariovital  ")
+////menuoruncipal 
+router.get('/traerdatosdetarjetas', isLoggedInn3, async (req, res) => {
+    // Obtener la fecha actual del sistema
+    const fechaActual = new Date();
+    const anio = fechaActual.getFullYear(); // Obtiene el año actual
+    let mes = fechaActual.getMonth() + 1; // Obtiene el mes actual (de 0 a 11, por eso +1)
 
-res.json([svm])
-    
-    }
+    // Convertir a número entero para asegurarnos de eliminar el 0 adelante (ejemplo: 09 -> 9)
+    mes = parseInt(mes, 10);
 
-)
+    // Consulta para el salario vital
+    const svm = await pool.query("SELECT * FROM salariovital ORDER BY id DESC LIMIT 1");
+
+    // Consulta para el ICC con el mes y año actual
+    const icc = await pool.query("SELECT * FROM icc_historial WHERE anio = ? AND mes = ?", [anio, mes]);
+
+    const criterios = await pool.query("SELECT * FROM criterios_riesgo ORDER BY id DESC LIMIT 1")
+    const criteriosData = [{tipo:'Persona Riesgo bajo','valor':criterios[0].bajopersona},{tipo:'Persona Riesgo medio','valor':criterios[0].mediopersona},{tipo:'Persona Riesgo alto','valor':criterios[0].altopersona},{tipo:'Empresa Riesgo bajo','valor':criterios[0].bajoempresa},{tipo:'Empresa Riesgo medio','valor':criterios[0].medioempresa},{tipo:'Empresa Riesgo alto','valor':criterios[0].altoempresa} ]
+
+
+    // Responder con ambos resultados
+    res.json([svm, icc,criteriosData]);
+});
+
 
 ///historial valor metro cuadrado 
 router.get('/historialvalormetro',isLoggedInn3, async (req, res) => {
