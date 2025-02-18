@@ -117,7 +117,7 @@ router.get('/traerdatosdetarjetas', isLoggedInn3, async (req, res) => {
 
 
     // Responder con ambos resultados
-    res.json([svm, icc,criteriosData]);
+    res.json([svm, icc,criteriosData]); 
 });
 
 
