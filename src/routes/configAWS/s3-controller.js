@@ -10,7 +10,7 @@ const ponerguion = require('../../public/apps/transformarcuit')
 const sacarguion = require('../../public/apps/transformarcuit')
 const pagodecuota = require('../funciones/pagoDeCuota')
 const enviodemail = require('../Emails/Enviodemail')
-
+const traerriesgo =  require('../funciones/riesgo')
 
 
 
@@ -1276,6 +1276,71 @@ async function pagonivel2(req, res) {
         let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
         console.log(cliente)
         ///////////////////CONSIDERAR PEP
+
+    const criterios = await pool.query("SELECT * FROM criterios_riesgo ORDER BY id DESC LIMIT 1")
+const porcentaje = await traerriesgo.matriz(cliente);
+    const svm = await pool.query("SELECT * FROM salariovital ORDER BY id DESC LIMIT 1");
+    montomax = 0
+    if(porcentaje<59){
+        console.log('bajo')
+
+        if(cliente[0].razon=="Empresa"){
+            console.log("Empresa")
+            montomax = svm[0]['valor'] *criterios[0]['bajoempresa']
+            console.log(montomax)
+
+        }else{
+            console.log("Persona")
+            montomax = svm[0]['valor'] *criterios[0]['bajopersona']
+            console.log(montomax)
+        }
+
+
+
+    }else{
+        if(porcentaje<71){
+            console.log('medio')
+
+            if(cliente[0].razon=="Empresa"){
+                console.log("Empresa")
+                montomax = svm[0]['valor'] *criterios[0]['medioempresa']
+                console.log(montomax)
+
+
+            }else{
+                console.log("Persona")
+                montomax = svm[0]['valor'] *criterios[0]['mediopersona']
+                console.log(montomax)
+            }
+    
+
+
+        }else{
+            console.log('alto')
+            if(cliente[0].razon=="Empresa"){
+                console.log("Empresa")
+                montomax = svm[0]['valor'] *criterios[0]['altoempresa']
+                console.log(montomax)
+
+            }else{
+                console.log("Persona")
+                montomax = svm[0]['valor'] *criterios[0]['altopersona']
+                console.log(montomax)
+            }
+    
+
+        }
+    }
+
+/*
+
+1
+59
+71
+
+*/ 
+
+       /*  
         let variante = 0.3
         
         if (cliente[0]['expuesta'] == "SI") {
@@ -1285,7 +1350,9 @@ async function pagonivel2(req, res) {
         montomax = cliente[0]['ingresos'] * variante
         console.log('montomax',montomax)
         console.log('monto',monto)
-        console.log(montomax)
+        console.log(montomax) */
+
+
          id_cuota = id
         if (montomax < monto) {
 

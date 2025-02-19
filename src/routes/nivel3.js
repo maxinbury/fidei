@@ -113,7 +113,7 @@ router.get('/traerdatosdetarjetas', isLoggedInn3, async (req, res) => {
     const icc = await pool.query("SELECT * FROM icc_historial WHERE anio = ? AND mes = ?", [anio, mes]);
 
     const criterios = await pool.query("SELECT * FROM criterios_riesgo ORDER BY id DESC LIMIT 1")
-    console.log(criterios)
+
     const criteriosData = [{tipo:'Persona Riesgo bajo','valor':criterios[0].bajopersona},{tipo:'Persona Riesgo medio','valor':criterios[0].mediopersona},{tipo:'Persona Riesgo alto','valor':criterios[0].altopersona},{tipo:'Empresa Riesgo bajo','valor':criterios[0].bajoempresa},{tipo:'Empresa Riesgo medio','valor':criterios[0].medioempresa},{tipo:'Empresa Riesgo alto','valor':criterios[0].altoempresa} ]
 
 

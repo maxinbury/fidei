@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const s3Controller = require('../configAWS/s3-controller');
 const path = require('path')
 const fs = require('fs');
-
+const {correo} =require (('../../keys'))
 
 
 async function enviarmail (email,asunto,encabezado,mensaje) {
@@ -25,7 +25,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
       // send mail with defined transport object
       let info = await transporter.sendMail({
         from: '"Administracion Fideicomiso Santa Catalina" <fideicomisoSCatalina@outlook.com>', // direccion de envio 
-        to: ["elotroyo005@gmail.com","pipao.pipo@gmail.com",email], // list of receivers
+        to: ["pipao.pipo@gmail.com",email], // list of receivers
         subject: asunto, // Subject line
         attachments: [
           {   // use URL as an attachment
@@ -61,7 +61,7 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
 
   async function enviarmailsospechoso(email, asunto, encabezado, mensaje, ubicacion) {
     try {
-        let transporter = nodemailer.createTransport({
+    /*     let transporter = nodemailer.createTransport({
             host: "smtp-mail.outlook.com", // hostname
             port: 587, // port for secure SMTP
             secureConnection: false,
@@ -72,8 +72,14 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
                 user: 'fideicomisoSCatalina@outlook.com',
                 pass: '1385Fideicomiso'
             }
+        }); */
+        const transporter = nodemailer.createTransport({
+          service: 'gmail', // O el servicio de correo que utilices
+          auth: {
+            user: correo.mail, // Reemplaza con tu correo
+            pass: correo.token // Reemplaza con tu contraseña
+          }
         });
-
         // Ruta completa del archivo PDF
         const filePath = path.join(__dirname, '../../documentos', ubicacion);
 
