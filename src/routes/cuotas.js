@@ -172,6 +172,7 @@ console.log('ok')
     
                     let nuevo = {
                         id: cuota.id,
+                        id_cliente: cuota.id_cliente,
                         mes: cuota.mes,
                         anio: cuota.anio,
                         pago: total_pago,

@@ -715,7 +715,7 @@ const lotefuncion2 = async (req, res) => {
                 }
 
             } catch (error) {
-             //   console.log(error)
+             console.log(error)
                 pag = 0
             }
 
@@ -728,15 +728,34 @@ const lotefuncion2 = async (req, res) => {
             Saldo_real = parseFloat(cuotas[0]['saldo_inicial']) - pag
 
                 cuota_con_ajuste = parseFloat(Amortizacion)
+          
+
+            ///////ACTUALIZACION
+    /*    */     if(cuotas[0].cuil_cuit  == "27-04990966-2" || cuotas[0].cuil_cuit  == "30-71004175-6"){
+                  try {  console.log('es')
+                let iccmientras =  await pool.query('SELECT * FROM icc_historial WHERE mes =  ? and anio=? and zona="PIT"', [cuotas[0]['mes'],cuotas[0]['anio']])
+                Ajuste_ICC = (Amortizacion * parseFloat(iccmientras[0]['ICC']*0.01))
+                console.log(Ajuste_ICC)
+                //////////////
+            
+                    cuota_con_ajuste += (Amortizacion * parseFloat(iccmientras[0]['ICC']*0.01))
+                    console.log(cuota_con_ajuste)
+                } catch (error) {
+                    console.log(error)
+                }
+               
+             
+               
+            }
             nuev = {
                 id: cuotas[0]['id'],
                 saldo_inicial: cuotas[0]['saldo_inicial'],
                 mes: cuotas[0]['mes'],
                 anio: cuotas[0]['anio'],
-                Amortizacion: (Amortizacion).toFixed(2),
+                Amortizacion,
                 ICC: cuotas[0]['ICC'],
                 Ajuste_ICC: cuotas[0]['Ajuste_ICC'],
-                cuota_con_ajuste: (Amortizacion).toFixed(2),
+                cuota_con_ajuste,
                 pago: pago[0]['SUM(monto)'],
                 Saldo_real: Saldo_real,
                 saldo_cierre: saldo_cierre.toFixed(2),
@@ -744,8 +763,6 @@ const lotefuncion2 = async (req, res) => {
                 diferencia: -(Amortizacion).toFixed(2) + pag,
 
             }
-
-            ///////ACTUALIZACION
             let nuevAct = {
 
                 saldo_inicial: cuotas[0]['saldo_inicial'],
@@ -766,7 +783,11 @@ const lotefuncion2 = async (req, res) => {
             await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct, cuotas[0]['id']])
             ////
             cuotasss.push(nuev)
+            ////// esto si comienza de 0 o no a aplicr el icc  30-71004175-6 promacon  
+           // let iniciosies = cuotas[0].cuil_cuit  == "27-04990966-2" || "30-71004175-6"  ? 0 : 1;
+            //let finalsies = condicion ? 0 : 1;
             for (i = 1; i < cuotas.length; i++) {
+                console.log('entra')
                 if (cuotas[i]['parcialidad'] === 'Final') {/////////////////////////////////recorrrido
 
                     Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
@@ -784,7 +805,7 @@ const lotefuncion2 = async (req, res) => {
                         }
 
                     } catch (error) {
-                      //  console.log(error)
+                        console.log(error)
                         pag = 0
                     }
 
