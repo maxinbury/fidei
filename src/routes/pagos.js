@@ -669,7 +669,6 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
     const cuil_cuit = auxi[0]['cuil_cuit'];
 
-    let proceso;
     switch (tipo) {
         case 'Inusual':
             proceso = 'Inusual';
@@ -716,7 +715,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
         return res.status(500).send('Error updating data');
     }
 
-    res.send('Todo en orden');
+    res.json('Clasificado');
 });
 
 

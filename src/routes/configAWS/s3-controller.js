@@ -1187,7 +1187,6 @@ async function pagonivel2(req, res) {
     monto = pago
 
     cbupago = cbu
-    console.log(cbupago)
     if (cbupago=="undefined"){
         cbupago=0
     }
@@ -1216,10 +1215,12 @@ async function pagonivel2(req, res) {
         ///INICIO comparacion
 
 
-    etc = await pool.query('select * from extracto')
-    nombre = etc[(etc.length) - 1]['ubicacion']
+        etc = await pool.query('select * from extracto')
+        nombre = etc[(etc.length) - 1]['ubicacion']
     // const workbook = XLSX.readFile('./src/Excel/'+nombre)
+    console.log(nombre)
     const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
+    console.log('si lee')
     const workbooksheets = workbook.SheetNames
     const sheet = workbooksheets[0]
 
@@ -1264,7 +1265,7 @@ async function pagonivel2(req, res) {
         }
 
       } catch (error) {
-        console.log(error)
+       // console.log(error)
       }
 
     }
@@ -1274,63 +1275,10 @@ async function pagonivel2(req, res) {
 /////////////////////////////////////////////////////////////////////////////////
 
         let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
-        console.log(cliente)
+    
         ///////////////////CONSIDERAR PEP
-
-    const criterios = await pool.query("SELECT * FROM criterios_riesgo ORDER BY id DESC LIMIT 1")
-const porcentaje = await traerriesgo.matriz(cliente);
-    const svm = await pool.query("SELECT * FROM salariovital ORDER BY id DESC LIMIT 1");
-    montomax = 0
-    if(porcentaje<59){
-        console.log('bajo')
-
-        if(cliente[0].razon=="Empresa"){
-            console.log("Empresa")
-            montomax = svm[0]['valor'] *criterios[0]['bajoempresa']
-            console.log(montomax)
-
-        }else{
-            console.log("Persona")
-            montomax = svm[0]['valor'] *criterios[0]['bajopersona']
-            console.log(montomax)
-        }
-
-
-
-    }else{
-        if(porcentaje<71){
-            console.log('medio')
-
-            if(cliente[0].razon=="Empresa"){
-                console.log("Empresa")
-                montomax = svm[0]['valor'] *criterios[0]['medioempresa']
-                console.log(montomax)
-
-
-            }else{
-                console.log("Persona")
-                montomax = svm[0]['valor'] *criterios[0]['mediopersona']
-                console.log(montomax)
-            }
-    
-
-
-        }else{
-            console.log('alto')
-            if(cliente[0].razon=="Empresa"){
-                console.log("Empresa")
-                montomax = svm[0]['valor'] *criterios[0]['altoempresa']
-                console.log(montomax)
-
-            }else{
-                console.log("Persona")
-                montomax = svm[0]['valor'] *criterios[0]['altopersona']
-                console.log(montomax)
-            }
-    
-
-        }
-    }
+montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
+console.log('montomax en s3 ',montomaximodelicliente)
 
 /*
 
@@ -1525,16 +1473,8 @@ async function pagarnivel2ic3(req, res) {
         let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
         console.log(cliente)
         ///////////////////CONSIDERAR PEP
-        let variante = 0.3
-        
-        if (cliente[0]['expuesta'] == "SI") {
-            console.log('expuesta')
-            variante = 0.2
-        }
-        montomax = cliente[0]['ingresos'] * variante
-        console.log('montomax',montomax)
-        console.log('monto',monto)
-        console.log(montomax)
+        montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
+
          id_cuota = id
         if (montomax < monto) {
 
@@ -1551,10 +1491,12 @@ async function pagarnivel2ic3(req, res) {
                 anio,
                 proceso: "averificarnivel3",
                 cuil_cuit_administrador,
+                zona:"IC3",
                 ubicacion: filename,///////////aca ver el problema
                 fecha
 
             };
+            console.log(newLink2)
             await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
 
         }
@@ -1573,6 +1515,7 @@ console.log(`guardadndo`)
             monto_distinto,
             monto_inusual,
             id_cbu:cbupago,
+          
             ubicacion: filename,///////////aca ver el problema
 
         };

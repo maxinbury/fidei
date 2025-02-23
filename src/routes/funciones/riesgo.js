@@ -59,17 +59,19 @@ const riesgoAntiguedad = {
 
 // Función principal: matriz de riesgo
 async function matriz(cliente) {
+console.log('cliente a analzar en la matix',cliente)
     let riesgo = 0;
     if (cliente['pep_extranjero'] === 'Si' || cliente['categoria_especial'] === 'Si') {
        // console.log('Cliente con riesgo alto (PEP o categoría especial)');
         riesgo=100
         return riesgo; // Devuelve un riesgo de 100
     }
-    if (cliente['razon'] === 'Persona') {
+    console.log(cliente['razon'])
+    if (cliente['razon'] == 'Persona') {
         // Persona Física
-
+ console.log(cliente['razon'])
         // Tipo de cliente
-        if (cliente['tipoCliente'] === 'Persona Humana con Actividad Comercial') {
+        if (cliente['tipoCliente'] == 'Persona Humana con Actividad Comercial') {
             riesgo += 6;
            // console.log('Persona Humana con actividad',6)
         } else {
@@ -79,7 +81,8 @@ async function matriz(cliente) {
 
         // Edad del cliente
         const edad = calcularEdad(cliente['fechaNacimiento']);
-       // console.log('edad',edad)
+       // 
+       console.log('edad',edad)
         if (edad >= 18 && edad <= 25) {
             riesgo += 6;
            // console.log('riesgo edad',6)
@@ -219,9 +222,72 @@ async function matriz(cliente) {
         }
        
   
-
+console.log('el riesgo es ',riesgo)
 
     return riesgo;
 }
 
-module.exports = { matriz };
+
+async function montomaximodelicliente(cliente) {
+
+    const criterios = await pool.query("SELECT * FROM criterios_riesgo ORDER BY id DESC LIMIT 1")
+const porcentaje = await matriz(cliente);
+console.log('porcentajeen funcion riesgo',porcentaje)
+    const svm = await pool.query("SELECT * FROM salariovital ORDER BY id DESC LIMIT 1");
+    montomax = 0
+    if(porcentaje<59){
+        
+        console.log('bajo')
+
+        if(cliente.razon=="Empresa"){
+            console.log("Empresa")
+            montomax = svm[0]['valor'] *criterios[0]['bajoempresa']
+            console.log(montomax)
+
+        }else{
+            console.log("Persona")
+            montomax = svm[0]['valor'] *criterios[0]['bajopersona']
+            console.log(montomax)
+        }
+
+
+
+    }else{
+        if(porcentaje<71){
+            console.log('medio')
+
+            if(cliente.razon=="Empresa"){
+                console.log("Empresa")
+                montomax = svm[0]['valor'] *criterios[0]['medioempresa']
+                console.log(montomax)
+
+
+            }else{
+                console.log("Persona")
+                montomax = svm[0]['valor'] *criterios[0]['mediopersona']
+                console.log(montomax)
+            }
+    
+
+
+        }else{
+            console.log('alto')
+            if(cliente.razon=="Empresa"){
+                console.log("Empresa")
+                montomax = svm[0]['valor'] *criterios[0]['altoempresa']
+                console.log(montomax)
+
+            }else{
+                console.log("Persona")
+                montomax = svm[0]['valor'] *criterios[0]['altopersona']
+                console.log(montomax)
+            }
+    
+
+        }
+    }
+    return montomax
+}
+
+
+module.exports = { matriz,montomaximodelicliente };
