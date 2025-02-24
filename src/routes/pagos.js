@@ -554,7 +554,7 @@ router.get("/listainusual", isLoggedInn2, async (req, res) => {
     const pagos2 = await pool.query('select * from historial_pagosi left join(select id as idp,id_cuota as idcuota, mes as mesc, anio as  anioc from pagos_ic3) as sel on historial_pagosi.id_pago=sel.idp   left join(select id as idc,id_cliente as id_clientec from cuotas_ic3) as sel2 on sel.idcuota=sel2.idc left join (select id as idcli, cuil_cuit as cuil_cuitc ,Nombre from clientes ) as sel3 on sel2.id_clientec=sel3.idcli  where proceso ="averificarnivel3" and zona="IC3" ')
 
     const pagosUnidos = [...pagos1, ...pagos2];
-    console.log(pagosUnidos)
+ 
     res.json(pagosUnidos)
 })
 
