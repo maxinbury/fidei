@@ -703,8 +703,14 @@ const lotefuncion2 = async (req, res) => {
         if (cuotas.length > 0) {
             /////////////////
             cuotasss = []
+        
             Amortizacion = parseFloat(cuotas[0]['saldo_inicial']) / cuotas.length
             AmortizacionReal = Amortizacion
+
+            if(lot[0]['cuil_cuit']=='20-22486722-1'){////canavesio
+                Amortizacion== 141817.75
+            }
+
             pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[0]['id']])
             try {
                 if (pago[0]['SUM(monto)'] === null) {

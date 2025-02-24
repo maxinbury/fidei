@@ -1302,28 +1302,7 @@ console.log('montomax en s3 ',montomaximodelicliente)
 
 
          id_cuota = id
-        if (montomax < monto) {
-
-            monto_inusual = 'Si'
-        }
-        if (monto_inusual == 'Si') {
-
-            const newLink2 = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                estado: estado,
-                anio,
-                proceso: "averificarnivel3",
-                cuil_cuit_administrador,
-                ubicacion: filename,///////////aca ver el problema
-                fecha
-
-            };
-            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
-
-        }
+        
 
 
         const newLink = {
@@ -1343,8 +1322,32 @@ console.log('montomax en s3 ',montomaximodelicliente)
 
         };
 
-        await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        console.log(result.insertId);
+        if (montomax < monto) {
 
+            monto_inusual = 'Si'
+        }
+        if (monto_inusual == 'Si') {
+
+            const newLink2 = {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                mes,
+                id_pago:result.insertId,
+                estado: estado,
+                anio,
+                zona:"Otra",
+                proceso: "averificarnivel3",
+                cuil_cuit_administrador,
+                ubicacion: filename,///////////aca ver el problema
+                fecha
+
+            };
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+        }
         /////////FIN  GUARDADO DE PAGO
         ///INICIO IMPACTO EN LA CUOTA
         //await pagodecuota.pagodecuota(id, monto)
@@ -1476,30 +1479,7 @@ async function pagarnivel2ic3(req, res) {
         montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
 
          id_cuota = id
-        if (montomax < monto) {
 
-            monto_inusual = 'Si'
-        }
-        if (monto_inusual == 'Si') {
-
-            const newLink2 = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                estado: estado,
-                anio,
-                proceso: "averificarnivel3",
-                cuil_cuit_administrador,
-                zona:"IC3",
-                ubicacion: filename,///////////aca ver el problema
-                fecha
-
-            };
-            console.log(newLink2)
-            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
-
-        }
 
 console.log(`guardadndo`)
         const newLink = {
@@ -1520,8 +1500,35 @@ console.log(`guardadndo`)
 
         };
 
-        await pool.query('INSERT INTO pagos_ic3 SET ?', [newLink]);
-        console.log(`guardado`)
+        const result = await pool.query('INSERT INTO pagos_ic3 SET ?', [newLink]);
+        console.log(result.insertId);
+
+        if (montomax < monto) {
+
+            monto_inusual = 'Si'
+        }
+        if (monto_inusual == 'Si') {
+
+            const newLink2 = {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                mes,
+                id_pago:result.insertId,
+                estado: estado,
+                anio,
+                proceso: "averificarnivel3",
+                cuil_cuit_administrador,
+                zona:"IC3",
+                ubicacion: filename,///////////aca ver el problema
+                fecha
+
+            };
+            console.log(newLink2)
+            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+        }
+
         /////////FIN  GUARDADO DE PAGO
         ///INICIO IMPACTO EN LA CUOTA
         //await pagodecuota.pagodecuota(id, monto)

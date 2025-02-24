@@ -550,9 +550,12 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos = await pool.query('select * from historial_pagosi left join (select cuil_cuit as cuil, nombre, ingresos from clientes) as sel  on historial_pagosi.cuil_cuit = sel.cuil where proceso ="averificarnivel3" ')
+    const pagos1 = await pool.query('select * from historial_pagosi left join(select id as idp,id_cuota as idcuota, mes as mesc, anio as anioc from pagos) as sel on historial_pagosi.id_pago=sel.idp left join(select id as idc,cuil_cuit as cuil_cuitc from cuotas) as sel2 on sel.idcuota=sel2.idc   left join (select id as idcli, cuil_cuit as cuil_cuitcl, Nombre  from clientes ) as sel3 on sel2.cuil_cuitc=sel3.cuil_cuitcl    where proceso ="averificarnivel3" and (zona IS NULL OR zona != "IC3") ')
+    const pagos2 = await pool.query('select * from historial_pagosi left join(select id as idp,id_cuota as idcuota, mes as mesc, anio as  anioc from pagos_ic3) as sel on historial_pagosi.id_pago=sel.idp   left join(select id as idc,id_cliente as id_clientec from cuotas_ic3) as sel2 on sel.idcuota=sel2.idc left join (select id as idcli, cuil_cuit as cuil_cuitc ,Nombre from clientes ) as sel3 on sel2.id_clientec=sel3.idcli  where proceso ="averificarnivel3" and zona="IC3" ')
 
-    res.json(pagos)
+    const pagosUnidos = [...pagos1, ...pagos2];
+    console.log(pagosUnidos)
+    res.json(pagosUnidos)
 })
 
 //react pendientes
