@@ -702,7 +702,7 @@ router.post("/rechazararpagoniv3", isLoggedInn2, async (req, res) => {
 
             const descargaraqui = `<a href="${ubicacion}" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; border-radius: 5px;">Descargar aquí el comprobante</a>`;
 
-            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, descargaraqui);
+            enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, ubicacion);
             break;
     }
 
