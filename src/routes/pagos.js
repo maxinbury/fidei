@@ -575,17 +575,64 @@ router.get('/pendientess', isLoggedInn2, async (req, res) => {
 
 
 ///// inusuales mensuales react
-router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
-    const { mes, anio } = req.body
-   
-    const pagos = await pool.query('select * from historial_pagosi join (select cuil_cuit as cuil, Nombre,ingresos from clientes ) as  sel on historial_pagosi.cuil_cuit=sel.cuil where mes=? and anio=?', [mes, anio])
-   
-    if (pagos.length > 0) {
-        res.json(pagos)
-    } else { res.json([]) }
+router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => { 
+    let { mes, anio } = req.body;
+    
+    // Convertimos el mes a dos dígitos (si viene sin el cero adelante)
+    const mesConCero = mes < 10 ? `0${mes}` : `${mes}`;
+
+    try {
+        const pagos1 = await pool.query(`
+            SELECT * FROM historial_pagosi 
+             JOIN (
+                SELECT id AS idp, id_cuota AS idcuota, SUBSTRING(fecha, 6, 2) AS mesc, SUBSTRING(fecha, 1, 4) AS anioc 
+                FROM pagos
+            ) AS sel ON historial_pagosi.id_pago = sel.idp 
+             JOIN (
+                SELECT id AS idc, cuil_cuit AS cuil_cuitc 
+                FROM cuotas
+            ) AS sel2 ON sel.idcuota = sel2.idc   
+             JOIN (
+                SELECT id AS idcli, cuil_cuit AS cuil_cuitcl, Nombre  
+                FROM clientes 
+            ) AS sel3 ON sel2.cuil_cuitc = sel3.cuil_cuitcl    
+ 
+            AND (zona IS NULL OR zona != "IC3")
+            AND sel.anioc = ? 
+            AND sel.mesc = ?
+        `, [anio, mesConCero]);
+
+        const pagos2 = await pool.query(`
+            SELECT * FROM historial_pagosi 
+             JOIN (
+                SELECT id AS idp, id_cuota AS idcuota, SUBSTRING(fecha, 6, 2) AS mesc, SUBSTRING(fecha, 1, 4) AS anioc 
+                FROM pagos_ic3
+            ) AS sel ON historial_pagosi.id_pago = sel.idp   
+             JOIN (
+                SELECT id AS idc, id_cliente AS id_clientec 
+                FROM cuotas_ic3
+            ) AS sel2 ON sel.idcuota = sel2.idc 
+             JOIN (
+                SELECT id AS idcli, cuil_cuit AS cuil_cuitc, Nombre 
+                FROM clientes
+            ) AS sel3 ON sel2.id_clientec = sel3.idcli  
+           
+            AND zona = "IC3"
+            AND sel.anioc = ? 
+            AND sel.mesc = ?
+        `, [anio, mesConCero]);
+
+        const pagosUnidos = [...pagos1, ...pagos2];
+console.log(pagos1)
+console.log(anio, mesConCero)
+        res.json(pagosUnidos);
+    } catch (error) {
+        console.error("Error en la consulta:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
+    }
+});
 
 
-})
 
 ////////rechazar 
 router.post("/rechazarr", isLoggedInn2, async (req, res) => {
