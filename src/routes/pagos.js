@@ -585,7 +585,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
         const pagos1 = await pool.query(`
             SELECT * FROM historial_pagosi 
              JOIN (
-                SELECT id AS idp, id_cuota AS idcuota, SUBSTRING(fecha, 6, 2) AS mesc, SUBSTRING(fecha, 1, 4) AS anioc 
+                SELECT id AS idp,cuil_cuit_administrador, id_cuota AS idcuota, SUBSTRING(fecha, 6, 2) AS mesc, SUBSTRING(fecha, 1, 4) AS anioc 
                 FROM pagos
             ) AS sel ON historial_pagosi.id_pago = sel.idp 
              JOIN (
@@ -595,8 +595,14 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
              JOIN (
                 SELECT id AS idcli, cuil_cuit AS cuil_cuitcl, Nombre  
                 FROM clientes 
-            ) AS sel3 ON sel2.cuil_cuitc = sel3.cuil_cuitcl    
- 
+            ) AS sel3 ON sel2.cuil_cuitc = sel3.cuil_cuitcl  
+
+   JOIN (
+                SELECT cuil_cuit AS cuil_cuitadmin, nombre as nombreadmin
+                FROM users 
+            ) AS sel4 ON sel.cuil_cuit_administrador = sel4.cuil_cuitadmin    
+
+
             AND (zona IS NULL OR zona != "IC3")
             AND sel.anioc = ? 
             AND sel.mesc = ?
@@ -605,7 +611,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
         const pagos2 = await pool.query(`
             SELECT * FROM historial_pagosi 
              JOIN (
-                SELECT id AS idp, id_cuota AS idcuota, SUBSTRING(fecha, 6, 2) AS mesc, SUBSTRING(fecha, 1, 4) AS anioc 
+                SELECT id AS idp, cuil_cuit_administrador,id_cuota AS idcuota, SUBSTRING(fecha, 6, 2) AS mesc, SUBSTRING(fecha, 1, 4) AS anioc 
                 FROM pagos_ic3
             ) AS sel ON historial_pagosi.id_pago = sel.idp   
              JOIN (
@@ -616,15 +622,18 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
                 SELECT id AS idcli, cuil_cuit AS cuil_cuitc, Nombre 
                 FROM clientes
             ) AS sel3 ON sel2.id_clientec = sel3.idcli  
-           
+            JOIN (
+                SELECT cuil_cuit AS cuil_cuitadmin, nombre as nombreadmin 
+                FROM users 
+            ) AS sel4 ON sel.cuil_cuit_administrador = sel4.cuil_cuitadmin    
             AND zona = "IC3"
             AND sel.anioc = ? 
             AND sel.mesc = ?
         `, [anio, mesConCero]);
 
         const pagosUnidos = [...pagos1, ...pagos2];
-console.log(pagos1)
-console.log(anio, mesConCero)
+console.log(pagosUnidos)
+
         res.json(pagosUnidos);
     } catch (error) {
         console.error("Error en la consulta:", error);

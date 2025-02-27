@@ -1219,57 +1219,62 @@ async function pagonivel2(req, res) {
         nombre = etc[(etc.length) - 1]['ubicacion']
     // const workbook = XLSX.readFile('./src/Excel/'+nombre)
     console.log(nombre)
-    const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
-    console.log('si lee')
-    const workbooksheets = workbook.SheetNames
-    const sheet = workbooksheets[0]
-
-    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-    //console.log(dataExcel)
-
-    let regex = /(\d+)/g;
-    let mandar = []
-    for (const property in dataExcel) {
-      /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
-           estado = 'A'
-           // tipo de pago normal 
-       } */
-
-      try {
-
-
-
-        descripcion = (dataExcel[property]['Descripción']).match(regex)
-        fecha = dataExcel[property]['']
-        referencia = dataExcel[property]['Referencia']
-        debitos = dataExcel[property]['Débitos']
-        creditos = dataExcel[property]['Créditos']
-        cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
-        if (monto.includes(',')) {
-            // Replace comma with a dot
-             monto.replace(',', '.');
+    try {
+        const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
+        console.log('si lee')
+        const workbooksheets = workbook.SheetNames
+        const sheet = workbooksheets[0]
+    
+        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+        //console.log(dataExcel)
+    
+        let regex = /(\d+)/g;
+        let mandar = []
+        for (const property in dataExcel) {
+          /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+               estado = 'A'
+               // tipo de pago normal 
+           } */
+       monto_distinto = 'Si'
+          try {
+    
+    
+    
+            descripcion = (dataExcel[property]['Descripción']).match(regex)
+            fecha = dataExcel[property]['']
+            referencia = dataExcel[property]['Referencia']
+            debitos = dataExcel[property]['Débitos']
+            creditos = dataExcel[property]['Créditos']
+            cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+            if (monto.includes(',')) {
+                // Replace comma with a dot
+                 monto.replace(',', '.');
+            }
+            if(cleanedString == monto){
+                 monto_distinto = 'No'
+                mensaje=dataExcel[property]['Descripción']
+                console.log('encontrado',dataExcel[property]['Descripción'])
+            }
+            nuevo = {
+              fecha,
+              descripcion,
+              referencia,
+              debitos,
+              cleanedString,
+    
+    
+            }
+    
+          } catch (error) {
+          console.log(error)
+          }
+    
         }
-        if(cleanedString == monto){
-             monto_distinto = 'No'
-            mensaje=dataExcel[property]['Descripción']
-            console.log('encontrado',dataExcel[property]['Descripción'])
-        }
-        nuevo = {
-          fecha,
-          descripcion,
-          referencia,
-          debitos,
-          cleanedString,
-
-
-        }
-
-      } catch (error) {
-       // console.log(error)
-      }
-
+    
+    } catch (error) {
+        
     }
-
+   
     
 
 /////////////////////////////////////////////////////////////////////////////////
