@@ -632,7 +632,7 @@ router.post("/mensualesinusuales", isLoggedInn3, async (req, res) => {
         `, [anio, mesConCero]);
 
         const pagosUnidos = [...pagos1, ...pagos2];
-console.log(pagosUnidos)
+
 
         res.json(pagosUnidos);
     } catch (error) {

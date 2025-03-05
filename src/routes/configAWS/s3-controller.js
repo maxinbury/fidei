@@ -1178,7 +1178,8 @@ async function pagarrapidoic3(req, res) {
 /////////////////////pagar nivel 2 directamente aprobado 
 async function pagonivel2(req, res) {
     let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
-    const filename = req.file.filename;
+    const filename = req.file ? req.file.filename : 'sin comprobante';
+
     console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
 
   
