@@ -26,7 +26,7 @@ const cuotasdeunlote = async (req, res) => {
 const borrarpago = async (req, res) => {
     const { id_cuota } = req.body;
     try {
-       
+
         const cuota = await pool.query(`select * from cuotas where id =?`, [id_cuota])
 
         const newLink = {
@@ -38,7 +38,7 @@ const borrarpago = async (req, res) => {
         await pool.query('DELETE FROM pagos WHERE id_cuota = ?', [id_cuota])
         res.json('Realizado')
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
         res.json('No realizado')
     }
 
@@ -212,7 +212,7 @@ const postaddaut2 = async (req, res) => {
                     }
 
                 } catch (error) {
-                   // console.log(error)
+                    // console.log(error)
                     res.send([cuil_cuit, 'Error, algo sucedio'])
                 }
 
@@ -245,7 +245,7 @@ const postaddaut2 = async (req, res) => {
 
 
             else {
-            //    console.log(error)
+                //    console.log(error)
                 res.send([cuil_cuit, 'Error, algo sucedio'])
 
             }
@@ -257,7 +257,7 @@ const postaddaut2 = async (req, res) => {
 
 
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
         res.send([cuil_cuit, 'Erro, algo sucedio'])
 
     }
@@ -274,7 +274,7 @@ const addautvarias = async (req, res) => {
     let { cant, porcentaje, cantidad_cuotas, mes, anio, zona, manzana, fraccion, lote, parcela, seleccion } = req.body;
 
     monto_total = 0
-  
+
 
     const lot = await pool.query('SELECT * from lotes where id= ?', [seleccion[0][0]])
     cuil_cuit = lot[0]['cuil_cuit']
@@ -324,7 +324,7 @@ const addautvarias = async (req, res) => {
 
     porcentaje = porcentaje / 100
     anticipo = monto_total * porcentaje
-  
+
     monto_total = monto_total * (1 - porcentaje)
     anticipolote = {
         anticipo
@@ -413,7 +413,7 @@ const addautvarias = async (req, res) => {
             }
 
         } catch (error) {
-          //  console.log(error)
+            //  console.log(error)
             rtaa = 'Error, algo sucedio'
             res.send([cuil_cuit, rtaa])
         }
@@ -508,7 +508,7 @@ const vercuotas2 = async (req, res) => {
                 }
 
             } catch (error) {
-               // console.log(error)
+                // console.log(error)
                 pag = 0
             }
 
@@ -577,7 +577,7 @@ const vercuotas2 = async (req, res) => {
                         }
 
                     } catch (error) {
-                     //   console.log(error)
+                        //   console.log(error)
                         pag = 0
                     }
 
@@ -692,40 +692,40 @@ const lotefuncion2 = async (req, res) => {
 
 
         let cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
-///////////ver si innecesario     
+        ///////////ver si innecesario     
         if (cuotas.length === 0) {
-         
+
             cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['idcuotas']])
-      
+
         }
 
 
         if (cuotas.length > 0) {
             /////////////////
             cuotasss = []
-        
+
             Amortizacion = parseFloat(cuotas[0]['saldo_inicial']) / cuotas.length
             AmortizacionReal = Amortizacion
 
-            if(lot[0]['cuil_cuit']=='20-22486722-1'){////canavesio
-                Amortizacion== 141817.75
+            if (lot[0]['cuil_cuit'] == '20-22486722-1') {////canavesio
+                Amortizacion == 141817.75
             }
 
             pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[0]['id']])
             try {
                 if (pago[0]['SUM(monto)'] === null) {
-                    
+
                     pag = 0
                 } else {
                     pag = parseFloat(pago[0]['SUM(monto)'])
                 }
 
             } catch (error) {
-             console.log(error)
+                console.log(error)
                 pag = 0
             }
 
-/////pago = 0 si no tiene   = cantidd si tiene 
+            /////pago = 0 si no tiene   = cantidd si tiene 
             diferencia = parseFloat(- parseFloat(Amortizacion.toFixed(2)) + pag)
             saldoinicial = cuotas[0]['saldo_inicial']
 
@@ -733,25 +733,26 @@ const lotefuncion2 = async (req, res) => {
             saldo_cierre = parseFloat(cuotas[0]['saldo_inicial']) - parseFloat((Amortizacion).toFixed(2))
             Saldo_real = parseFloat(cuotas[0]['saldo_inicial']) - pag
 
-                cuota_con_ajuste = parseFloat(Amortizacion)
-          
+            cuota_con_ajuste = parseFloat(Amortizacion)
+
 
             ///////ACTUALIZACION
-    /*    */     if(cuotas[0].cuil_cuit  == "27-04990966-2" || cuotas[0].cuil_cuit  == "30-71004175-6"){
-                  try {  console.log('es')
-                let iccmientras =  await pool.query('SELECT * FROM icc_historial WHERE mes =  ? and anio=? and zona="PIT"', [cuotas[0]['mes'],cuotas[0]['anio']])
-                Ajuste_ICC = (Amortizacion * parseFloat(iccmientras[0]['ICC']*0.01))
-                console.log(Ajuste_ICC)
-                //////////////
-            
-                    cuota_con_ajuste += (Amortizacion * parseFloat(iccmientras[0]['ICC']*0.01))
+    /*    */     if (cuotas[0].cuil_cuit == "27-04990966-2" || cuotas[0].cuil_cuit == "30-71004175-6") {
+                try {
+                    console.log('es')
+                    let iccmientras = await pool.query('SELECT * FROM icc_historial WHERE mes =  ? and anio=? and zona="PIT"', [cuotas[0]['mes'], cuotas[0]['anio']])
+                    Ajuste_ICC = (Amortizacion * parseFloat(iccmientras[0]['ICC'] * 0.01))
+                    console.log(Ajuste_ICC)
+                    //////////////
+
+                    cuota_con_ajuste += (Amortizacion * parseFloat(iccmientras[0]['ICC'] * 0.01))
                     console.log(cuota_con_ajuste)
                 } catch (error) {
                     console.log(error)
                 }
-               
-             
-               
+
+
+
             }
             nuev = {
                 id: cuotas[0]['id'],
@@ -790,19 +791,39 @@ const lotefuncion2 = async (req, res) => {
             ////
             cuotasss.push(nuev)
             ////// esto si comienza de 0 o no a aplicr el icc  30-71004175-6 promacon  
-           // let iniciosies = cuotas[0].cuil_cuit  == "27-04990966-2" || "30-71004175-6"  ? 0 : 1;
+            // let iniciosies = cuotas[0].cuil_cuit  == "27-04990966-2" || "30-71004175-6"  ? 0 : 1;
             //let finalsies = condicion ? 0 : 1;
             for (i = 1; i < cuotas.length; i++) {
-                console.log('entra')
-                if (cuotas[i]['parcialidad'] === 'Final') {/////////////////////////////////recorrrido
 
-                    Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
-                    //////////////
-                    cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
+                if (cuotas[i]['parcialidad'] === 'Final') {/////////////////////////////////recorrrido
+                    /// si es cuota fija  30-71625099-3
+                    if (cuotas[i]['zona'] == "PIT" && cuotas[i]['manzana'] == "10" && cuotas[i]['parcela'] == "4") {
+
+                        if ([2, 13,  25,  37, 49].includes(cuotas[i]['nro_cuota'])) {
+                            Ajuste_ICC = (cuota_con_ajuste * 0.025).toFixed(2)
+                            console.log(Ajuste_ICC)
+                            console.log(cuota_con_ajuste)
+                            console.log( cuota_con_ajuste + parseFloat(Ajuste_ICC))
+                           
+
+                        }else{
+                            Ajuste_ICC = 0
+                        }
+               
+                        //////////////
+                       cuota_con_ajuste += parseFloat(Ajuste_ICC)                        
+                    } else {
+                        ///rssto de cuotas
+                        Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
+                        //////////////
+                        cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
+                    }
+                    ////
+
                     ////////                    cuota_con_ajuste += parseFloat(Ajuste_ICC)
 
                     pago = await pool.query('select SUM(monto) from pagos where id_cuota = ?', [cuotas[i]['id']])
-                    
+
                     try {
                         if (pago[0]['SUM(monto)'] === null) {
                             pag = 0
@@ -815,14 +836,16 @@ const lotefuncion2 = async (req, res) => {
                         pag = 0
                     }
 
-                 //   Saldo_real -= +pag - Ajuste_ICC,
-                    Saldo_real = parseFloat(cuotas[i-1]['Saldo_real']) - pag+parseFloat(cuotas[i]['cuota_con_ajuste'])-parseFloat(cuotas[i]['Amortizacion']) ,
+                    //   Saldo_real -= +pag - Ajuste_ICC,
+                    Saldo_real = parseFloat(cuotas[i - 1]['Saldo_real']) - pag + parseFloat(cuotas[i]['cuota_con_ajuste']) - parseFloat(cuotas[i]['Amortizacion']),
 
 
                         saldo_inicial = saldo_cierre.toFixed(2)
                     saldo_cierre -= Amortizacion
 
                     dif = - parseFloat(cuota_con_ajuste) + parseFloat(pag)
+
+
 
                     nuev = {
                         id: cuotas[i]['id'],
@@ -913,7 +936,7 @@ const lotefuncion2 = async (req, res) => {
         } else {/* res.render('cuotas/lista', { cuotas })*/ res.json('') }
 
     } catch (error) {
-       // console.log(error)
+      console.log(error)
     }
 
 }
@@ -970,7 +993,7 @@ const modificarmontototal = async (req, res, next) => {
         await pool.query('UPDATE cuotas set saldo_inicial = ? WHERE id_lote = ? and nro_cuota= 1', [montonuevo, id_lote])
         res.json('realizado')
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.json('No realizado')
     }
 
@@ -1083,7 +1106,7 @@ const borrartodas = async (req, res) => {
 const ief = async (req, res) => {
     const id = req.params
     idaux = id.id
-console.log(id)
+    console.log(id)
 
     let lote = await pool.query('select * from lotes where id = ? ', [idaux])
     console.log(lote)
@@ -1146,12 +1169,12 @@ console.log(id)
         try {
             devengado = devengado.toFixed(2)
         } catch (error) {
-           // console.log(error)
+            // console.log(error)
         }
         try {
             abonado = abonado.toFixed(2)
         } catch (error) {
-        //    console.log(error)
+            //    console.log(error)
         }
 
         const dato1 = {
@@ -1177,7 +1200,7 @@ console.log(id)
             const Amortizacion = (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
 
             let capital = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and parcialidad = "Original"', [idaux]))[0]['sum(Amortizacion )']
-          
+
 
 
             try {
@@ -1234,7 +1257,7 @@ const ief2 = async (req, res) => {
 
 
     let devengado = ((await pool.query('select * from cuotas where id_lote = ?', [idaux]))[0]['saldo_inicial'])
-  
+
     let abonado = (await pool.query('select sum(pagos.monto)  from cuotas join pagos on cuotas.id = pagos.id_cuota and pagos.estado = "A" where id_lote = ? and parcialidad = "final"', [idaux]))[0]['sum(pagos.monto)']
 
 
@@ -1282,12 +1305,12 @@ const ief2 = async (req, res) => {
         try {
             devengado = devengado.toFixed(2)
         } catch (error) {
-           // console.log(error)
+            // console.log(error)
         }
         try {
             abonado = abonado.toFixed(2)
         } catch (error) {
-         //   console.log(error)
+            //   console.log(error)
         }
 
         const dato1 = {
@@ -1313,7 +1336,7 @@ const ief2 = async (req, res) => {
             const Amortizacion = (await pool.query('select * from cuotas where id_lote = ? ', [idaux]))[0]['Amortizacion']
 
             let capital = (await pool.query('select sum(Amortizacion ) from cuotas where id_lote = ? and pago = 0', [idaux]))[0]['sum(Amortizacion )']
-           
+
 
 
             try {
@@ -1392,11 +1415,11 @@ const iefgralleg = async (req, res) => {
             cantidad2 += cantida2
             capital += capita
         } catch (error) {
-//console.log(error)
+            //console.log(error)
         }
 
     }
-  
+
 
     if (cantidad === 0) {
 
@@ -1450,12 +1473,12 @@ const iefgralleg = async (req, res) => {
         try {
             devengado = devengado.toFixed(2)
         } catch (error) {
-           // console.log(error)
+            // console.log(error)
         }
         try {
             abonado = abonado.toFixed(2)
         } catch (error) {
-          //  console.log(error)
+            //  console.log(error)
         }
 
         const dato1 = {
@@ -1508,11 +1531,11 @@ const iefgralleg = async (req, res) => {
             const cuotas_pendientes = [dato5, dato6, dato7]
             const respuesta = [deuda_exigible, cuotas_pendientes]
 
-           // console.log('Respuesta'+respuesta)
+            // console.log('Respuesta'+respuesta)
             res.json(respuesta)
 
         } catch (error) {
-//console.log(error)
+            //console.log(error)
         }
 
 
@@ -1534,7 +1557,7 @@ const traercuota = async (req, res) => {
 
         res.json(cuota)
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
     }
 }
 
@@ -1546,7 +1569,7 @@ const traercuotasdisponiblesporlote = async (req, res) => {
     try {
 
 
-      
+
         todas = await pool.query('select * from cuotas where id_lote = ? ', [id])
 
         res.json(todas)
@@ -1593,8 +1616,8 @@ const agregarcuotasleg = async (req, res) => {
         let saldo_inicial = parseFloat(monto_total)
 
         let saldo_cierre = parseFloat(saldo_inicial) - Amortizacion
-        Saldo_real=saldo_inicial
-        cuota_con_ajuste= Amortizacion
+        Saldo_real = saldo_inicial
+        cuota_con_ajuste = Amortizacion
         //  const Saldo_real = saldo_inicial
         const id_cliente = row[0].id
 
@@ -1651,7 +1674,7 @@ const agregarcuotasleg = async (req, res) => {
 
 
     } catch (error) {
-     //   console.log(error)
+        //   console.log(error)
         res.json([cuil_cuit, 'Error, algo sucedio'])
 
     }
@@ -1675,7 +1698,7 @@ module.exports = {
     traercuotaselcliente,
     modificarmontototal,
     asignarloteacuotas,
-  
+
     postadd,
     postaddaut2,
 
