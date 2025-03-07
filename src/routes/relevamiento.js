@@ -171,7 +171,7 @@ router.post('/subirexcel', upload.single('excel'), async (req, res) => {
   fs.unlinkSync(filePath);
 
   res.json({ success: true });
-}); */
+}); */   
 router.post('/subbirexcell', upload.single('excel'), async (req, res) => {
   ////subir un solo cliente
   if (!req.file) {
