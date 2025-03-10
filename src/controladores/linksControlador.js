@@ -688,30 +688,36 @@ const borrarCbu = async (req, res) => {
 
 }
 
-
 const cantidadInfo = async (req, res) => {
     try {
-        // Obtener clientes de la base de datos
-        const clientes = await pool.query('SELECT * FROM clientes');
+        // Obtener clientes con prioridad en los que tienen al menos una cuota
+        const clientes = await pool.query(`
+            SELECT c.*, 
+                   CASE WHEN EXISTS (SELECT 1 FROM cuotas q WHERE q.cuil_cuit = c.cuil_cuit) 
+                        THEN 1 ELSE 0 
+                   END AS tiene_cuota
+            FROM clientes c
+            ORDER BY tiene_cuota DESC
+        `);
 
-        // Calcular el porcentaje para cada cliente usando agregaricc.calcularicc
+        // Calcular el porcentaje para cada cliente usando traerriesgo.matriz
         const clientesConPorcentaje = await Promise.all(
             clientes.map(async (cliente) => {
-                const porcentaje = await traerriesgo.matriz(cliente); // Llama a la función con el valor requerido
+                const porcentaje = await traerriesgo.matriz(cliente);
                 return {
                     ...cliente,
-                    porcentaje, // Agrega el porcentaje calculado
+                    porcentaje,
                 };
             })
         );
 
-        // Enviar la respuesta con el nuevo campo agregado
         res.json(clientesConPorcentaje);
     } catch (error) {
         console.error("Error al obtener clientes:", error);
         res.status(500).json({ error: "Ocurrió un error al obtener los clientes" });
     }
 };
+
 
 
 
