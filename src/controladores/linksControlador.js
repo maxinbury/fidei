@@ -810,7 +810,7 @@ const legajosCuil = async (req, res) => {
 
 
     const legajos = await pool.query('select * from constancias where cuil_cuit =?', [cuil_cuit])
-    const array2 = await pool.query('select id, lazo as tipo, numero as descripcion, cuil_cuit, estado,ubicacion  from cbus where cuil_cuit =?', [cuil_cuit])
+    const array2 = await pool.query('select id, lazo as tipo, descripcion, cuil_cuit, estado,ubicacion  from cbus where cuil_cuit =?', [cuil_cuit])
     const result = legajos.concat(array2);
     const cl = await pool.query('select * from clientes where cuil_cuit =?', [cuil_cuit])
     /*  legajos.map(img => {
@@ -819,6 +819,7 @@ const legajosCuil = async (req, res) => {
       })
       const imagedir = fs.readdirSync(path.join(__dirname, '../dbimages/'))*/
       console.log(result)
+      console.log('result')
     res.json([result, cl])
 
 

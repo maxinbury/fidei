@@ -41,7 +41,7 @@ const storage = multer.diskStorage({
 
 router.get('/traerpdfonstanciacbu/:id',async (req, res) => {
     const { id } = req.params;
-    console.log(id)
+    console.log("cosnt",id)
     const query = await pool.query('SELECT * FROM cbus WHERE id = ?',[id]);
   console.log(query)
   
@@ -60,6 +60,7 @@ router.get('/traerpdfconstancia/:id',async (req, res) => {
       res.sendFile(filePath);
     ;
   });
+  
 router.post('/modificarpass', passport.authenticate('local.modificarpass', {
 
     successRedirect: '/exitorecupero',
@@ -331,7 +332,42 @@ router.post('/subirprueba', async (req, res, done) => {
     const { id } = req.body;
  })
 
+ 
+ router.post("/modificarcbu", isLoggedInn, async (req, res) => {
+    try {
+        const { id, descripcion } = req.body;
+        console.log("Modificando CBU", id, descripcion);
 
+        const result = await pool.query("UPDATE cbus SET descripcion = ? WHERE id = ?", [descripcion, id]);
+
+        if (result.affectedRows > 0) {
+            res.json("CBU actualizado correctamente");
+        } else {
+            res.status(404).json({ success: false, message: "No se encontró el CBU" });
+        }
+    } catch (error) {
+        console.error("Error al modificar CBU:", error);
+        res.status(500).json("Error en el servidor");
+    }
+});
+
+router.post("/modificarconstancianormal", isLoggedInn, async (req, res) => {
+    try {
+        const { id, descripcion } = req.body;
+        console.log("Modificando constancia normal", id, descripcion);
+
+        const result = await pool.query("UPDATE constancias SET descripcion = ? WHERE id = ?", [descripcion, id]);
+
+        if (result.affectedRows > 0) {
+            res.json("Constancia actualizada correctamente");
+        } else {
+            res.status(404).json({ success: false, message: "No se encontró la constancia" });
+        }
+    } catch (error) {
+        console.error("Error al modificar constancia normal:", error);
+        res.status(500).json("Error en el servidor");
+    }
+});
 
 router.post("/subir", isLoggedIn, async (req, res) => {
     const { id } = req.body;
