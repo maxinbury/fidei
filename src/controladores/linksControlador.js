@@ -888,8 +888,8 @@ const ventalotee = async (req, res) => {
 }
 ///agregar cliente
 const add2 = async (req, res) => {
-    const { Nombre, tipo_dni, domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
-    const newLink = { Nombre, tipo_dni, razon, telefono, domicilio, observaciones, cuil_cuit };
+    const { Nombre,  domicilio, cuil_cuit, razon, telefono, observaciones } = req.body;
+    const newLink = { Nombre,  razon, telefono, domicilio, observaciones, cuil_cuit };
   
     try {
       // Verificar si el cliente ya existe

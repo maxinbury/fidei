@@ -632,32 +632,39 @@ const busquedarenapet = async () => {
     const lines = pageText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
     const allResults = [];
+    
     for (const obj of clientes) {
-      const NombreCompleto = obj?.Nombre;
-      if (!NombreCompleto || typeof NombreCompleto !== 'string') continue;
+      const nombresAAnalizar = [obj?.Nombre, obj?.beneficiario1, obj?.beneficiario2, obj?.beneficiario3]
+        .filter(nombre => nombre && typeof nombre === 'string' && nombre !== 'No');
 
-      const palabras = NombreCompleto.split(' ')
-        .map(word => removeAccents(word.trim()))
-        .filter(word => word.length > 0);
+      for (const nombre of nombresAAnalizar) {
+        const palabras = nombre.split(' ')
+          .map(word => removeAccents(word.trim()))
+          .filter(word => word.length > 0);
 
-      if (palabras.length === 0) continue;
+        if (palabras.length === 0) continue;
 
-      const regexPalabras = palabras.map(palabra => new RegExp(`\\b${escapeRegExp(palabra)}\\b`, 'i'));
+        const regexPalabras = palabras.map(palabra => new RegExp(`\\b${escapeRegExp(palabra)}\\b`, 'i'));
 
-      let matchedLines = [];
+        let matchedLines = [];
 
-      lines.forEach(line => {
-        const coincidencias = regexPalabras.every(regex => regex.test(line));
-        if (coincidencias) {
-          matchedLines.push(line);
-        }
-      });
-
-      if (matchedLines.length > 0) {
-        allResults.push({
-          Nombre: NombreCompleto,
-          resultados: matchedLines,
+        lines.forEach(line => {
+          const coincidencias = regexPalabras.every(regex => regex.test(line));
+          if (coincidencias) {
+            matchedLines.push(line);
+          }
         });
+
+        if (matchedLines.length > 0) {
+          allResults.push({
+            Nombre: nombre,
+            resultados: matchedLines,
+          });
+          
+          if (nombre !== obj?.Nombre) {
+            console.log(`Coincidencias encontradas para beneficiario: ${nombre}`);
+          }
+        }
       }
     }
 
@@ -674,9 +681,11 @@ const busquedarenapet = async () => {
   }
 };
 
+
+
 // Configurar el cron para ejecutar la función todos los días a las 16:35
-cron.schedule('38 9 * * *', async () => {
-  console.log('Iniciando la búsqueda automática a las 17:00...');
+cron.schedule('00 9 * * *', async () => {
+  console.log('Iniciando la búsqueda automática a las 19:00...');
 
   const { resultados, clientesAnalizados, mensaje, error } = await busquedarenapet();
 

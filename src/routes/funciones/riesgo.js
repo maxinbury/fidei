@@ -59,173 +59,126 @@ const riesgoAntiguedad = {
 
 // Función principal: matriz de riesgo
 async function matriz(cliente) {
-
     let riesgo = 0;
+
     if (cliente['pep_extranjero'] === 'Si' || cliente['categoria_especial'] === 'Si') {
-       // console.log('Cliente con riesgo alto (PEP o categoría especial)');
-        riesgo=100
-        return riesgo; // Devuelve un riesgo de 100
+        return 100; // Devuelve un riesgo de 100 si es PEP o categoría especial
     }
-  
-    if (cliente['razon'] == 'Persona') {
+
+    if (cliente['razon'] === 'Persona') {
         // Persona Física
 
         // Tipo de cliente
-        if (cliente['tipoCliente'] == 'Persona Humana con Actividad Comercial') {
+        if (cliente['tipoCliente'] === 'Persona Humana con Actividad Comercial') {
             riesgo += 6;
-           // console.log('Persona Humana con actividad',6)
         } else {
             riesgo += 2;
-           // console.log('Persona Humana con actividad',2)
         }
 
         // Edad del cliente
         const edad = calcularEdad(cliente['fechaNacimiento']);
-       // 
-      
+
         if (edad >= 18 && edad <= 25) {
             riesgo += 6;
-           // console.log('riesgo edad',6)
         } else if (edad >= 26 && edad <= 55) {
             riesgo += 3;
-           // console.log('riesgo edad',3)
         } else if (edad >= 56 && edad <= 75) {
             riesgo += 9;
-           // console.log('riesgo edad',9)
         } else if (edad >= 76) {
             riesgo += 15;
-           // console.log('riesgo edad',15)
         }
 
-
-         //// volument transaccional persona
-         try {
+        // Volumen transaccional persona
+        try {
             const volumen = cliente['volumenTransaccional'];
 
             if (volumen >= 0 && volumen <= 15000000) {
                 riesgo += 4;
-               // console.log('volumen riesgo 1',4);
             } else if (volumen > 15000000 && volumen <= 30000000) {
                 riesgo += 8;
-               // console.log('volumen riesgo 2',8);
             } else if (volumen > 30000000 && volumen <= 45000000) {
                 riesgo += 12;
-               // console.log('volumen riesgo 3',12);
             } else if (volumen > 45000000 && volumen <= 60000000) {
                 riesgo += 16;
-               // console.log('volumen riesgo 4',16);
             } else if (volumen > 60000000) {
                 riesgo += 20;
-               // console.log('volumen riesgo 5',20);
-            } else {
-               // console.log('No se encuentra', volumen);
             }
-            
         } catch (error) {
-           // console.log(error)
+            console.error(error);
         }
-
     } else {
         // Persona Jurídica
         if (riesgoPorTipo.hasOwnProperty(cliente['tipoClienteEmpresa'])) {
-            riesgo += riesgoPorTipo[cliente['tipoClienteEmpresa']]*2;
+            riesgo += riesgoPorTipo[cliente['tipoClienteEmpresa']] * 2;
         } else {
             riesgo += 2; // Valor por defecto si no está en la lista
         }
-       // console.log('tipoClienteEmpresa',riesgoPorTipo[cliente['tipoClienteEmpresa']]*2)
-    // Sumar el riesgo si el valor coincide con el mapeo
-    if (riesgoAntiguedad[cliente['antiguedad']] !== undefined) {
-        riesgo += riesgoAntiguedad[cliente['antiguedad']]*3;
-       // console.log('riesgoAntiguedad', riesgoAntiguedad[cliente['antiguedad']]*3)
+
+        // Riesgo por antigüedad
+        if (riesgoAntiguedad[cliente['antiguedad']] !== undefined) {
+            riesgo += riesgoAntiguedad[cliente['antiguedad']] * 3;
+        }
+
+        // Volumen transaccional jurídica
+        try {
+            const volumen = cliente['volumenTransaccional'];
+
+            if (volumen >= 0 && volumen <= 150000000) {
+                riesgo += 4;
+            } else if (volumen > 150000000 && volumen <= 300000000) {
+                riesgo += 8;
+            } else if (volumen > 300000000 && volumen <= 450000000) {
+                riesgo += 12;
+            } else if (volumen > 450000000 && volumen <= 600000000) {
+                riesgo += 16;
+            } else if (volumen > 600000000) {
+                riesgo += 20;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // Persona expuesta políticamente (PEP)
+    if (cliente['expuesta'] === 'SI') {
+        riesgo += 10;
     } else {
-        //console.warn("Valor de antigüedad no reconocido:", cliente['antiguedad']);
+        riesgo += 2;
     }
 
-     //// volument transaccional juridica
-     try {
-        const volumen = cliente['volumenTransaccional'];
+    // Actividad económica
+    const actividad = cliente['actividadEconomica'];
+    const nivelRiesgo = actividadRiesgo.find(item => item['Unnamed: 0'] === actividad);
 
-        if (volumen >= 0 && volumen <= 150000000) {
-            riesgo += 4;
-           // console.log('volumen riesgo 1 juridica',4);
-        } else if (volumen > 150000000 && volumen <= 300000000) {
-            riesgo += 8;
-           // console.log('volumen riesgo 2 juridica',8);
-        } else if (volumen > 300000000 && volumen <= 450000000) {
-            riesgo += 12;
-           // console.log('volumen riesgo 3 juridica',12);
-        } else if (volumen > 450000000 && volumen <= 600000000) {
-            riesgo += 16;
-           // console.log('volumen riesgo 4 juridica',16);
-        } else if (volumen > 600000000) {
-            riesgo += 20;
-           // console.log('volumen riesgo 5 juridica',20);
-        } else {
-           // console.log('No se encuentra', volumen);
-        }
-        
-    } catch (error) {
-       // console.log(error)
+    if (!nivelRiesgo) {
+        return 0; // Si no se encuentra la actividad económica, el riesgo es 0
     }
 
-        ///fin persona juridica
+    const riesgoActividad = parseInt(nivelRiesgo['Unnamed: 1']) * 4;
+    riesgo += riesgoActividad;
 
+    // Código postal (CP)
+    const cp = cliente['cp'];
+    const riesgoCP = cpriesgo.find(item => item['codigo'] === cp);
+    if (riesgoCP) {
+        riesgo += parseInt(riesgoCP['riesgo']) * 2;
+    } else {
+        riesgo += 2; // Valor por defecto si no se encuentra el CP
     }
 
+    // Riesgo por nacionalidad
+    const nacionariesgo = cliente['nacionalidad'];
+    const riesgoNAC = nacionalidadriesgo.find(item => item['NACIONALIDAD'] === nacionariesgo);
 
-
-
-
-        // Persona expuesta políticamente (PEP)
-        if (cliente['expuesta'] === 'SI') {
-            riesgo += 10;
-           // console.log('expuesta',10)
-        } else {
-            riesgo += 2;
-           // console.log('expuesta',2)
-        }
-
-        // Actividad económica
-        const actividad = cliente['actividadEconomica'];
-       // console.log('actividad', actividad);
-        const nivelRiesgo = actividadRiesgo.find(item => item['Unnamed: 0'] === actividad);
-        if (nivelRiesgo) {
-            const riesgoActividad = parseInt(nivelRiesgo['Unnamed: 1']) * 4; // Multiplica por 4
-           // console.log('riesgoActividad', riesgoActividad);
-            riesgo += riesgoActividad;
-        } else {
-            riesgo += 2; // Valor por defecto si no se encuentra la actividad
-        }
-
-        // Código postal (CP)
-        const cp = cliente['cp'];
-        const riesgoCP = cpriesgo.find(item => item['codigo'] === cp);
-        if (riesgoCP) {
-            const riesgoCPValue = parseInt(riesgoCP['riesgo']) * 2; // Multiplica por 2
-           // console.log('riesgoCP', riesgoCPValue);
-            riesgo += riesgoCPValue;
-        } else {
-            riesgo += 2; // Valor por defecto si no se encuentra el CP
-        }
-
-        //////////nacionalidad riesgo
-        nacionalidadriesgo
-        const nacionariesgo = cliente['nacionalidad'];
-        const riesgoNAC = nacionalidadriesgo.find(item => item['NACIONALIDAD'] === nacionariesgo);
-
-        if (riesgoNAC) {
-            const riesgoNACValue = parseInt(riesgoNAC['NIVEL DE RIESGO']) * 3; // Multiplica por 3
-           // console.log('riesgoNAC', riesgoNACValue);
-            riesgo += riesgoNACValue;
-        } else {
-            riesgo += 3; // Valor por defecto si no se encuentra el CP
-        }
-       
-  
-
+    if (riesgoNAC) {
+        riesgo += parseInt(riesgoNAC['NIVEL DE RIESGO']) * 3;
+    } else {
+        riesgo += 3; // Valor por defecto si no se encuentra la nacionalidad
+    }
 
     return riesgo;
 }
+
 
 
 async function montomaximodelicliente(cliente) {
