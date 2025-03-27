@@ -812,12 +812,21 @@ const lotefuncion2 = async (req, res) => {
                
                         //////////////
                        cuota_con_ajuste += parseFloat(Ajuste_ICC)                        
-                    } else {
+                    } else {///// analizar a gailiard que no se aplico 
+                        if (cuotas[i]['cuil_cuit'] == "20-93938615-8" && cuotas[i]['mes'] == "2" && cuotas[i]['anio'] == "2023") {
+                            Ajuste_ICC =  (parseFloat(125215.62) * parseFloat(cuotas[i]['ICC'])).toFixed(5)
+                              //125215,62 base de calculo
+                          console.log('Ajuste_ICC',Ajuste_ICC)
+                            //////////////
+                           cuota_con_ajuste = parseFloat(125215.62)+ parseFloat(Ajuste_ICC)       
+                           console.log('cuota_con_ajuste',cuota_con_ajuste)                 
+                        } else {
                         ///rssto de cuotas
                         Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
                         //////////////
                         cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
                     }
+                }
                     ////
 
                     ////////                    cuota_con_ajuste += parseFloat(Ajuste_ICC)
