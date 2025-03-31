@@ -695,7 +695,7 @@ const lotefuncion2 = async (req, res) => {
         ///////////ver si innecesario     
         if (cuotas.length === 0) {
 
-            cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['idcuotas']])
+            cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [lot[0]['id_lote_cuota']])
 
         }
 
@@ -988,7 +988,7 @@ const asignarloteacuotas = async (req, res, next) => {
 
 
 
-    datos = { idcuotas: id }
+    datos = { id_lote_cuota: id }
     await pool.query('UPDATE lotes set ? WHERE id = ?', [datos, id_origen])
 
 

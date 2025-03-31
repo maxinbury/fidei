@@ -172,15 +172,30 @@ const agregarIccGral2 = async (req, res,) => {
     //////////////try
     //
 
-    console.log(datoss)
     if (zona == 'PIT') {
         console.log('PIT')
         const todasssss = await pool.query("select * from cuotas where mes =? and anio =? and zona =? ", [mes, anio, zona])
 
-        for (let i = 0; i < todasssss.length; i++) {
+        let mensaje = "Estimado/a Cliente:\nLe informamos que ";
 
-            await agregaricc.calcularicc(todasssss[i], ICC)
+        for (let i = 0; i < todasssss.length; i++) {
+            let cuiotacon = await agregaricc.calcularicc(todasssss[i], ICC);
+            let nroCuota = todasssss[i]['nro_cuota'];
+            let mes = todasssss[i]['mes'];
+            let anio = todasssss[i]['anio'];
+            let monto = cuiotacon.toLocaleString("es-AR", { style: "currency", currency: "ARS" });
+        
+            // Agregar información de cada cuota al mensaje
+            mensaje += `el importe de su cuota N°${nroCuota}, correspondiente al mes de ${mes}/${anio} asciende a ${monto}. `;
         }
+        
+        // Agregar información final sobre vencimiento (puedes modificar la fecha si es diferente)
+        mensaje += "Así mismo, el vencimiento de las mismas es el 10/03/2025.";
+        
+        console.log(mensaje);
+
+  /////enviodemail.enviarmail.enviarmailsospechoso(email, asunto, encabezado, mensaje, ubicacion);
+        
     } else {
        
         const todaxi = await pool.query("select * from cuotas_ic3 where mes =? and anio =?  ", [mes, anio])

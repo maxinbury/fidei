@@ -913,10 +913,11 @@ const add2 = async (req, res) => {
         const mensaje = `No se encontraron coincidencias para el cliente ${Nombre}.`;
         await enviarCorreo('Sin coincidencias para cliente', mensaje);
       }
-      
+ 
       // Insertar cliente en la base de datos
       await pool.query('INSERT INTO clientes SET ?', [newLink]);
-      res.send('Cliente guardado correctamente y analizado.');
+      console.log(resultadosBusqueda)
+      res.send('Cliente guardado correctamente y analizado. Resultado:'+resultadosBusqueda);
     } catch (error) {
       console.error('Error al procesar la solicitud:', error);
       res.status(500).send('Error al procesar la solicitud.');

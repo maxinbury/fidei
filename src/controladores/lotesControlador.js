@@ -7,19 +7,27 @@ const XLSX = require('xlsx')
 const { EC2 } = require('aws-sdk')
 
 ///////
+const loteCliente = async (req, res) => {
+    cuil_cuit = req.params.cuil_cuit;
 
-const loteCliente =async (req, res) => {
-    cuil_cuit = req.params.cuil_cuit
+    lotes = await pool.query(`
+        SELECT 
+            l.cuil_cuit, 
+            l.id, 
+            l.zona, 
+            l.fraccion, 
+            l.manzana, 
+            l.lote, 
+            l.parcela, 
+            CASE WHEN c.id_lote IS NOT NULL THEN 'Si' ELSE 'No' END AS tiene_cuotas
+        FROM lotes l
+        LEFT JOIN cuotas c ON l.id = c.id_lote
+        WHERE l.cuil_cuit = ?
+        GROUP BY l.id
+    `, [cuil_cuit]);
 
-
-    lotes = await pool.query('select  cuil_cuit, id,zona, fraccion, manzana, lote, parcela from lotes where cuil_cuit =  ?', [cuil_cuit]);
-    
-
-
-    res.json(lotes)
-
+    res.json(lotes);
 }
-
 
 const calcularValor = async (req, res) => {
     const { zona, manzana, parcela, cuil_cuit,lote } = req.body
