@@ -161,6 +161,69 @@ async function enviarmail (email,asunto,encabezado,mensaje) {
         return (mensaje)
       
     }
+
+    
+
+
+  async function enviarmailicc(email, asunto, encabezado, mensaje, ubicacion) {
+    try {
+    /*     let transporter = nodemailer.createTransport({
+            host: "smtp-mail.outlook.com", // hostname
+            port: 587, // port for secure SMTP
+            secureConnection: false,
+            tls: {
+                ciphers: 'SSLv3'
+            },
+            auth: {
+                user: 'fideicomisoSCatalina@outlook.com',
+                pass: '1385Fideicomiso'
+            }
+        }); */
+        const transporter = nodemailer.createTransport({
+          service: 'gmail', // O el servicio de correo que utilices
+          auth: {
+            user: correo.mail, // Reemplaza con tu correo
+            pass: correo.token // Reemplaza con tu contraseña
+          }
+        });
+        // Ruta completa del archivo PDF
+        const filePath = path.join(__dirname, '../../documentos', ubicacion);
+
+        // Verificar si el archivo PDF existe
+        let attachments = [
+            {   // imagen del logotipo adjunta
+                filename: 'marcas.png',
+                path: path.join(__dirname, "../Emails/img/marcas.png"),
+                cid: "logo"
+            }
+        ];
+
+        if (fs.existsSync(filePath)) {
+            attachments.push({
+                filename: path.basename(filePath),
+                path: filePath
+            });
+        } else {
+            console.warn(`El archivo ${filePath} no existe.`);
+        }
+
+        // Enviar correo con objeto de transporte definido
+        let info = await transporter.sendMail({
+            from: '"Administracion Fideicomiso Santa Catalina" <fideicomisoSCatalina@outlook.com>', // dirección de envío 
+            to: [email], // lista de receptores
+            subject: asunto, // línea de asunto
+            text: encabezado, // cuerpo del texto sin formato
+            attachments: attachments,
+            html: `<b>${mensaje}</b><br/><br/><img style='position:absolute;height:10%;width:10%' src='cid:logo'>` // cuerpo HTML
+        });
+
+        console.log('Email sent: ' + info.response);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
   exports.enviarmail = {enviarmail,enviarmailsospechoso,enviarmailRecupero}
 
 
