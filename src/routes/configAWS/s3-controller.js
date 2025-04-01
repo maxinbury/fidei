@@ -1245,8 +1245,19 @@ async function pagonivel2(req, res) {
             fecha = dataExcel[property]['']
             referencia = dataExcel[property]['REFERENCIA']
             debitos = dataExcel[property]['DEBITO EN $']
-            creditos = dataExcel[property]['CREDITO EN $']
-            cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+            creditos =dataExcel[property]['CREDITO EN $']
+            console.log('creditos',creditos)
+            console.log('monto',monto)
+            cleanedString=0
+            if(creditos !== undefined){
+              //  cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+              let valorString = String(creditos); 
+
+                 cleanedString = valorString.replace(".", "").replace(",", ".");
+                 cleanedString = cleanedString.slice(0, -2) + "." + cleanedString.slice(-2);
+            }
+       
+            console.log('filtro',cleanedString)
             if (monto.includes(',')) {
                 // Replace comma with a dot
                  monto.replace(',', '.');
