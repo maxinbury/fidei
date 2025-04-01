@@ -33,7 +33,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
 
     const estract = await pool.query('select * from extracto where id = ? ', [id])
     const nombree = estract[0]['ubicacion']
-
+console.log('nombre ',nombree)
     let mandar = []
     // const workbook = XLSX.readFile(`./src/Excel/${nombree}`)
 
@@ -48,10 +48,9 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
         //console.log(dataExcel)
 
         let regex = /(\d+)/g;
-
+  
         for (const property in dataExcel) {
-
-
+  
             /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
                  estado = 'A'
                  // tipo de pago normal 
@@ -65,7 +64,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
             try {
 
 
-                descripcion = (dataExcel[property]['Descripción']).match(regex)
+                descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
 
                 if (descripcion != null) {
 
@@ -76,14 +75,14 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                         if (descripcion.length > 7) {
                             descripcion = ponerguion.ponerguion(descripcion)
 
-                            desc = (dataExcel[property]['Descripción'])
+                            desc = (dataExcel[property]['DESCRIPCION'])
                             let arr = desc.split('-');
 
                             nombre = arr[3]
                             fecha = dataExcel[property]['']
-                            referencia = dataExcel[property]['Referencia']
-                            debitos = dataExcel[property]['Débitos']
-                            creditos = dataExcel[property]['Créditos']
+                            referencia = dataExcel[property]['REFERENCIA']
+                            debitos = dataExcel[property]['DEBITO EN $']
+                            creditos = dataExcel[property]['CREDITO EN $']
                             nuevo = {
                                 fecha,
                                 descripcion,
@@ -93,12 +92,14 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                                 nombre
 
                             }
+                            console.log('nuevo',nuevo)
 
 
                             mandar.push(nuevo);
                         }
 
                     } catch (error) {
+                        console.log(error)
                         nuevo = {
                             fecha: 'no se encontro archivo',
                             descripcion: 'no se encontro archivo',
@@ -108,6 +109,7 @@ router.post('/extractoid', isLoggedInn2, async (req, res) => {
                             nombre: 'no se encontro archivo',
 
                         }
+
                         mandar = [nuevo]
 
                     }
@@ -190,25 +192,25 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
                     const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
 
 
-                    console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
+                    console.log(dataExcel[1]['DESCRIPCION'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                     for (const property in dataExcel) {////////////recorrido del extracto
 
 
 
 
 
-                        if (((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) || ((dataExcel[property]['Descripción']).includes(cuil_cuit))) {
+                        if (((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit_lazo)) || ((dataExcel[property]['Descripción']).includes(cuil_cuit))) {
 
                             // tipo de pago normal 
-                            descripcion = (dataExcel[property]['Descripción']).match(regex)
+                            descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
                             descripcion = ponerguion.ponerguion(descripcion)
-                            desc = (dataExcel[property]['Descripción'])
+                            desc = (dataExcel[property]['DESCRIPCION'])
                             let arr = desc.split('-');
                             nombre = arr[3]
-                            fecha = dataExcel[property]['']
-                            referencia = dataExcel[property]['Referencia']
-                            debitos = dataExcel[property]['Débitos']
-                            creditos = dataExcel[property]['Créditos']
+                            fecha = dataExcel[property]['FECHA']
+                            referencia = dataExcel[property]['REFERENCIA']
+                            debitos = dataExcel[property]['DEBITO EN $']
+                            creditos = dataExcel[property]['CREDITO EN $']
                             ///////agregar detaññes
                             nuevo = {
                                 fecha,
@@ -225,17 +227,17 @@ router.get('/vercoincidencias/:id', isLoggedInn2, async (req, res,) => {
 
                         } else {
                             try {
-                                creditoString = String(dataExcel[property]['Créditos'])
+                                creditoString = String(dataExcel[property]['CREDITO EN $'])
                                 if (creditoString.includes(monto)) {
-                                    descripcion = (dataExcel[property]['Descripción']).match(regex)
+                                    descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
                                     descripcion = ponerguion.ponerguion(descripcion)
-                                    desc = (dataExcel[property]['Descripción'])
+                                    desc = (dataExcel[property]['DESCRIPCION'])
                                     let arr = desc.split('-');
                                     nombre = arr[3]
-                                    fecha = dataExcel[property]['']
-                                    referencia = dataExcel[property]['Referencia']
-                                    debitos = dataExcel[property]['Débitos']
-                                    creditos = dataExcel[property]['Créditos']
+                                    fecha = dataExcel[property]['FECHA']
+                                    referencia = dataExcel[property]['REFERENCIA']
+                                    debitos = dataExcel[property]['DEBITO EN $']
+                                    creditos = dataExcel[property]['CREDITO EN $']
                                                                  ///////agregar detaññes
                                     nuevo = {
                                         fecha,

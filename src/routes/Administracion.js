@@ -406,11 +406,11 @@ router.get('/extracto', async (req, res) => {
 
 
 
-        descripcion = (dataExcel[property]['Descripción']).match(regex)
+        descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
         fecha = dataExcel[property]['']
-        referencia = dataExcel[property]['Referencia']
-        debitos = dataExcel[property]['Débitos']
-        creditos = dataExcel[property]['Créditos']
+        referencia = dataExcel[property]['REFERENCIA']
+        debitos = dataExcel[property]['DEBITO EN $']
+        creditos = dataExcel[property]['CREDITO EN $']
         nuevo = {
           fecha,
           descripcion,
@@ -420,7 +420,7 @@ router.get('/extracto', async (req, res) => {
 
 
         }
-
+//console.log('nuevo',nuevo)
         mandar.push(nuevo);
       } catch (error) {
         console.log(error)

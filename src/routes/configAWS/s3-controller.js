@@ -536,13 +536,13 @@ async function pagarniv1(req, res) {
                         const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
         
 
-                        console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
+                        console.log(dataExcel[1]['DESCRIPCION'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
 
 
 
 
-                            if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
+                            if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit_lazo)) {
 
                                 // tipo de pago normal 
 
@@ -551,7 +551,7 @@ async function pagarniv1(req, res) {
 
 
 
-                                credito = String(dataExcel[property]['Créditos'])
+                                credito = String(dataExcel[property]['CREDITO EN $'])
 
                                                        try {
 
@@ -834,13 +834,13 @@ async function pagarnivel1cuota(req, res) {
                         const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
 
 
-                        console.log(dataExcel[1]['Descripción'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
+                        console.log(dataExcel[1]['DESCRIPCION'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
 
 
 
 
-                            if ((dataExcel[property]['Descripción']).includes(cuil_cuit_lazo)) {
+                            if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit_lazo)) {
 
                                 // tipo de pago normal 
 
@@ -849,7 +849,7 @@ async function pagarnivel1cuota(req, res) {
 
 
 
-                                credito = String(dataExcel[property]['Créditos'])
+                                credito = String(dataExcel[property]['CREDITO EN $'])
 
 
                                 try {
@@ -1232,7 +1232,7 @@ async function pagonivel2(req, res) {
         let regex = /(\d+)/g;
         let mandar = []
         for (const property in dataExcel) {
-          /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+          /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
                estado = 'A'
                // tipo de pago normal 
            } */
@@ -1241,11 +1241,11 @@ async function pagonivel2(req, res) {
     
     
     
-            descripcion = (dataExcel[property]['Descripción']).match(regex)
+            descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
             fecha = dataExcel[property]['']
-            referencia = dataExcel[property]['Referencia']
-            debitos = dataExcel[property]['Débitos']
-            creditos = dataExcel[property]['Créditos']
+            referencia = dataExcel[property]['REFERENCIA']
+            debitos = dataExcel[property]['DEBITO EN $']
+            creditos = dataExcel[property]['CREDITO EN $']
             cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
             if (monto.includes(',')) {
                 // Replace comma with a dot
@@ -1253,8 +1253,8 @@ async function pagonivel2(req, res) {
             }
             if(cleanedString == monto){
                  monto_distinto = 'No'
-                mensaje=dataExcel[property]['Descripción']
-                console.log('encontrado',dataExcel[property]['Descripción'])
+                mensaje=dataExcel[property]['DESCRIPCION']
+                console.log('encontrado',dataExcel[property]['DESCRIPCION'])
             }
             nuevo = {
               fecha,
@@ -1433,7 +1433,7 @@ async function pagarnivel2ic3(req, res) {
     let regex = /(\d+)/g;
     let mandar = []
     for (const property in dataExcel) {
-      /*  if ((dataExcel[property]['Descripción']).includes(cuil_cuit)) {
+      /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
            estado = 'A'
            // tipo de pago normal 
        } */
@@ -1442,11 +1442,11 @@ async function pagarnivel2ic3(req, res) {
 
 
 
-        descripcion = (dataExcel[property]['Descripción']).match(regex)
+        descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
         fecha = dataExcel[property]['']
-        referencia = dataExcel[property]['Referencia']
-        debitos = dataExcel[property]['Débitos']
-        creditos = dataExcel[property]['Créditos']
+        referencia = dataExcel[property]['REFERENCIA']
+        debitos = dataExcel[property]['DEBITO EN $']
+        creditos = dataExcel[property]['CREDITO EN $']
         cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
         if (monto.includes(',')) {
             // Replace comma with a dot
@@ -1454,8 +1454,8 @@ async function pagarnivel2ic3(req, res) {
         }
         if(cleanedString == monto){
              monto_distinto = 'No'
-            mensaje=dataExcel[property]['Descripción']
-            console.log('encontrado',dataExcel[property]['Descripción'])
+            mensaje=dataExcel[property]['DESCRIPCION']
+            console.log('encontrado',dataExcel[property]['DESCRIPCION'])
         }
         nuevo = {
           fecha,
