@@ -753,7 +753,21 @@ const lotefuncion2 = async (req, res) => {
 
 
 
-            }
+            }/* interes="No"
+            if(pago>=cuota_con_ajuste){
+                anioalt=anio
+                mesalt++
+                if (mesalt > 12) {  
+                    mesalt = 1;  
+                    anioalt++;  
+                } 
+                const verificarvencida = await pool.query('select * from icc_historial where mes=? and anio=?',[mesalt,anioalt])
+                if(verificarvencida.length>0){
+                    interes="Si"
+                }else{interes="No"
+
+                }
+            } */
             nuev = {
                 id: cuotas[0]['id'],
                 saldo_inicial: cuotas[0]['saldo_inicial'],
@@ -812,21 +826,29 @@ const lotefuncion2 = async (req, res) => {
                
                         //////////////
                        cuota_con_ajuste += parseFloat(Ajuste_ICC)                        
-                    } else {///// analizar a gailiard que no se aplico 
-                        if (cuotas[i]['cuil_cuit'] == "20-93938615-8" && cuotas[i]['mes'] == "2" && cuotas[i]['anio'] == "2023") {
-                            Ajuste_ICC =  (parseFloat(125215.62) * parseFloat(cuotas[i]['ICC'])).toFixed(5)
-                              //125215,62 base de calculo
-                          console.log('Ajuste_ICC',Ajuste_ICC)
+                    }else{
+                        ////////analizar cuil 30-71119137-9 manzana 8 parcela 5  fuotas fijas
+                        if (cuotas[i]['zona'] == "PIT" && cuotas[i]['manzana'] == "8" && cuotas[i]['parcela'] == "5") {
+                            Ajuste_ICC = 0
+                            cuota_con_ajuste += parseFloat(Ajuste_ICC)   
+
+                        }else {///// analizar a gailiard que no se aplico 
+                            if (cuotas[i]['cuil_cuit'] == "20-93938615-8" && cuotas[i]['mes'] == "2" && cuotas[i]['anio'] == "2023") {
+                                Ajuste_ICC =  (parseFloat(125215.62) * parseFloat(cuotas[i]['ICC'])).toFixed(5)
+                                  //125215,62 base de calculo
+                              console.log('Ajuste_ICC',Ajuste_ICC)
+                                //////////////
+                               cuota_con_ajuste = parseFloat(125215.62)+ parseFloat(Ajuste_ICC)       
+                               console.log('cuota_con_ajuste',cuota_con_ajuste)                 
+                            } else {
+                            ///rssto de cuotas
+                            Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
                             //////////////
-                           cuota_con_ajuste = parseFloat(125215.62)+ parseFloat(Ajuste_ICC)       
-                           console.log('cuota_con_ajuste',cuota_con_ajuste)                 
-                        } else {
-                        ///rssto de cuotas
-                        Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
-                        //////////////
-                        cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
+                            cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
+                        }
                     }
-                }
+
+                    } 
                     ////
 
                     ////////                    cuota_con_ajuste += parseFloat(Ajuste_ICC)
