@@ -377,6 +377,24 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
     }
 
 })
+
+
+
+router.post('/registrarInteres/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
+    const { id_interes, id_pago ,tipo_operacion} = req.body
+  
+
+if(tipo_operacion=="pago interes"){
+    await pool.query('UPDATE cuotas set pago_interes=? WHERE id = ?', [id_pago, id_interes])
+}else{
+    await pool.query('UPDATE cuotas set pago_interes=? WHERE id = ?', [tipo_operacion, id_interes])
+}
+
+
+})
+
+
+
 /// aprobar pago nivel 2
 router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
     const { id, tipo } = req.body
@@ -432,9 +450,14 @@ router.post('/aprobarr/', isLoggedInn2, async (req, res) => { // pagot es el obj
 })
 
 
+router.get("/traerpagosdeuncliente/:cuil_cuit", async (req, res) => {
+    const { cuil_cuit } = req.params
 
+    const detalles = await pool.query('SELECT * FROM pagos where cuil_cuit = ?', [cuil_cuit])
 
+    res.json(detalles)
 
+})
 ///// Detalles del pago 
 router.get("/detallespago/:id", async (req, res) => {
     const { id } = req.body
