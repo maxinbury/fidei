@@ -691,7 +691,7 @@ const lotefuncion2 = async (req, res) => {
         const lot = await pool.query('SELECT * FROM lotes WHERE id =  ?', [id])
 
 
-        let cuotas = await pool.query('SELECT * FROM cuotas WHERE id_lote =  ?', [id])
+        let cuotas = await pool.query('SELECT * FROM cuotas left join (select mes as mesi, anio as anioi, alicuota from intereses) as sel on cuotas.mes=sel.mesi and cuotas.anio=sel.anioi WHERE id_lote =  ?', [id])
         ///////////ver si innecesario     
         if (cuotas.length === 0) {
 
@@ -753,21 +753,10 @@ const lotefuncion2 = async (req, res) => {
 
 
 
-            }/* interes="No"
-            if(pago>=cuota_con_ajuste){
-                anioalt=anio
-                mesalt++
-                if (mesalt > 12) {  
-                    mesalt = 1;  
-                    anioalt++;  
-                } 
-                const verificarvencida = await pool.query('select * from icc_historial where mes=? and anio=?',[mesalt,anioalt])
-                if(verificarvencida.length>0){
-                    interes="Si"
-                }else{interes="No"
-
-                }
-            } */
+            } interes=0
+            /////se comprueba si no pago en completitud y  ya existe un valor en el interes
+            if((pago<cuota_con_ajuste) && (cuotas[0]['alicuota'] != null )){
+                interes=(((parseFloat(cuotas[i]['alicuota'])*0.5)/100)*cuota_con_ajuste).toFixed(2)                }
             nuev = {
                 id: cuotas[0]['id'],
                 saldo_inicial: cuotas[0]['saldo_inicial'],
@@ -782,6 +771,7 @@ const lotefuncion2 = async (req, res) => {
                 saldo_cierre: saldo_cierre.toFixed(2),
                 parcialidad: cuotas[0]['parcialidad'],
                 diferencia: -(Amortizacion).toFixed(2) + pag,
+                interes
 
             }
             let nuevAct = {
@@ -798,6 +788,7 @@ const lotefuncion2 = async (req, res) => {
                 saldo_cierre: saldo_cierre.toFixed(2),
                 parcialidad: cuotas[0]['parcialidad'],
                 diferencia: -(Amortizacion).toFixed(2) + pag,
+                interes
 
             }
             //// 
@@ -876,7 +867,13 @@ const lotefuncion2 = async (req, res) => {
 
                     dif = - parseFloat(cuota_con_ajuste) + parseFloat(pag)
 
-
+                    interes=0
+                    console.log(typeof(pago[0]['SUM(monto)']))
+                    console.log(typeof(cuota_con_ajuste))
+                    /////se comprueba si no pago en completitud y  ya existe un valor en el interes
+                    if(((pago[0]['SUM(monto)']+0.01)<cuota_con_ajuste) && (cuotas[i]['alicuota'] != null )){
+                        interes=(((parseFloat(cuotas[i]['alicuota'])*0.5)/100)*cuota_con_ajuste).toFixed(2)
+                        }
 
                     nuev = {
                         id: cuotas[i]['id'],
@@ -892,7 +889,7 @@ const lotefuncion2 = async (req, res) => {
                         saldo_cierre: saldo_cierre.toFixed(2),////////realizado
                         parcialidad: cuotas[i]['parcialidad'],
                         diferencia: dif.toFixed(2),/////realizado
-
+                        interes
 
                     }
                     nuevAct = {
@@ -908,7 +905,7 @@ const lotefuncion2 = async (req, res) => {
                         saldo_cierre: saldo_cierre.toFixed(2),////////realizado
                         parcialidad: cuotas[i]['parcialidad'],
                         diferencia: dif.toFixed(2),/////realizado
-
+                        interes
 
                     }
 
@@ -1137,10 +1134,10 @@ const borrartodas = async (req, res) => {
 const ief = async (req, res) => {
     const id = req.params
     idaux = id.id
-    console.log(id)
+   
 
     let lote = await pool.query('select * from lotes where id = ? ', [idaux])
-    console.log(lote)
+    
     let cantidad = (await pool.query('select count(*) from cuotas where id_lote = ? and parcialidad = "final"', [idaux]))[0]['count(*)']
     // console.log(cantidad)    cantidad de liquidadas y vencidas
     if (cantidad === 0) {
