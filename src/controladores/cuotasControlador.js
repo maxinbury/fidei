@@ -906,7 +906,7 @@ const lotefuncion2 = async (req, res) => {
                         diferencia: dif.toFixed(2),/////realizado
                         interes
 
-                    }
+                    }   
 
                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct, cuotas[i]['id']])
                 } else {
