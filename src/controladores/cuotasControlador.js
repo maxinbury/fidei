@@ -873,7 +873,7 @@ const lotefuncion2 = async (req, res) => {
                     if(((pago[0]['SUM(monto)']+0.01)<cuota_con_ajuste) && (cuotas[i]['alicuota'] != null )){
                         interes=(((parseFloat(cuotas[i]['alicuota'])*0.5)/100)*cuota_con_ajuste).toFixed(2)
                         }
-
+                     
                     nuev = {
                         id: cuotas[i]['id'],
                         saldo_inicial: saldo_inicial,
@@ -909,10 +909,13 @@ const lotefuncion2 = async (req, res) => {
 
 
                     }
+                    nuev
+                    console.log(nuev)
 
-
+                    console.log('si',cuotas[i]['nro_cuota'])
                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct, cuotas[i]['id']])
                 } else {
+                    console.log('no',cuotas[i]['nro_cuota'])
                     nuev = {
                         id: cuotas[i]['id'],
                         saldo_inicial: saldo_cierre,
