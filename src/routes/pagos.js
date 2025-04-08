@@ -383,11 +383,16 @@ router.post('/pagonivel2', isLoggedInn2, async (req, res) => { // pagot es el ob
 router.post('/registrarInteres/', isLoggedInn2, async (req, res) => { // pagot es el objeto pago
     const { id_interes, id_pago ,tipo_operacion} = req.body
   
+try {
+    if(tipo_operacion=="pago interes"){
+        await pool.query('UPDATE cuotas set pago_interes=? WHERE id = ?', [id_pago, id_interes])
+    }else{
+        await pool.query('UPDATE cuotas set pago_interes=? WHERE id = ?', [tipo_operacion, id_interes])
+    }
+    res.json("Realizado")  
+} catch (error) {
+    res.json("No Realizado")  
 
-if(tipo_operacion=="pago interes"){
-    await pool.query('UPDATE cuotas set pago_interes=? WHERE id = ?', [id_pago, id_interes])
-}else{
-    await pool.query('UPDATE cuotas set pago_interes=? WHERE id = ?', [tipo_operacion, id_interes])
 }
 
 

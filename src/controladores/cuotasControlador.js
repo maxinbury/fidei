@@ -771,7 +771,8 @@ const lotefuncion2 = async (req, res) => {
                 saldo_cierre: saldo_cierre.toFixed(2),
                 parcialidad: cuotas[0]['parcialidad'],
                 diferencia: -(Amortizacion).toFixed(2) + pag,
-                interes
+                interes,
+                pago_interes: cuotas[0]['pago_interes'],
 
             }
             let nuevAct = {
@@ -888,7 +889,8 @@ const lotefuncion2 = async (req, res) => {
                         saldo_cierre: saldo_cierre.toFixed(2),////////realizado
                         parcialidad: cuotas[i]['parcialidad'],
                         diferencia: dif.toFixed(2),/////realizado
-                        interes
+                        interes,
+                        pago_interes: cuotas[i]['pago_interes'],
 
                     }
                     nuevAct = {
@@ -909,8 +911,8 @@ const lotefuncion2 = async (req, res) => {
 
 
                     }
-                    nuev
-                    console.log(nuev)
+                  
+                
 
                     console.log('si',cuotas[i]['nro_cuota'])
                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct, cuotas[i]['id']])
@@ -929,7 +931,9 @@ const lotefuncion2 = async (req, res) => {
                         Saldo_real: 0, ////////realizado
                         saldo_cierre: saldo_cierre,////////realizado
                         parcialidad: cuotas[i]['parcialidad'],
-                        diferencia: 0,/////realizado
+                        diferencia: 0,/////realizado,
+                    
+                        pago_interes: cuotas[i]['pago_interes'],
                     }
                 }
 
