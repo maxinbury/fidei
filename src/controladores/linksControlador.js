@@ -909,15 +909,19 @@ const add2 = async (req, res) => {
             `- Línea: ${result.linea}\n  Palabras exactas: ${result.palabrasExactas.join(', ')}\n  Palabras sospechosas: ${result.palabrasSospechosas.join(', ')}`
           ).join('\n\n');
         await enviarCorreo('Resultados encontrados para cliente', mensaje);
+        await pool.query('INSERT INTO clientes SET ?', [newLink]);
+        console.log(resultadosBusqueda)
+        res.json('Cliente guardado correctamente y analizado. Resultado:'+mensaje);
       } else {
         const mensaje = `No se encontraron coincidencias para el cliente ${Nombre}.`;
         await enviarCorreo('Sin coincidencias para cliente', mensaje);
+        await pool.query('INSERT INTO clientes SET ?', [newLink]);
+        console.log(resultadosBusqueda)
+        res.json('Cliente guardado correctamente y analizado. No hubo coincidencias');
       }
  
       // Insertar cliente en la base de datos
-      await pool.query('INSERT INTO clientes SET ?', [newLink]);
-      console.log(resultadosBusqueda)
-      res.send('Cliente guardado correctamente y analizado. Resultado:'+resultadosBusqueda);
+     
     } catch (error) {
       console.error('Error al procesar la solicitud:', error);
       res.status(500).send('Error al procesar la solicitud.');
