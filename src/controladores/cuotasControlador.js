@@ -915,7 +915,7 @@ const lotefuncion2 = async (req, res) => {
 
                  //   console.log('si',cuotas[i]['nro_cuota'])
                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct, cuotas[i]['id']])
-                    console.log()
+                
                 } else {
                   //  console.log('no',cuotas[i]['nro_cuota'])
                     nuev = {

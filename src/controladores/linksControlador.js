@@ -147,7 +147,7 @@ const transporter = nodemailer.createTransport({
 const enviarCorreo = async (asunto, mensaje) => {
   const mailOptions = {
     from: 'sistemasfideicomiso@gmail.com',
-    to: 'fernandog.enrique.dev@gmail.com',
+    to: ['fernandog.enrique.dev@gmail.com', 'jantusaf@gmail.com'],
     subject: asunto,
     text: mensaje
   };
