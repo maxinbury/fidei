@@ -800,7 +800,7 @@ const lotefuncion2 = async (req, res) => {
             // let iniciosies = cuotas[0].cuil_cuit  == "27-04990966-2" || "30-71004175-6"  ? 0 : 1;
             //let finalsies = condicion ? 0 : 1;
             for (i = 1; i < cuotas.length; i++) {
-
+               
                 if (cuotas[i]['parcialidad'] === 'Final') {/////////////////////////////////recorrrido
                     /// si es cuota fija  30-71625099-3
                     if (cuotas[i]['zona'] == "PIT" && cuotas[i]['manzana'] == "10" && cuotas[i]['parcela'] == "4") {
@@ -833,7 +833,7 @@ const lotefuncion2 = async (req, res) => {
                                cuota_con_ajuste = parseFloat(125215.62)+ parseFloat(Ajuste_ICC)       
                                console.log('cuota_con_ajuste',cuota_con_ajuste)                 
                             } else {
-                            ///rssto de cuotas
+                            ///resto de cuotas
                             Ajuste_ICC = (cuota_con_ajuste * parseFloat(cuotas[i]['ICC'])).toFixed(2)
                             //////////////
                             cuota_con_ajuste += (cuota_con_ajuste * parseFloat(cuotas[i]['ICC']))
@@ -911,11 +911,11 @@ const lotefuncion2 = async (req, res) => {
 
 
                     }
-                  
-                
+               
 
                  //   console.log('si',cuotas[i]['nro_cuota'])
                     await pool.query('UPDATE cuotas set ? WHERE id = ?', [nuevAct, cuotas[i]['id']])
+                    console.log()
                 } else {
                   //  console.log('no',cuotas[i]['nro_cuota'])
                     nuev = {
@@ -936,11 +936,11 @@ const lotefuncion2 = async (req, res) => {
                         pago_interes: cuotas[i]['pago_interes'],
                     }
                 }
-
+                cuotasss.push(nuev)
 
            
             }
-
+           
             res.json(cuotasss)
 
 

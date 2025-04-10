@@ -191,9 +191,10 @@ async function subirlegajo(req, res) {
             ubicacion: filename,
             cuil_cuit: cuil_cuit,
             numero: descripcion,
-           
+            descripcion: descripcion,
             lazo:"Cbu personal",
-            estado: 'A'
+            estado: 'A',
+            fecha: (new Date(Date.now())).toLocaleDateString(),
         }
 
         await pool.query('insert into cbus set?', datoss)
@@ -205,9 +206,10 @@ async function subirlegajo(req, res) {
                 ubicacion: filename,
                 cuil_cuit: cuil_cuit,
                 numero: descripcion,
-                
+                descripcion: descripcion,
                 lazo:"Cbu familiar",
-                estado: 'A'
+                estado: 'A',
+                fecha: (new Date(Date.now())).toLocaleDateString(),
             }
 
             await pool.query('insert into cbus set?', datoss)

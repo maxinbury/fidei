@@ -486,7 +486,6 @@ v="Acreditacion de ingresos"
         Faltan = 'Aun falta completar ' + a + a2 + b + c + d + e + aux + j + k  +t
         porccompleto = (aa + aa2 + bb + cc + dd + ee + auxaux + jj + kk + tt)
 
-    console.log(porccompleto)
         porccompleto = porccompleto / 10
     
 
@@ -523,8 +522,7 @@ v="Acreditacion de ingresos"
     } else {
        
         Faltan = 'Aun falta completar ' + a + a2 +u + b + e + aux + j + k  + s + t 
-        console.log(Faltan)
-        console.log(aa , aa2,uu , bb , ee,auxaux, jj , kk ,ll, tt)
+       
         porccompleto = (aa + aa2+uu + bb + ee + auxaux + jj + kk + ll+ tt)
 ///a dni  b constancia afil  c estaturo d acta organi   e domicilio auxDj calidad opersia j  Datospers
 // k origen de fondo t repet    ll Pago Monotributo
