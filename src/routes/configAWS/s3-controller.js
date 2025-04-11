@@ -1227,8 +1227,9 @@ async function pagonivel2(req, res) {
         console.log('si lee')
         const workbooksheets = workbook.SheetNames
         const sheet = workbooksheets[0]
-    
-        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+    /// nuevo
+    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], { raw: false }); 
+      ///viejo  const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
         //console.log(dataExcel)
     
         let regex = /(\d+)/g;
@@ -1247,16 +1248,42 @@ async function pagonivel2(req, res) {
             fecha = dataExcel[property]['']
             referencia = dataExcel[property]['REFERENCIA']
             debitos = dataExcel[property]['DEBITO EN $']
-            creditos =dataExcel[property]['CREDITO EN $']
+            creditos =String(dataExcel[property]['CREDITO EN $'])
             console.log('creditos',creditos)
+            console.log('sin sstring')
+            console.log(dataExcel[property]['CREDITO EN $'])
             console.log('monto',monto)
             cleanedString=0
             if(creditos !== undefined){
               //  cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
-              let valorString = String(creditos); 
+              let valorString = String(creditos);
 
-                 cleanedString = valorString.replace(".", "").replace(",", ".");
-                 cleanedString = cleanedString.slice(0, -2) + "." + cleanedString.slice(-2);
+              // 1. Eliminar todos los puntos (separadores de miles)
+               cleanedString = valorString.replace(/\./g, '');
+              
+              // 2. Reemplazar la coma por punto (para convertir decimales)
+              cleanedString = cleanedString.replace(',', '.');
+              
+              // 3. Si hay más de un punto, corregimos
+              const parts = cleanedString.split('.');
+              if (parts.length > 2) {
+                const decimal = parts.pop(); // Última parte: los centavos reales
+                cleanedString = parts.join('') + '.' + decimal;
+              }
+              
+              // 4. Convertimos a número
+              let numero = parseFloat(cleanedString);
+              
+              // 5. Convertimos a string sin forzar decimales
+              let valorFinal = Number.isInteger(numero) ? numero.toString() : numero.toString();
+              
+              console.log('Valor final:', valorFinal);
+              
+              // Asignamos el resultado
+              cleanedString = valorFinal;
+              
+              console.log('fin')
+              
             }
        
             console.log('filtro',cleanedString)
