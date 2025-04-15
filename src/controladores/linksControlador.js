@@ -37,7 +37,8 @@ const buscarEnPagina = async (nombreCompleto) => {
       const palabras = nombreCompleto
         .toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Eliminar tildes
-        .split(/[\s-]+/)/////modificaicon
+        .split(/[\s\-’‘'"]+/)
+        /////modificaicon
         .filter(word => word.length > 0);
   
       const totalPalabras = palabras.length;
