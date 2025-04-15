@@ -773,6 +773,7 @@ const lotefuncion2 = async (req, res) => {
                 diferencia: -(Amortizacion).toFixed(2) + pag,
                 interes,
                 pago_interes: cuotas[0]['pago_interes'],
+                cuota_cancelada: cuotas[0]['cuota_cancelada'],
 
             }
             let nuevAct = {
@@ -789,7 +790,8 @@ const lotefuncion2 = async (req, res) => {
                 saldo_cierre: saldo_cierre.toFixed(2),
                 parcialidad: cuotas[0]['parcialidad'],
                 diferencia: -(Amortizacion).toFixed(2) + pag,
-                interes
+                interes,
+              
 
             }
             //// 
@@ -891,6 +893,7 @@ const lotefuncion2 = async (req, res) => {
                         diferencia: dif.toFixed(2),/////realizado
                         interes,
                         pago_interes: cuotas[i]['pago_interes'],
+                        cuota_cancelada: cuotas[i]['cuota_cancelada'],
 
                     }
                     nuevAct = {
@@ -906,7 +909,8 @@ const lotefuncion2 = async (req, res) => {
                         saldo_cierre: saldo_cierre.toFixed(2),////////realizado
                         parcialidad: cuotas[i]['parcialidad'],
                         diferencia: dif.toFixed(2),/////realizado
-                        interes
+                        interes,
+                  
 
 
 
@@ -932,7 +936,7 @@ const lotefuncion2 = async (req, res) => {
                         saldo_cierre: saldo_cierre,////////realizado
                         parcialidad: cuotas[i]['parcialidad'],
                         diferencia: 0,/////realizado,
-                    
+                        cuota_cancelada: cuotas[i]['cuota_cancelada'],
                         pago_interes: cuotas[i]['pago_interes'],
                     }
                 }
@@ -1105,6 +1109,32 @@ const postcuotas = async (req, res, next) => {
 
 }
 
+
+
+
+
+const cancelarlote = async (req, res, next) => {
+    const { mes,anio,id_lote} = req.body
+    console.log(mes,anio,id_lote)
+    try {
+        const cuotaacancelar = await pool.query('select * from cuotas where mes=? and  anio=? and id_lote=? ',[mes,anio,id_lote])
+
+if(cuotaacancelar.length>0){
+    await pool.query('update cuotas  set cuota_cancelada=? where id_lote=? ',[cuotaacancelar[0]['id'],id_lote])
+    res.json ('Realizado')
+}else{
+    res.json ('Cuota noe xiste ')
+}
+    } catch (error) {
+        console.log(error)
+        res.json('No realizado')
+    }
+
+   // cuota_cancelada
+
+
+
+}
 
 const actualizarcuota = async (req, res, next) => {
     const { saldo_inicial, cuota_con_ajuste, Saldo_real, Ajuste_ICC, id } = req.body
@@ -1738,7 +1768,7 @@ module.exports = {
 
     postadd,
     postaddaut2,
-
+    cancelarlote,
     post_agregaricc,
     lotefuncion2,
     cuotasdeunlote,
