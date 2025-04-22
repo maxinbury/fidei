@@ -1121,6 +1121,29 @@ const cancelarlote = async (req, res, next) => {
 
 if(cuotaacancelar.length>0){
     await pool.query('update cuotas  set cuota_cancelada=? where id_lote=? ',[cuotaacancelar[0]['id'],id_lote])
+
+
+
+            if (monto_inusual == 'Si') {
+    
+                const newLink2 = {
+                    id_cuota,
+                    monto,
+                    cuil_cuit,
+                    mes,
+                    id_pago:result.insertId,
+                    estado: estado,
+                    anio,
+                    zona:"Otra",
+                    proceso: "averificarnivel3",
+                    cuil_cuit_administrador,
+                    ubicacion: filename,///////////aca ver el problema
+                    fecha
+    
+                };
+                await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+    
+            }
     res.json ('Realizado')
 }else{
     res.json ('Cuota noe xiste ')

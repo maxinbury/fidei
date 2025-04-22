@@ -1177,6 +1177,120 @@ async function pagarrapidoic3(req, res) {
     }
 }
 
+
+async function cancelarlote(req, res) {
+    try {
+        let { mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha } = req.body;
+  
+        const filename = req.file ? req.file.filename : 'sin comprobante';
+
+        console.log(mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha, filename);
+
+        // 1. Traer las cuotas del lote ordenadas por nro_cuota
+        const cuotas = await pool.query(
+            'SELECT nro_cuota, mes, anio, cuota_con_ajuste FROM cuotas WHERE id_lote = ? ORDER BY nro_cuota',
+            [id_lote]
+        );
+
+        // 2. Buscar el índice de la cuota que coincide con mes y anio
+        const indexInicio = cuotas.findIndex(c =>
+            String(c.mes) === String(mes)&& c.anio == anio
+        );
+
+        if (indexInicio === -1) {
+            return res.status(404).json({ mensaje: 'No se encontró la cuota con ese mes y año.' });
+        }
+
+        // 3. Obtener cuotas desde esa posición en adelante
+        const cuotasDesdeEsa = cuotas.slice(indexInicio);
+
+        const cantidad = cuotasDesdeEsa.length;
+        const total = cuotasDesdeEsa.reduce((acc, cuota) => acc + parseFloat(cuota.cuota_con_ajuste), 0);
+console.log("cantidad",cantidad)
+console.log("total",total)
+        return res.json({
+            cantidad_cuotas_pendientes: cantidad,
+            total_con_ajuste: total.toFixed(2),
+        });
+
+    } catch (error) {
+        console.error('Error en cancelarlote:', error);
+        res.status(500).json({ mensaje: 'Error del servidor.' });
+    }
+
+  
+
+        
+/* 
+
+        const newLink = {
+            id_cuota,
+            monto,
+            fecha,
+            cuil_cuit,
+            mes,
+            estado: estado,
+            anio,
+            cuil_cuit_administrador,
+            cuil_cuit_distinto,
+            monto_distinto,
+            monto_inusual,
+            id_cbu:cbupago,
+            ubicacion: filename,///////////aca ver el problema
+
+        };
+
+       // const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        console.log(result.insertId);
+        if (29 < cantidad) {
+
+            monto_inusual = 'Si'
+        }
+        if (monto_inusual == 'Si') {
+
+            const newLink2 = {
+                id_cuota,
+                monto,
+                cuil_cuit,
+                mes,
+                id_pago:result.insertId,
+                estado: estado,
+                anio,
+                zona:"Otra",
+                proceso: "averificarnivel3",
+                cuil_cuit_administrador,
+                ubicacion: filename,///////////aca ver el problema
+                fecha
+
+            };
+          //  await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+
+        }
+        /////////FIN  GUARDADO DE PAGO
+        ///INICIO IMPACTO EN LA CUOTA
+        //await pagodecuota.pagodecuota(id, monto)
+        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+         cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+        mensaje = 'Pago realizado ' + mensaje
+        aux = cuota[0]["cuil_cuit"]
+       
+
+    
+
+    try {
+
+
+        
+ res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+    } catch (ex) {
+      // console.log('NOOO  ')
+      console.log(ex)
+      res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+    } */
+}
+
+
+
 /////////////////////pagar nivel 2 directamente aprobado 
 async function pagonivel2(req, res) {
     let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
@@ -1810,5 +1924,6 @@ module.exports = {
     pagarrapidoic3,
     pagarnivel2ic3,
     actualizarpagoic3,
-    leerformlegajo
+    leerformlegajo,
+    cancelarlote
 }
