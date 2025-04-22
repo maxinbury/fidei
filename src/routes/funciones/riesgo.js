@@ -59,6 +59,7 @@ const riesgoAntiguedad = {
 
 // Función principal: matriz de riesgo
 async function matriz(cliente) {
+   const salariominimo= 296832 
     let riesgo = 0;
 
     if (cliente['pep_extranjero'] === 'Si' || cliente['categoria_especial'] === 'Si') {
@@ -92,15 +93,15 @@ async function matriz(cliente) {
         try {
             const volumen = cliente['volumenTransaccional'];
 
-            if (volumen >= 0 && volumen <= 15000000) {
+            if (volumen >= 0 && volumen <=  15*salariominimo) {
                 riesgo += 4;
-            } else if (volumen > 15000000 && volumen <= 30000000) {
+            } else if (volumen > 15*salariominimo && volumen <= 30*salariominimo) {
                 riesgo += 8;
-            } else if (volumen > 30000000 && volumen <= 45000000) {
+            } else if (volumen > 30*salariominimo && volumen <= 45*salariominimo) {
                 riesgo += 12;
-            } else if (volumen > 45000000 && volumen <= 60000000) {
+            } else if (volumen > 45*salariominimo && volumen <= 60*salariominimo) {
                 riesgo += 16;
-            } else if (volumen > 60000000) {
+            } else if (volumen >60*salariominimo) {
                 riesgo += 20;
             }
         } catch (error) {
@@ -123,15 +124,15 @@ async function matriz(cliente) {
         try {
             const volumen = cliente['volumenTransaccional'];
 
-            if (volumen >= 0 && volumen <= 150000000) {
+            if (volumen >= 0 && volumen <= 150*salariominimo) {
                 riesgo += 4;
-            } else if (volumen > 150000000 && volumen <= 300000000) {
+            } else if (volumen > 150*salariominimo && volumen <= 300*salariominimo) {
                 riesgo += 8;
-            } else if (volumen > 300000000 && volumen <= 450000000) {
+            } else if (volumen > 300*salariominimo && volumen <= 450*salariominimo) {
                 riesgo += 12;
-            } else if (volumen > 450000000 && volumen <= 600000000) {
+            } else if (volumen > 450*salariominimo && volumen <= 600*salariominimo) {
                 riesgo += 16;
-            } else if (volumen > 600000000) {
+            } else if (volumen > 600*salariominimo) {
                 riesgo += 20;
             }
         } catch (error) {

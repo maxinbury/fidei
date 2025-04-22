@@ -10,7 +10,7 @@ const ponerguion = require('../../public/apps/transformarcuit')
 const sacarguion = require('../../public/apps/transformarcuit')
 const pagodecuota = require('../funciones/pagoDeCuota')
 const enviodemail = require('../Emails/Enviodemail')
-const traerriesgo =  require('../funciones/riesgo')
+const traerriesgo = require('../funciones/riesgo')
 
 
 
@@ -24,12 +24,12 @@ async function s3Upload(req, res) {
     try {
 
 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-        res.send('Uploaded!!');
-    }catch{console.log(error)}
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+            res.send('Uploaded!!');
+        } catch { console.log(error) }
     } catch (ex) {
         res.send('ERROR!!!!');
     }
@@ -78,7 +78,7 @@ async function readFormData(req) {
 
         ///
         form.on('end', () => {
-           
+
             resolve(dataObj);
         });
     });
@@ -115,34 +115,34 @@ async function getSignedUrl2(req, res) {
 async function traerImagen(ubicacion) {
 
     try {
-       
-       // const { key } = { ubicacion };
+
+        // const { key } = { ubicacion };
 
         const url = await getPresignedURL("mypdfstorage", ubicacion);
-   
+
         return (url)
 
 
     } catch (ex) {
-       // console.log(ex)
+        // console.log(ex)
         return ('No se encontro imagen');
     }
 }
 
 ///funcion para guardar comprobante deingresos declarados
 async function determinaringreso(req, res) {
-    let { cuil_cuit,  descripcion } = req.body;
-      const filename = req.file.filename
+    let { cuil_cuit, descripcion } = req.body;
+    const filename = req.file.filename
 
-   
+
     cuil_cuit = cuil_cuit
-    descripcion =descripcion
- 
+    descripcion = descripcion
+
     let rta = ''
     const datoss = {
         ingresos: descripcion
     }
-   try {
+    try {
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datoss, cuil_cuit])
         const constancianueva = {
             ubicacion: filename,
@@ -156,7 +156,7 @@ async function determinaringreso(req, res) {
         await pool.query('insert into constancias set ?', constancianueva)
         rta = 'Ingresos actualizados'
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
         rta = 'Ingresos actualizados'
     }
 
@@ -166,14 +166,14 @@ async function determinaringreso(req, res) {
     try {
 
 
-        
+
 
 
     } catch (ex) {
-        
+
         rta = 'Ingresos actualizados'
     }
-  
+
     res.json(rta)
 }
 
@@ -181,18 +181,18 @@ async function determinaringreso(req, res) {
 async function subirlegajo(req, res) {
     const { cuil_cuit, tipo, descripcion } = req.body;
     const filename = req.file.filename;
-    console.log(cuil_cuit, tipo, descripcion,filename)
-   
+    console.log(cuil_cuit, tipo, descripcion, filename)
 
-    
+
+
     if (tipo == "Cbu personal") {
-      
+
         const datoss = {
             ubicacion: filename,
             cuil_cuit: cuil_cuit,
             numero: descripcion,
             descripcion: descripcion,
-            lazo:"Cbu personal",
+            lazo: "Cbu personal",
             estado: 'A',
             fecha: (new Date(Date.now())).toLocaleDateString(),
         }
@@ -201,21 +201,21 @@ async function subirlegajo(req, res) {
 
     } else {
         if (tipo == "Cbu familiar") {
-           
+
             const datoss = {
                 ubicacion: filename,
                 cuil_cuit: cuil_cuit,
                 numero: descripcion,
                 descripcion: descripcion,
-                lazo:"Cbu familiar",
+                lazo: "Cbu familiar",
                 estado: 'A',
                 fecha: (new Date(Date.now())).toLocaleDateString(),
             }
 
             await pool.query('insert into cbus set?', datoss)
-            
+
         } else {
-        
+
             const datoss = {
                 ubicacion: filename,
                 cuil_cuit: cuil_cuit,
@@ -225,19 +225,19 @@ async function subirlegajo(req, res) {
 
                 estado: 'Aprobada'
             }
-           
+
             await pool.query('insert into constancias set?', datoss)
         }
     }
 
-console.log('llega')
+    console.log('llega')
     try {
 
 
-      
-             res.json(' Realizado con exito ')
-     
-   
+
+        res.json(' Realizado con exito ')
+
+
 
 
 
@@ -245,7 +245,7 @@ console.log('llega')
         console.log(ex)
         res.json('Subido con exito')
     }
-            
+
 }
 ///funcion para leer un form legajo
 async function leerformlegajo(req) {
@@ -282,57 +282,57 @@ async function leerformlegajo(req) {
 
 async function actualizarpago(req, res) {
     let { id } = req.body
-      const filename = req.file.filename
-try {
-    console.log(filename)
-     console.log(id)
+    const filename = req.file.filename
+    try {
+        console.log(filename)
+        console.log(id)
 
-const datoss = {
-    ubicacion: filename,
+        const datoss = {
+            ubicacion: filename,
 
-}
-console.log(datoss)
-await pool.query('UPDATE pagos SET ?  where id = ?', [datoss, id])
+        }
+        console.log(datoss)
+        await pool.query('UPDATE pagos SET ?  where id = ?', [datoss, id])
 
-  res.json('Realizado')
-} catch (error) {
-    console.log(error)
-    res.json("Error")
-}
+        res.json('Realizado')
+    } catch (error) {
+        console.log(error)
+        res.json("Error")
+    }
 
-   
+
 }
 
 
 async function actualizarpagoic3(req, res) {
     let { id } = req.body
-      const filename = req.file.filename
-try {
+    const filename = req.file.filename
+    try {
 
-const datoss = {
-    ubicacion: filename,
+        const datoss = {
+            ubicacion: filename,
 
-}
-console.log(id)
-await pool.query('UPDATE pagos_ic3 SET ?  where id = ?', [datoss, id])
+        }
+        console.log(id)
+        await pool.query('UPDATE pagos_ic3 SET ?  where id = ?', [datoss, id])
 
-  res.json('Realizado')
-} catch (error) {
-    console.log(error)
-    res.json("Error")
-}
+        res.json('Realizado')
+    } catch (error) {
+        console.log(error)
+        res.json("Error")
+    }
 
-   
+
 }
 
 
 
 ////funciond eterminar persona politicamente expuesta
 async function determinarPep(req, res) {
-    let { cuil_cuit , expuesta } = req.body
-      const filename = req.file.filename
+    let { cuil_cuit, expuesta } = req.body
+    const filename = req.file.filename
 
-console.log( cuil_cuit , expuesta )
+    console.log(cuil_cuit, expuesta)
 
 
 
@@ -352,18 +352,18 @@ console.log( cuil_cuit , expuesta )
         }
         await pool.query('UPDATE clientes set ? WHERE cuil_cuit= ?', [datosss, cuil_cuit])
     } catch (error) {
-console.log(error)
+        console.log(error)
     }
 
-res.json('Realizado')
+    res.json('Realizado')
 
-   
+
 }
 
 ////Subir legajo sin aprobar
 async function subirlegajo1(req, res) {
 
-      const filename = req.file.filename
+    const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
     cuil_cuit = myArray[0]
@@ -392,13 +392,13 @@ async function subirlegajo1(req, res) {
     try {
 
 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-    
-        
-    }catch{console.log(error)}
-    res.json('Subido con exito')
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+
+        } catch { console.log(error) }
+        res.json('Subido con exito')
 
     } catch (ex) {
         res.json('Error algo sucedió ')
@@ -407,7 +407,7 @@ async function subirlegajo1(req, res) {
 ////cargarcbu
 async function cargarcbu(req, res) {
 
-      const filename = req.file.filename
+    const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
 
@@ -434,7 +434,7 @@ async function cargarcbu(req, res) {
 
 
     } catch (error) {
-      //  console.log(error)
+        //  console.log(error)
     }
 
 
@@ -443,17 +443,17 @@ async function cargarcbu(req, res) {
     try {
 
 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-      
-    }catch{console.log(error)}
-  res.json('Subido con exito')
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+
+        } catch { console.log(error) }
+        res.json('Subido con exito')
 
 
     } catch (ex) {
-      //  console.log('NOOO  ')
+        //  console.log('NOOO  ')
         res.json('Subido con exito')
     }
 }
@@ -463,12 +463,12 @@ async function cargarcbu(req, res) {
 
 //////////////pago
 async function pagarniv1(req, res) {
-    let { id_cuota,cuil_cuit, pago, id_cbu, fecha,monto,fechapago,id} = req.body;
+    let { id_cuota, cuil_cuit, pago, id_cbu, fecha, monto, fechapago, id } = req.body;
     const filename = req.file.filename;
-    console.log(id_cuota,cuil_cuit, pago, id_cbu, fecha,filename)
-    
+    console.log(id_cuota, cuil_cuit, pago, id_cbu, fecha, filename)
 
-  
+
+
     auxiliarfecha = fechapago.split("-");
     fechapago = auxiliarfecha[2] + "-" + auxiliarfecha[1] + "-" + auxiliarfecha[0]
     fechapago = fechapago.replace('-', '/')
@@ -505,15 +505,15 @@ async function pagarniv1(req, res) {
                     montomax = cliente[0]['ingresos'] * 0.3
                 }
             } catch (error) {
-               // console.log(error)
+                // console.log(error)
                 montomax = cliente[0]['ingresos'] * 0.3
             }
-       
+
             if (montomax < monto) {
                 monto_inusual = 'Si'
             }
             ////// final verificacion de ingresos
-         
+
             let extracto = await pool.query('Select * from extracto ')
             cantidad = extracto.length
 
@@ -536,7 +536,7 @@ async function pagarniv1(req, res) {
                         const sheet = workbooksheets[0]
 
                         const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-        
+
 
                         console.log(dataExcel[1]['DESCRIPCION'].includes(cuil_cuit_lazo))///IMPORTANTE EL CONSOLE LOG PARA NO LEER EXTRACTOS INVALIDOS
                         for (const property in dataExcel) {////////////recorrido del extracto
@@ -555,25 +555,25 @@ async function pagarniv1(req, res) {
 
                                 credito = String(dataExcel[property]['CREDITO EN $'])
 
-                                                       try {
+                                try {
 
-                              
+
 
 
                                     if (credito.includes("$")) {
                                         credito = credito.replace("$", "")
-                                      
+
                                         credito = credito.replace(" ", "")
-                                   
+
                                         credito = credito.replace(".", "")
-                                       
+
                                         credito = credito.replace(",", ".")
-                                   
+
                                         if (credito === monto) {
-                                     
+
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                    
+
                                             if (fecha === fechapago) {
 
 
@@ -612,22 +612,22 @@ async function pagarniv1(req, res) {
 
                                     } else {
 
-                                 
+
                                         credito = credito.replace(" ", "")
-                                  
+
                                         //  credito = credito.replace(".", "")
-                                      credito = credito.replace(",", ".")
-                                   
+                                        credito = credito.replace(",", ".")
+
                                         if (credito === monto) {
-                                        
+
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                           
+
                                             if (fecha === fechapago) {
-                                              
+
 
                                                 verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
-                                           
+
                                                 if (verificacion.length > 0) {
                                                     yarealizado = 'SI'
 
@@ -643,7 +643,7 @@ async function pagarniv1(req, res) {
 
 
                                                     } catch (error) {
-                                                      //  console.log(error)
+                                                        //  console.log(error)
                                                     }
 
                                                 }
@@ -670,20 +670,20 @@ async function pagarniv1(req, res) {
 
                         }
                     } catch (error) {
-                      //  console.log(error)
+                        //  console.log(error)
                     }
                     i += 1
                 } //// fin comparacion de estractos
 
 
             } catch (error) {
-              //  console.log(error)
+                //  console.log(error)
             }
 
 
             //////////////////////////////
             const id_cuota = existe[0]["id"]
-          
+
 
             //////////   regisTro aprobacion de pago  
 
@@ -740,20 +740,20 @@ async function pagarniv1(req, res) {
         }
         /////
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('Error la cuota no existe, elegir una fecha valida')
     }
     try {
         ///guardado de 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-        
-    }catch{console.log(error)}
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+
+        } catch { console.log(error) }
 
     } catch (ex) {
-      //  console.log('NOOO  ')
+        //  console.log('NOOO  ')
     }
 }
 
@@ -762,10 +762,10 @@ async function pagarniv1(req, res) {
 
 async function pagarnivel1cuota(req, res) {
 
-    let { id_cuota,cuil_cuit, pago, id_cbu, fecha,monto,fechapago,id} = req.body;
+    let { id_cuota, cuil_cuit, pago, id_cbu, fecha, monto, fechapago, id } = req.body;
     const filename = req.file.filename;
-    console.log(id_cuota,cuil_cuit, pago, id_cbu, fecha,filename)
-    
+    console.log(id_cuota, cuil_cuit, pago, id_cbu, fecha, filename)
+
 
 
 
@@ -801,10 +801,10 @@ async function pagarnivel1cuota(req, res) {
                     montomax = cliente[0]['ingresos'] * 0.3
                 }
             } catch (error) {
-               // console.log(error)
+                // console.log(error)
                 montomax = cliente[0]['ingresos'] * 0.3
             }
-   
+
 
 
             if (montomax < monto) {
@@ -873,7 +873,7 @@ async function pagarnivel1cuota(req, res) {
 
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                  
+
                                             if (fecha === fechapago) {
 
 
@@ -912,23 +912,23 @@ async function pagarnivel1cuota(req, res) {
 
                                     } else {
 
-                                     
+
                                         credito = credito.replace(" ", "")
-                                   
+
                                         //  credito = credito.replace(".", "")
-                                  
+
                                         credito = credito.replace(",", ".")
-                                  
+
                                         if (credito === monto) {
-                                         
+
                                             monto_distinto = 'No'
                                             fecha = dataExcel[property]['']
-                                          
+
                                             if (fecha === fechapago) {
-                                            
+
 
                                                 verificacion = await pool.query('select * from pagos where monto=? and fecha= ? and estado = "A"', [monto, fechapago])
-                                          
+
                                                 if (verificacion.length > 0) {
                                                     yarealizado = 'SI'
 
@@ -944,7 +944,7 @@ async function pagarnivel1cuota(req, res) {
 
 
                                                     } catch (error) {
-                                                      //  console.log(error)
+                                                        //  console.log(error)
                                                     }
 
                                                 }
@@ -971,20 +971,20 @@ async function pagarnivel1cuota(req, res) {
 
                         }
                     } catch (error) {
-                       // console.log(error)
+                        // console.log(error)
                     }
                     i += 1
                 } //// fin comparacion de estractos
 
 
             } catch (error) {
-               // console.log(error)
+                // console.log(error)
             }
 
 
             //////////////////////////////
             const id_cuota = existe[0]["id"]
-           
+
 
             //////////   regisTro aprobacion de pago  
 
@@ -1041,36 +1041,36 @@ async function pagarnivel1cuota(req, res) {
         }
         /////
     } catch (error) {
-       // console.log(error)
+        // console.log(error)
         res.send('Error la cuota no existe, elegir una fecha valida')
     }
     try {
         ///guardado de 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-        
-    }catch{console.log(error)}
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+
+        } catch { console.log(error) }
     } catch (ex) {
-      //  console.log('NOOO  ')
+        //  console.log('NOOO  ')
     }
 }
 //////////pagorapidoic3
 async function pagarrapidoic3(req, res) {
-    let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
+    let { id_cuota, cuil_cuit, pago, cbu, fecha } = req.body;
     const filename = req.file.filename;
-    console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
+    console.log(id_cuota, cuil_cuit, pago, cbu, fecha, filename)
 
-  
+
     cuil_cuit_administrador = cuil_cuit/// del administrador
     id = id_cuota
     monto = pago
 
     cbupago = cbu
     console.log(cbupago)
-    if (cbupago=="undefined"){
-        cbupago=0
+    if (cbupago == "undefined") {
+        cbupago = 0
     }
     ///
     ///INICIO GUARDADO DE PAGO
@@ -1145,7 +1145,7 @@ async function pagarrapidoic3(req, res) {
             cuil_cuit_distinto,
             monto_distinto,
             monto_inusual,
-            id_cbu:cbupago,
+            id_cbu: cbupago,
             ubicacion: filename,///////////aca ver el problema
 
         };
@@ -1168,12 +1168,12 @@ async function pagarrapidoic3(req, res) {
     try {
 
 
-        
- res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+
+        res.json([mensaje, cuota[0]['cuil_cuit'], cuota[0]['id_lote']])
     } catch (ex) {
-      // console.log('NOOO  ')
-      console.log(ex)
-      res.json(['mensaje', cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+        // console.log('NOOO  ')
+        console.log(ex)
+        res.json(['mensaje', cuota[0]['cuil_cuit'], cuota[0]['id_lote']])
     }
 }
 
@@ -1181,7 +1181,7 @@ async function pagarrapidoic3(req, res) {
 async function cancelarlote(req, res) {
     try {
         let { mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha } = req.body;
-  
+
         const filename = req.file ? req.file.filename : 'sin comprobante';
 
         console.log(mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha, filename);
@@ -1194,7 +1194,7 @@ async function cancelarlote(req, res) {
 
         // 2. Buscar el índice de la cuota que coincide con mes y anio
         const indexInicio = cuotas.findIndex(c =>
-            String(c.mes) === String(mes)&& c.anio == anio
+            String(c.mes) === String(mes) && c.anio == anio
         );
 
         if (indexInicio === -1) {
@@ -1206,55 +1206,51 @@ async function cancelarlote(req, res) {
 
         const cantidad = cuotasDesdeEsa.length;
         const total = cuotasDesdeEsa.reduce((acc, cuota) => acc + parseFloat(cuota.cuota_con_ajuste), 0);
-console.log("cantidad",cantidad)
-console.log("total",total)
-        return res.json({
-            cantidad_cuotas_pendientes: cantidad,
-            total_con_ajuste: total.toFixed(2),
-        });
+        console.log("cantidad", cantidad)
+        console.log("base", total)
+        console.log("total", total*cantidad)
+        const cuotaacancelar = await pool.query('select * from cuotas where mes=? and  anio=? and id_lote=? ', [mes, anio, id_lote])
 
-    } catch (error) {
-        console.error('Error en cancelarlote:', error);
-        res.status(500).json({ mensaje: 'Error del servidor.' });
-    }
+        if (cuotaacancelar.length > 0) {
+            console.log("Act")
+            console.log(  cuotaacancelar[0].id)
+            await pool.query('update cuotas  set cuota_cancelada=? where id_lote=? ', [cuotaacancelar[0]['id'], id_lote])
 
-  
-
-        
-/* 
-
-        const newLink = {
-            id_cuota,
-            monto,
-            fecha,
-            cuil_cuit,
-            mes,
-            estado: estado,
-            anio,
-            cuil_cuit_administrador,
-            cuil_cuit_distinto,
-            monto_distinto,
-            monto_inusual,
-            id_cbu:cbupago,
-            ubicacion: filename,///////////aca ver el problema
-
-        };
-
-       // const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        console.log(result.insertId);
+        }
+          monto_inusual = 'No'
         if (29 < cantidad) {
 
             monto_inusual = 'Si'
         }
+        const newLink = {
+            id_cuota:cuotaacancelar[0]['id'],
+            monto:total*cantidad,
+            fecha,
+            cuil_cuit:cuotaacancelar[0]['cuil_cuit'],
+            mes,
+            estado: "A",
+            anio,
+            cuil_cuit_administrador,
+           // cuil_cuit_distinto,
+          
+            monto_inusual,
+            id_cbu:cbu,
+            ubicacion: filename,///////////aca ver el problema
+
+        };
+
+     const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
+        console.log(result.insertId);
+ 
         if (monto_inusual == 'Si') {
 
             const newLink2 = {
-                id_cuota,
-                monto,
-                cuil_cuit,
+                id_cuota:cuotaacancelar[0]['id'],
+                monto:total*cantidad,
+                cuil_cuit:cuotaacancelar[0]['cuil_cuit'],
                 mes,
                 id_pago:result.insertId,
-                estado: estado,
+                estado: "A",
                 anio,
                 zona:"Otra",
                 proceso: "averificarnivel3",
@@ -1263,52 +1259,106 @@ console.log("total",total)
                 fecha
 
             };
-          //  await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
-
+          await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
         }
-        /////////FIN  GUARDADO DE PAGO
-        ///INICIO IMPACTO EN LA CUOTA
-        //await pagodecuota.pagodecuota(id, monto)
-        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
-         cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-        mensaje = 'Pago realizado ' + mensaje
-        aux = cuota[0]["cuil_cuit"]
-       
+        return res.json('realizado');
 
+    } catch (error) {
+        console.error('Error en cancelarlote:', error);
+        res.status(500).json({ mensaje: 'Error del servidor.' });
+    }
+
+
+
+
+    /* 
     
-
-    try {
-
-
+            const newLink = {
+                id_cuota,
+                monto,
+                fecha,
+                cuil_cuit,
+                mes,
+                estado: estado,
+                anio,
+                cuil_cuit_administrador,
+                cuil_cuit_distinto,
+                monto_distinto,
+                monto_inusual,
+                id_cbu:cbupago,
+                ubicacion: filename,///////////aca ver el problema
+    
+            };
+    
+           // const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
+            console.log(result.insertId);
+            if (29 < cantidad) {
+    
+                monto_inusual = 'Si'
+            }
+            if (monto_inusual == 'Si') {
+    
+                const newLink2 = {
+                    id_cuota,
+                    monto,
+                    cuil_cuit,
+                    mes,
+                    id_pago:result.insertId,
+                    estado: estado,
+                    anio,
+                    zona:"Otra",
+                    proceso: "averificarnivel3",
+                    cuil_cuit_administrador,
+                    ubicacion: filename,///////////aca ver el problema
+                    fecha
+    
+                };
+              //  await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+    
+            }
+            /////////FIN  GUARDADO DE PAGO
+            ///INICIO IMPACTO EN LA CUOTA
+            //await pagodecuota.pagodecuota(id, monto)
+            ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+             cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+            mensaje = 'Pago realizado ' + mensaje
+            aux = cuota[0]["cuil_cuit"]
+           
+    
         
- res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
-    } catch (ex) {
-      // console.log('NOOO  ')
-      console.log(ex)
-      res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
-    } */
+    
+        try {
+    
+    
+            
+     res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+        } catch (ex) {
+          // console.log('NOOO  ')
+          console.log(ex)
+          res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+        } */
 }
 
 
 
 /////////////////////pagar nivel 2 directamente aprobado 
 async function pagonivel2(req, res) {
-    let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
+    let { id_cuota, cuil_cuit, pago, cbu, fecha } = req.body;
     const filename = req.file ? req.file.filename : 'sin comprobante';
 
-    console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
+    console.log(id_cuota, cuil_cuit, pago, cbu, fecha, filename)
 
-  
+
     cuil_cuit_administrador = cuil_cuit/// del administrador
     id = id_cuota
     monto = pago
 
     cbupago = cbu
-    if (cbupago=="undefined"){
-        cbupago=0
+    if (cbupago == "undefined") {
+        cbupago = 0
     }
     ///
-  
+
     let cuil_cuit_distinto = 'No'
     let monto_distinto = 'Si'
     let monto_inusual = 'No'
@@ -1328,12 +1378,12 @@ async function pagonivel2(req, res) {
 
     estado = 'A'
 
-   
-        ///INICIO comparacion
+
+    ///INICIO comparacion
 
 
-        etc = await pool.query('select * from extracto')
-        nombre = etc[(etc.length) - 1]['ubicacion']
+    etc = await pool.query('select * from extracto')
+    nombre = etc[(etc.length) - 1]['ubicacion']
     // const workbook = XLSX.readFile('./src/Excel/'+nombre)
     console.log(nombre)
     try {
@@ -1341,213 +1391,213 @@ async function pagonivel2(req, res) {
         console.log('si lee')
         const workbooksheets = workbook.SheetNames
         const sheet = workbooksheets[0]
-    /// nuevo
-    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], { raw: false }); 
-      ///viejo  const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+        /// nuevo
+        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet], { raw: false });
+        ///viejo  const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
         //console.log(dataExcel)
-    
+
         let regex = /(\d+)/g;
         let mandar = []
         for (const property in dataExcel) {
-          /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
-               estado = 'A'
-               // tipo de pago normal 
-           } */
-       monto_distinto = 'Si'
-          try {
-    
-    
-    
-            descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
-            fecha = dataExcel[property]['']
-            referencia = dataExcel[property]['REFERENCIA']
-            debitos = dataExcel[property]['DEBITO EN $']
-            creditos =String(dataExcel[property]['CREDITO EN $'])
-            console.log('creditos',creditos)
-            console.log('sin sstring')
-            console.log(dataExcel[property]['CREDITO EN $'])
-            console.log('monto',monto)
-            cleanedString=0
-            if(creditos !== undefined){
-              //  cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
-              let valorString = String(creditos);
+            /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
+                 estado = 'A'
+                 // tipo de pago normal 
+             } */
+            monto_distinto = 'Si'
+            try {
 
-              // 1. Eliminar todos los puntos (separadores de miles)
-               cleanedString = valorString.replace(/\./g, '');
-              
-              // 2. Reemplazar la coma por punto (para convertir decimales)
-              cleanedString = cleanedString.replace(',', '.');
-              
-              // 3. Si hay más de un punto, corregimos
-              const parts = cleanedString.split('.');
-              if (parts.length > 2) {
-                const decimal = parts.pop(); // Última parte: los centavos reales
-                cleanedString = parts.join('') + '.' + decimal;
-              }
-              
-              // 4. Convertimos a número
-              let numero = parseFloat(cleanedString);
-              
-              // 5. Convertimos a string sin forzar decimales
-              let valorFinal = Number.isInteger(numero) ? numero.toString() : numero.toString();
-              
-              console.log('Valor final:', valorFinal);
-              
-              // Asignamos el resultado
-              cleanedString = valorFinal;
-              
-              console.log('fin')
-              
+
+
+                descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
+                fecha = dataExcel[property]['']
+                referencia = dataExcel[property]['REFERENCIA']
+                debitos = dataExcel[property]['DEBITO EN $']
+                creditos = String(dataExcel[property]['CREDITO EN $'])
+                console.log('creditos', creditos)
+                console.log('sin sstring')
+                console.log(dataExcel[property]['CREDITO EN $'])
+                console.log('monto', monto)
+                cleanedString = 0
+                if (creditos !== undefined) {
+                    //  cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+                    let valorString = String(creditos);
+
+                    // 1. Eliminar todos los puntos (separadores de miles)
+                    cleanedString = valorString.replace(/\./g, '');
+
+                    // 2. Reemplazar la coma por punto (para convertir decimales)
+                    cleanedString = cleanedString.replace(',', '.');
+
+                    // 3. Si hay más de un punto, corregimos
+                    const parts = cleanedString.split('.');
+                    if (parts.length > 2) {
+                        const decimal = parts.pop(); // Última parte: los centavos reales
+                        cleanedString = parts.join('') + '.' + decimal;
+                    }
+
+                    // 4. Convertimos a número
+                    let numero = parseFloat(cleanedString);
+
+                    // 5. Convertimos a string sin forzar decimales
+                    let valorFinal = Number.isInteger(numero) ? numero.toString() : numero.toString();
+
+                    console.log('Valor final:', valorFinal);
+
+                    // Asignamos el resultado
+                    cleanedString = valorFinal;
+
+                    console.log('fin')
+
+                }
+
+                console.log('filtro', cleanedString)
+                if (monto.includes(',')) {
+                    // Replace comma with a dot
+                    monto.replace(',', '.');
+                }
+                if (cleanedString == monto) {
+                    monto_distinto = 'No'
+                    mensaje = dataExcel[property]['DESCRIPCION']
+                    console.log('encontrado', dataExcel[property]['DESCRIPCION'])
+                }
+                nuevo = {
+                    fecha,
+                    descripcion,
+                    referencia,
+                    debitos,
+                    cleanedString,
+
+
+                }
+
+            } catch (error) {
+                console.log(error)
             }
-       
-            console.log('filtro',cleanedString)
-            if (monto.includes(',')) {
-                // Replace comma with a dot
-                 monto.replace(',', '.');
-            }
-            if(cleanedString == monto){
-                 monto_distinto = 'No'
-                mensaje=dataExcel[property]['DESCRIPCION']
-                console.log('encontrado',dataExcel[property]['DESCRIPCION'])
-            }
-            nuevo = {
-              fecha,
-              descripcion,
-              referencia,
-              debitos,
-              cleanedString,
-    
-    
-            }
-    
-          } catch (error) {
-          console.log(error)
-          }
-    
+
         }
-    
+
     } catch (error) {
-        
+
     }
-   
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////
+
+    let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
+
+    ///////////////////CONSIDERAR PEP
+    montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
+    console.log('montomax en s3 ', montomaximodelicliente)
+
+    /*
     
-
-/////////////////////////////////////////////////////////////////////////////////
-
-        let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
+    1
+    59
+    71
     
-        ///////////////////CONSIDERAR PEP
-montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
-console.log('montomax en s3 ',montomaximodelicliente)
+    */
 
-/*
-
-1
-59
-71
-
-*/ 
-
-       /*  
-        let variante = 0.3
-        
-        if (cliente[0]['expuesta'] == "SI") {
-            console.log('expuesta')
-            variante = 0.2
-        }
-        montomax = cliente[0]['ingresos'] * variante
-        console.log('montomax',montomax)
-        console.log('monto',monto)
-        console.log(montomax) */
+    /*  
+     let variante = 0.3
+     
+     if (cliente[0]['expuesta'] == "SI") {
+         console.log('expuesta')
+         variante = 0.2
+     }
+     montomax = cliente[0]['ingresos'] * variante
+     console.log('montomax',montomax)
+     console.log('monto',monto)
+     console.log(montomax) */
 
 
-         id_cuota = id
-        
+    id_cuota = id
 
 
-        const newLink = {
+
+    const newLink = {
+        id_cuota,
+        monto,
+        fecha,
+        cuil_cuit,
+        mes,
+        estado: estado,
+        anio,
+        cuil_cuit_administrador,
+        cuil_cuit_distinto,
+        monto_distinto,
+        monto_inusual,
+        id_cbu: cbupago,
+        ubicacion: filename,///////////aca ver el problema
+
+    };
+
+    const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
+    console.log(result.insertId);
+    if (montomax < monto) {
+
+        monto_inusual = 'Si'
+    }
+    if (monto_inusual == 'Si') {
+
+        const newLink2 = {
             id_cuota,
             monto,
-            fecha,
             cuil_cuit,
             mes,
+            id_pago: result.insertId,
             estado: estado,
             anio,
+            zona: "Otra",
+            proceso: "averificarnivel3",
             cuil_cuit_administrador,
-            cuil_cuit_distinto,
-            monto_distinto,
-            monto_inusual,
-            id_cbu:cbupago,
             ubicacion: filename,///////////aca ver el problema
+            fecha
 
         };
+        await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
 
-        const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        console.log(result.insertId);
-        if (montomax < monto) {
+    }
+    /////////FIN  GUARDADO DE PAGO
+    ///INICIO IMPACTO EN LA CUOTA
+    //await pagodecuota.pagodecuota(id, monto)
+    ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+    cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
+    mensaje = 'Pago realizado ' + mensaje
+    aux = cuota[0]["cuil_cuit"]
 
-            monto_inusual = 'Si'
-        }
-        if (monto_inusual == 'Si') {
 
-            const newLink2 = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                id_pago:result.insertId,
-                estado: estado,
-                anio,
-                zona:"Otra",
-                proceso: "averificarnivel3",
-                cuil_cuit_administrador,
-                ubicacion: filename,///////////aca ver el problema
-                fecha
 
-            };
-            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
-
-        }
-        /////////FIN  GUARDADO DE PAGO
-        ///INICIO IMPACTO EN LA CUOTA
-        //await pagodecuota.pagodecuota(id, monto)
-        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
-         cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-        mensaje = 'Pago realizado ' + mensaje
-        aux = cuota[0]["cuil_cuit"]
-       
-
-    
 
     try {
 
 
-        
- res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+
+        res.json([mensaje, cuota[0]['cuil_cuit'], cuota[0]['id_lote']])
     } catch (ex) {
-      // console.log('NOOO  ')
-      console.log(ex)
-      res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+        // console.log('NOOO  ')
+        console.log(ex)
+        res.json([mensaje, cuota[0]['cuil_cuit'], cuota[0]['id_lote']])
     }
 }
 
 async function pagarnivel2ic3(req, res) {
-    let { id_cuota,cuil_cuit, pago, cbu, fecha} = req.body;
+    let { id_cuota, cuil_cuit, pago, cbu, fecha } = req.body;
     const filename = req.file.filename;
-    console.log(id_cuota,cuil_cuit, pago, cbu, fecha,filename)
+    console.log(id_cuota, cuil_cuit, pago, cbu, fecha, filename)
 
-  
+
     cuil_cuit_administrador = cuil_cuit/// del administrador
     id = id_cuota
     monto = pago
 
     cbupago = cbu
     console.log(cbupago)
-    if (cbupago=="undefined"){
-        cbupago=0
+    if (cbupago == "undefined") {
+        cbupago = 0
     }
     ///
-  
+
     let cuil_cuit_distinto = 'No'
     let monto_distinto = 'Si'
     let monto_inusual = 'No'
@@ -1567,156 +1617,156 @@ async function pagarnivel2ic3(req, res) {
 
     estado = 'A'
 
-   
-        ///INICIO comparacion
+
+    ///INICIO comparacion
 
 
     etc = await pool.query('select * from extracto')
     nombre = etc[(etc.length) - 1]['ubicacion']
     // const workbook = XLSX.readFile('./src/Excel/'+nombre)
     try {
-        
-
-    const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
-    const workbooksheets = workbook.SheetNames
-    const sheet = workbooksheets[0]
-
-    const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
-    //console.log(dataExcel)
-
-    let regex = /(\d+)/g;
-    let mandar = []
-    for (const property in dataExcel) {
-      /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
-           estado = 'A'
-           // tipo de pago normal 
-       } */
-
-      try {
 
 
+        const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
+        const workbooksheets = workbook.SheetNames
+        const sheet = workbooksheets[0]
 
-        descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
-        fecha = dataExcel[property]['']
-        referencia = dataExcel[property]['REFERENCIA']
-        debitos = dataExcel[property]['DEBITO EN $']
-        creditos = dataExcel[property]['CREDITO EN $']
-        cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
-        if (monto.includes(',')) {
-            // Replace comma with a dot
-             monto.replace(',', '.');
+        const dataExcel = XLSX.utils.sheet_to_json(workbook.Sheets[sheet])
+        //console.log(dataExcel)
+
+        let regex = /(\d+)/g;
+        let mandar = []
+        for (const property in dataExcel) {
+            /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
+                 estado = 'A'
+                 // tipo de pago normal 
+             } */
+
+            try {
+
+
+
+                descripcion = (dataExcel[property]['DESCRIPCION']).match(regex)
+                fecha = dataExcel[property]['']
+                referencia = dataExcel[property]['REFERENCIA']
+                debitos = dataExcel[property]['DEBITO EN $']
+                creditos = dataExcel[property]['CREDITO EN $']
+                cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
+                if (monto.includes(',')) {
+                    // Replace comma with a dot
+                    monto.replace(',', '.');
+                }
+                if (cleanedString == monto) {
+                    monto_distinto = 'No'
+                    mensaje = dataExcel[property]['DESCRIPCION']
+                    console.log('encontrado', dataExcel[property]['DESCRIPCION'])
+                }
+                nuevo = {
+                    fecha,
+                    descripcion,
+                    referencia,
+                    debitos,
+                    cleanedString,
+
+
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+
         }
-        if(cleanedString == monto){
-             monto_distinto = 'No'
-            mensaje=dataExcel[property]['DESCRIPCION']
-            console.log('encontrado',dataExcel[property]['DESCRIPCION'])
-        }
-        nuevo = {
-          fecha,
-          descripcion,
-          referencia,
-          debitos,
-          cleanedString,
 
-
-        }
-
-      } catch (error) {
-        console.log(error)
-      }
+    } catch (error) {
 
     }
 
-} catch (error) {
-        
-}
+    /////////////////////////////////////////////////////////////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////
+    let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
+    console.log(cliente)
+    ///////////////////CONSIDERAR PEP
+    montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
 
-        let cliente = await pool.query('Select * from clientes where id = ? ', [cuota[0]["id_cliente"]])
-        console.log(cliente)
-        ///////////////////CONSIDERAR PEP
-        montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
-
-         id_cuota = id
+    id_cuota = id
 
 
-console.log(`guardadndo`)
-        const newLink = {
+    console.log(`guardadndo`)
+    const newLink = {
+        id_cuota,
+        monto,
+        fecha,
+        cuil_cuit,
+        mes,
+        estado: estado,
+        anio,
+        cuil_cuit_administrador,
+        cuil_cuit_distinto,
+        monto_distinto,
+        monto_inusual,
+        id_cbu: cbupago,
+
+        ubicacion: filename,///////////aca ver el problema
+
+    };
+
+    const result = await pool.query('INSERT INTO pagos_ic3 SET ?', [newLink]);
+    console.log(result.insertId);
+
+    if (montomax < monto) {
+
+        monto_inusual = 'Si'
+    }
+    if (monto_inusual == 'Si') {
+
+        const newLink2 = {
             id_cuota,
             monto,
-            fecha,
             cuil_cuit,
             mes,
+            id_pago: result.insertId,
             estado: estado,
             anio,
+            proceso: "averificarnivel3",
             cuil_cuit_administrador,
-            cuil_cuit_distinto,
-            monto_distinto,
-            monto_inusual,
-            id_cbu:cbupago,
-          
+            zona: "IC3",
             ubicacion: filename,///////////aca ver el problema
+            fecha
 
         };
+        console.log(newLink2)
+        await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
 
-        const result = await pool.query('INSERT INTO pagos_ic3 SET ?', [newLink]);
-        console.log(result.insertId);
+    }
 
-        if (montomax < monto) {
+    /////////FIN  GUARDADO DE PAGO
+    ///INICIO IMPACTO EN LA CUOTA
+    //await pagodecuota.pagodecuota(id, monto)
+    ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
+    cuota = await pool.query('select * from cuotas_ic3 where id = ?', [id]) //objeto cuota
+    mensaje = 'Pago realizado ' + mensaje
+    aux = cuota[0]["cuil_cuit"]
 
-            monto_inusual = 'Si'
-        }
-        if (monto_inusual == 'Si') {
 
-            const newLink2 = {
-                id_cuota,
-                monto,
-                cuil_cuit,
-                mes,
-                id_pago:result.insertId,
-                estado: estado,
-                anio,
-                proceso: "averificarnivel3",
-                cuil_cuit_administrador,
-                zona:"IC3",
-                ubicacion: filename,///////////aca ver el problema
-                fecha
 
-            };
-            console.log(newLink2)
-            await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
-
-        }
-
-        /////////FIN  GUARDADO DE PAGO
-        ///INICIO IMPACTO EN LA CUOTA
-        //await pagodecuota.pagodecuota(id, monto)
-        ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
-         cuota = await pool.query('select * from cuotas_ic3 where id = ?', [id]) //objeto cuota
-        mensaje = 'Pago realizado ' + mensaje
-        aux = cuota[0]["cuil_cuit"]
-       
-
-    
 
     try {
 
 
-        
- res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+
+        res.json([mensaje, cuota[0]['cuil_cuit'], cuota[0]['id_lote']])
     } catch (ex) {
-      // console.log('NOOO  ')
-      console.log(ex)
-      res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
+        // console.log('NOOO  ')
+        console.log(ex)
+        res.json([mensaje, cuota[0]['cuil_cuit'], cuota[0]['id_lote']])
     }
 }
 async function pagarnivel2varios(req, res) {
 
-      const filename = req.file.filename
+    const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
-  
+
     cuil_cuit_administrador = myArray[0] /// del administrador
 
     fecha = myArray[1]
@@ -1778,7 +1828,7 @@ async function pagarnivel2varios(req, res) {
 
             idd = parseInt(idd[0])
             mont = parseFloat(mont[0])
-       
+
             monto = monto + mont
 
             await pagodecuota.pagodecuota(idd, mont)
@@ -1797,7 +1847,7 @@ async function pagarnivel2varios(req, res) {
 
 
         montomax = cliente[0]['ingresos'] * 0.3
-   
+
         if (montomax < monto) {
 
             monto_inusual = 'Si'
@@ -1828,26 +1878,26 @@ async function pagarnivel2varios(req, res) {
     try {
 
 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-       
-    }catch{console.log(error)} res.json(['mensaje', aux])
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+
+        } catch { console.log(error) } res.json(['mensaje', aux])
 
 
     } catch (ex) {
-     
+
     }
 }
 
 //////
 async function justificar(req, res) {
 
-      const filename = req.file.filename
+    const filename = req.file.filename
 
     const myArray = formData.datos.split(",");
-  
+
     id = myArray[0]  // id
     cuil_cuit = myArray[1] //// cuil
     descripcion = myArray[2] /// descripcion
@@ -1886,16 +1936,16 @@ async function justificar(req, res) {
     try {
 
 
-        
-            try {
-        await uploadFileToS3(formData.file, "mypdfstorage");
-        
-        
-    }catch{console.log(error)}
+
+        try {
+            await uploadFileToS3(formData.file, "mypdfstorage");
+
+
+        } catch { console.log(error) }
 
 
     } catch (ex) {
-    
+
     }
 }
 
