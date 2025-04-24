@@ -12,7 +12,7 @@ const sacarguion = require('../public/apps/transformarcuit')
 const enviodemail = require('./Emails/Enviodemail')
 const { Console } = require('console')
 const s3Controller = require('./configAWS/s3-controller');
-
+const traerriesgo =  require('./funciones/riesgo')
 const diskstorage = multer.diskStorage({
     destination: path.join(__dirname, '../Excel'),
     filename: (req, file, cb) => {
@@ -580,13 +580,60 @@ router.get("/cantidadinusuales", isLoggedInn3, async (req, res) => {
 
 ///////// reaxct
 router.get("/listainusual", isLoggedInn2, async (req, res) => {
-    const pagos1 = await pool.query('select * from historial_pagosi left join(select id as idp,id_cuota as idcuota, mes as mesc, anio as anioc from pagos) as sel on historial_pagosi.id_pago=sel.idp left join(select id as idc,cuil_cuit as cuil_cuitc from cuotas) as sel2 on sel.idcuota=sel2.idc   left join (select id as idcli, cuil_cuit as cuil_cuitcl, Nombre  from clientes ) as sel3 on sel2.cuil_cuitc=sel3.cuil_cuitcl    where proceso ="averificarnivel3" and (zona IS NULL OR zona != "IC3") ')
-    const pagos2 = await pool.query('select * from historial_pagosi left join(select id as idp,id_cuota as idcuota, mes as mesc, anio as  anioc from pagos_ic3) as sel on historial_pagosi.id_pago=sel.idp   left join(select id as idc,id_cliente as id_clientec from cuotas_ic3) as sel2 on sel.idcuota=sel2.idc left join (select id as idcli, cuil_cuit as cuil_cuitc ,Nombre from clientes ) as sel3 on sel2.id_clientec=sel3.idcli  where proceso ="averificarnivel3" and zona="IC3" ')
+    const pagos1 = await pool.query(`
+        SELECT historial_pagosi.*, sel.idcuota, sel.mesc, sel.anioc, sel2.cuil_cuitc, sel3.idcli, sel3.Nombre 
+        FROM historial_pagosi 
+        LEFT JOIN (SELECT id AS idp, id_cuota AS idcuota, mes AS mesc, anio AS anioc FROM pagos) AS sel 
+            ON historial_pagosi.id_pago = sel.idp 
+        LEFT JOIN (SELECT id AS idc, cuil_cuit AS cuil_cuitc FROM cuotas) AS sel2 
+            ON sel.idcuota = sel2.idc 
+        LEFT JOIN (SELECT id AS idcli, cuil_cuit AS cuil_cuitcl, Nombre FROM clientes) AS sel3 
+            ON sel2.cuil_cuitc = sel3.cuil_cuitcl 
+        WHERE proceso = "averificarnivel3" AND (zona IS NULL OR zona != "IC3")
+    `);
+
+    const pagos2 = await pool.query(`
+        SELECT historial_pagosi.*, sel.idcuota, sel.mesc, sel.anioc, sel2.id_clientec, sel3.idcli, sel3.cuil_cuitc, sel3.Nombre 
+        FROM historial_pagosi 
+        LEFT JOIN (SELECT id AS idp, id_cuota AS idcuota, mes AS mesc, anio AS anioc FROM pagos_ic3) AS sel 
+            ON historial_pagosi.id_pago = sel.idp 
+        LEFT JOIN (SELECT id AS idc, id_cliente AS id_clientec FROM cuotas_ic3) AS sel2 
+            ON sel.idcuota = sel2.idc 
+        LEFT JOIN (SELECT id AS idcli, cuil_cuit as cuil_cuitc, Nombre FROM clientes) AS sel3 
+            ON sel2.id_clientec = sel3.idcli 
+        WHERE proceso = "averificarnivel3" AND zona = "IC3"
+    `);
 
     const pagosUnidos = [...pagos1, ...pagos2];
- 
-    res.json(pagosUnidos)
-})
+console.log(pagosUnidos)
+    // Para cada pago, agrecgar el riesgo
+    const pagosConRiesgo = await Promise.all(
+        pagosUnidos.map(async (pago) => {
+            const paggg = await pool.query('SELECT * FROM cuotas WHERE id = ?', [pago.id_cuota]);
+            console.log(pago.id_cuota)
+             clienteObj =[]
+try {
+     cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [paggg[0].cuil_cuit]);
+     clienteObj = cliente[0];
+} catch (error) {
+    
+}
+           
+            let riesgo = null;
+          
+            console.log(  pago.cuil_cuitc)
+console.log(cliente)
+            if (clienteObj) {
+                riesgo = await traerriesgo.matriz(clienteObj);
+            }
+            console.log()
+            return { ...pago, riesgo };
+        })
+    );
+
+    res.json(pagosConRiesgo);
+});
+
 
 //react pendientes
 router.get('/pendientess', isLoggedInn2, async (req, res) => {
