@@ -526,7 +526,7 @@ router.get('/zonas', async (req, res) => {
 }
 
 )
-/* 
+
 
 router.post('/subbirexcel', upload.single('excel'), async (req, res) => {
   try {
@@ -584,7 +584,7 @@ router.post('/subbirexcel', upload.single('excel'), async (req, res) => {
     res.status(500).send('Error al procesar el archivo Excel.');
   }
 });
- */
+ 
 
 
 

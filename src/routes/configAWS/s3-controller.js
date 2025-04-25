@@ -1178,6 +1178,18 @@ async function pagarrapidoic3(req, res) {
 }
 
 
+
+
+async function derivarpagoic3(req, res) {
+   
+        let { id, tipo, detalle } = req.body;
+
+        const filename = req.file ? req.file.filename : 'sin comprobante';
+
+        console.log(id, tipo, detalle, filename);
+
+}
+
 async function cancelarlote(req, res) {
     try {
         let { mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha } = req.body;
@@ -1253,7 +1265,7 @@ async function cancelarlote(req, res) {
                 estado: "A",
                 anio,
                 zona:"Otra",
-                proceso: "averificarnivel3",
+                proceso: "averificarnivel2",
                 cuil_cuit_administrador,
                 ubicacion: filename,///////////aca ver el problema
                 fecha
@@ -1975,5 +1987,6 @@ module.exports = {
     pagarnivel2ic3,
     actualizarpagoic3,
     leerformlegajo,
-    cancelarlote
+    cancelarlote,
+    derivarpagoic3
 }

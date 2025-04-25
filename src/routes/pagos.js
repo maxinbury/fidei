@@ -634,7 +634,60 @@ console.log(cliente)
     res.json(pagosConRiesgo);
 });
 
+router.get("/pagosinusuales2", isLoggedInn2, async (req, res) => {
+    const pagos1 = await pool.query(`
+        SELECT historial_pagosi.*, sel.idcuota, sel.mesc, sel.anioc, sel2.cuil_cuitc, sel3.idcli, sel3.Nombre 
+        FROM historial_pagosi 
+        LEFT JOIN (SELECT id AS idp, id_cuota AS idcuota, mes AS mesc, anio AS anioc FROM pagos) AS sel 
+            ON historial_pagosi.id_pago = sel.idp 
+        LEFT JOIN (SELECT id AS idc, cuil_cuit AS cuil_cuitc FROM cuotas) AS sel2 
+            ON sel.idcuota = sel2.idc 
+        LEFT JOIN (SELECT id AS idcli, cuil_cuit AS cuil_cuitcl, Nombre FROM clientes) AS sel3 
+            ON sel2.cuil_cuitc = sel3.cuil_cuitcl 
+        WHERE proceso = "averificarnivel2" AND (zona IS NULL OR zona != "IC3")
+    `);
 
+    const pagos2 = await pool.query(`
+        SELECT historial_pagosi.*, sel.idcuota, sel.mesc, sel.anioc, sel2.id_clientec, sel3.idcli, sel3.cuil_cuitc, sel3.Nombre 
+        FROM historial_pagosi 
+        LEFT JOIN (SELECT id AS idp, id_cuota AS idcuota, mes AS mesc, anio AS anioc FROM pagos_ic3) AS sel 
+            ON historial_pagosi.id_pago = sel.idp 
+        LEFT JOIN (SELECT id AS idc, id_cliente AS id_clientec FROM cuotas_ic3) AS sel2 
+            ON sel.idcuota = sel2.idc 
+        LEFT JOIN (SELECT id AS idcli, cuil_cuit as cuil_cuitc, Nombre FROM clientes) AS sel3 
+            ON sel2.id_clientec = sel3.idcli 
+        WHERE proceso = "averificarnivel2" AND zona = "IC3"
+    `);
+
+    const pagosUnidos = [...pagos1, ...pagos2];
+console.log(pagosUnidos)
+    // Para cada pago, agrecgar el riesgo
+    const pagosConRiesgo = await Promise.all(
+        pagosUnidos.map(async (pago) => {
+            const paggg = await pool.query('SELECT * FROM cuotas WHERE id = ?', [pago.id_cuota]);
+            console.log(pago.id_cuota)
+             clienteObj =[]
+try {
+     cliente = await pool.query('SELECT * FROM clientes WHERE cuil_cuit = ?', [paggg[0].cuil_cuit]);
+     clienteObj = cliente[0];
+} catch (error) {
+    
+}
+           
+            let riesgo = null;
+          
+            console.log(  pago.cuil_cuitc)
+console.log(cliente)
+            if (clienteObj) {
+                riesgo = await traerriesgo.matriz(clienteObj);
+            }
+            console.log()
+            return { ...pago, riesgo };
+        })
+    );
+
+    res.json(pagosConRiesgo);
+});
 //react pendientes
 router.get('/pendientess', isLoggedInn2, async (req, res) => {
     // const pendientes = await pool.query("Select * from pagos join estado_pago on pagos.estado=estado_pago.id_estado_pago where estado = 'P' or estado = 'ajustificar' ")
