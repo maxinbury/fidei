@@ -1179,16 +1179,26 @@ async function pagarrapidoic3(req, res) {
 
 
 
-
 async function derivarpagoic3(req, res) {
-   
-        let { id, tipo, detalle } = req.body;
-
+    try {
+        let { id, tipo, detalle, ubicacion2 } = req.body;
         const filename = req.file ? req.file.filename : 'sin comprobante';
 
-        console.log(id, tipo, detalle, filename);
 
+        await pool.query(`
+            UPDATE historial_pagosi
+            SET tipo = ?, detalle = ?, ubicacion2 = ?
+            WHERE id = ?
+        `, ["averificarnivel3", detalle, filename, id]);
+
+        res.json( 'Pago derivado correctamente' );
+    } catch (error) {
+        console.error('Error al derivar pago:', error);
+        res.status(500).json({ error: 'Error al derivar pago' });
+    }
 }
+
+
 
 async function cancelarlote(req, res) {
     try {
