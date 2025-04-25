@@ -61,6 +61,26 @@ router.get('/traerpdfconstancia/:id',async (req, res) => {
     ;
   });
   
+  router.get('/traerPdfConstanciadepagoinusual/:id',async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    const query = await pool.query('SELECT * FROM historial_pagosi WHERE id = ?',[id]);
+  console.log(query)
+  
+      const filePath = path.join(__dirname, '../documentos', query[0].ubicacion);
+      res.sendFile(filePath);
+    ;
+  });
+  router.get('/traerPdfConstanciadepagoinusual2/:id',async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    const query = await pool.query('SELECT * FROM historial_pagosi WHERE id = ?',[id]);
+  console.log(query)
+  
+      const filePath = path.join(__dirname, '../documentos', query[0].ubicacion2);
+      res.sendFile(filePath);
+    ;
+  });
 router.post('/modificarpass', passport.authenticate('local.modificarpass', {
 
     successRedirect: '/exitorecupero',

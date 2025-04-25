@@ -622,7 +622,7 @@ try {
             let riesgo = null;
           
             console.log(  pago.cuil_cuitc)
-console.log(cliente)
+
             if (clienteObj) {
                 riesgo = await traerriesgo.matriz(clienteObj);
             }

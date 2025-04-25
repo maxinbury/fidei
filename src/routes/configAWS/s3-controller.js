@@ -13,7 +13,12 @@ const enviodemail = require('../Emails/Enviodemail')
 const traerriesgo = require('../funciones/riesgo')
 
 
-
+function formatearFecha(fecha) {
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
+}
 ///Funcion modelo de guardado de imagen
 async function s3Upload(req, res) {
     let { ingreso, formData } = req.body
@@ -1187,9 +1192,9 @@ async function derivarpagoic3(req, res) {
 
         await pool.query(`
             UPDATE historial_pagosi
-            SET tipo = ?, detalle = ?, ubicacion2 = ?
+            SET proceso=?, tipo = ?, detalle = ?, ubicacion2 = ?
             WHERE id = ?
-        `, ["averificarnivel3", detalle, filename, id]);
+        `, ["averificarnivel3",tipo, detalle, filename, id]);
 
         res.json( 'Pago derivado correctamente' );
     } catch (error) {
@@ -1207,7 +1212,9 @@ async function cancelarlote(req, res) {
         const filename = req.file ? req.file.filename : 'sin comprobante';
 
         console.log(mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha, filename);
-
+        console.log('fecha de notificacion',mes,anio)
+/////////////////
+ 
         // 1. Traer las cuotas del lote ordenadas por nro_cuota
         const cuotas = await pool.query(
             'SELECT nro_cuota, mes, anio, cuota_con_ajuste FROM cuotas WHERE id_lote = ? ORDER BY nro_cuota',
@@ -1228,13 +1235,12 @@ async function cancelarlote(req, res) {
 
         const cantidad = cuotasDesdeEsa.length;
         const total = cuotasDesdeEsa.reduce((acc, cuota) => acc + parseFloat(cuota.cuota_con_ajuste), 0);
-        console.log("cantidad", cantidad)
-        console.log("base", total)
-        console.log("total", total*cantidad)
+     //   console.log("cantidad", cantidad)
+       // console.log("base", total)
+        //console.log("total", total*cantidad)
         const cuotaacancelar = await pool.query('select * from cuotas where mes=? and  anio=? and id_lote=? ', [mes, anio, id_lote])
 
         if (cuotaacancelar.length > 0) {
-            console.log("Act")
             console.log(  cuotaacancelar[0].id)
             await pool.query('update cuotas  set cuota_cancelada=? where id_lote=? ', [cuotaacancelar[0]['id'], id_lote])
 
@@ -1262,9 +1268,31 @@ async function cancelarlote(req, res) {
         };
 
      const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
-        console.log(result.insertId);
+     //   console.log(result.insertId);
  
         if (monto_inusual == 'Si') {
+// Convertimos a números
+// Convertimos a números
+let mesNum = parseInt(mes); // mes: 1 a 12
+let anioNum = parseInt(anio);
+
+// Primer día del mes siguiente
+let fechaNotificacion = new Date(anioNum, mesNum, 1);
+
+// Fecha de vencimiento: 60 días después
+let fechaVencimiento = new Date(fechaNotificacion);
+fechaVencimiento.setDate(fechaVencimiento.getDate() + 60);
+
+// Formatear fechas como YYYY-MM-DD
+function formatearFecha(fecha) {
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
+}
+
+console.log("Fecha de notificación:", formatearFecha(fechaNotificacion));
+console.log("Fecha de vencimiento:", formatearFecha(fechaVencimiento));
 
             const newLink2 = {
                 id_cuota:cuotaacancelar[0]['id'],
@@ -1273,6 +1301,8 @@ async function cancelarlote(req, res) {
                 mes,
                 id_pago:result.insertId,
                 estado: "A",
+                fechavencimiento:formatearFecha(fechaNotificacion),
+                fechanotificacion:formatearFecha(fechaVencimiento),
                 anio,
                 zona:"Otra",
                 proceso: "averificarnivel2",
