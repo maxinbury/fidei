@@ -1281,7 +1281,7 @@ let fechaNotificacion = new Date(anioNum, mesNum, 1);
 
 // Fecha de vencimiento: 60 días después
 let fechaVencimiento = new Date(fechaNotificacion);
-fechaVencimiento.setDate(fechaVencimiento.getDate() + 60);
+fechaVencimiento.setDate(fechaVencimiento.getDate() + 90);
 
 // Formatear fechas como YYYY-MM-DD
 function formatearFecha(fecha) {
@@ -1301,8 +1301,8 @@ console.log("Fecha de vencimiento:", formatearFecha(fechaVencimiento));
                 mes,
                 id_pago:result.insertId,
                 estado: "A",
-                fechavencimiento:formatearFecha(fechaNotificacion),
-                fechanotificacion:formatearFecha(fechaVencimiento),
+                fechavencimiento:formatearFecha(fechaVencimiento),
+                fechanotificacion:formatearFecha(fechaNotificacion),
                 anio,
                 zona:"Otra",
                 proceso: "averificarnivel2",
