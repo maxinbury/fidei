@@ -644,7 +644,7 @@ router.get("/pagosinusuales2", isLoggedInn2, async (req, res) => {
             ON sel.idcuota = sel2.idc 
         LEFT JOIN (SELECT id AS idcli, cuil_cuit AS cuil_cuitcl, Nombre FROM clientes) AS sel3 
             ON sel2.cuil_cuitc = sel3.cuil_cuitcl 
-        WHERE proceso = "averificarnivel2" AND (zona IS NULL OR zona != "IC3")
+        WHERE (proceso = "averificarnivel2" or proceso= "averificarnivel3") AND (zona IS NULL OR zona != "IC3")
     `);
 
     const pagos2 = await pool.query(`

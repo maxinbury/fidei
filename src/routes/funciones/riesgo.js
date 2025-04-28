@@ -59,8 +59,7 @@ const riesgoAntiguedad = {
 
 // Función principal: matriz de riesgo
 async function matriz(cliente) {
-    console.log('razon')
-    console.log(cliente['razon'])
+    
    const salariominimo= 296832 
     let riesgo = 0;
 
@@ -133,20 +132,19 @@ async function matriz(cliente) {
             const volumen = cliente['volumenTransaccional'];
 
             if ( volumen>= 0 && volumen <= 150*salariominimo) {
-                console.log(volumen)
-                console.log( 150*salariominimo)
+          
                 riesgo += 4;
             } else if (volumen > 150*salariominimo && volumen <= 300*salariominimo) {
-                console.log(300)
+               
                 riesgo += 8;
             } else if (volumen > 300*salariominimo && volumen <= 450*salariominimo) {
                 console.log(600)
                 riesgo += 12;
             } else if (volumen > 450*salariominimo && volumen <= 600*salariominimo) {
-                console.log(600)
+               
                 riesgo += 16;
             } else if (volumen > 600*salariominimo) {
-                console.log(6001)
+                
                 riesgo += 20;
             }
             
