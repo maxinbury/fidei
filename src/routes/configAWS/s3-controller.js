@@ -1204,6 +1204,126 @@ async function derivarpagoic3(req, res) {
 }
 
 
+async function cancelarloteic3(req, res) {
+    try {
+        let { mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha } = req.body;
+
+        const filename = req.file ? req.file.filename : 'sin comprobante';
+
+        console.log(mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha, filename);
+        console.log('fecha de notificacion',mes,anio)
+/////////////////
+ 
+        // 1. Traer las cuotas del lote ordenadas por nro_cuota
+        const cuotas = await pool.query(
+            'SELECT cuota, mes, anio, cuota_con_ajuste FROM cuotas_ic3  WHERE id_lote = ? ORDER BY cuota',
+            [id_lote]
+        );
+
+        // 2. Buscar el índice de la cuota que coincide con mes y anio
+        const indexInicio = cuotas.findIndex(c =>
+            String(c.mes) === String(mes) && c.anio == anio
+        );
+
+        if (indexInicio === -1) {
+            return res.status(404).json({ mensaje: 'No se encontró la cuota con ese mes y año.' });
+        }
+
+        // 3. Obtener cuotas desde esa posición en adelante
+        const cuotasDesdeEsa = cuotas.slice(indexInicio);
+
+        const cantidad = cuotasDesdeEsa.length;
+        const total = cuotasDesdeEsa.reduce((acc, cuota) => acc + parseFloat(cuota.cuota_con_ajuste), 0);
+     //   console.log("cantidad", cantidad)
+       // console.log("base", total)
+        //console.log("total", total*cantidad)
+        const cuotaacancelar = await pool.query('select * from cuotas_ic3 where mes=? and  anio=? and id_lote=? ', [mes, anio, id_lote])
+
+        if (cuotaacancelar.length > 0) {
+            console.log(  cuotaacancelar[0].id)
+            await pool.query('update cuotas_ic3  set cuota_cancelada=? where id_lote=? ', [cuotaacancelar[0]['id'], id_lote])
+
+        }
+          monto_inusual = 'No'
+        if (29 < cantidad) {
+
+            monto_inusual = 'Si'
+        }
+        const newLink = {
+            id_cuota:cuotaacancelar[0]['id'],
+            monto:total*cantidad,
+            fecha,
+            cuil_cuit:cuotaacancelar[0]['cuil_cuit'],
+            mes,
+            estado: "A",
+            anio,
+            cuil_cuit_administrador,
+           // cuil_cuit_distinto,
+          
+            monto_inusual,
+            id_cbu:cbu,
+            ubicacion: filename,///////////aca ver el problema
+
+        };
+
+     const result = await pool.query('INSERT INTO pagos_ic3 SET ?', [newLink]);
+     //   console.log(result.insertId);
+ 
+        if (monto_inusual == 'Si') {
+// Convertimos a números
+// Convertimos a números
+let mesNum = parseInt(mes); // mes: 1 a 12
+let anioNum = parseInt(anio);
+
+// Primer día del mes siguiente
+let fechaNotificacion = new Date(anioNum, mesNum, 1);
+
+// Fecha de vencimiento: 60 días después
+let fechaVencimiento = new Date(fechaNotificacion);
+fechaVencimiento.setDate(fechaVencimiento.getDate() + 90);
+
+// Formatear fechas como YYYY-MM-DD
+function formatearFecha(fecha) {
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
+}
+
+console.log("Fecha de notificación:", formatearFecha(fechaNotificacion));
+console.log("Fecha de vencimiento:", formatearFecha(fechaVencimiento));
+
+            const newLink2 = {
+                id_cuota:cuotaacancelar[0]['id'],
+                monto:total*cantidad,
+                cuil_cuit:cuotaacancelar[0]['cuil_cuit'],
+                mes,
+                id_pago:result.insertId,
+                estado: "A",
+                fechavencimiento:formatearFecha(fechaVencimiento),
+                fechanotificacion:formatearFecha(fechaNotificacion),
+                anio,
+                zona:"Otra",
+                proceso: "averificarnivel2",
+                cuil_cuit_administrador,
+                ubicacion: filename,///////////aca ver el problema
+                fecha
+
+            };
+          await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
+        }
+        return res.json('realizado');
+
+    } catch (error) {
+        console.error('Error en cancelarlote:', error);
+        res.status(500).json({ mensaje: 'Error del servidor.' });
+    }
+
+
+
+
+}
+
 
 async function cancelarlote(req, res) {
     try {
@@ -1507,11 +1627,24 @@ async function pagonivel2(req, res) {
                     // Replace comma with a dot
                     monto.replace(',', '.');
                 }
-                if (cleanedString == monto) {
+                   console.log('monto', monto)
+             /*    if (cleanedString == monto) {  ESTA FUNCION ES ANTERIOR A LOS CAMBIOSD 13/05/2025
                     monto_distinto = 'No'
                     mensaje = dataExcel[property]['DESCRIPCION']
                     console.log('encontrado', dataExcel[property]['DESCRIPCION'])
-                }
+                } */
+               let montoNormalizado = monto;
+
+
+// Ya tenés cleanedString como número en `numero`, así que podés usar ese
+let numeroCleaned = parseFloat(cleanedString);
+
+// Comparación final como números
+if (numeroCleaned == montoNormalizado) {
+    monto_distinto = 'No';
+    mensaje = dataExcel[property]['DESCRIPCION'];
+    console.log('encontrado', dataExcel[property]['DESCRIPCION']);
+}
                 nuevo = {
                     fecha,
                     descripcion,
@@ -2028,5 +2161,6 @@ module.exports = {
     actualizarpagoic3,
     leerformlegajo,
     cancelarlote,
-    derivarpagoic3
+    derivarpagoic3,
+    cancelarloteic3
 }

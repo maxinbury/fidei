@@ -689,6 +689,7 @@ const borrarCbu = async (req, res) => {
 
 const cantidadInfo = async (req, res) => {
     try {
+    
         // Obtener clientes con prioridad en los que tienen al menos una cuota
         const clientes = await pool.query(`
             SELECT c.*, 

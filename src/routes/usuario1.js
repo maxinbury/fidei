@@ -12,7 +12,7 @@ const passport = require('passport')
 const s3Controller = require('./configAWS/s3-controller');
 ////////
 const enviodemail = require('./Emails/Enviodemail')
-const {derivarpagoic3,cancelarlote, enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos, cliente2, modificarcli2, lotescliente2, constanciass } = require('../controladores/usuario1controlador')
+const {derivarpagoic3,cancelarlote,cancelarloteic3, enviarconsulta, constanciadelpago, cliente, usuario1acredingresos, cantidadbalances, cantidadiibb, cbus, borrarunlegajo, constancias, cbuscliente, realizarr, modificarcli, lotescliente, lote2, ief, noticliente, notiid, completolegajos, cliente2, modificarcli2, lotescliente2, constanciass } = require('../controladores/usuario1controlador')
 
 
 // Configuración de Multer
@@ -128,6 +128,8 @@ router.post('/pagonivel2', upload.single('file'), s3Controller.pagonivel2);
 
 router.post('/cancelarlote', upload.single('file'), s3Controller.cancelarlote);
 
+
+router.post('/cancelarloteic3', upload.single('file'), s3Controller.cancelarloteic3);
 
 router.post('/pagarnivel2ic3', upload.single('file'), s3Controller.pagarnivel2ic3);
 
