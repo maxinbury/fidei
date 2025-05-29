@@ -1331,8 +1331,7 @@ async function cancelarlote(req, res) {
 
         const filename = req.file ? req.file.filename : 'sin comprobante';
 
-        console.log(mes, anio, id_lote, cuil_cuit_administrador, cbu, fecha, filename);
-        console.log('fecha de notificacion',mes,anio)
+
 /////////////////
  
         // 1. Traer las cuotas del lote ordenadas por nro_cuota
@@ -1355,9 +1354,7 @@ async function cancelarlote(req, res) {
 
         const cantidad = cuotasDesdeEsa.length;
         const total = cuotasDesdeEsa.reduce((acc, cuota) => acc + parseFloat(cuota.cuota_con_ajuste), 0);
-     //   console.log("cantidad", cantidad)
-       // console.log("base", total)
-        //console.log("total", total*cantidad)
+  
         const cuotaacancelar = await pool.query('select * from cuotas where mes=? and  anio=? and id_lote=? ', [mes, anio, id_lote])
 
         if (cuotaacancelar.length > 0) {
@@ -1411,8 +1408,6 @@ function formatearFecha(fecha) {
     return `${anio}-${mes}-${dia}`;
 }
 
-console.log("Fecha de notificación:", formatearFecha(fechaNotificacion));
-console.log("Fecha de vencimiento:", formatearFecha(fechaVencimiento));
 
             const newLink2 = {
                 id_cuota:cuotaacancelar[0]['id'],
@@ -1442,73 +1437,6 @@ console.log("Fecha de vencimiento:", formatearFecha(fechaVencimiento));
 
 
 
-
-    /* 
-    
-            const newLink = {
-                id_cuota,
-                monto,
-                fecha,
-                cuil_cuit,
-                mes,
-                estado: estado,
-                anio,
-                cuil_cuit_administrador,
-                cuil_cuit_distinto,
-                monto_distinto,
-                monto_inusual,
-                id_cbu:cbupago,
-                ubicacion: filename,///////////aca ver el problema
-    
-            };
-    
-           // const result = await pool.query('INSERT INTO pagos SET ?', [newLink]);
-            console.log(result.insertId);
-            if (29 < cantidad) {
-    
-                monto_inusual = 'Si'
-            }
-            if (monto_inusual == 'Si') {
-    
-                const newLink2 = {
-                    id_cuota,
-                    monto,
-                    cuil_cuit,
-                    mes,
-                    id_pago:result.insertId,
-                    estado: estado,
-                    anio,
-                    zona:"Otra",
-                    proceso: "averificarnivel3",
-                    cuil_cuit_administrador,
-                    ubicacion: filename,///////////aca ver el problema
-                    fecha
-    
-                };
-              //  await pool.query('INSERT INTO historial_pagosi SET ?', [newLink2]);
-    
-            }
-            /////////FIN  GUARDADO DE PAGO
-            ///INICIO IMPACTO EN LA CUOTA
-            //await pagodecuota.pagodecuota(id, monto)
-            ///FIN IMPACTO EN LA CUOTAconsole.log('Realizado')
-             cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
-            mensaje = 'Pago realizado ' + mensaje
-            aux = cuota[0]["cuil_cuit"]
-           
-    
-        
-    
-        try {
-    
-    
-            
-     res.json([mensaje, cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
-        } catch (ex) {
-          // console.log('NOOO  ')
-          console.log(ex)
-          res.json([mensaje,  cuota[0]['cuil_cuit'],cuota[0]['id_lote']])
-        } */
 }
 
 
@@ -1518,7 +1446,7 @@ async function pagonivel2(req, res) {
     let { id_cuota, cuil_cuit, pago, cbu, fecha } = req.body;
     const filename = req.file ? req.file.filename : 'sin comprobante';
 
-    console.log(id_cuota, cuil_cuit, pago, cbu, fecha, filename)
+   
 
 
     cuil_cuit_administrador = cuil_cuit/// del administrador
@@ -1557,7 +1485,7 @@ async function pagonivel2(req, res) {
     etc = await pool.query('select * from extracto')
     nombre = etc[(etc.length) - 1]['ubicacion']
     // const workbook = XLSX.readFile('./src/Excel/'+nombre)
-    console.log(nombre)
+   
     try {
         const workbook = XLSX.readFile(path.join(__dirname, '../../Excel/' + nombre))
         console.log('si lee')
@@ -1571,10 +1499,7 @@ async function pagonivel2(req, res) {
         let regex = /(\d+)/g;
         let mandar = []
         for (const property in dataExcel) {
-            /*  if ((dataExcel[property]['DESCRIPCION']).includes(cuil_cuit)) {
-                 estado = 'A'
-                 // tipo de pago normal 
-             } */
+        
             monto_distinto = 'Si'
             try {
 
@@ -1585,10 +1510,7 @@ async function pagonivel2(req, res) {
                 referencia = dataExcel[property]['REFERENCIA']
                 debitos = dataExcel[property]['DEBITO EN $']
                 creditos = String(dataExcel[property]['CREDITO EN $'])
-                console.log('creditos', creditos)
-                console.log('sin sstring')
-                console.log(dataExcel[property]['CREDITO EN $'])
-                console.log('monto', monto)
+                
                 cleanedString = 0
                 if (creditos !== undefined) {
                     //  cleanedString = parseFloat(creditos.replace(/[^\d,-]/g, '').replace('.', '').replace(',', '.'));
@@ -1643,7 +1565,7 @@ let numeroCleaned = parseFloat(cleanedString);
 if (numeroCleaned == montoNormalizado) {
     monto_distinto = 'No';
     mensaje = dataExcel[property]['DESCRIPCION'];
-    console.log('encontrado', dataExcel[property]['DESCRIPCION']);
+ 
 }
                 nuevo = {
                     fecha,
@@ -1675,25 +1597,7 @@ if (numeroCleaned == montoNormalizado) {
     montomaximodelicliente = await traerriesgo.montomaximodelicliente(cliente[0]);
     console.log('montomax en s3 ', montomaximodelicliente)
 
-    /*
-    
-    1
-    59
-    71
-    
-    */
 
-    /*  
-     let variante = 0.3
-     
-     if (cliente[0]['expuesta'] == "SI") {
-         console.log('expuesta')
-         variante = 0.2
-     }
-     montomax = cliente[0]['ingresos'] * variante
-     console.log('montomax',montomax)
-     console.log('monto',monto)
-     console.log(montomax) */
 
 
     id_cuota = id

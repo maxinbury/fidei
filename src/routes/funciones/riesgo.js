@@ -59,8 +59,8 @@ const riesgoAntiguedad = {
 
 // Función principal: matriz de riesgo
 async function matriz(cliente) {
-    
-   const salariominimo= 296832 
+    const svm = await pool.query("SELECT * FROM salariovital ORDER BY id DESC LIMIT 1");
+    const salariominimo = svm[0]['valor']
     let riesgo = 0;
 
     if (cliente['pep_extranjero'] === 'Si' || cliente['categoria_especial'] === 'Si') {
@@ -93,22 +93,22 @@ async function matriz(cliente) {
         // Volumen transaccional persona
         try {
             const volumen = cliente['volumenTransaccional'];
-          
-            if (volumen >= 0 && volumen <=  15*salariominimo) {
-               
-               
+
+            if (volumen >= 0 && volumen <= 15 * salariominimo) {
+
+
                 riesgo += 4;
-            } else if (volumen > 15*salariominimo && volumen <= 30*salariominimo) {
-               
+            } else if (volumen > 15 * salariominimo && volumen <= 30 * salariominimo) {
+
                 riesgo += 8;
-            } else if (volumen > 30*salariominimo && volumen <= 45*salariominimo) {
-               
+            } else if (volumen > 30 * salariominimo && volumen <= 45 * salariominimo) {
+
                 riesgo += 12;
-            } else if (volumen > 45*salariominimo && volumen <= 60*salariominimo) {
-                
+            } else if (volumen > 45 * salariominimo && volumen <= 60 * salariominimo) {
+
                 riesgo += 16;
-            } else if (volumen >60*salariominimo) {
-     
+            } else if (volumen > 60 * salariominimo) {
+
                 riesgo += 20;
             }
         } catch (error) {
@@ -131,23 +131,23 @@ async function matriz(cliente) {
         try {
             const volumen = cliente['volumenTransaccional'];
 
-            if ( volumen>= 0 && volumen <= 150*salariominimo) {
-          
+            if (volumen >= 0 && volumen <= 150 * salariominimo) {
+
                 riesgo += 4;
-            } else if (volumen > 150*salariominimo && volumen <= 300*salariominimo) {
-               
+            } else if (volumen > 150 * salariominimo && volumen <= 300 * salariominimo) {
+
                 riesgo += 8;
-            } else if (volumen > 300*salariominimo && volumen <= 450*salariominimo) {
-                console.log(600)
+            } else if (volumen > 300 * salariominimo && volumen <= 450 * salariominimo) {
+
                 riesgo += 12;
-            } else if (volumen > 450*salariominimo && volumen <= 600*salariominimo) {
-               
+            } else if (volumen > 450 * salariominimo && volumen <= 600 * salariominimo) {
+
                 riesgo += 16;
-            } else if (volumen > 600*salariominimo) {
-                
+            } else if (volumen > 600 * salariominimo) {
+
                 riesgo += 20;
             }
-            
+
         } catch (error) {
             console.error(error);
         }
@@ -198,58 +198,58 @@ async function matriz(cliente) {
 async function montomaximodelicliente(cliente) {
 
     const criterios = await pool.query("SELECT * FROM criterios_riesgo ORDER BY id DESC LIMIT 1")
-const porcentaje = await matriz(cliente);
+    const porcentaje = await matriz(cliente);
 
     const svm = await pool.query("SELECT * FROM salariovital ORDER BY id DESC LIMIT 1");
     montomax = 0
-    if(porcentaje<59){
-        
-        
+    if (porcentaje < 59) {
 
-        if(cliente.razon=="Empresa"){
-            console.log("Empresa")
-            montomax = svm[0]['valor'] *criterios[0]['bajoempresa']
-            
 
-        }else{
-           
-            montomax = svm[0]['valor'] *criterios[0]['bajopersona']
-            
+
+        if (cliente.razon == "Empresa") {
+
+            montomax = svm[0]['valor'] * criterios[0]['bajoempresa']
+
+
+        } else {
+
+            montomax = svm[0]['valor'] * criterios[0]['bajopersona']
+
         }
 
 
 
-    }else{
-        if(porcentaje<71){
-            console.log('medio')
-
-            if(cliente.razon=="Empresa"){
-                console.log("Empresa")
-                montomax = svm[0]['valor'] *criterios[0]['medioempresa']
-                
+    } else {
+        if (porcentaje < 71) {
 
 
-            }else{
-               
-                montomax = svm[0]['valor'] *criterios[0]['mediopersona']
-                
+            if (cliente.razon == "Empresa") {
+
+                montomax = svm[0]['valor'] * criterios[0]['medioempresa']
+
+
+
+            } else {
+
+                montomax = svm[0]['valor'] * criterios[0]['mediopersona']
+
             }
-    
 
 
-        }else{
-            console.log('alto')
-            if(cliente.razon=="Empresa"){
-                console.log("Empresa")
-                montomax = svm[0]['valor'] *criterios[0]['altoempresa']
-                
 
-            }else{
-               
-                montomax = svm[0]['valor'] *criterios[0]['altopersona']
-                
+        } else {
+
+            if (cliente.razon == "Empresa") {
+
+                montomax = svm[0]['valor'] * criterios[0]['altoempresa']
+
+
+            } else {
+
+                montomax = svm[0]['valor'] * criterios[0]['altopersona']
+
             }
-    
+
 
         }
     }
@@ -257,4 +257,4 @@ const porcentaje = await matriz(cliente);
 }
 
 
-module.exports = { matriz,montomaximodelicliente };
+module.exports = { matriz, montomaximodelicliente };

@@ -1099,7 +1099,7 @@ const detalleCuil = async (req, res) => {
             return res.status(404).json({ message: 'Cliente no encontrado' });
         }
 
-        // Asume que solo obtendrás un cliente con este cuil/cuit
+        // Asume que solo obtendrás un cliente con este cuil/cuit (En el registro se filtra esta condicion)
         const cliente = links[0];
 
         // Calcula la edad del cliente
