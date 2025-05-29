@@ -350,11 +350,28 @@ enviodemail.enviarmail.enviarmail(email,asunto,encabezado,mensaje)
 })
 
 router.get('/listaic3', async (req, res) => {
- 
-    clientes = await pool.query('select * from clientes where zona = "IC3"')
-    res.json(clientes)
-}
-)
+  try {
+    const resultados = await pool.query(`
+      SELECT c.Nombre, ci.mes, ci.anio, c.cuil_cuit
+      FROM clientes c
+      LEFT JOIN cuotas_ic3 ci ON ci.id_cliente = c.id
+      INNER JOIN (
+          SELECT id_cliente, MAX(anio * 100 + mes) as max_fecha
+          FROM cuotas_ic3
+          GROUP BY id_cliente
+      ) ultimas ON ultimas.id_cliente = ci.id_cliente
+              AND (ci.anio * 100 + ci.mes) = ultimas.max_fecha
+      WHERE c.zona = "IC3  "
+      ORDER BY ci.anio DESC, ci.mes DESC
+    `);
+
+    res.json(resultados);
+  } catch (error) {
+    console.error("Error al obtener clientes y cuotas:", error);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
+
 
 router.post('/subirlegajodni', fileUpload, async (req, res, done) => {
     const { tipo, cuil_cuit } = req.body
