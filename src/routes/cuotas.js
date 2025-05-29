@@ -163,15 +163,22 @@ console.log('ok')
     
             // Iterar sobre cada cliente y obtener sus cuotas
             for (const cliente of clientes) {
-                const cuotas = await pool.query('SELECT * FROM cuotas_ic3 WHERE id_cliente = ?', [cliente.id]);
-    
+
+
+                 cuotas = await pool.query('SELECT * FROM cuotas_ic3 WHERE id_cliente = ?', [cliente.id]);
+                 let saldo_real
+                if(cuotas.length>0){
+   
+                saldo_real=cuotas[0]['saldo_inicial']
+                }
+              
                 for (const cuota of cuotas) {
                     const pagos = await pool.query('SELECT SUM(monto) AS total_pago FROM pagos_ic3 WHERE id_cuota = ?', [cuota.id]);
                     const total_pago = pagos[0]?.total_pago || 0; // Asignar 0 si es null
     
                     const excedente = (parseFloat(total_pago) - parseFloat(cuota.cuota_con_ajuste)).toFixed(2);
                     const saldo_final = (parseFloat(cuota.saldo_inicial) - parseFloat(cuota.amortizacion)).toFixed(2);
-                    const saldo_real = (parseFloat(saldo_final) - parseFloat(excedente)).toFixed(2);
+                     saldo_real = (parseFloat(saldo_real) - parseFloat(excedente)).toFixed(2);
     
                     let nuevo = {
                         id: cuota.id,
