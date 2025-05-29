@@ -169,7 +169,7 @@ console.log('ok')
                  let saldo_real
                 if(cuotas.length>0){
    
-                saldo_real=cuotas[0]['saldo_inicial']
+                saldo_real=cuotas[0].saldo_inicial
                 }
               
                 for (const cuota of cuotas) {
@@ -178,7 +178,7 @@ console.log('ok')
     
                     const excedente = (parseFloat(total_pago) - parseFloat(cuota.cuota_con_ajuste)).toFixed(2);
                     const saldo_final = (parseFloat(cuota.saldo_inicial) - parseFloat(cuota.amortizacion)).toFixed(2);
-                     saldo_real = (parseFloat(saldo_real) - parseFloat(excedente)).toFixed(2);
+                     saldo_real = (parseFloat(saldo_real) -parseFloat(cuota.amortizacion) - parseFloat(excedente)).toFixed(2);
     
                     let nuevo = {
                         id: cuota.id,
