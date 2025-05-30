@@ -1462,7 +1462,7 @@ async function pagonivel2(req, res) {
     let cuil_cuit_distinto = 'No'
     let monto_distinto = 'Si'
     let monto_inusual = 'No'
-    let mensaje = ''
+    let mensaje = 'No coincide con el estracto cargado actual'
 
     let cuota = await pool.query('select * from cuotas where id = ?', [id]) //objeto cuota
 
